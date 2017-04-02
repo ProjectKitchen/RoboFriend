@@ -1,9 +1,9 @@
 # Robofriend
 
-Robofriend - a semi-autonomous, remotly controllable robot companion.
+Robofriend - a semi-autonomous, remotely controllable robot companion.
 
-Robofriend - initially created by Tom Heike 2002 - was exhibited on several Roboexotica events, serving drinks at the Vienniese Cocktail Robot Festival.
-In 2014, two Robofriends were donated by Tom to us and were further developed by Dr. Wummi and Karima Khlousy-Neirukh.
+Robofriend - initially created by Tom Heike 2002 - was exhibited at several Roboexotica events, serving drinks at the Vienniese Cocktail Robot Festival.
+In 2014, two Robofriends were donated by Tom to us, and were further developed by Dr. Wummi and Karima Khlousy-Neirukh.
 
 
 Robofriend shall be used to evaluate playful interaction with kids with cognitive disabilites in special schools in Vienna.
