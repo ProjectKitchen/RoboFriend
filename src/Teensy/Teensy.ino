@@ -59,8 +59,8 @@ bool SensorMiddleTriggered = false;
 bool SensorLeftTriggered = false;
 bool SensorRightTriggered = false;
 
-bool LeftTireForward = false;
-bool RightTireForward = false;
+Direction LeftTireDirection = None;
+Direction RightTireDirection = None;
 
 /*** global variables ***/
 /* Circular Buffer Arrays für IR Sensor Daten */
@@ -120,11 +120,11 @@ void Move(Direction dir, Tire tire)
     switch (tire)
     {
     case Left:
+        LeftTireDirection = dir;
         switch (dir)
         {
         case Forward:
             motorPin = LeftForward;
-            LeftTireForward = true;
             break;
         case Backward:
             motorPin = LeftBackward;
@@ -136,11 +136,11 @@ void Move(Direction dir, Tire tire)
         pwmPin = LeftPWM;
         break;
     case Right:
+        RightTireDirection = dir;
         switch (dir)
         {
         case Forward:
             motorPin = RightForward;
-            RightTireForward = true;
             break;
         case Backward:
             motorPin = RightBackward;
@@ -173,7 +173,8 @@ void forward()
     for (int i = 0; i < STEPLENGTH; i++)
     {
         delay(10);
-        if (UpdateSensorData())
+        UpdateSensorData();
+        if (SensorMiddleTriggered || SensorLeftTriggered || SensorRightTriggered)
         {
             return;
         }
@@ -304,8 +305,13 @@ void shake()
     Stop();
 }
 
-bool UpdateSensorData()
+void UpdateSensorData()
 {
+    if (LeftTireDirection == Backward || RightTireDirection == Backward)
+    {
+        return;
+    }
+    
     for (int i = 0; i < 30; i++)
     {
         AbstandLinks.addValue(analogRead(38));
@@ -317,31 +323,27 @@ bool UpdateSensorData()
     SensorLeftTriggered = AbstandLinks.getFastAverage() >= SensorLeftThreshold;
     SensorRightTriggered = AbstandRechts.getFastAverage() >= SensorRightThreshold;
 
-    if (LeftTireForward || RightTireForward)
+    if (LeftTireDirection == Forward || RightTireDirection == Forward)
     {
         if (SensorMiddleTriggered)
         {
             Stop();
-            return true;
         }
-        if (RightTireForward && SensorLeftTriggered)
+        else if (RightTireDirection == Forward && SensorLeftTriggered)
         {
             Stop();
-            return true;
         }
-        else if (LeftTireForward && SensorRightTriggered)
+        else if (LeftTireDirection == Forward && SensorRightTriggered)
         {
             Stop();
-            return true;
         }
     }
-    return false;
 }
 
 void Stop()
 {
-    LeftTireForward = false;
-    RightTireForward = false;
+    LeftTireDirection = None;
+    RightTireDirection = None;
 
     //PWMs aus
     digitalWrite(LeftPWM, LOW);
@@ -360,11 +362,15 @@ void loop()
     int Battery = analogRead(41);
     //Serial.println(Battery);
    
-    (void) UpdateSensorData();
-    
-    if (Serial.available())
+    UpdateSensorData();
+    char c = '0';
+    while(Serial.available() > 0)
     {
-        char c = Serial.read();
+        c = Serial.read();
+    }
+    
+    if (c != '0')
+    {
         switch (c)
         {
         case '1': //driving FORWARD

@@ -1,6 +1,7 @@
 enum Direction {
     Forward,
-    Backward
+    Backward,
+    None
 };
 
 enum Tire {
