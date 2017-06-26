@@ -41,6 +41,9 @@ DGREEN = (0, 255, 0)
 DBLUE = (0,0,128)
 B_LENGTH = 200 #Button length
 B_HEIGHT = 100 #Button height
+S_LENGTH = 50 #Symbol length
+S_HEIGHT = 50 #Symbol height
+SCREEN_COLOR = (0, 104, 139) #turqois
 
 rfid="empty"
 isFilled = False
@@ -50,7 +53,7 @@ bat_prozent = 0
 def ipauswahl():
 	#ip waehlen
 	global UDP_IP
-	screen.fill((30,144,255))#hellblau
+	screen.fill(SCREEN_COLOR)#hellblau (30,144,255)
 	pygame.display.flip()
 	pygame.display.set_caption("Config")
 	text=Buttons.Button()
@@ -91,21 +94,29 @@ def gamemenue():
 	GameActive = False
 	#ScreenUpdate()
 	
-	screen.fill((30,144,255))#hellblau
+	screen.fill(SCREEN_COLOR)#hellblau
 	pygame.display.flip()
 	pygame.display.set_caption("Hauptmenue")
 	text=Buttons.Button()
 	text.write_text(screen, "Hauptmenue", BLACK, B_LENGTH, B_HEIGHT, 50, 0)
 	spiel1=Buttons.Button()
+	spiel1Symbol=Buttons.Button()
 	spiel2=Buttons.Button()
+	spiel2Symbol=Buttons.Button()
 	spiel3=Buttons.Button()
+	spiel3Symbol=Buttons.Button()
 	spiel4=Buttons.Button()
+	spiel4Symbol=Buttons.Button()
 	admin =Buttons.Button()
 	spiel1.create_button(screen, GREEN, 100, 100, B_LENGTH,    B_HEIGHT,       "Spiel 1", WHITE, 0) #dunkelgruen button, weisse schrift
+	spiel1Symbol.create_button(screen, GREEN, 230, 125, S_LENGTH,    S_HEIGHT,       "", WHITE, "data/construction.png") 
 	spiel2.create_button(screen, GREEN, 100, 300, B_LENGTH,    B_HEIGHT,       "Spiel 2", WHITE, 0)
+	spiel1Symbol.create_button(screen, GREEN, 230, 325, S_LENGTH,    S_HEIGHT,       "", WHITE, "data/spiel2.png") 
 	spiel3.create_button(screen, GREEN, 400, 100, B_LENGTH,    B_HEIGHT,       "Spiel 3", WHITE, 0)
+	spiel3Symbol.create_button(screen, GREEN, 530, 125, S_LENGTH,    S_HEIGHT,       "", WHITE, "data/spiel3.png") 
 	spiel4.create_button(screen, GREEN, 400, 300, B_LENGTH,    B_HEIGHT,       "Spiel 4", WHITE, 0)
-	admin.create_button(screen, GREEN, 250, 500, B_LENGTH,    B_HEIGHT,       "Robot Control", WHITE, 0)
+	spiel4Symbol.create_button(screen, GREEN, 530, 325, S_LENGTH,    S_HEIGHT,       "", WHITE, "data/spiel4.png") 
+	admin.create_button(screen, GREEN, 250, 500, B_HEIGHT,    B_HEIGHT,       "Robot Control", WHITE, "data/gear.png")
 	pygame.display.flip()
 		
 	while True:
@@ -142,10 +153,10 @@ def game1():
 	wuerfel = ["170018DA65B0","15003E2CD9DE","16000468BFC5","170018A4B61D"]
 	zylinder = ["15003E321801"]
 	#not used yet: "170019A92186"
-	screen.fill((30,144,255))#hellblau
+	screen.fill(SCREEN_COLOR)#hellblau
 	pygame.display.flip()
 	back=Buttons.Button()
-	back.create_button(screen, GREEN, 100, 100, B_LENGTH, B_HEIGHT, "Zurueck", WHITE, 0)
+	back.create_button(screen, GREEN, 100, 100, B_HEIGHT, B_HEIGHT, "", WHITE, 'data/home.png')
 	text=Buttons.Button()
 	text.write_text(screen, "GAME ONE", BLACK, B_LENGTH, B_HEIGHT, 50, 0)
 	#sendcommand to robot to play sound "spiel 1 Erklaerung"
@@ -171,10 +182,10 @@ def game1():
 				elif start.pressed(pygame.mouse.get_pos()):
 					starting = 1
 	#START SCREEN
-	screen.fill((30,144,255))#hellblau
+	screen.fill(SCREEN_COLOR)#hellblau
 	pygame.display.flip()
 	back=Buttons.Button()
-	back.create_button(screen, GREEN, 100, 100, B_LENGTH, B_HEIGHT, "Zurueck", WHITE, 0)
+	back.create_button(screen, GREEN, 100, 100, B_HEIGHT, B_HEIGHT, "", WHITE, 'data/home.png')
 	text=Buttons.Button()
 	text.write_text(screen, "Spiel 1", BLACK, B_LENGTH, B_HEIGHT, 50, 0)
 	text2=Buttons.Button()
@@ -265,16 +276,16 @@ def game1():
 				pygame.display.flip()
 				time.sleep(4) #wait 5 seconds for sound to be over
 		sendtopi(12)# welldone sound
-		screen.fill((30,144,255))
+		screen.fill(SCREEN_COLOR)
 		text2.write_text(screen, "Gut gemacht! Das war der richtige Baustein.", BLACK, B_LENGTH, B_HEIGHT, 300, 300)
 		pygame.display.flip()
 		time.sleep(3) #wait 4 seconds for sound to be over
 
 def draw_objects(info):
-	screen.fill((30,144,255))#hellblau
+	screen.fill(SCREEN_COLOR)#hellblau
 	pygame.display.flip()
 	back=Buttons.Button()
-	back.create_button(screen, GREEN, 100, 100, B_LENGTH, B_HEIGHT, "Zurueck", WHITE, 0)
+	back.create_button(screen, GREEN, 100, 100, B_HEIGHT, B_HEIGHT, "", WHITE, 'data/home.png')
 	text=Buttons.Button()
 	text.write_text(screen, "Spiel 1", BLACK, B_LENGTH, B_HEIGHT, 50, 0)
 	text2=Buttons.Button()
@@ -318,10 +329,10 @@ def draw_objects(info):
 	
 def game2():
 	img_size= 300
-	screen.fill((30,144,255))#hellblau
+	screen.fill(SCREEN_COLOR)#hellblau
 	pygame.display.flip()
 	back=Buttons.Button()
-	back.create_button(screen, GREEN, 100, 100, B_LENGTH, B_HEIGHT, "Zurueck", WHITE, 0)
+	back.create_button(screen, GREEN, 100, 100, B_HEIGHT, B_HEIGHT, "", WHITE, 'data/home.png')
 	#load font, prepare values
 	text=Buttons.Button()
 	text.write_text(screen, "Spiel 2", BLACK, B_LENGTH, B_HEIGHT, 50, 0)
@@ -372,10 +383,10 @@ def game2():
 					if back.pressed(pygame.mouse.get_pos()):
 						gamemenue()
 		random.shuffle(positions)
-		screen.fill((30,144,255))#hellblau
+		screen.fill(SCREEN_COLOR)#hellblau
 		pygame.display.flip()
 		back=Buttons.Button()
-		back.create_button(screen, GREEN, 100, 100, B_LENGTH, B_HEIGHT, "Zurueck", WHITE, 0)
+		back.create_button(screen, GREEN, 100, 100, B_HEIGHT, B_HEIGHT, "", WHITE, 'data/home.png')
 		text=Buttons.Button()
 		text.write_text(screen, "Spiel 2", BLACK, B_LENGTH, B_HEIGHT, 50, 0)
 		text2=Buttons.Button()
@@ -439,10 +450,10 @@ def game2():
 								sendtopi(13)
 								time.sleep(4)#bis sound fertig
 								sendtopi(storysound)#"sound"
-	screen.fill((30,144,255))#hellblau
+	screen.fill(SCREEN_COLOR)#hellblau
 	pygame.display.flip()
 	back=Buttons.Button()
-	back.create_button(screen, GREEN, 100, 100, B_LENGTH, B_HEIGHT, "Zurueck", WHITE, 0)
+	back.create_button(screen, GREEN, 100, 100, B_HEIGHT, B_HEIGHT, "", WHITE, 'data/home.png')
 	start=Buttons.Button()
 	start.create_button(screen, GREEN, 400, 200, B_LENGTH, B_HEIGHT, "Neustart", WHITE, 0)
 	pygame.display.flip()
@@ -464,10 +475,10 @@ def game2():
 					game2()
 					
 def game3():
-	screen.fill((30,144,255))#hellblau
+	screen.fill(SCREEN_COLOR)#hellblau
 	pygame.display.flip()
 	back=Buttons.Button()
-	back.create_button(screen, GREEN, 100, 100, B_LENGTH, B_HEIGHT, "Zurueck", WHITE, 0)
+	back.create_button(screen, GREEN, 100, 100, B_HEIGHT, B_HEIGHT, "", WHITE, 'data/home.png')
 	#load font, prepare values
 	text=Buttons.Button()
 	text.write_text(screen, "Spiel 3", BLACK, B_LENGTH, B_HEIGHT, 50, 0)
@@ -517,9 +528,9 @@ def game3():
 		#displaying animals, am besten random positions
 		ran_s = random.randint(29,34)
 		right_sound = ran_s+6
-		screen.fill((30,144,255))#hellblau
+		screen.fill(SCREEN_COLOR)#hellblau
 		pygame.display.flip()
-		back.create_button(screen, GREEN, 100, 100, B_LENGTH, B_HEIGHT, "Zurueck", WHITE, 0)
+		back.create_button(screen, GREEN, 100, 100, B_HEIGHT, B_HEIGHT, "", WHITE, 'data/home.png')
 		positions = [(150,250),(500,250),(850,250),(150,500),(500,500),(850,500)]
 		random.shuffle(positions)
 		cow=Buttons.Button()
@@ -590,10 +601,10 @@ def game4():
 	dog = "4500B8EC5F4E"
 	elephant = "4500B8F3CBC5"
 	sheep = "4500B8E04A57"
-	screen.fill((30,144,255))#hellblau
+	screen.fill(SCREEN_COLOR)#hellblau
 	pygame.display.flip()
 	back=Buttons.Button()
-	back.create_button(screen, GREEN, 100, 100, B_LENGTH, B_HEIGHT, "Zurueck", WHITE, 0)
+	back.create_button(screen, GREEN, 100, 100, B_HEIGHT, B_HEIGHT, "", WHITE, 'data/home.png')
 	text=Buttons.Button()
 	text.write_text(screen, "Spiel 4", BLACK, B_LENGTH, B_HEIGHT, 50, 0)
 	#sendcommand to robot to play sound "spiel 4 Erklaerung"
@@ -619,10 +630,10 @@ def game4():
 				elif start.pressed(pygame.mouse.get_pos()):
 					starting = 1
 	#START SCREEN
-	screen.fill((30,144,255))#hellblau
+	screen.fill(SCREEN_COLOR)#hellblau
 	pygame.display.flip()
 	back=Buttons.Button()
-	back.create_button(screen, GREEN, 100, 100, B_LENGTH, B_HEIGHT, "Zurueck", WHITE, 0)
+	back.create_button(screen, GREEN, 100, 100, B_HEIGHT, B_HEIGHT, "", WHITE, 'data/home.png')
 	text=Buttons.Button()
 	text.write_text(screen, "Spiel 4", BLACK, B_LENGTH, B_HEIGHT, 50, 0)
 	text2=Buttons.Button()
@@ -678,10 +689,11 @@ def game4():
 def RoboControl():
 	arrow_size = 150
 	arrow_start = 150
-	screen.fill((30,144,255))#hellblau
+	face_size = 2*arrow_size/3
+	screen.fill(SCREEN_COLOR)#hellblau
 	pygame.display.flip()
 	back=Buttons.Button()
-	back.create_button(screen, GREEN, 100, 100, B_LENGTH, B_HEIGHT, "Zurueck", WHITE, 0)
+	back.create_button(screen, GREEN, 100, 100, B_HEIGHT, B_HEIGHT, "", WHITE, 'data/home.png')
 	forward =Buttons.Button()
 	forward.create_button(screen, GREEN, arrow_start+125, 275, arrow_size, arrow_size, "", WHITE, 'data/arrow_up.png')
 	left =Buttons.Button()
@@ -691,17 +703,17 @@ def RoboControl():
 	backward=Buttons.Button()
 	backward.create_button(screen, GREEN, arrow_start+125, 525, arrow_size, arrow_size, "", WHITE, 'data/arrow_down.png')
 	smileUp =Buttons.Button()
-	smileUp.create_button(screen, GREEN, 750, 200, B_LENGTH, B_HEIGHT, "smile +", WHITE, 0)
+	smileUp.create_button(screen, GREEN, 750, 250, face_size, face_size, "", WHITE, 'data/smile_add.png')
 	smileDown =Buttons.Button()
-	smileDown.create_button(screen, GREEN, 750, 350, B_LENGTH, B_HEIGHT, "smile -", WHITE, 0)
+	smileDown.create_button(screen, GREEN, 950, 250, face_size, face_size, "", WHITE, 'data/smile_delete.png')
 	eyeUp =Buttons.Button()
-	eyeUp.create_button(screen, GREEN, 800, 500, B_LENGTH, B_HEIGHT, "eyes /\\", WHITE, 0)
+	eyeUp.create_button(screen, GREEN, 800, 400, B_LENGTH, B_HEIGHT, "", WHITE, 'data/eye_up.png')
 	eyeDown =Buttons.Button()
-	eyeDown.create_button(screen, GREEN, 800, 625, B_LENGTH, B_HEIGHT, "eyes \/", WHITE, 0)
+	eyeDown.create_button(screen, GREEN, 800, 525, B_LENGTH, B_HEIGHT, "", WHITE, 'data/eye_down.png')
 	eyeLeft =Buttons.Button()
-	eyeLeft.create_button(screen, GREEN, 575, 625, B_LENGTH, B_HEIGHT, "eyes <", WHITE, 0)
+	eyeLeft.create_button(screen, GREEN, 575, 525, B_LENGTH, B_HEIGHT, "", WHITE, 'data/eye_left.png')
 	eyeRight =Buttons.Button()
-	eyeRight.create_button(screen, GREEN, 1025, 625, B_LENGTH, B_HEIGHT, "eyes >", WHITE, 0)
+	eyeRight.create_button(screen, GREEN, 1025, 525, B_LENGTH, B_HEIGHT, "", WHITE, 'data/eye_right.png')
 	pygame.display.flip()
 	co= 0
 	# drive= F, R, B, L
@@ -883,7 +895,7 @@ def ScreenUpdate():
 	while True:
 		akku = "Akku:"+str(bat_prozent)+"%"
 		print("akku aktualisierung")
-		pygame.draw.rect(screen, (30,144,255), (950,100, B_LENGTH, B_HEIGHT))
+		pygame.draw.rect(screen, SCREEN_COLOR, (950,100, B_LENGTH, B_HEIGHT))
 		#paint.create_button(screen, , 950, 100, B_LENGTH, B_HEIGHT, "Akku:", BLACK)
 		text=Buttons.Button()
 		#print("writing text")
