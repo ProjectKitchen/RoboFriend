@@ -12,7 +12,7 @@ For this purpose, several game applications were developed which involve robot m
 The Robofriend platform was based on a VIA Epia single board PC and a C-Control microcontroller, 
 which have been replaced by a RaspberryPi-2 and a Teensy microcontroller as low-level interface.
 
-Features:
+## Features
 * live video transmission (low latency) 
 * remote control via webbrowser or game apps
 * proximity sensors for collision avoidance & activity detection
@@ -20,7 +20,7 @@ Features:
 * RFID reader - utilized for game interaction
 * unique design (with CRT-head) by Tom Heike
  
- ** Setup **
+## Setup
 
  The Robofriend uses a Teensy 2.0 ++ which handels motor driving, proximity sensors, battery status... you can find all needed source files in src/Teensy (readme included)
 
