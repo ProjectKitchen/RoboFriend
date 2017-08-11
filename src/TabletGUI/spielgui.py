@@ -16,7 +16,6 @@ pygame.init()
 
 """GLOBAL"""
 #Socketverbindung
-UDP_Buffer = []
 UDP_PORT = 9000
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) # UDP
 print('\nUDP socket '+ str(UDP_PORT)+' opened for sending! '  )
@@ -29,8 +28,11 @@ try:
 except:
 	print('Could not open UDP SOCKET!')
 
-screen =pygame.display.set_mode((1275,750))#,pygame.FULLSCREEN) #pygame.display.set_mode((1080,720),pygame.FULLSCREEN) #(650,370))
-#screen.fill((30,144,255))#hellblau
+# Comment out/in the line you need:
+#in testing mode, just for yourself, use following line, without the fullscreen option:
+screen =pygame.display.set_mode((1275,750))
+#in testing mode with children, use fullscreen option:
+#screen =pygame.display.set_mode((1275,750),pygame.FULLSCREEN)
 
 GREEN = (107,142,35) #buttongreen
 WHITE = (255,255,255)
@@ -78,7 +80,7 @@ def ipauswahl():
 					sys.exit()
 			elif event.type == MOUSEBUTTONDOWN:
 				if ippk.pressed(pygame.mouse.get_pos()):
-					UDP_IP = '10.10.10.111'
+					UDP_IP = '10.10.10.104'
 					ip =1
 				if ipelse.pressed(pygame.mouse.get_pos()):
 					UDP_IP = '192.168.43.218' 
@@ -86,14 +88,15 @@ def ipauswahl():
 				if iphotspot.pressed(pygame.mouse.get_pos()):
 					UDP_IP = '192.168.0.100' 
 					ip = 1
-	sendtopi(73)
+	sendtopi("IPcheck")
 					
 def gamemenue():
 	#Hauptmenue
 	global GameActive
 	GameActive = False
 	#ScreenUpdate()
-	
+	sendtopi("face;answer;correct") # guaranteing a happy face
+	sendtopi("sound;stop") # stopping any playing sound
 	screen.fill(SCREEN_COLOR)#hellblau
 	pygame.display.flip()
 	pygame.display.set_caption("Hauptmenue")
@@ -145,6 +148,7 @@ def game1():
 	global isFilled, rfid
 	global GameActive
 	#isFilled = FALSE
+	randomsounds = ["data/rot.wav", "data/gruen.wav", "data/blau.wav", "data/gelb.wav", "data/quader.wav", "data/wuerfel.wav", "data/zyl.wav"]
 	red = ["15003E321801","1700181F0E1E","15003E2CD9DE"]
 	green = ["170019D8A472","16000468BFC5"]
 	blue = ["170018DA65B0", "170018323D00"]
@@ -160,7 +164,7 @@ def game1():
 	text=Buttons.Button()
 	text.write_text(screen, "GAME ONE", BLACK, B_LENGTH, B_HEIGHT, 50, 0)
 	#sendcommand to robot to play sound "spiel 1 Erklaerung"
-	sendtopi(11)
+	sendtopi("sound;play;data/spiel1.wav")
 	start=Buttons.Button()
 	start.create_button(screen, GREEN, 400, 200, B_LENGTH, B_HEIGHT, "Start", WHITE, 0)
 	starting=0
@@ -209,26 +213,29 @@ def game1():
 					gamemenue()
 		#random sound ran_s from game1 (farbe/form) need to be chosen
 		###maybe display the sought object
-		ran_s = random.randint(14,20)
-		if ran_s == 14:
+		#ran_s = random.shuffle(14,20)
+		random.shuffle(randomsounds)
+		ran_i = random.randint(0,6)
+		ran_s = randomsounds[ran_i]
+		if ran_s == "data/blau.wav":
 			searched = blue
 			draw_objects(1)
-		elif ran_s == 15:
+		elif ran_s == "data/gelb.wav":
 			searched = yellow
 			draw_objects(2)
-		elif ran_s == 16:
+		elif ran_s == "data/gruen.wav":
 			searched = green
 			draw_objects(3)
-		elif ran_s == 17:
+		elif ran_s == "data/rot.wav":
 			searched = red
 			draw_objects(4)
-		elif ran_s == 18:
+		elif ran_s == "data/zyl.wav":
 			searched = zylinder
 			draw_objects(5)
-		elif ran_s == 19:
+		elif ran_s == "data/quader.wav":
 			searched = quader
 			draw_objects(6)
-		elif ran_s == 20:
+		elif ran_s == "data/wuerfel.wav":
 			searched = wuerfel
 			draw_objects(7)
 		ans=0
@@ -247,7 +254,7 @@ def game1():
 					if back.pressed(pygame.mouse.get_pos()):
 						gamemenue()
 			#randomly selected sound will be played
-			sendtopi(ran_s)
+			sendtopi("sound;play;"+ran_s)
 
 			#checking if data is right
 			#if correct ans = 1
@@ -270,12 +277,14 @@ def game1():
 					ans = 1
 			isFilled = False
 			if ans == 0:
-				sendtopi(13) #wrong sound
+				sendtopi("sound;play;data/wrong.wav")# wrong sound
+				sendtopi("face;answer;wrong")# sad face
 				print("rfid:"+str(rfid))
 				text2.write_text(screen, "Das ist leider der falsche Baustein.   Versuche es noch einmal.", BLACK, B_LENGTH, B_HEIGHT, 300, 300)
 				pygame.display.flip()
 				time.sleep(4) #wait 5 seconds for sound to be over
-		sendtopi(12)# welldone sound
+		sendtopi("sound;play;data/correct.wav")# welldone sound
+		sendtopi("face;answer;correct")# happy face
 		screen.fill(SCREEN_COLOR)
 		text2.write_text(screen, "Gut gemacht! Das war der richtige Baustein.", BLACK, B_LENGTH, B_HEIGHT, 300, 300)
 		pygame.display.flip()
@@ -338,7 +347,7 @@ def game2():
 	text.write_text(screen, "Spiel 2", BLACK, B_LENGTH, B_HEIGHT, 50, 0)
 	
 	#GAME 2 screen
-	sendtopi(21)# Spiel2 Erklaerung
+	sendtopi("sound;play;data/robogame2.wav")# Spiel2 Erklaerung
 	start=Buttons.Button()
 	start.create_button(screen, GREEN, 400, 200, B_LENGTH, B_HEIGHT, "Start", WHITE, 0)
 	starting=0
@@ -403,25 +412,25 @@ def game2():
 		pygame.display.flip()
 		#playing sound, depending on which round this is
 		if i == 1:
-			storysound = 22
+			storysound = "data/2robory1.wav"
 			emo = sad
 		elif i == 2:
-			storysound = 23
+			storysound = "data/2robory2.wav"
 			emo = angry
 		elif i == 3:
-			storysound = 24
+			storysound = "data/2robory3.wav"
 			emo = angry
 		elif i == 4:
-			storysound = 25
+			storysound = "data/2robory4.wav"
 			emo = sad
 		elif i == 5:
-			storysound = 26
+			storysound = "data/2robory5.wav"
 			emo = happy
 		elif i == 6:
-			storysound = 27
+			storysound = "data/2robory6.wav"
 			emo = happy
 			story = 1 #last sound. after this, end while loop
-		sendtopi(storysound) #SOund 1_spiel 2 blabla *ist happy. lets see if u find happy face, just click on it*
+		sendtopi("sound;play;"+storysound) #SOund 1_spiel 2 blabla *ist happy. lets see if u find happy face, just click on it*
 		ans = 0
 		while ans == 0:
 			for event in [pygame.event.wait()]+pygame.event.get():# maybe need to copy this also into the while ans == wrong 
@@ -442,14 +451,16 @@ def game2():
 						if e.pressed(pygame.mouse.get_pos()):
 							if e == emo:
 								print ("right")
-								sendtopi(12)
+								sendtopi("sound;play;data/correct.wav")# welldone sound
+								sendtopi("face;answer;correct")# happy face
 								time.sleep(3)#bis sound fertig
 								ans =1
 							else:
 								print("wrong")
-								sendtopi(13)
+								sendtopi("sound;play;data/wrong.wav")# wrong sound
+								sendtopi("face;answer;wrong")# sad face
 								time.sleep(4)#bis sound fertig
-								sendtopi(storysound)#"sound"
+								sendtopi("sound;play;"+storysound)#"sound"
 	screen.fill(SCREEN_COLOR)#hellblau
 	pygame.display.flip()
 	back=Buttons.Button()
@@ -478,13 +489,14 @@ def game3():
 	screen.fill(SCREEN_COLOR)#hellblau
 	pygame.display.flip()
 	back=Buttons.Button()
+	randomsounds = ["data/sheep.wav", "data/bird.wav", "data/cow.wav", "data/dogs.wav", "data/cat.wav", "data/elephant.wav"]
 	back.create_button(screen, GREEN, 100, 100, B_HEIGHT, B_HEIGHT, "", WHITE, 'data/home.png')
 	#load font, prepare values
 	text=Buttons.Button()
 	text.write_text(screen, "Spiel 3", BLACK, B_LENGTH, B_HEIGHT, 50, 0)
 	#pygame.display.flip()
 	#sendcommand to robot to play sound "spiel 3 Erklaerung"
-	sendtopi(28)
+	sendtopi("sound;play;data/robogame3.wav")
 	start=Buttons.Button()
 	start.create_button(screen, GREEN, 400, 200, B_LENGTH, B_HEIGHT, "Start", WHITE, 0)
 	starting=0
@@ -526,8 +538,11 @@ def game3():
 					gamemenue()
 		#random sound ran_s from game3 (animal) need to be chosen
 		#displaying animals, am besten random positions
-		ran_s = random.randint(29,34)
-		right_sound = ran_s+6
+		random.shuffle(randomsounds)
+		ran_i = random.randint(0,5)
+		ran_s = randomsounds[ran_i]
+		#ran_s = random.randint(29,34)
+		#right_sound = ran_s+6
 		screen.fill(SCREEN_COLOR)#hellblau
 		pygame.display.flip()
 		back.create_button(screen, GREEN, 100, 100, B_HEIGHT, B_HEIGHT, "", WHITE, 'data/home.png')
@@ -547,22 +562,28 @@ def game3():
 		bird.create_button(screen, GREEN, positions[5][0], positions[5][1], 300, 200, "", WHITE, 'data/bird.jpg')
 		pygame.display.flip()
 		animals = [cow, dog, cat, elephant, sheep, bird]
-		if ran_s == 29:#bird
+		if ran_s == "data/bird.wav":#bird
 			searched = bird
-		elif ran_s == 30:#cat
+			right_sound = "data/robobird.wav"
+		elif ran_s == "data/cat.wav":#cat
 			searched = cat
-		elif ran_s == 31:#cow
+			right_sound = "data/robocatser.wav"
+		elif ran_s == "data/cow.wav":#cow
 			searched = cow
-		elif ran_s == 32:#dog
+			right_sound = "data/robocow.wav"
+		elif ran_s == "data/dogs.wav":#dog
 			searched = dog
-		elif ran_s == 33:#elephant
+			right_sound = "data/robodogs.wav"
+		elif ran_s == "data/elephant.wav":#elephant
 			searched = elephant
-		elif ran_s == 34:#sheep
+			right_sound = "data/robofant.wav"
+		elif ran_s == "data/sheep.wav":#sheep
 			searched = sheep
+			right_sound = "data/robeep.wav"
 		ans=0
 		print(ran_s)
 		#randomly selected sound will be played
-		sendtopi(ran_s)#"animal sound"
+		sendtopi("sound;play;"+ran_s)#"animal sound"
 		#as long as answer ist incorrect:
 		while ans == 0:
 			for event in [pygame.event.wait()]+pygame.event.get():# maybe need to copy this also into the while ans == wrong 
@@ -583,14 +604,16 @@ def game3():
 						if c.pressed(pygame.mouse.get_pos()):
 							if c == searched:
 								print ("right")
-								sendtopi(right_sound)
+								sendtopi("sound;play;"+right_sound)
+								sendtopi("face;answer;correct")# happy face
 								time.sleep(3)#bis sound fertig
 								ans =1
 							else:
 								print("wrong")
-								sendtopi(13)
+								sendtopi("sound;play;data/wrong.wav")# wrong sound
+								sendtopi("face;answer;wrong")# sad face
 								time.sleep(4)#bis sound fertig
-								sendtopi(ran_s)#"animal sound"
+								sendtopi("sound;play;"+ran_s)#"animal sound"
 
 def game4():
 	global isFilled, rfid
@@ -608,7 +631,7 @@ def game4():
 	text=Buttons.Button()
 	text.write_text(screen, "Spiel 4", BLACK, B_LENGTH, B_HEIGHT, 50, 0)
 	#sendcommand to robot to play sound "spiel 4 Erklaerung"
-	sendtopi(41)
+	sendtopi("sound;play;data/spiel4.wav")
 	start=Buttons.Button()
 	start.create_button(screen, GREEN, 400, 200, B_LENGTH, B_HEIGHT, "Start", WHITE, 0)
 	starting=0
@@ -669,19 +692,19 @@ def game4():
 						gamemenue()
 		print(rfid)
 		if rfid == bird: # BIRD
-			sendtopi(29) #animalsound
+			sendtopi("sound;play;data/bird.wav") #animalsound
 		elif rfid == cat: # CAT
-			sendtopi(30) #animalsound
+			sendtopi("sound;play;data/cat.wav") #animalsound
 		elif rfid == cow : #COW
-			sendtopi(31) #animalsound
+			sendtopi("sound;play;data/cow.wav") #animalsound
 		elif rfid == dog : #DOG
-			sendtopi(32) #animalsound
+			sendtopi("sound;play;data/dogs.wav") #animalsound
 		elif rfid == elephant: #ELEPHANT
-			sendtopi(33) #animalsound
+			sendtopi("sound;play;data/elephant.wav") #animalsound
 		elif rfid == sheep: #SHEEP
-			sendtopi(34) #animalsound
+			sendtopi("sound;play;data/sheep.wav") #animalsound
 		else:
-			sendtopi(42) #wrong sound
+			sendtopi("sound;play;data/keinTier.wav") #wrong sound
 			print("rfid:"+str(rfid))
 			time.sleep(4) #wait 5 seconds for sound to be over
 		isFilled = False
@@ -730,21 +753,21 @@ def RoboControl():
 					pass
 				else:
 					drive = [0, 0, 1, 1]
-					sendtopi(44)
+					sendtopi("move;backwad_left")
 			elif keys[K_UP]:
 				print(str(co)+"LINKSVORNE!")
 				if drive == [1, 0, 0, 1]:
 					pass
 				else:
 					drive = [1, 0, 0, 1]
-					sendtopi(51)
+					sendtopi("move;forward_left")
 			else:
 				print(str(co)+"LINKS!")
 				if drive == [0, 0, 0, 1]:
 					pass
 				else:
 					drive = [0, 0, 0, 1]
-					sendtopi(45)
+					sendtopi("move;left")
 			co = co+1
 		elif keys[K_RIGHT]:
 			if keys[K_DOWN]:
@@ -753,21 +776,21 @@ def RoboControl():
 					pass
 				else:
 					drive = [0, 1, 1, 0]
-					sendtopi(46)
+					sendtopi("move;backward_right")
 			elif keys[K_UP]:
 				print(str(co)+"RECHTSVORNE!")
 				if drive == [1, 1, 0, 0]:
 					pass
 				else:
 					drive = [1, 1, 0, 0]
-					sendtopi(50)
+					sendtopi("move;forward_right")
 			else:
 				print(str(co)+"RECHTS!")
 				if drive == [0, 1, 0, 0]:
 					pass
 				else:
 					drive = [0, 1, 0, 0]
-					sendtopi(43)
+					sendtopi("move;right")
 			co = co+1
 		elif keys[K_UP]:
 			print(str(co)+"VORWAERTS!")
@@ -775,7 +798,7 @@ def RoboControl():
 				pass
 			else:
 				drive = [1, 0, 0, 0]
-				sendtopi(48)
+				sendtopi("move;forward")
 			co = co+1
 		elif keys[K_DOWN]:
 			print(str(co)+"RUECKWAERTS!")
@@ -783,7 +806,7 @@ def RoboControl():
 				pass
 			else:
 				drive = [0, 0, 1, 0]
-				sendtopi(49)
+				sendtopi("move;backward")
 			co = co+1			
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
@@ -794,7 +817,7 @@ def RoboControl():
 				if drive == [0, 0, 0, 0]:
 					pass
 				else:
-					sendtopi(47)
+					sendtopi("move;stop")
 					drive = [0, 0, 0, 0]
 					print("Sent to pi")
 			elif event.type == pygame.KEYDOWN:
@@ -804,64 +827,65 @@ def RoboControl():
 					sys.exit()
 				if event.key == pygame.K_1: #rot
 					print "random sound"
-					sendtopi(52)
+					sendtopi("sound;play;data/fabibox/;random")
 				if event.key == pygame.K_2: #blau
 					print "sound wie gehts"
-					sendtopi(53)
+					sendtopi("sound;play;data/;mood")
 				if event.key == pygame.K_3: #weiss
 					print "Smile -"
-					sendtopi(6)
+					sendtopi("face;smile;decrease")
 				if event.key == pygame.K_4: #gruen
 					print "Smile +"
-					sendtopi(5)	
+					sendtopi("face;smile;increase")	
 			elif event.type == MOUSEBUTTONDOWN:
 				if back.pressed(pygame.mouse.get_pos()):
 					gamemenue()
 				if forward.pressed(pygame.mouse.get_pos()):
 					print "forward!"
-					sendtopi(1)
+					sendtopi("move;forward;step")
 				if left.pressed(pygame.mouse.get_pos()):
 					print "left!"
-					sendtopi(4)
+					sendtopi("move;left;step")
 				if right.pressed(pygame.mouse.get_pos()):
 					print "right!"	
-					sendtopi(3)
+					sendtopi("move;right;step")
 				if backward.pressed(pygame.mouse.get_pos()):
 					print "back!"
-					sendtopi(2)		
+					sendtopi("move;backward;step")		
 				if smileUp.pressed(pygame.mouse.get_pos()):
 					print "Smile +"
-					sendtopi(5)		
+					sendtopi("face;smile;increase")		
 				if smileDown.pressed(pygame.mouse.get_pos()):
 					print "Smile -"
-					sendtopi(6)
+					sendtopi("face;smile;decrease")
 				if eyeUp.pressed(pygame.mouse.get_pos()):
 					print "eye /\\"
-					sendtopi(7)	
+					sendtopi("face;eyes;up")	
 				if eyeDown.pressed(pygame.mouse.get_pos()):
 					print "eye \/"	
-					sendtopi(8)
+					sendtopi("face;eyes;down")
 				if eyeLeft.pressed(pygame.mouse.get_pos()):
 					print "eye <"
-					sendtopi(9)		
+					sendtopi("face;eyes;left")		
 				if eyeRight.pressed(pygame.mouse.get_pos()):
 					print "eye >"
-					sendtopi(10)		
+					sendtopi("face;eyes;right")		
 
 def sendtopi(i):	
-	global UDP_Buffer, UDP_IP, UDP_PORT
-	UDP_Buffer.append(str(i))
-	BufferToSend = UDP_Buffer
-	UDP_Buffer = []
+	global UDP_IP, UDP_PORT
+	BytesToSend = bytes(":RUN:" + str(i) + ":EOL:")
 	try:
-		sock.sendto(bytes(BufferToSend), (UDP_IP, UDP_PORT))
-	except socket.error, BufferToSend:
-		print 'Error Code: ' + str(BufferToSend[0]) + 'Message ' + BufferToSend[1]
+		sock.sendto(BytesToSend, (UDP_IP, UDP_PORT))
+		print(BytesToSend)
+	except socket.error, msg:
+		print 'Error Code: ' + str(msg[0]) + 'Message ' + msg[1]
 		sys.exit()
 
 def ReadFromPi():
 	global rfid, isFilled, GameActive, bat_prozent
 	count = 0
+	startFlag = ":RUN:"
+	endFlag = ":EOL:"
 	#rfid = ""
 	while 1:
 		count += 1
@@ -869,23 +893,40 @@ def ReadFromPi():
 			time.sleep(0.1)
 		data = ""
 		rfid = ""
-		data, addr = robo.recvfrom(20)
+		tempData, addr = robo.recvfrom(30)
 		print("Abfrage " + str(count))				
 		
 		print(data)
-		data = data.replace("'","")
+		"""data = data.replace("'","")
 		data = data.replace("[","")
-		data_clean = data.replace("]","")
+		data_clean = data.replace("]","")"""
+		data += tempData
+		startFlagIndex = data.find(startFlag)
+		if startFlagIndex != -1:
+			data = data[startFlagIndex + len(startFlag):]
+
+		endFlagIndex = data.find(endFlag)
+		if endFlagIndex == -1:
+			continue
+			
+		data = data[:endFlagIndex] 
+		dataArray = data.split(';')
+		if dataArray[0] == "battery":
+			try:
+				bat_prozent = int(dataArray[1])
+			except:
+				print("Battery Status couldn't be checked")
+		elif dataArray[0] == "rfid":
+			rfid = dataArray[1]
+		"""
 		try:
 			bat_prozent = int(data_clean)
 		except:
 			rfid = data_clean
-		finally:
-			print(data_clean)
-			print(bat_prozent)
-			print(rfid)
-		#else:
-		#rfid = data_clean
+		finally:"""
+		print(dataArray)
+		print(bat_prozent)
+		print(rfid)
 		if GameActive and (rfid != ""):
 			isFilled = True
 
@@ -910,7 +951,7 @@ def main():
 	ReadFromRobo.start()
 	GameActive = False
 	ipauswahl()
-	sendtopi(0) #ask for first batteryvoltage
+	sendtopi("battery;status") #ask for first batteryvoltage
 	time.sleep(0.04) #time needed to recieve batteryvoltage
 	BatToScreen = threading.Thread(target=ScreenUpdate)
 	BatToScreen.daemon = True
