@@ -18,7 +18,6 @@
  *  7.0: adding additionially drive commandos
  *  7.1: adjusting new drive commands and expanded switch case
  *  8.0: Improvements
- *  8.2: Timer
  *  
  *
  *  Version: 8.2
