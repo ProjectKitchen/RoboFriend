@@ -1,0 +1,10 @@
+# Object files
+*.o
+*.obj
+*.elf
+
+# Executables
+*.hex
+
+# Pictures
+*.jpg
