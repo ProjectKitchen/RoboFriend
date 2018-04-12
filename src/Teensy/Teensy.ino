@@ -112,7 +112,8 @@ void setup()
     delay(200);
 }
 
-void Move(Direction dir, Tire tire)
+void Move(Direction dir, Tire tire)  // sets direction of one wheel
+                                     // always call Stop() first to ensure save state of H-bridge!
 {
     int motorPin;
     int pwmPin;
@@ -160,12 +161,12 @@ void Move(Direction dir, Tire tire)
 
 void forward()
 {
+    Stop();
     if (SensorMiddleTriggered || SensorLeftTriggered || SensorRightTriggered)
     {
         return;
     }
     
-    Stop();
     Move(Forward, Left);
     Move(Forward, Right);
 
@@ -184,12 +185,12 @@ void forward()
 
 void forward_Loop()
 {
+    Stop();
     if (SensorMiddleTriggered || SensorLeftTriggered || SensorRightTriggered)
     {
         return;
     }
     
-    Stop();
     Move(Forward, Left);
     Move(Forward, Right);
 }
@@ -256,23 +257,23 @@ void right_Loop()
 
 void right_forward_Loop()
 {
+    Stop();
     if (SensorMiddleTriggered || SensorRightTriggered)
     {
         return;
     }
     
-    Stop();
     Move(Forward, Left);
 }
 
 void left_forward_Loop()
 {
+    Stop();
     if (SensorMiddleTriggered || SensorLeftTriggered)
     {
         return;
     }
     
-    Stop();
     Move(Forward, Right);
 }
 
@@ -290,6 +291,7 @@ void left_backward_Loop()
 
 void shake()
 {
+    Stop();
     Move(Backward, Left);
     Move(Forward, Right);
 
@@ -353,6 +355,7 @@ void Stop()
     digitalWrite(RightBackward, LOW);
     digitalWrite(LeftBackward, LOW);
     digitalWrite(RightForward, LOW);
+    delay (100);  // to ensure save state of H-brigde
 }
 
 void loop()
@@ -362,14 +365,11 @@ void loop()
     //Serial.println(Battery);
    
     UpdateSensorData();
-    char c = '0';
-    while(Serial.available() > 0)
+    char c = 0;
+    if (Serial.available() > 0)
     {
         c = Serial.read();
-    }
     
-    if (c != '0')
-    {
         switch (c)
         {
         case '1': //driving FORWARD
@@ -393,24 +393,6 @@ void loop()
         case '7':
             Stop();
             break;
-        /*
-        case 'nuke':
-        Serial.println("12V aus");
-        digitalWrite (Relais12V, HIGH);
-        delay(200);
-
-        Serial.println("serie aus");
-        digitalWrite (Serienschaltung, HIGH);
-        delay(200);
-
-        Serial.println("haupt aus");
-        digitalWrite (Hauptrelais, HIGH);
-        delay(200);
-
-        Serial.println("5V aus");
-        digitalWrite (Relais5V, HIGH);
-        delay(5000);
-        break;*/
         case '8':
             Battery = analogRead(41);
             Serial.println(Battery);
@@ -441,6 +423,24 @@ void loop()
         case 'f': // driving LEFT loop
             left_Loop();
             break;
+        /*
+        case 'n':
+        Serial.println("12V aus");
+        digitalWrite (Relais12V, HIGH);
+        delay(200);
+
+        Serial.println("serie aus");
+        digitalWrite (Serienschaltung, HIGH);
+        delay(200);
+
+        Serial.println("haupt aus");
+        digitalWrite (Hauptrelais, HIGH);
+        delay(200);
+
+        Serial.println("5V aus");
+        digitalWrite (Relais5V, HIGH);
+        delay(5000);
+        break;*/
         default:
             Serial.println("ERROR: Command '" + (String)c + "' not implemented!");
         }
