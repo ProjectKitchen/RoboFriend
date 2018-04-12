@@ -14,13 +14,19 @@ import random, os.path
 from time import sleep
 from flask import Flask, render_template, request, redirect, url_for, make_response
 import urllib
+#import pyautogui
 
 """ SETUP """
+
+#pyautogui.FAILSAFE = False
+#pyautogui.moveTo(0, 0)
+
 #setup pygame
 pygame.init()
 
 #global
 screen = pygame.display.set_mode((654,380))
+#screen = pygame.display.set_mode((654, 380), pygame.FULLSCREEN)
 screen.fill((0, 0, 0))
 bat_prozent = 0
 bat_prozent_lock = threading.Lock()
@@ -46,7 +52,8 @@ try:
 	ser=serial.Serial("/dev/ttyACM0",9600,timeout=1)
 	print('***Serial for Teensy opened***')
 except:
-	sys.exit('Could not open serial for Teensy. Check connection and restart.')
+	print('***Serial for Teensy could not be opened***')
+#	sys.exit('Could not open serial for Teensy. Check connection and restart.')
 
 UDP_PORT = 9000 #socket port
 
@@ -129,6 +136,8 @@ def chooseAction(data):
 				ser.write("8")
 				bat = str(ser.readline())
 				bat = bat.strip(' \t\n\r')
+			except:
+				print('***Serial write error ***')
 			finally:
 				move_lock.release()
 			try:
@@ -148,7 +157,7 @@ def chooseAction(data):
 					bat_prozent_lock.release()
 	elif action == "IPcheck":
 		pass
-	
+
 # this function is called by chooseAction if the robot has to move
 def move(dataArray):
 	global move_lock
@@ -163,6 +172,8 @@ def move(dataArray):
 			try:
 				ser.write("7") #zuerst stoppen
 				ser.write("1") #forwardstep
+			except:
+				print('***Serial write error ***')
 			finally:
 				move_lock.release()
 		elif dir == "backward":
@@ -170,6 +181,8 @@ def move(dataArray):
 			try:
 				ser.write("7") #zuerst stoppen
 				ser.write("2") #backwardstep
+			except:
+				print('***Serial write error ***')
 			finally:
 				move_lock.release()
 		elif dir == "left":
@@ -177,6 +190,8 @@ def move(dataArray):
 			try:
 				ser.write("7") #zuerst stoppen
 				ser.write("4") #leftstep
+			except:
+				print('***Serial write error ***')
 			finally:
 				move_lock.release()
 		elif dir == "right":
@@ -184,6 +199,8 @@ def move(dataArray):
 			try:
 				ser.write("7") #zuerst stoppen
 				ser.write("3") #rightstep
+			except:
+				print('***Serial write error ***')
 			finally:
 				move_lock.release()
 	else: # keine step informationen vorhanden, daher loop, Joystick verwendet
@@ -194,6 +211,9 @@ def move(dataArray):
 			try:
 				ser.write("7") #zuerst stoppen
 				ser.write("c") #forward loop
+			except Exception:
+				print('***Serial write error ***')
+				pass
 			finally:
 				move_lock.release()
 		elif dir == "backward":
@@ -201,6 +221,8 @@ def move(dataArray):
 			try:
 				ser.write("7") #zuerst stoppen
 				ser.write("d") #backward loop
+			except:
+				print('***Serial write error ***')
 			finally:
 				move_lock.release()
 		elif dir == "left":
@@ -208,6 +230,8 @@ def move(dataArray):
 			try:
 				ser.write("7") #zuerst stoppen
 				ser.write("f") #leftloop
+			except:
+				print('***Serial write error ***')
 			finally:
 				move_lock.release()
 		elif dir == "right":
@@ -215,6 +239,8 @@ def move(dataArray):
 			try:
 				ser.write("7") #zuerst stoppen
 				ser.write("e") #rightloop
+			except:
+				print('***Serial write error ***')
 			finally:
 				move_lock.release()
 		elif dir == "forward_right":
@@ -229,6 +255,8 @@ def move(dataArray):
 			try:
 				ser.write("7") #zuerst stoppen
 				ser.write("b") #forward_left loop
+			except:
+				print('***Serial write error ***')
 			finally:
 				move_lock.release()
 		elif dir == "backward_right":
@@ -236,6 +264,8 @@ def move(dataArray):
 			try:
 				ser.write("7") #zuerst stoppen
 				ser.write("5") #backward_right loop
+			except:
+				print('***Serial write error ***')
 			finally:
 				move_lock.release()
 		elif dir == "backward_left":
@@ -243,12 +273,16 @@ def move(dataArray):
 			try:
 				ser.write("7") #zuerst stoppen
 				ser.write("6") #backward_left loop
+			except:
+				print('***Serial write error ***')
 			finally:
 				move_lock.release()
 		elif dir == "stop":
 			move_lock.acquire()
 			try:
 				ser.write("7") #stoppen
+			except:
+				print('***Serial write error ***')
 			finally:
 				move_lock.release()
 
@@ -258,24 +292,29 @@ def playsound(dataArray):
 	if len(dataArray) > 1: #random sounds oder Aehnliches
 		dataArray = dataArray[1:]
 		info = dataArray[0]
+		print ("info = " + info)
+
 		if len(dataArray) > 1: # sollten mal noch mehr parameter notwendig sein
 			dataArray = dataArray[1:]
 			return
 		elif info == "random":
-			print ("in random")
+			print ("random sound")
 			r_sounds = ["s1", "s2", "s3", "s4", "s5", "s6", "s7", "s8"]
 			rsnr =random.randint(0,7)
 			soundpath = soundname+r_sounds[rsnr]+".wav"
 		elif info == "mood":
+			print ("mood sound")
 			mood_sounds = ["sad","happy"]
 			if sadFace:
 				soundpath = soundname+mood_sounds[0]+".wav"
 			else:
 				soundpath = soundname+mood_sounds[1]+".wav"
 	else:
+		print ("playing soundfile " + soundname)
 		soundpath = soundname
 	
 	try:
+		print ("playing sound "+soundpath)
 		selectedSound = pygame.mixer.Sound(soundpath)
 	except:
 		print ("could not open "+soundpath)
@@ -303,7 +342,6 @@ def faceManipulation(dataArray):
 			if (radius > 0.3 and sadFace == 0):
 				radius=radius-0.1
 			elif ((sadFace==1 or radius < 0.3) and radius < 0.8):
-				print("in elif sadface")
 				sadFace=1
 				radius=radius+0.1
 	elif faceObject == "eyes":
@@ -332,12 +370,13 @@ def faceManipulation(dataArray):
 			move_lock.acquire()
 			try:
 				ser.write("9")
+			except:
+				print('***Serial write error ***')
 			finally:
 				move_lock.release()
 	if sadFace == 0:
 		DrawFace()
 	elif sadFace == 1:
-		print("vor drawsadface")
 		DrawSadFace()	
 
 # Updating Facial expression of robot in case of a happy expression
@@ -408,21 +447,17 @@ def data_listener():
 			
 			receivedData = receivedData[:endFlagIndex] # ab dieser Zeile ist nur noch Befehlskette da (ohne start/endflag)
 			
-			print('***** received data from app ******')
-			
+			print('***** received data from app ******')			
 			IP = addr[0]
 			print (addr)
 			
 			try:
 				newdata = int(receivedData)
 			except:
-				print("neue funktion probieren")
 				chooseAction(receivedData)
 			else:
-				print("alte funktion")
 				if newdata == 73:
 					continue
-				print("vor robomove:" + str(sadFace))
 				robomove(newdata)
 	finally:
 		pygame.quit()
@@ -494,10 +529,40 @@ def main():
 			if event.type == pygame.KEYDOWN:
 				print('***** Key press recognized ******')
 				if event.key == pygame.K_ESCAPE or event.unicode == 'q':
+					print('quit via keyboard')
 					pygame.quit()
 					sys.exit()
+				if event.unicode == '1':
+					print('smile increase via keyboard')
+					chooseAction("face;smile;increase");
+				if event.unicode == '2':
+					print('smile decrease via keyboard')
+					chooseAction("face;smile;decrease");
+				if event.key == pygame.K_UP:
+					print("move forward via keyboard")
+					chooseAction("move;forward");
+				if event.key == pygame.K_DOWN:
+					print('move back via keyboard')
+					chooseAction("move;back");
+				if event.key == pygame.K_LEFT:
+					print("move left via keyboard")
+					chooseAction("move;left");
+				if event.key == pygame.K_RIGHT:
+					print('move right via keyboard')
+					chooseAction("move;right");
+				if event.key == pygame.K_RETURN:
+					print('move stop via keyboard')
+					chooseAction("move;stop");
+				if event.unicode == '3':
+					print('sound play random via keyboard')
+					chooseAction("sound;play;random;random");
+				if event.unicode == '4':
+					print('sound play mood via keyboard')
+					chooseAction("sound;play;mood;mood");
 			time.sleep(0.1)
-			
+
+	except Exception, e:
+		print ('Exception:'+ str(e))
 	finally:
 		pygame.quit()
 		ser.close()
