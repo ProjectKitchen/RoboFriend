@@ -21,12 +21,15 @@ import urllib
 #pyautogui.FAILSAFE = False
 #pyautogui.moveTo(0, 0)
 
+#switch on head, LEDS and Servo
+p=os.system('sudo ./iowarrior/iow 0 10 10 140')
+
 #setup pygame
 pygame.init()
 
 #global
-screen = pygame.display.set_mode((654,380))
-#screen = pygame.display.set_mode((654, 380), pygame.FULLSCREEN)
+#screen = pygame.display.set_mode((654,380))
+screen = pygame.display.set_mode((654, 380), pygame.FULLSCREEN)
 screen.fill((0, 0, 0))
 bat_prozent = 0
 bat_prozent_lock = threading.Lock()
@@ -543,7 +546,7 @@ def main():
 					chooseAction("move;forward");
 				if event.key == pygame.K_DOWN:
 					print('move back via keyboard')
-					chooseAction("move;back");
+					chooseAction("move;backward");
 				if event.key == pygame.K_LEFT:
 					print("move left via keyboard")
 					chooseAction("move;left");
@@ -555,10 +558,10 @@ def main():
 					chooseAction("move;stop");
 				if event.unicode == '3':
 					print('sound play random via keyboard')
-					chooseAction("sound;play;random;random");
+					chooseAction("sound;play;data/fabibox/;random");
 				if event.unicode == '4':
 					print('sound play mood via keyboard')
-					chooseAction("sound;play;mood;mood");
+					chooseAction("sound;play;data/;mood");
 			time.sleep(0.1)
 
 	except Exception, e:
