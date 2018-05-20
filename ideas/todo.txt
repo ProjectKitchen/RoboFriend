@@ -8,19 +8,15 @@ PCB:
 Atmel:
 	IDE aufsetzen ✓
 	LED Example ✓
+	PWM Example
+	ADC Example
 
 Ĺadestation:
-	
 
-Geschwindigkeit und Drehrichtung sind einstellbar
-Versorgungsspannungsbereich xV – yV
-UART Interface (e.g.: Position von Schrittmotoren ausgeben) 
-SPI Interface
-I2C Interface
-DC/DC Wandler: Nennausgangsspannung 5V, Ausgangsstrom xA
-Line following
-Distanzerkennung (Infrarot für kurze Distanzen: sharp distance sensor, Ultraschall für große Distanzen: ultrasonic sensor)
-2 LEDs (e.g. Blinky oder mit PWM regelbar)
+Allgemein:
+	Wer soll versorgt werden?
+	Kommunikation µC mit dem Controller (RPI od direkt über den Sensor?)
+		
 
 
 Veigl @ 10.04.2018
@@ -39,3 +35,5 @@ bzgl. methoden / state of the art würde ich ein paar "klassische" verfahren vor
 
 
 generell dies aber bitte recht "überschaubar" halten um sich dann stark auf die von uns angedachten methoden und in richting implementierung konzentrieren zu können ! - jede dieser methoden liefert "stoff" für eine eigene arbeit
+
+
