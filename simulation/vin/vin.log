@@ -1,0 +1,21 @@
+Circuit: * C:\Users\mzahedi\Dropbox\Fachhochschule\Master\Diplomarbeit\LTspice\bat.asc
+
+Direct Newton iteration for .op point succeeded.
+
+Date: Tue May 22 19:10:10 2018
+Total elapsed time: 0.185 seconds.
+
+tnom = 27
+temp = 27
+method = modified trap
+totiter = 2266
+traniter = 2226
+tranpoints = 793
+accept = 658
+rejected = 135
+matrix size = 34
+fillins = 24
+solver = Normal
+Matrix Compiler1: 3.26 KB object code size  1.2/0.8/[0.4]
+Matrix Compiler2: 2.99 KB object code size  0.5/0.9/[0.5]
+
