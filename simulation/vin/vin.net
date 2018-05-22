@@ -1,0 +1,54 @@
+* C:\Users\mzahedi\Documents\Git\RoboFriend\simulation\vin\vin.asc
+R1 V+ N005 47
+R3 V+ N006 47
+R4 V+ N007 47
+S1 Vbat N001 V+ N004 SW
+V5 N001 0 12V
+R7 N002 Vbat 1k
+D1 N002 0 D
+M1 N004 N008 N009 N009 IRF3717
+D2 N009 N004 1N5817
+D3 N004 V+ 1N4148
+XX2 V+ N008 N009 pot params: R=10k Val=72.5
+R6 V+ N004 1k
+V1 N007 0 PULSE(0 12V 1s 1ms 1ms 1s 3s 2)
+V2 N006 0 PULSE(0 12V 1s 1ms 1ms 1s 3s 2)
+V3 N005 0 PULSE(0 12V 1s 1ms 1ms 1s 3s 2)
+M2 0 N003 N009 N009 IPB009N03L
+R2 V+ N003 12k
+D4 N009 N003 BZX84C10L
+C1 V+ N003 15n V=50V
+D5 N009 0 1N5817
+S2 N012 N010 V+ N011 SW
+R11 N012 0 100
+V4 N010 0 12V
+R12 N013 N012 1k
+D6 N013 0 D
+M3 N011 N014 0 0 IRF3717
+D7 0 N011 D
+D8 N011 V+ D
+XX1 V+ N014 0 pot params: R=10k Val=72.5
+R13 V+ N011 1k
+R5 Vbat ADC 100k
+R8 ADC 0 27k
+C2 ADC 0 100n
+D9 0 ADC DMZ8551
+
+* block symbol definitions
+.subckt pot 1 2 3
+R1 1 2 {Ra}
+R2 2 3 {Rb}
+.param Ra = R * (Val / 100)
+.param Rb = R * (1 - (Val / 100))
+.ends pot
+
+.model D D
+.lib C:\Users\mzahedi\Documents\LTspiceXVII\lib\cmp\standard.dio
+.model NMOS NMOS
+.model PMOS PMOS
+.lib C:\Users\mzahedi\Documents\LTspiceXVII\lib\cmp\standard.mos
+.tran 0 15s 0 100m
+.model SW SW(Vt = 10.5V)
+.model DMZ8551 D(Is=0.6n Rs=.5 Cjo=150p nbv=5 bv=5.1 Ibv=1m Vpk=5.1 mfg=OnSemi type=Zener)
+.backanno
+.end

@@ -1,0 +1,22 @@
+Circuit: * C:\Users\mzahedi\Documents\Git\RoboFriend\simulation\adc1\adc.asc
+
+WARNING: Less than two connections to node 24V.  This node is used by V3.
+.OP point found by inspection.
+
+Date: Wed May 23 00:40:04 2018
+Total elapsed time: 0.098 seconds.
+
+tnom = 27
+temp = 27
+method = modified trap
+totiter = 2604
+traniter = 2604
+tranpoints = 1065
+accept = 835
+rejected = 230
+matrix size = 23
+fillins = 0
+solver = Normal
+Matrix Compiler1: 726 bytes object code size  0.6/0.3/[0.2]
+Matrix Compiler2: 1.50 KB object code size  0.2/0.5/[0.2]
+
