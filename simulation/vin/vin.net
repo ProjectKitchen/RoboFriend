@@ -1,44 +1,46 @@
 * C:\Users\mzahedi\Documents\Git\RoboFriend\simulation\vin\vin.asc
-R1 N011 Vbat+ 47
-R3 N012 Vbat+ 47
-R4 N013 Vbat+ 47
-S1 AP1 Vload+ Vload+ N010 DPST
-R7 Vload+ N008 1k
-D1 N008 0 D
-M1 N010 N014 N015 N015 IRF3717
-D2 N015 N010 1N4148
-D3 N010 Vload+ 1N4148
-XX2 Vload+ N014 N015 pot params: R=10k Val=72.5
-R6 Vload+ N010 1k
-V1 N013 0 PULSE(0 12V 1s 1ms 1ms 2s 3s 5)
-V2 N012 0 PULSE(0 12V 1s 1ms 1ms 2s 3s 5)
-V3 N011 0 PULSE(0 12V 1s 1ms 1ms 2s 3s 5)
-M2 0 N009 N015 N015 IPB009N03L
-R2 Vload+ N009 12k
-D4 N015 N009 DMZ8551
-C1 Vload+ N009 15n V=50V
+R1 N012 Vbat+ 47
+R3 N013 Vbat+ 47
+R4 N014 Vbat+ 47
+S1 AP1 Vload+ Vload+ N011 DPST
+R7 Vload+ N009 1k
+D1 N009 0 D
+M1 N011 N015 N016 N016 IRF3717
+D2 N016 N011 1N4148
+D3 N011 Vload+ 1N4148
+XX2 Vload+ N015 N016 pot params: R=10k Val=72.5
+R6 Vload+ N011 1k
+V1 N014 0 PULSE(0 12V 1s 1ms 1ms 2s 3s 5)
+V2 N013 0 PULSE(0 12V 1s 1ms 1ms 2s 3s 5)
+V3 N012 0 PULSE(0 12V 1s 1ms 1ms 2s 3s 5)
+M2 0 N010 N016 N016 IPB009N03L
+R2 Vload+ N010 12k
+D4 N016 N010 DMZ8551
+C1 Vload+ N010 15n V=50V
 R5 Vload+ ADC 100k
 R8 ADC 0 27k
 C2 ADC 0 100n
 D9 0 ADC DMZ8551
-D5 N015 0 1N4148
+D5 N016 0 1N4148
 V4 SW 0 PULSE(0V 5.1V 2s 1m 1m 6s 8s 1)
 S2 Vload+ Vbat+ SW 0 BTN
 V5 5V 0 5V
-M3 N006 N007 0 0 NMOS
+M3 N007 N008 0 0 IPB009N03L
 V6 12V 0 12V
-R9 OVERCURRENT N007 1k
-R10 12V N006 0.1
+R10 12V N006 0.01
 R11 12V N003 1k
 R12 N006 N001 1k
-R13 N003 0 20k
-R14 N001 N002 20k
-V7 OVERCURRENT 0 3.3V
-R15 12V N005 1k
-D6 N005 0 D
+R13 N003 0 33k
+R14 N001 N002 33k
+V7 OC 0 PULSE(0V 5.1V 2s 1m 1m 6s 8s 1)
+R15 12V N004 1k
+D6 N004 0 D
 XU1 N003 N001 5V 0 N002 level.2 Avol=1Meg GBW=10Meg Slew=10Meg ilimit=25m rail=0 Vos=0 phimargin=45 en=0 enk=0 in=0 ink=0 Rin=500Meg
-XX1 5V N004 0 pot params: R=10k Val=72.5
-XU3 N004 N002 AP1 opamp Aol=100K GBW=10Meg
+R16 N006 N007 1.2883878
+XU2 N005 N002 5V 0 \OC_INT level.2 Avol=1Meg GBW=10Meg Slew=10Meg ilimit=25m rail=0 Vos=0 phimargin=45 en=0 enk=0 in=0 ink=0 Rin=500Meg
+XX1 5V N005 0 pot params: R=10k Val=35
+R17 N008 OC 51
+D7 0 N007 1N4148
 
 * block symbol definitions
 .subckt pot 1 2 3
@@ -56,9 +58,16 @@ R2 2 3 {Rb}
 .tran 0 15s 0 100m
 .model DPST SW(Vt=10)
 .model BTN SW(Vt=5)
-.model DMZ8551 D(Is=0.6n Rs=.5 Cjo=150p nbv=5 bv=5.1 Ibv=1m Vpk=5.1 mfg=OnSemi type=Zener)
-* Boost-Converter
-.include opamp.sub
+.model DMZ8551 D(Is=0.6n Rs=.5 Cjo=150p nbv=5 bv=5.1 Ibv=1m Vpk=5.1 type=Zener)
+* Overcurrent Protection\nShunt: 0,1 V / 10 A = 0,01 Ohm, P = 10² A * 0,01 Ohm = 1 W\nDifferential Amp: Ua = (U+ - U-) * R14 / R12 = 3.3 V\nPoti: Ua = 3.25 V
+* change to x.1xxxxxx for over-current simuli
+* todo: move signal led
+* todo: connect the output to the gate of M3?
+* Relay
+* Switch/Button
+* Reverse\nPolarity\nProtection
+* Vbat/Vload optic signal
+* Vbat/Vload measurement
 .lib UniversalOpamps2.sub
 .backanno
 .end
