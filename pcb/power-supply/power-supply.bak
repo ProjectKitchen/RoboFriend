@@ -36,7 +36,7 @@ EELAYER 25 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 1 1
+Sheet 1 2
 Title "Power Supply"
 Date ""
 Rev ""
@@ -49,104 +49,104 @@ $EndDescr
 $Comp
 L Conn_01x20_Female J1
 U 1 1 5B00326F
-P 2500 2950
-F 0 "J1" H 2500 3950 50  0000 C CNN
-F 1 "Conn_01x20_Female" H 2500 1850 50  0000 C CNN
-F 2 "" H 2500 2950 50  0001 C CNN
-F 3 "" H 2500 2950 50  0001 C CNN
-	1    2500 2950
+P 1400 2800
+F 0 "J1" H 1400 3800 50  0000 C CNN
+F 1 "Conn_01x20_Female" H 1400 1700 50  0000 C CNN
+F 2 "" H 1400 2800 50  0001 C CNN
+F 3 "" H 1400 2800 50  0001 C CNN
+	1    1400 2800
 	1    0    0    -1  
 $EndComp
-Text Label 2050 2050 0    60   ~ 0
+Text Label 950  1900 0    60   ~ 0
 GND
-Text Label 2050 2150 0    60   ~ 0
+Text Label 950  2000 0    60   ~ 0
 B7
-Text Label 2050 2250 0    60   ~ 0
+Text Label 950  2100 0    60   ~ 0
 D0
-Text Label 2050 2350 0    60   ~ 0
+Text Label 950  2200 0    60   ~ 0
 D1
-Text Label 2050 2450 0    60   ~ 0
+Text Label 950  2300 0    60   ~ 0
 D2
-Text Label 2050 2550 0    60   ~ 0
+Text Label 950  2400 0    60   ~ 0
 D3
-Text Label 2050 2650 0    60   ~ 0
+Text Label 950  2500 0    60   ~ 0
 D4
-Text Label 2050 2750 0    60   ~ 0
+Text Label 950  2600 0    60   ~ 0
 D5
-Text Label 2050 2850 0    60   ~ 0
+Text Label 950  2700 0    60   ~ 0
 D6
-Text Label 2050 2950 0    60   ~ 0
+Text Label 950  2800 0    60   ~ 0
 D7
-Text Label 2050 3050 0    60   ~ 0
+Text Label 950  2900 0    60   ~ 0
 E0
-Text Label 2050 3150 0    60   ~ 0
+Text Label 950  3000 0    60   ~ 0
 E1
-Text Label 2050 3250 0    60   ~ 0
+Text Label 950  3100 0    60   ~ 0
 C0
-Text Label 2050 3350 0    60   ~ 0
+Text Label 950  3200 0    60   ~ 0
 C1
-Text Label 2050 3450 0    60   ~ 0
+Text Label 950  3300 0    60   ~ 0
 C2
-Text Label 2050 3550 0    60   ~ 0
+Text Label 950  3400 0    60   ~ 0
 C3
-Text Label 2050 3650 0    60   ~ 0
+Text Label 950  3500 0    60   ~ 0
 C4
-Text Label 2050 3750 0    60   ~ 0
+Text Label 950  3600 0    60   ~ 0
 C5
-Text Label 2050 3850 0    60   ~ 0
+Text Label 950  3700 0    60   ~ 0
 C6
-Text Label 2050 3950 0    60   ~ 0
+Text Label 950  3800 0    60   ~ 0
 c7
 $Comp
 L Conn_01x20_Female J2
 U 1 1 5B003B4B
-P 2850 2950
-F 0 "J2" H 2850 3950 50  0000 C CNN
-F 1 "Conn_01x20_Female" H 2850 1850 50  0000 C CNN
-F 2 "" H 2850 2950 50  0001 C CNN
-F 3 "" H 2850 2950 50  0001 C CNN
-	1    2850 2950
+P 1750 2800
+F 0 "J2" H 1750 3800 50  0000 C CNN
+F 1 "Conn_01x20_Female" H 1750 1700 50  0000 C CNN
+F 2 "" H 1750 2800 50  0001 C CNN
+F 3 "" H 1750 2800 50  0001 C CNN
+	1    1750 2800
 	-1   0    0    -1  
 $EndComp
-Text Label 3200 2050 0    60   ~ 0
+Text Label 2100 1900 0    60   ~ 0
 5V
-Text Label 3200 2150 0    60   ~ 0
+Text Label 2100 2000 0    60   ~ 0
 B6
-Text Label 3200 2250 0    60   ~ 0
+Text Label 2100 2100 0    60   ~ 0
 B5
-Text Label 3200 2350 0    60   ~ 0
+Text Label 2100 2200 0    60   ~ 0
 B4
-Text Label 3200 2450 0    60   ~ 0
+Text Label 2100 2300 0    60   ~ 0
 B3
-Text Label 3200 2550 0    60   ~ 0
+Text Label 2100 2400 0    60   ~ 0
 B2
-Text Label 3200 2650 0    60   ~ 0
+Text Label 2100 2500 0    60   ~ 0
 B1
-Text Label 3200 3950 0    60   ~ 0
+Text Label 2100 3800 0    60   ~ 0
 F7
-Text Label 3200 3850 0    60   ~ 0
+Text Label 2100 3700 0    60   ~ 0
 F6
-Text Label 3200 3750 0    60   ~ 0
+Text Label 2100 3600 0    60   ~ 0
 F5
-Text Label 3200 3650 0    60   ~ 0
+Text Label 2100 3500 0    60   ~ 0
 F4
-Text Label 3200 3550 0    60   ~ 0
+Text Label 2100 3400 0    60   ~ 0
 F3
-Text Label 3200 3450 0    60   ~ 0
+Text Label 2100 3300 0    60   ~ 0
 F2
-Text Label 3200 3350 0    60   ~ 0
+Text Label 2100 3200 0    60   ~ 0
 F1
-Text Label 3200 3250 0    60   ~ 0
+Text Label 2100 3100 0    60   ~ 0
 F0
-Text Label 3200 3150 0    60   ~ 0
-R
-Text Label 3200 2850 0    60   ~ 0
+Text Label 2100 3000 0    60   ~ 0
+VREF
+Text Label 2100 2700 0    60   ~ 0
 E7
-Text Label 3200 2950 0    60   ~ 0
+Text Label 2100 2800 0    60   ~ 0
 E6
-Text Label 3200 2750 0    60   ~ 0
+Text Label 2100 2600 0    60   ~ 0
 B0
-Text Label 3200 3050 0    60   ~ 0
+Text Label 2100 2900 0    60   ~ 0
 GND
 $Comp
 L +5V #PWR1
@@ -199,85 +199,85 @@ Wire Wire Line
 Wire Wire Line
 	3800 1650 3800 1800
 Wire Wire Line
-	3050 2050 3200 2050
+	1950 1900 2100 1900
 Wire Wire Line
-	3050 2150 3200 2150
+	1950 2000 2100 2000
 Wire Wire Line
-	3050 2250 3200 2250
+	1950 2100 2100 2100
 Wire Wire Line
-	3050 2350 3200 2350
+	1950 2200 2100 2200
 Wire Wire Line
-	3050 2450 3200 2450
+	1950 2300 2100 2300
 Wire Wire Line
-	3200 2550 3050 2550
+	2100 2400 1950 2400
 Wire Wire Line
-	3050 2650 3200 2650
+	1950 2500 2100 2500
 Wire Wire Line
-	3050 2750 3200 2750
+	1950 2600 2100 2600
 Wire Wire Line
-	3050 2850 3200 2850
+	1950 2700 2100 2700
 Wire Wire Line
-	3050 2950 3200 2950
+	1950 2800 2100 2800
 Wire Wire Line
-	3050 3050 3200 3050
+	1950 2900 2100 2900
 Wire Wire Line
-	3050 3150 3200 3150
+	1950 3000 2100 3000
 Wire Wire Line
-	3050 3250 3200 3250
+	1950 3100 2100 3100
 Wire Wire Line
-	3050 3350 3200 3350
+	1950 3200 2100 3200
 Wire Wire Line
-	3050 3450 3200 3450
+	1950 3300 2100 3300
 Wire Wire Line
-	3050 3550 3200 3550
+	1950 3400 2100 3400
 Wire Wire Line
-	3050 3650 3200 3650
+	1950 3500 2100 3500
 Wire Wire Line
-	3050 3750 3200 3750
+	1950 3600 2100 3600
 Wire Wire Line
-	3050 3850 3200 3850
+	1950 3700 2100 3700
 Wire Wire Line
-	3050 3950 3200 3950
+	1950 3800 2100 3800
 Wire Wire Line
-	2050 2050 2300 2050
+	950  1900 1200 1900
 Wire Wire Line
-	2050 2150 2300 2150
+	950  2000 1200 2000
 Wire Wire Line
-	2300 2250 2050 2250
+	1200 2100 950  2100
 Wire Wire Line
-	2050 2350 2300 2350
+	950  2200 1200 2200
 Wire Wire Line
-	2300 2450 2050 2450
+	1200 2300 950  2300
 Wire Wire Line
-	2050 2550 2300 2550
+	950  2400 1200 2400
 Wire Wire Line
-	2050 2650 2300 2650
+	950  2500 1200 2500
 Wire Wire Line
-	2050 2750 2300 2750
+	950  2600 1200 2600
 Wire Wire Line
-	2050 2850 2300 2850
+	950  2700 1200 2700
 Wire Wire Line
-	2050 2950 2300 2950
+	950  2800 1200 2800
 Wire Wire Line
-	2050 3050 2300 3050
+	950  2900 1200 2900
 Wire Wire Line
-	2050 3150 2300 3150
+	950  3000 1200 3000
 Wire Wire Line
-	2050 3250 2300 3250
+	950  3100 1200 3100
 Wire Wire Line
-	2050 3350 2300 3350
+	950  3200 1200 3200
 Wire Wire Line
-	2050 3450 2300 3450
+	950  3300 1200 3300
 Wire Wire Line
-	2050 3550 2300 3550
+	950  3400 1200 3400
 Wire Wire Line
-	2050 3650 2300 3650
+	950  3500 1200 3500
 Wire Wire Line
-	2050 3750 2300 3750
+	950  3600 1200 3600
 Wire Wire Line
-	2050 3850 2300 3850
+	950  3700 1200 3700
 Wire Wire Line
-	2050 3950 2300 3950
+	950  3800 1200 3800
 Text Notes 4000 1550 0    60   ~ 0
 current: 10 mA\nforward voltage: 2.1 V (green)
 $EndSCHEMATC

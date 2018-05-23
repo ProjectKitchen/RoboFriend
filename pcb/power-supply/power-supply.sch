@@ -36,7 +36,7 @@ EELAYER 25 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 1 2
+Sheet 1 1
 Title "Power Supply"
 Date ""
 Rev ""
@@ -280,4 +280,96 @@ Wire Wire Line
 	950  3800 1200 3800
 Text Notes 4000 1550 0    60   ~ 0
 current: 10 mA\nforward voltage: 2.1 V (green)
+$Comp
+L D D?
+U 1 1 5B05C2AC
+P 8500 1000
+F 0 "D?" H 8500 1100 50  0000 C CNN
+F 1 "D" H 8500 900 50  0000 C CNN
+F 2 "" H 8500 1000 50  0001 C CNN
+F 3 "" H 8500 1000 50  0001 C CNN
+	1    8500 1000
+	0    1    1    0   
+$EndComp
+$Comp
+L D D?
+U 1 1 5B05C312
+P 8500 1500
+F 0 "D?" H 8500 1600 50  0000 C CNN
+F 1 "D" H 8500 1400 50  0000 C CNN
+F 2 "" H 8500 1500 50  0001 C CNN
+F 3 "" H 8500 1500 50  0001 C CNN
+	1    8500 1500
+	0    1    1    0   
+$EndComp
+$Comp
+L R R?
+U 1 1 5B05C34C
+P 8200 1250
+F 0 "R?" V 8280 1250 50  0000 C CNN
+F 1 "R" V 8200 1250 50  0000 C CNN
+F 2 "" V 8130 1250 50  0001 C CNN
+F 3 "" H 8200 1250 50  0001 C CNN
+	1    8200 1250
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	8350 1250 8850 1250
+Wire Wire Line
+	8500 1350 8500 1150
+Connection ~ 8500 1250
+$Comp
+L +5V #PWR?
+U 1 1 5B05C556
+P 8500 750
+F 0 "#PWR?" H 8500 600 50  0001 C CNN
+F 1 "+5V" H 8500 890 50  0000 C CNN
+F 2 "" H 8500 750 50  0001 C CNN
+F 3 "" H 8500 750 50  0001 C CNN
+	1    8500 750 
+	1    0    0    -1  
+$EndComp
+$Comp
+L GND #PWR?
+U 1 1 5B05C579
+P 8500 1700
+F 0 "#PWR?" H 8500 1450 50  0001 C CNN
+F 1 "GND" H 8500 1550 50  0000 C CNN
+F 2 "" H 8500 1700 50  0001 C CNN
+F 3 "" H 8500 1700 50  0001 C CNN
+	1    8500 1700
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	8500 750  8500 850 
+Wire Wire Line
+	8500 1650 8500 1700
+$Comp
+L Conn_01x02 J?
+U 1 1 5B05C693
+P 7850 1250
+F 0 "J?" H 7850 1350 50  0000 C CNN
+F 1 "Conn_01x02" H 7850 1050 50  0000 C CNN
+F 2 "" H 7850 1250 50  0001 C CNN
+F 3 "" H 7850 1250 50  0001 C CNN
+	1    7850 1250
+	-1   0    0    -1  
+$EndComp
+$Comp
+L GND #PWR?
+U 1 1 5B05C783
+P 8150 1450
+F 0 "#PWR?" H 8150 1200 50  0001 C CNN
+F 1 "GND" H 8150 1300 50  0000 C CNN
+F 2 "" H 8150 1450 50  0001 C CNN
+F 3 "" H 8150 1450 50  0001 C CNN
+	1    8150 1450
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	8050 1350 8150 1350
+Wire Wire Line
+	8150 1350 8150 1450
+Text Label 8850 1250 0    60   ~ 0
+F0
 $EndSCHEMATC

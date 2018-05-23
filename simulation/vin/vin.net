@@ -1,38 +1,44 @@
 * C:\Users\mzahedi\Documents\Git\RoboFriend\simulation\vin\vin.asc
-R1 V+ N005 47
-R3 V+ N006 47
-R4 V+ N007 47
-S1 Vbat N001 V+ N004 SW
-V5 N001 0 12V
-R7 N002 Vbat 1k
-D1 N002 0 D
-M1 N004 N008 N009 N009 IRF3717
-D2 N009 N004 1N5817
-D3 N004 V+ 1N4148
-XX2 V+ N008 N009 pot params: R=10k Val=72.5
-R6 V+ N004 1k
-V1 N007 0 PULSE(0 12V 1s 1ms 1ms 1s 3s 2)
-V2 N006 0 PULSE(0 12V 1s 1ms 1ms 1s 3s 2)
-V3 N005 0 PULSE(0 12V 1s 1ms 1ms 1s 3s 2)
-M2 0 N003 N009 N009 IPB009N03L
-R2 V+ N003 12k
-D4 N009 N003 BZX84C10L
-C1 V+ N003 15n V=50V
-D5 N009 0 1N5817
-S2 N012 N010 V+ N011 SW
-R11 N012 0 100
-V4 N010 0 12V
-R12 N013 N012 1k
-D6 N013 0 D
-M3 N011 N014 0 0 IRF3717
-D7 0 N011 D
-D8 N011 V+ D
-XX1 V+ N014 0 pot params: R=10k Val=72.5
-R13 V+ N011 1k
-R5 Vbat ADC 100k
+R1 N011 Vbat+ 47
+R3 N012 Vbat+ 47
+R4 N013 Vbat+ 47
+S1 AP1 Vload+ Vload+ N010 DPST
+R7 Vload+ N008 1k
+D1 N008 0 D
+M1 N010 N014 N015 N015 IRF3717
+D2 N015 N010 1N4148
+D3 N010 Vload+ 1N4148
+XX2 Vload+ N014 N015 pot params: R=10k Val=72.5
+R6 Vload+ N010 1k
+V1 N013 0 PULSE(0 12V 1s 1ms 1ms 2s 3s 5)
+V2 N012 0 PULSE(0 12V 1s 1ms 1ms 2s 3s 5)
+V3 N011 0 PULSE(0 12V 1s 1ms 1ms 2s 3s 5)
+M2 0 N009 N015 N015 IPB009N03L
+R2 Vload+ N009 12k
+D4 N015 N009 DMZ8551
+C1 Vload+ N009 15n V=50V
+R5 Vload+ ADC 100k
 R8 ADC 0 27k
 C2 ADC 0 100n
 D9 0 ADC DMZ8551
+D5 N015 0 1N4148
+V4 SW 0 PULSE(0V 5.1V 2s 1m 1m 6s 8s 1)
+S2 Vload+ Vbat+ SW 0 BTN
+V5 5V 0 5V
+M3 N006 N007 0 0 NMOS
+V6 12V 0 12V
+R9 OVERCURRENT N007 1k
+R10 12V N006 0.1
+R11 12V N003 1k
+R12 N006 N001 1k
+R13 N003 0 20k
+R14 N001 N002 20k
+V7 OVERCURRENT 0 3.3V
+R15 12V N005 1k
+D6 N005 0 D
+XU1 N003 N001 5V 0 N002 level.2 Avol=1Meg GBW=10Meg Slew=10Meg ilimit=25m rail=0 Vos=0 phimargin=45 en=0 enk=0 in=0 ink=0 Rin=500Meg
+XX1 5V N004 0 pot params: R=10k Val=72.5
+XU3 N004 N002 AP1 opamp Aol=100K GBW=10Meg
 
 * block symbol definitions
 .subckt pot 1 2 3
@@ -48,7 +54,11 @@ R2 2 3 {Rb}
 .model PMOS PMOS
 .lib C:\Users\mzahedi\Documents\LTspiceXVII\lib\cmp\standard.mos
 .tran 0 15s 0 100m
-.model SW SW(Vt = 10.5V)
+.model DPST SW(Vt=10)
+.model BTN SW(Vt=5)
 .model DMZ8551 D(Is=0.6n Rs=.5 Cjo=150p nbv=5 bv=5.1 Ibv=1m Vpk=5.1 mfg=OnSemi type=Zener)
+* Boost-Converter
+.include opamp.sub
+.lib UniversalOpamps2.sub
 .backanno
 .end
