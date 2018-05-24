@@ -796,48 +796,27 @@ F 3 "" H 4100 6400 50  0001 C CNN
 	1    4100 6400
 	1    0    0    -1  
 $EndComp
-$Comp
-L Conn_02x03_Odd_Even J3
-U 1 1 5B076301
-P 4500 6950
-F 0 "J3" H 4550 7150 50  0000 C CNN
-F 1 "Conn_02x03" H 4550 6750 50  0000 C CNN
-F 2 "Pin_Headers:Pin_Header_Straight_2x03_Pitch2.54mm" H 4500 6950 50  0001 C CNN
-F 3 "" H 4500 6950 50  0001 C CNN
-	1    4500 6950
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	4300 6850 4050 6850
 Wire Wire Line
 	4300 6950 4050 6950
-Wire Wire Line
-	4300 7050 4050 7050
-Wire Wire Line
-	4800 6850 5050 6850
-Wire Wire Line
-	4800 6950 5050 6950
-Wire Wire Line
-	4800 7050 5050 7050
 Text Notes 3150 6300 0    60   ~ 0
 MISO\nMOSI\nSCK\n~SS
-Text Label 4050 6850 0    60   ~ 0
+Text Label 4050 7250 0    60   ~ 0
 B3
-Text Label 4050 6950 0    60   ~ 0
+Text Label 4050 7150 0    60   ~ 0
 B1
-Text Label 4050 7050 0    60   ~ 0
+Text Label 4050 6950 0    60   ~ 0
 B0
-Text Label 4950 6950 0    60   ~ 0
+Text Label 4050 6850 0    60   ~ 0
 B2
 $Comp
 L GND #PWR021
 U 1 1 5B076D3D
-P 5050 7100
-F 0 "#PWR021" H 5050 6850 50  0001 C CNN
-F 1 "GND" H 5050 6950 50  0000 C CNN
-F 2 "" H 5050 7100 50  0001 C CNN
-F 3 "" H 5050 7100 50  0001 C CNN
-	1    5050 7100
+P 5050 7350
+F 0 "#PWR021" H 5050 7100 50  0001 C CNN
+F 1 "GND" H 5050 7200 50  0000 C CNN
+F 2 "" H 5050 7350 50  0001 C CNN
+F 3 "" H 5050 7350 50  0001 C CNN
+	1    5050 7350
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -853,8 +832,6 @@ F 3 "" H 5050 6800 50  0001 C CNN
 $EndComp
 Wire Wire Line
 	5050 6850 5050 6800
-Wire Wire Line
-	5050 7050 5050 7100
 $Comp
 L Conn_01x03 J4
 U 1 1 5B078EF8
@@ -1033,4 +1010,40 @@ NoConn ~ 5850 4400
 NoConn ~ 5850 4500
 NoConn ~ 5850 4600
 NoConn ~ 5850 4700
+Wire Wire Line
+	4300 6850 4050 6850
+Wire Wire Line
+	4050 7050 4300 7050
+Wire Wire Line
+	4300 7150 4050 7150
+Wire Wire Line
+	4800 6850 5050 6850
+Wire Wire Line
+	4800 6950 5050 6950
+Wire Wire Line
+	4800 7050 5050 7050
+Wire Wire Line
+	5050 7150 4800 7150
+Wire Wire Line
+	5050 6950 5050 7350
+Connection ~ 5050 7050
+Connection ~ 5050 7150
+$Comp
+L Conn_02x05_Odd_Even J15
+U 1 1 5B07889D
+P 4500 7050
+F 0 "J15" H 4550 7350 50  0000 C CNN
+F 1 "Conn_02x05" H 4550 6750 50  0000 C CNN
+F 2 "Pin_Headers:Pin_Header_Straight_2x05_Pitch2.54mm" H 4500 7050 50  0001 C CNN
+F 3 "" H 4500 7050 50  0001 C CNN
+	1    4500 7050
+	1    0    0    -1  
+$EndComp
+Text Label 4050 7050 0    60   ~ 0
+~RST
+Wire Wire Line
+	4300 7250 4050 7250
+Wire Wire Line
+	4800 7250 5050 7250
+Connection ~ 5050 7250
 $EndSCHEMATC
