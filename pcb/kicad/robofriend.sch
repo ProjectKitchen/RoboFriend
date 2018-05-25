@@ -567,12 +567,12 @@ $EndComp
 $Comp
 L Screw_Terminal_01x06 J10
 U 1 1 5B07978B
-P 1200 1550
-F 0 "J10" H 1200 1850 50  0000 C CNN
-F 1 "Pwr_Terminal" H 1200 1150 50  0000 C CNN
-F 2 "Connectors_Molex:Molex_MiniFit-JR-5556-06A_2x03x4.20mm_Straight" H 1200 1550 50  0001 C CNN
-F 3 "" H 1200 1550 50  0001 C CNN
-	1    1200 1550
+P 900 1550
+F 0 "J10" H 900 1850 50  0000 C CNN
+F 1 "VBAT" H 900 1150 50  0000 C CNN
+F 2 "Connectors_Molex:Molex_MiniFit-JR-5556-06A_2x03x4.20mm_Straight" H 900 1550 50  0001 C CNN
+F 3 "" H 900 1550 50  0001 C CNN
+	1    900  1550
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -589,12 +589,12 @@ $EndComp
 $Comp
 L Screw_Terminal_01x06 J12
 U 1 1 5B0798AE
-P 1750 1550
-F 0 "J12" H 1750 1850 50  0000 C CNN
-F 1 "Pwr_Terminal" H 1750 1150 50  0000 C CNN
-F 2 "Connectors_Molex:Molex_MiniFit-JR-5556-06A_2x03x4.20mm_Straight" H 1750 1550 50  0001 C CNN
-F 3 "" H 1750 1550 50  0001 C CNN
-	1    1750 1550
+P 1300 1550
+F 0 "J12" H 1300 1850 50  0000 C CNN
+F 1 "BOOST1" H 1300 1150 50  0000 C CNN
+F 2 "Connectors_Molex:Molex_MiniFit-JR-5556-06A_2x03x4.20mm_Straight" H 1300 1550 50  0001 C CNN
+F 3 "" H 1300 1550 50  0001 C CNN
+	1    1300 1550
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -644,20 +644,20 @@ F 3 "" H 5550 4500 50  0001 C CNN
 $EndComp
 NoConn ~ 1550 800 
 NoConn ~ 1550 900 
-NoConn ~ 1550 1350
-NoConn ~ 1550 1450
-NoConn ~ 1550 1550
-NoConn ~ 1550 1650
-NoConn ~ 1550 1750
-NoConn ~ 1550 1850
+NoConn ~ 1100 1350
+NoConn ~ 1100 1450
+NoConn ~ 1100 1550
+NoConn ~ 1100 1650
+NoConn ~ 1100 1750
+NoConn ~ 1100 1850
 NoConn ~ 1000 800 
 NoConn ~ 1000 900 
-NoConn ~ 1000 1350
-NoConn ~ 1000 1450
-NoConn ~ 1000 1550
-NoConn ~ 1000 1650
-NoConn ~ 1000 1750
-NoConn ~ 1000 1850
+NoConn ~ 700  1350
+NoConn ~ 700  1450
+NoConn ~ 700  1550
+NoConn ~ 700  1650
+NoConn ~ 700  1750
+NoConn ~ 700  1850
 NoConn ~ 4650 4300
 NoConn ~ 4650 4400
 NoConn ~ 4650 4500
@@ -694,13 +694,13 @@ Text Label 4050 7050 0    60   ~ 0
 $Comp
 L SANYOU_SRD_Form_A K1
 U 1 1 5B07950C
-P 9800 4250
-F 0 "K1" H 10150 4400 50  0000 L CNN
-F 1 "SANYOU_SRD_Form_A" H 10150 4300 50  0000 L CNN
-F 2 "Relays_THT:Relay_SPDT_SANYOU_SRD_Series_Form_A" H 11050 4200 50  0001 C CNN
-F 3 "" H 9800 4250 50  0001 C CNN
-	1    9800 4250
-	0    1    1    0   
+P 1650 2650
+F 0 "K1" H 2000 2800 50  0000 L CNN
+F 1 "SANYOU_SRD_Form_A" H 2000 2700 50  0000 L CNN
+F 2 "SLA_12VDC:SLA-12VDC" H 2900 2600 50  0001 C CNN
+F 3 "" H 1650 2650 50  0001 C CNN
+	1    1650 2650
+	1    0    0    -1  
 $EndComp
 $Comp
 L Conn_01x03 J2
@@ -1777,4 +1777,56 @@ NoConn ~ 7300 5700
 Connection ~ 6350 5650
 Text Label 6100 5650 0    60   ~ 0
 AREF
+$Comp
+L Screw_Terminal_01x06 J7
+U 1 1 5B08956B
+P 1700 1550
+F 0 "J7" H 1700 1850 50  0000 C CNN
+F 1 "BOOST2" H 1700 1150 50  0000 C CNN
+F 2 "Connectors_Molex:Molex_MiniFit-JR-5556-06A_2x03x4.20mm_Straight" H 1700 1550 50  0001 C CNN
+F 3 "" H 1700 1550 50  0001 C CNN
+	1    1700 1550
+	1    0    0    -1  
+$EndComp
+$Comp
+L Screw_Terminal_01x06 J8
+U 1 1 5B089620
+P 2100 1550
+F 0 "J8" H 2100 1850 50  0000 C CNN
+F 1 "MONITOR" H 2100 1150 50  0000 C CNN
+F 2 "Connectors_Molex:Molex_MiniFit-JR-5556-06A_2x03x4.20mm_Straight" H 2100 1550 50  0001 C CNN
+F 3 "" H 2100 1550 50  0001 C CNN
+	1    2100 1550
+	1    0    0    -1  
+$EndComp
+$Comp
+L Screw_Terminal_01x06 J16
+U 1 1 5B08A0CA
+P 2500 1550
+F 0 "J16" H 2500 1850 50  0000 C CNN
+F 1 "AUDIOAMP" H 2500 1150 50  0000 C CNN
+F 2 "Connectors_Molex:Molex_MiniFit-JR-5556-06A_2x03x4.20mm_Straight" H 2500 1550 50  0001 C CNN
+F 3 "" H 2500 1550 50  0001 C CNN
+	1    2500 1550
+	1    0    0    -1  
+$EndComp
+NoConn ~ 1500 1350
+NoConn ~ 1500 1450
+NoConn ~ 1500 1550
+NoConn ~ 1500 1650
+NoConn ~ 1500 1750
+NoConn ~ 1500 1850
+NoConn ~ 1900 1350
+NoConn ~ 1900 1450
+NoConn ~ 1900 1550
+NoConn ~ 1900 1650
+NoConn ~ 1900 1750
+NoConn ~ 1900 1850
+NoConn ~ 2300 1350
+NoConn ~ 2300 1450
+NoConn ~ 2300 1550
+NoConn ~ 2300 1650
+NoConn ~ 2300 1750
+NoConn ~ 2300 1850
+NoConn ~ 4550 2400
 $EndSCHEMATC
