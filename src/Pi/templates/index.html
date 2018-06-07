@@ -12,10 +12,48 @@ table, td, tr {
 </style>
 
 <script language="javascript">
-function loadUrl() {
-    var url = "http://"+window.location.hostname+":8080/?action=stream";
-    document.getElementById("webcam").setAttribute("src", url);
-}
+    /*var url_string = "http://www.example.com/t.html?a=1&b=3&c=m2-m3-m4-m5"; //window.location.href
+    var url = new URL(window.location.href);
+    var custom = url.searchParams ? url.searchParams.get("c") : null;*/
+
+    window.const = {};
+    //window.const.hostname = '192.168.0.100';
+    window.const.hostname = window.location.hostname;
+    window.const.RESTbaseUrl = "http://" + window.const.hostname + ":8765/";
+    function loadUrl() {
+        var url = "http://" + window.const.hostname + ":8080/?action=stream";
+        document.getElementById("webcam").setAttribute("src", url);
+    }
+
+    function sendHttpPost(restPath, successCallback, errorCallback) {
+        var url = window.const.RESTbaseUrl + restPath;
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.onreadystatechange = function() {
+            if (xmlHttp.readyState === 4) {
+                if (xmlHttp.status === 200) {
+                    if(successCallback) successCallback(xmlHttp.responseText);
+                } else {
+                    if(errorCallback) errorCallback();
+                }
+            }
+        };
+        xmlHttp.open("POST", url);
+        xmlHttp.send();
+    }
+
+    function hexToRgb(hex) {
+        var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+        return result ? {
+            r: parseInt(result[1], 16),
+            g: parseInt(result[2], 16),
+            b: parseInt(result[3], 16)
+        } : null;
+    }
+
+    function colorChanged(value) {
+        var rgb = hexToRgb(value);
+        sendHttpPost('ear/color/' + rgb.r + '/' + rgb.g + '/' + rgb.b)
+    }
 </script>
 
 <body onload="loadUrl();">
@@ -23,21 +61,15 @@ function loadUrl() {
   <tr>
     <td>&nbsp;</td>
     <td>
-      <form action="/move%3Bforward%3Bstep" method="POST">
-        <input type="image" name="direction" src="/static/img/forward.svg" value="forward" style="float:left; width:80%;">
+        <input type="image" onclick="sendHttpPost('move%3Bforward%3Bstep')" name="direction" src="/static/img/forward.svg" value="forward" style="float:left; width:80%;">
         </br>
-      </form>
     </td>
     <td>&nbsp;</td>
     <td>
-      <form action="/sound%3Bplay%3Bdata%252F%3Bmood" method="POST">
-        <button type="submit" name="sound"> Mood Sound </button>
+        <button type="submit" onclick="sendHttpPost('sound%3Bplay%3Bdata%252F%3Bmood')" name="sound"> Mood Sound </button>
         </br>
-      </form>
-      <form action="/sound%3Bplay%3Bdata%252Ffabibox%252F%3Brandom" method="POST">
-        <button type="submit" name="sound2"> Random Sound </button>
+        <button type="submit" onclick="sendHttpPost('sound%3Bplay%3Bdata%252Ffabibox%252F%3Brandom')" name="sound2"> Random Sound </button>
         </br>
-      </form>
     </td>
 	<td>
 		<p> Akku:{{ battery }} %</p>
@@ -45,10 +77,8 @@ function loadUrl() {
   </tr>
   <tr>
     <td>
-      <form action="/move%3Bleft%3Bstep" method="POST">
-        <input type="image" name="direction" src="/static/img/left.svg" value="left" style="float:left; width:80%;">
+        <input type="image" onclick="sendHttpPost('move%3Bleft%3Bstep')" name="direction" src="/static/img/left.svg" value="left" style="float:left; width:80%;">
         </br>
-      </form>
     </td>
     <td>
 <!--      <form action="/5" method="POST">
@@ -57,10 +87,8 @@ function loadUrl() {
       </form>-->
     </td>
     <td>
-      <form action="/move%3Bright%3Bstep" method="POST">
-        <input type="image" name="direction" src="/static/img/right.svg" value="right" style="float:left; width:80%;">
+        <input type="image" onclick="sendHttpPost('move%3Bright%3Bstep')" name="direction" src="/static/img/right.svg" value="right" style="float:left; width:80%;">
         </br>
-      </form>
     </td>
 <!--    <td>
       <form method="POST">
@@ -72,14 +100,21 @@ function loadUrl() {
   <tr>
     <td>&nbsp;</td>
     <td>
-      <form action="/move%3Bbackward%3Bstep" method="POST">
-        <input type="image" name="direction" src="/static/img/reverse.svg" value="reverse" style="float:left; width:80%;">
+        <input type="image" onclick="sendHttpPost('move%3Bbackward%3Bstep')" name="direction" src="/static/img/reverse.svg" value="reverse" style="float:left; width:80%;">
         </br>
-      </form>
     </td>
     <td>&nbsp;</td>
   </tr>
 </table>
 <img id="webcam" style="width:100%; max-width: 600px; max-height:600px; border-radius:10px" />
+</br>
+<button type="submit" onclick="sendHttpPost('camera/up')" name="sound"> Camera UP </button>
+</br>
+<button type="submit" onclick="sendHttpPost('camera/down')" name="sound2"> Camera DOWN </button>
+</br>
+</br>
+<label for="colorPicker">Choose ear color: </label>
+<input id="colorPicker" type="color" onchange="colorChanged(this.value)"/>
+</br>
 </body>
 </html>
