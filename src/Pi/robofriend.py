@@ -33,7 +33,11 @@ screen = pygame.display.set_mode((654, 380), pygame.FULLSCREEN)
 screen.fill((0, 0, 0))
 bat_prozent = 0
 bat_prozent_lock = threading.Lock()
-move_lock = threading.Lock() 
+move_lock = threading.Lock()
+cameraPos = 140
+earColorR = 0
+earColorG = 10
+earColorB = 10
 
 
 #face informationen
@@ -92,6 +96,24 @@ def load_sound(file):
 	except pygame.error:
 		print ('Warning, unable to load, %s' % file)
 	return dummysound()
+
+def setCameraPos(pos):
+	global earColorR, earColorG, earColorB
+	sendToIOWarrior(earColorR, earColorG, earColorB, pos)
+
+def sendToIOWarrior(earColorR, earColorG, earColorB, cameraPos):
+	os.system('sudo ./iowarrior/iow ' + str(earColorR) + ' ' + str(earColorG) + ' ' + str(earColorB) + ' ' + str(cameraPos))
+
+def translateIntRange(value, leftMin, leftMax, rightMin, rightMax):
+	# Figure out how 'wide' each range is
+	leftSpan = leftMax - leftMin
+	rightSpan = rightMax - rightMin
+
+	# Convert the left range into a 0-1 range (float)
+	valueScaled = float(value - leftMin) / float(leftSpan)
+
+	# Convert the 0-1 range into a value in the right range.
+	return abs(rightMin + (valueScaled * rightSpan))
 	
 #when the root IP is selected, return index.html page
 @app.route('/')
@@ -99,17 +121,44 @@ def index():
 
 	return render_template('index.html', battery = bat_prozent )
 
-@app.route('/<changepin>', methods=['POST'])
+@app.route('/camera/up', methods=['POST'])
+def cameraup():
+	global cameraPos
+	#10 - 160
+	if cameraPos <= 150:
+		cameraPos += 10
+	setCameraPos(cameraPos)
+	return("OK")
+
+@app.route('/camera/down', methods=['POST'])
+def cameradown():
+	global cameraPos
+	#10 - 160
+	if cameraPos >= 20:
+		cameraPos -= 10
+	setCameraPos(cameraPos)
+	return("OK")
+
+@app.route('/ear/color/<earColorR>/<earColorG>/<earColorB>', methods=['POST'])
+def setEarRGB(earColorR, earColorG, earColorB):
+	global cameraPos
+	r = translateIntRange(int(earColorR), 0, 255, 0, 15)
+	g = translateIntRange(int(earColorG), 0, 255, 0, 15)
+	b = translateIntRange(int(earColorB), 0, 255, 0, 15)
+	sendToIOWarrior(r, g, b, cameraPos)
+	return("OK")
+
+@app.route('/<action>', methods=['POST'])
 # webserver rerouting - changepin indicates the chosen command which will be decoded and then interpreted with the function chooseAction 
-def reroute(changepin):
+def reroute(action):
 	global ser
-	print(changepin)
+	print(action)
 	try:
-		changePin = urllib.unquote(changepin).decode('utf8') #decode changepin to string
+		action = urllib.unquote(action).decode('utf8') #decode action to string
 	except:
 		print("changepin is not valid")
 	else:
-		chooseAction(changePin)
+		chooseAction(action)
 	response = make_response(redirect(url_for('index')))
 	return(response)
 
