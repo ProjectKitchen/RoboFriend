@@ -108,11 +108,21 @@ table, td, tr {
 </table>
 <img id="webcam" style="width:100%; max-width: 600px; max-height:600px; border-radius:10px" />
 </br>
-<button type="submit" onclick="sendHttpPost('camera/up')" name="sound"> Camera UP </button>
+<button type="submit" onclick="sendHttpPost('camera/up')" name="camUp"> Camera UP </button>
+<button type="submit" onclick="sendHttpPost('camera/down')" name="camDown"> Camera DOWN </button>
 </br>
-<button type="submit" onclick="sendHttpPost('camera/down')" name="sound2"> Camera DOWN </button>
+<button type="submit" onclick="sendHttpPost('say%3Bhello')" name="speech"> Say Hello </button>
+<button type="submit" onclick="sendHttpPost('say%3BI like you')" name="speech"> Say I like you </button>
+<button type="submit" onclick="sendHttpPost('say%3BYou look funny')" name="speech"> You look funny </button>
 </br>
+<button type="submit" onclick="sendHttpPost('face%3Bsmile%3Bincrease')" name="smileMore"> Smile more </button>
+<button type="submit" onclick="sendHttpPost('face%3Bsmile%3Bdecrease')" name="smileLess"> Smile less </button>
 </br>
+<button type="submit" onclick="sendHttpPost('face%3Beyes%3Bup')" name="lookUp"> Look up </button>
+<button type="submit" onclick="sendHttpPost('face%3Beyes%3Bdown')" name="lookDown"> Look down </button>
+<button type="submit" onclick="sendHttpPost('face%3Beyes%3Bleft')" name="lookLeft"> Look left </button>
+<button type="submit" onclick="sendHttpPost('face%3Beyes%3Bright')" name="lookRight"> Look right </button>
+<br>
 <label for="colorPicker">Choose ear color: </label>
 <input id="colorPicker" type="color" onchange="colorChanged(this.value)"/>
 </br>

@@ -14,6 +14,7 @@ import random, os.path
 from time import sleep
 from flask import Flask, render_template, request, redirect, url_for, make_response
 import urllib
+import pyttsx
 #import pyautogui
 
 """ SETUP """
@@ -26,6 +27,11 @@ p=os.system('sudo ./iowarrior/iow 0 10 10 140')
 
 #setup pygame
 pygame.init()
+
+#setup pyttsx / espeak
+speechEngine = pyttsx.init()
+speechEngine.say('i am robofriend')
+speechEngine.runAndWait()
 
 #global
 #screen = pygame.display.set_mode((654,380))
@@ -149,14 +155,14 @@ def setEarRGB(earColorR, earColorG, earColorB):
 	return("OK")
 
 @app.route('/<action>', methods=['POST'])
-# webserver rerouting - changepin indicates the chosen command which will be decoded and then interpreted with the function chooseAction 
+# webserver rerouting - action indicates the chosen command which will be decoded and then interpreted with the function chooseAction 
 def reroute(action):
 	global ser
 	print(action)
 	try:
 		action = urllib.unquote(action).decode('utf8') #decode action to string
 	except:
-		print("changepin is not valid")
+		print("action is not valid")
 	else:
 		chooseAction(action)
 	response = make_response(redirect(url_for('index')))
@@ -171,6 +177,10 @@ def chooseAction(data):
 	dataArray = dataArray[1:] # restliche Argumente
 	if action == "move":
 		move(dataArray)
+	elif action == "say":
+		print('saying :' + dataArray[0])
+		speechEngine.say(dataArray[0])
+		speechEngine.runAndWait()
 	elif action == "sound":
 		pygame.mixer.stop()
 		info = dataArray[0]
