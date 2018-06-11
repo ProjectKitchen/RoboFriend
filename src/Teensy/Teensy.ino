@@ -52,7 +52,8 @@ const int LeftPWM = 15;
 int SensorMiddleThreshold = 150;
 int SensorLeftThreshold = 90;
 int SensorRightThreshold = 80;
-int STEPLENGTH = 90;
+int STEPLENGTH = 50;
+int STEPLENGTH_TURN = 20;
 
 bool SensorMiddleTriggered = false;
 bool SensorLeftTriggered = false;
@@ -201,7 +202,7 @@ void backward()
     Move(Backward, Left);
     Move(Backward, Right);
 
-    delay(2000);
+    delay(STEPLENGTH*10);
 
     Stop();
 }
@@ -219,7 +220,7 @@ void left()
     Move(Backward, Left);
     Move(Forward, Right);
 
-    for (int i = 0; i < STEPLENGTH; i++)
+    for (int i = 0; i < STEPLENGTH_TURN; i++)
     {
         delay(10);
     }
@@ -240,7 +241,7 @@ void right()
     Move(Forward, Left);
     Move(Backward, Right);
 
-    for (int i = 0; i < STEPLENGTH; i++)
+    for (int i = 0; i < STEPLENGTH_TURN; i++)
     {
         delay(10);
     }
