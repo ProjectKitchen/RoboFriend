@@ -16,9 +16,9 @@ from flask import Flask, render_template, request, redirect, url_for, make_respo
 import urllib
 import pyttsx
 #import pyautogui
-import python.serialCommunicator as comm
 
-print(comm.test())
+#own modules
+import python.teensyCommunicator as teensySender
 
 """ SETUP """
 
@@ -42,7 +42,6 @@ screen = pygame.display.set_mode((654, 380), pygame.FULLSCREEN)
 screen.fill((0, 0, 0))
 bat_prozent = 0
 bat_prozent_lock = threading.Lock()
-move_lock = threading.Lock()
 cameraPos = 140
 earColorR = 0
 earColorG = 10
@@ -61,15 +60,9 @@ eyestep = 10
 main_dir = os.path.split(os.path.abspath(__file__))[0]
 
 #set up flask server
-app = Flask(__name__) 
+app = Flask(__name__)
 
-#opening serial for teensy
-try: 
-	ser=serial.Serial("/dev/ttyACM0",9600,timeout=1)
-	print('***Serial for Teensy opened***')
-except:
-	print('***Serial for Teensy could not be opened***')
-#	sys.exit('Could not open serial for Teensy. Check connection and restart.')
+teensySender.init()
 
 UDP_PORT = 9000 #socket port
 
@@ -160,7 +153,6 @@ def setEarRGB(earColorR, earColorG, earColorB):
 @app.route('/<action>', methods=['POST'])
 # webserver rerouting - action indicates the chosen command which will be decoded and then interpreted with the function chooseAction 
 def reroute(action):
-	global ser
 	print(action)
 	try:
 		action = urllib.unquote(action).decode('utf8') #decode action to string
@@ -173,7 +165,7 @@ def reroute(action):
 
 # this functions handles input from the gamegui, as well as webserver and BatteryThread-thread
 def chooseAction(data):
-	global bat_prozent, bat_prozent_lock, move_lock
+	global bat_prozent, bat_prozent_lock
 	dataArray = data.split(';') # Nachricht wird in ein Array gespeichert
 	print(dataArray)
 	action = dataArray[0] # erstes Argument
@@ -196,24 +188,13 @@ def chooseAction(data):
 		info = dataArray[0]
 		dataArray = dataArray[1:]
 		if info == "status": #wenn status abgefragt wird
-			move_lock.acquire()
-			try:
-				ser.write("8")
-				bat = str(ser.readline())
-				bat = bat.strip(' \t\n\r')
-			except:
-				print('***Serial write error ***')
-			finally:
-				move_lock.release()
-			try:
-				bat = int(bat)
-			except:
-				print("no data available, recieved message: " + str(bat))
-			else: #weiterverarbeitung des wertes
+			status = teensySender.getStatus()
+			bat = status['battery']
+			if bat != -1:
 				bat_prozent_lock.acquire()
 				try:
 					bat_prozent = 0
-					if bat > 242:	
+					if bat > 242:
 						bat_prozent = ((bat-242)/4.95)
 						bat_prozent=int(round(bat_prozent))
 					sendtogui("battery;"+str(bat_prozent))
@@ -225,7 +206,6 @@ def chooseAction(data):
 
 # this function is called by chooseAction if the robot has to move
 def move(dataArray):
-	global move_lock
 	print(dataArray)
 	dir = dataArray[0]
 	if len(dataArray) > 1: # step informationen vorhanden, Tablet Toucheingabe verwendet
@@ -233,123 +213,33 @@ def move(dataArray):
 		dataArray = dataArray[1:]
 		step = dataArray[0] # fuer spaeter hier Erweiterung moeglich auf Laenge der steps eingehen, jetzt nur standardwert verwendet
 		if dir == "forward":
-			move_lock.acquire()
-			try:
-				ser.write("7") #zuerst stoppen
-				ser.write("1") #forwardstep
-			except:
-				print('***Serial write error ***')
-			finally:
-				move_lock.release()
+			teensySender.moveForwardStep()
 		elif dir == "backward":
-			move_lock.acquire()
-			try:
-				ser.write("7") #zuerst stoppen
-				ser.write("2") #backwardstep
-			except:
-				print('***Serial write error ***')
-			finally:
-				move_lock.release()
+			teensySender.moveBackStep()
 		elif dir == "left":
-			move_lock.acquire()
-			try:
-				ser.write("7") #zuerst stoppen
-				ser.write("4") #leftstep
-			except:
-				print('***Serial write error ***')
-			finally:
-				move_lock.release()
+			teensySender.moveLeftStep()
 		elif dir == "right":
-			move_lock.acquire()
-			try:
-				ser.write("7") #zuerst stoppen
-				ser.write("3") #rightstep
-			except:
-				print('***Serial write error ***')
-			finally:
-				move_lock.release()
+			teensySender.moveRightStep()
 	else: # keine step informationen vorhanden, daher loop, Joystick verwendet
 		print ("loop")
-		step = "loop"
 		if dir == "forward":
-			move_lock.acquire()
-			try:
-				ser.write("7") #zuerst stoppen
-				ser.write("c") #forward loop
-			except Exception:
-				print('***Serial write error ***')
-				pass
-			finally:
-				move_lock.release()
+			teensySender.moveForwardLoop()
 		elif dir == "backward":
-			move_lock.acquire()
-			try:
-				ser.write("7") #zuerst stoppen
-				ser.write("d") #backward loop
-			except:
-				print('***Serial write error ***')
-			finally:
-				move_lock.release()
+			teensySender.moveBackLoop()
 		elif dir == "left":
-			move_lock.acquire()
-			try:
-				ser.write("7") #zuerst stoppen
-				ser.write("f") #leftloop
-			except:
-				print('***Serial write error ***')
-			finally:
-				move_lock.release()
+			teensySender.moveLeftLoop()
 		elif dir == "right":
-			move_lock.acquire()
-			try:
-				ser.write("7") #zuerst stoppen
-				ser.write("e") #rightloop
-			except:
-				print('***Serial write error ***')
-			finally:
-				move_lock.release()
+			teensySender.moveRightLoop()
 		elif dir == "forward_right":
-			move_lock.acquire()
-			try:
-				ser.write("7") #zuerst stoppen
-				ser.write("a") #forward_right loop
-			finally:
-				move_lock.release()
+			teensySender.moveForwardRightLoop()
 		elif dir == "forward_left":
-			move_lock.acquire()
-			try:
-				ser.write("7") #zuerst stoppen
-				ser.write("b") #forward_left loop
-			except:
-				print('***Serial write error ***')
-			finally:
-				move_lock.release()
+			teensySender.moveForwardLeftLoop()
 		elif dir == "backward_right":
-			move_lock.acquire()
-			try:
-				ser.write("7") #zuerst stoppen
-				ser.write("5") #backward_right loop
-			except:
-				print('***Serial write error ***')
-			finally:
-				move_lock.release()
+			teensySender.moveBackRightLoop()
 		elif dir == "backward_left":
-			move_lock.acquire()
-			try:
-				ser.write("7") #zuerst stoppen
-				ser.write("6") #backward_left loop
-			except:
-				print('***Serial write error ***')
-			finally:
-				move_lock.release()
+			teensySender.moveBackLeftLoop()
 		elif dir == "stop":
-			move_lock.acquire()
-			try:
-				ser.write("7") #stoppen
-			except:
-				print('***Serial write error ***')
-			finally:
-				move_lock.release()
+			teensySender.stopMovement()
 
 # this function is called by chooseAction if the robot has to speak/make a sound			
 def playsound(dataArray):
@@ -388,7 +278,7 @@ def playsound(dataArray):
 
 # this function is called by chooseAction if the facial expression of the robot has to change
 def faceManipulation(dataArray):
-	global radius, eyey, eyex, sadFace, eyestep, move_lock
+	global radius, eyey, eyex, sadFace, eyestep
 	faceObject = dataArray[0] #eyes or smile
 	dataArray = dataArray[1:]
 	if faceObject == "smile":
@@ -431,14 +321,7 @@ def faceManipulation(dataArray):
 		if changing == "wrong":
 			sadFace = 1
 			radius = 0.8
-			print ("serwrite 9")
-			move_lock.acquire()
-			try:
-				ser.write("9")
-			except:
-				print('***Serial write error ***')
-			finally:
-				move_lock.release()
+			teensySender.shakeHeadForNo()
 	if sadFace == 0:
 		DrawFace()
 	elif sadFace == 1:
@@ -605,19 +488,19 @@ def main():
 					chooseAction("face;smile;decrease");
 				if event.key == pygame.K_UP:
 					print("move forward via keyboard")
-					chooseAction("move;forward");
+					teensySender.moveForwardLoop()
 				if event.key == pygame.K_DOWN:
 					print('move back via keyboard')
-					chooseAction("move;backward");
+					teensySender.moveBackLoop()
 				if event.key == pygame.K_LEFT:
 					print("move left via keyboard")
-					chooseAction("move;left");
+					teensySender.moveLeftLoop()
 				if event.key == pygame.K_RIGHT:
 					print('move right via keyboard')
-					chooseAction("move;right");
+					teensySender.moveRightLoop()
 				if event.key == pygame.K_RETURN:
 					print('move stop via keyboard')
-					chooseAction("move;stop");
+					teensySender.stopMovement()
 				if event.unicode == '3':
 					print('sound play random via keyboard')
 					chooseAction("sound;play;data/fabibox/;random");
@@ -630,7 +513,7 @@ def main():
 		print ('Exception:'+ str(e))
 	finally:
 		pygame.quit()
-		ser.close()
+		teensySender.close()
 
 if __name__ == '__main__':
 	main()
