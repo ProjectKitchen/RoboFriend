@@ -16,6 +16,9 @@ from flask import Flask, render_template, request, redirect, url_for, make_respo
 import urllib
 import pyttsx
 #import pyautogui
+import python.serialCommunicator as comm
+
+print(comm.test())
 
 """ SETUP """
 
