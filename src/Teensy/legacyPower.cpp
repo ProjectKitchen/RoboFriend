@@ -14,26 +14,26 @@ void legacyPower_init() {
 void legacyPower_startup() {
 
     // switch all relais off !  (high = off!!)
-    digitalWrite(Relais5V, HIGH);
-    digitalWrite(Hauptrelais, HIGH);
-    digitalWrite(Serienschaltung, HIGH);
-    digitalWrite(Relais12V, HIGH);
+    //digitalWrite(Relais5V, HIGH);
+    //digitalWrite(Hauptrelais, HIGH);
+    //digitalWrite(Serienschaltung, HIGH);
+    //digitalWrite(Relais12V, HIGH);
 
     //Serial.println("5v ein");
     digitalWrite(Relais5V, LOW);
-    delay(200);
+    //delay(200);
 
     //Serial.println("haupt ein");
     digitalWrite(Hauptrelais, LOW);
-    delay(500);
+    //delay(500);
 
     //Serial.println("serie ein");
     digitalWrite(Serienschaltung, LOW);
-    delay(200);
+    //delay(200);
 
     //Serial.println("12V ein");
     digitalWrite(Relais12V, LOW);
-    delay(200);
+    //delay(200);
 }
 
 

@@ -2,9 +2,10 @@
 #include "RunningAverage.h"   // Library used for averaging sensor data
 
 #define IR_SENSOR_AVERAGER_SIZE  10
-#define DEFAULT_IR_MIDDLE_THRESHOLD 150
-#define DEFAULT_IR_LEFT_THRESHOLD    90
-#define DEFAULT_IR_RIGHT_THRESHOLD   80
+#define BATTERY_SENSOR_AVERAGER_SIZE  80
+#define DEFAULT_IR_MIDDLE_THRESHOLD 450
+#define DEFAULT_IR_LEFT_THRESHOLD   220
+#define DEFAULT_IR_RIGHT_THRESHOLD  220
 
 #define IR_SENSOR_LEFT_PIN    38
 #define IR_SENSOR_MIDDLE_PIN  39
@@ -47,6 +48,7 @@ protected:
   bool IRSensorLeftTriggered;
   bool IRSensorRightTriggered;
 
+  RunningAverage * BatterySensorBuffer;
   RunningAverage * IRSensorLeftBuffer;
   RunningAverage * IRSensorMiddleBuffer;
   RunningAverage * IRSensorRightBuffer;

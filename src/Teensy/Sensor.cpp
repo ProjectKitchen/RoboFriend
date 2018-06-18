@@ -1,6 +1,8 @@
 
 #include "Sensor.h"
 
+extern long loopcounter;
+
 Sensor::Sensor() {
 }
 
@@ -11,7 +13,8 @@ Sensor::~Sensor() {
 }
 
 void Sensor::init () {
-  // Circular Buffers for IR sensor data
+  // create circular buffers
+  BatterySensorBuffer=new RunningAverage(BATTERY_SENSOR_AVERAGER_SIZE);
   IRSensorLeftBuffer=new RunningAverage(IR_SENSOR_AVERAGER_SIZE);
   IRSensorMiddleBuffer=new RunningAverage(IR_SENSOR_AVERAGER_SIZE);
   IRSensorRightBuffer=new RunningAverage(IR_SENSOR_AVERAGER_SIZE);
@@ -19,12 +22,13 @@ void Sensor::init () {
 
 void Sensor::updateSensorData()
 {
-    Battery = analogRead(BATTERY_SENSOR_PIN);
+    BatterySensorBuffer->addValue(analogRead(BATTERY_SENSOR_PIN));
     
-    IRSensorLeftBuffer->addValue(analogRead(IR_SENSOR_LEFT_PIN));
     IRSensorMiddleBuffer->addValue(analogRead(IR_SENSOR_MIDDLE_PIN));
+    IRSensorLeftBuffer->addValue(analogRead(IR_SENSOR_LEFT_PIN));
     IRSensorRightBuffer->addValue(analogRead(IR_SENSOR_RIGHT_PIN));
 
+    Battery        = BatterySensorBuffer->getFastAverage();
     IRSensorMiddle = IRSensorMiddleBuffer->getFastAverage();
     IRSensorLeft   = IRSensorLeftBuffer->getFastAverage();
     IRSensorRight  = IRSensorRightBuffer->getFastAverage();
@@ -32,6 +36,8 @@ void Sensor::updateSensorData()
     IRSensorMiddleTriggered = (IRSensorMiddle >= IRSensorMiddleThreshold);
     IRSensorLeftTriggered   = (IRSensorLeft >= IRSensorLeftThreshold);
     IRSensorRightTriggered  = (IRSensorRight >= IRSensorRightThreshold);
+
+    if ((loopcounter % 200) == 0) Serial.printf("Sensors,%04d,%04d,%04d,%04d\n",Battery,IRSensorLeft,IRSensorMiddle,IRSensorRight);
 }
 
 void Sensor::reportSensorValues() {

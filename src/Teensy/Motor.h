@@ -12,7 +12,7 @@
 
 #define STEPLENGTH      50
 #define STEPLENGTH_TURN 20
-#define ACCEL_STEP      5
+#define ACCEL_STEP      2
 #define MOVE_THRESHOLD  ACCEL_STEP*2
 
 extern class Motor Motors;
@@ -25,7 +25,7 @@ public:
 
   void init();
   void stop();
-  void drive (int right, int left, int duration);
+  void drive (int left, int right, int duration);
   void updateMotors();
 
 protected:
@@ -35,6 +35,6 @@ protected:
   int intendedDuration;
   int rightSpeed;
   int leftSpeed;
-  void handleObstacles();
+  int handleObstacles();
 
 };

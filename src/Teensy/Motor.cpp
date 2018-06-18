@@ -6,8 +6,12 @@
 Motor::Motor() {}
 Motor::~Motor() {}
 
+extern long loopcounter;
+
 void Motor::init() {
-    Timer3.initialize(40);   // 40us period = 25kHz analogWrite frequency for PWM pins  
+    Timer3.initialize(100);   // 100us period = 10kHz frequency for PWM pins  
+    Timer3.pwm(RightPWMPin, 0);
+    Timer3.pwm(LeftPWMPin, 0);
 
     pinMode(RightBackwardPin, OUTPUT);
     pinMode(RightForwardPin, OUTPUT);
@@ -22,16 +26,17 @@ void Motor::init() {
     intendedDuration=0;
 }
 
+
 void Motor::updateMotors()
 {
   bool leftSpeedReached=false,rightSpeedReached=false;
-
-  if (intendedLeftSpeed > leftSpeed+ACCEL_STEP) leftSpeed += ACCEL_STEP;
-  else if (intendedLeftSpeed < leftSpeed-ACCEL_STEP) leftSpeed -= ACCEL_STEP;
+    
+  if (intendedLeftSpeed >= leftSpeed+ACCEL_STEP) leftSpeed += ACCEL_STEP;
+  else if (intendedLeftSpeed <= leftSpeed-ACCEL_STEP) leftSpeed -= ACCEL_STEP;
   else leftSpeedReached=true;
 
-  if (intendedRightSpeed > rightSpeed+ACCEL_STEP) rightSpeed += ACCEL_STEP;
-  else if (intendedRightSpeed < rightSpeed-ACCEL_STEP) rightSpeed -= ACCEL_STEP;
+  if (intendedRightSpeed >= rightSpeed+ACCEL_STEP) rightSpeed += ACCEL_STEP;
+  else if (intendedRightSpeed <= rightSpeed-ACCEL_STEP) rightSpeed -= ACCEL_STEP;
   else rightSpeedReached=true;
 
   if (leftSpeedReached && rightSpeedReached && (intendedDuration>0)) {
@@ -52,8 +57,16 @@ void Motor::updateMotors()
   else if (rightSpeed > MOVE_THRESHOLD)  { digitalWrite(RightBackwardPin, LOW); digitalWrite(RightForwardPin, HIGH); }
   else if (rightSpeed < -MOVE_THRESHOLD) { digitalWrite(RightForwardPin, LOW); digitalWrite(RightBackwardPin, HIGH); }
 
-  analogWrite(RightPWMPin, (rightSpeed<0) ? -rightSpeed : rightSpeed);
-  analogWrite(LeftPWMPin, (leftSpeed<0) ? -leftSpeed : rightSpeed);
+  if (rightSpeed)
+    Timer3.pwm(RightPWMPin, map((rightSpeed<0) ? -rightSpeed : rightSpeed,0,255,20,600));   // right motor slighty slower: compensate PWMs!
+  else Timer3.pwm(RightPWMPin,0);
+  
+  if (leftSpeed)
+     Timer3.pwm(LeftPWMPin, map((leftSpeed<0) ? -leftSpeed : leftSpeed,0,255,20,512));
+  else Timer3.pwm(LeftPWMPin,0);
+
+  if (((loopcounter % 3) == 0) && (leftSpeed || rightSpeed))
+    Serial.printf("Speed: %d/%d\n",rightSpeed,leftSpeed);
 }
 
 
@@ -72,21 +85,32 @@ void Motor::stop()
     intendedDuration=0;
 }
 
-void Motor::drive(int right, int left, int duration) {
+void Motor::drive(int left, int right, int duration) {
    intendedRightSpeed=right;
    intendedLeftSpeed=left;
    intendedDuration=duration;
 }
 
-void Motor::handleObstacles() {
+int Motor::handleObstacles() {
+    int triggered=0;
+
     if (Sensors.isIRSensorRightTriggered()) {
+      triggered=1;
       if (rightSpeed>0) rightSpeed=0;
+      //if ((loopcounter % 10) == 0) Serial.printf("Right %04d ",Sensors.getIRSensorRightValue());
     }
     if (Sensors.isIRSensorLeftTriggered()) {
+      triggered=1;
       if (leftSpeed>0) leftSpeed=0;
+      //if ((loopcounter % 10) == 0) Serial.printf("Left %04d ",Sensors.getIRSensorLeftValue());
     }
     if (Sensors.isIRSensorMiddleTriggered()) {
+      triggered=1;
       if (rightSpeed>0) rightSpeed=0;
       if (leftSpeed>0) leftSpeed=0;
+      //if ((loopcounter % 10) == 0) Serial.printf("Middle %04d ",Sensors.getIRSensorMiddleValue());
     }
+    //if (((loopcounter % 10) == 0) && triggered) Serial.println("");
+
+    return(triggered);
 }
