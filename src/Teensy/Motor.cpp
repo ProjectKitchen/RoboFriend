@@ -65,8 +65,10 @@ void Motor::updateMotors()
      Timer3.pwm(LeftPWMPin, map((leftSpeed<0) ? -leftSpeed : leftSpeed,0,255,20,512));
   else Timer3.pwm(LeftPWMPin,0);
 
-  if (((loopcounter % 3) == 0) && (leftSpeed || rightSpeed))
-    Serial.printf("Speed: %d/%d\n",rightSpeed,leftSpeed);
+  if (PRINT_MOTORSPEED_MESSAGES) {
+    if (((loopcounter % 3) == 0) && (leftSpeed || rightSpeed))
+      Serial.printf("Speed: %d/%d\n",rightSpeed,leftSpeed);
+  }
 }
 
 
@@ -97,20 +99,28 @@ int Motor::handleObstacles() {
     if (Sensors.isIRSensorRightTriggered()) {
       triggered=1;
       if (rightSpeed>0) rightSpeed=0;
-      //if ((loopcounter % 10) == 0) Serial.printf("Right %04d ",Sensors.getIRSensorRightValue());
+      if (PRINT_SENSOR_MESSAGES) {
+         if ((loopcounter % 10) == 0) Serial.printf("Right %04d ",Sensors.getIRSensorRightValue());
+      }
     }
     if (Sensors.isIRSensorLeftTriggered()) {
       triggered=1;
       if (leftSpeed>0) leftSpeed=0;
-      //if ((loopcounter % 10) == 0) Serial.printf("Left %04d ",Sensors.getIRSensorLeftValue());
+      if (PRINT_SENSOR_MESSAGES) {
+         if ((loopcounter % 10) == 0) Serial.printf("Left %04d ",Sensors.getIRSensorLeftValue());
+      }
     }
     if (Sensors.isIRSensorMiddleTriggered()) {
       triggered=1;
       if (rightSpeed>0) rightSpeed=0;
       if (leftSpeed>0) leftSpeed=0;
-      //if ((loopcounter % 10) == 0) Serial.printf("Middle %04d ",Sensors.getIRSensorMiddleValue());
+      if (PRINT_SENSOR_MESSAGES) {
+         if ((loopcounter % 10) == 0) Serial.printf("Middle %04d ",Sensors.getIRSensorMiddleValue());
+      }
     }
-    //if (((loopcounter % 10) == 0) && triggered) Serial.println("");
+    if (PRINT_SENSOR_MESSAGES) {
+      if (((loopcounter % 10) == 0) && triggered) Serial.println("");
+    }
 
     return(triggered);
 }

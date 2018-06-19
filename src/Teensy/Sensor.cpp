@@ -37,13 +37,13 @@ void Sensor::updateSensorData()
     IRSensorLeftTriggered   = (IRSensorLeft >= IRSensorLeftThreshold);
     IRSensorRightTriggered  = (IRSensorRight >= IRSensorRightThreshold);
 
-    if ((loopcounter % 200) == 0) Serial.printf("Sensors,%04d,%04d,%04d,%04d\n",Battery,IRSensorLeft,IRSensorMiddle,IRSensorRight);
+    //if ((loopcounter % 200) == 0) reportSensorValues();
 }
 
 void Sensor::reportSensorValues() {
 
     // send sensor status
-    Serial.println(Battery);
+    Serial.printf("Sensors,%04d,%04d,%04d,%04d\n",Battery,IRSensorLeft,IRSensorMiddle,IRSensorRight);
 }
 
 int Sensor::getIRSensorLeftValue() {

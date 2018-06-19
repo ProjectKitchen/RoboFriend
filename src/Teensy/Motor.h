@@ -1,4 +1,6 @@
 
+#define PRINT_MOTORSPEED_MESSAGES 0
+#define PRINT_SENSOR_MESSAGES     0
 
 /* Motor pins right */
 #define RightBackwardPin 10
