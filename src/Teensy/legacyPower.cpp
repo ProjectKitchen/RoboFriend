@@ -3,37 +3,37 @@
 
 
 void legacyPower_init() {
+
+    // switch all relais off !  (high = off!!)
+    digitalWrite(Relais5V, HIGH);
+    digitalWrite(Hauptrelais, HIGH);
+    digitalWrite(Serienschaltung, HIGH);
+    digitalWrite(Relais12V, HIGH);
+    
     // set pins to output
     pinMode(Hauptrelais, OUTPUT);
     pinMode(Serienschaltung, OUTPUT);
-
     pinMode(Relais5V, OUTPUT);
     pinMode(Relais12V, OUTPUT);
 }
 
 void legacyPower_startup() {
 
-    // switch all relais off !  (high = off!!)
-    //digitalWrite(Relais5V, HIGH);
-    //digitalWrite(Hauptrelais, HIGH);
-    //digitalWrite(Serienschaltung, HIGH);
-    //digitalWrite(Relais12V, HIGH);
-
     //Serial.println("5v ein");
     digitalWrite(Relais5V, LOW);
-    //delay(200);
+    delay(200);
 
     //Serial.println("haupt ein");
     digitalWrite(Hauptrelais, LOW);
-    //delay(500);
+    delay(200);
 
     //Serial.println("serie ein");
     digitalWrite(Serienschaltung, LOW);
-    //delay(200);
+    delay(200);
 
     //Serial.println("12V ein");
     digitalWrite(Relais12V, LOW);
-    //delay(200);
+    delay(200);
 }
 
 
