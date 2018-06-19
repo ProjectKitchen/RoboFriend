@@ -184,23 +184,23 @@ def chooseAction(data):
 			playsound(dataArray)
 	elif action == "face":
 		faceManipulation(dataArray)
-	elif action == "battery":
+	elif action == "get":
 		info = dataArray[0]
 		dataArray = dataArray[1:]
 		if info == "status": #wenn status abgefragt wird
 			status = teensySender.getStatus()
-			bat = status['battery']
-			if bat != -1:
-				bat_prozent_lock.acquire()
-				try:
-					bat_prozent = 0
-					if bat > 242:
-						bat_prozent = ((bat-242)/4.95)
-						bat_prozent=int(round(bat_prozent))
-					sendtogui("battery;"+str(bat_prozent))
-					print(bat_prozent)
-				finally:
-					bat_prozent_lock.release()
+			statusArray=status.split(',')
+			if (statusArray[0] == "Sensors"):
+				bat = int (statusArray[1])
+				irSensorLeft= int (statusArray[2])
+				irSensorMiddle= int (statusArray[3])
+				irSensorRight= int (statusArray[4])
+				print ("Battery="+str(bat)+"("+str(bat/20)+" Volt)")
+				if (bat<630):
+					print ("LOW BATTERY !! - Please Recharge!!")
+				print ("IRSensors="+str(irSensorLeft)+"/"+str(irSensorMiddle)+"/"+str(irSensorRight))
+				sendtogui("battery;"+str(bat/20))
+
 	elif action == "IPcheck":
 		pass
 
@@ -362,7 +362,6 @@ def sendtogui(i):
 	except socket.error, msg:
 		print 'Error Code: ' + str(msg[0]) + 'Message ' + msg[1]
 		IP = ''
-		sys.exit()
 		
 # This function is used as Thread to always listen if there is a client (gamegui) sending commands
 def data_listener():
@@ -442,10 +441,10 @@ def webserver():
 	app.run(debug=False, host='0.0.0.0', port=8765) 
 
 # This function is used as Thread to periodically update the battery information
-def BatteryInfo():
+def StatusInfo():
 	while True:
-		chooseAction("battery;status")
-		time.sleep(30)
+		chooseAction("get;status")
+		time.sleep(1)
 	
 # Main function starts all threads and handles event interrupts for closing this program	
 def main():
@@ -464,9 +463,9 @@ def main():
 	RFIDReader.daemon = True
 	RFIDReader.start()
 	
-	BatteryThread = threading.Thread(target=BatteryInfo)
-	BatteryThread.daemon = True
-	BatteryThread.start()
+	StatusThread = threading.Thread(target=StatusInfo)
+	StatusThread.daemon = True
+	StatusThread.start()
 
 	try:
 		while 1:

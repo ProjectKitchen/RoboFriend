@@ -74,11 +74,12 @@ def shakeHeadForNo():
 def getStatus():
     response = sendSerial("8", True)
     batteryValue = -1
-    try:
-        batteryValue = int(response.strip(' \t\n\r'))
-    except:
-        print("error parsing battery value: " + str(batteryValue))
-    return {'battery': batteryValue }
+#    try:
+#        batteryValue = int(response.strip(' \t\n\r'))
+#    except:
+#        print("error parsing battery value: " + str(batteryValue))
+#    return {'battery': batteryValue }
+    return response
 
 def sendSerial(commandString, readResponse=False):
     global send_lock, ser
