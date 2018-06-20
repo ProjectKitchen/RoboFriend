@@ -1,4 +1,4 @@
-.center-div div, .center-div input, .center-div video
+.center-div div, .center-div input, .center-div video, .center-div img
 {
     margin-right: auto;
     margin-left: auto;
@@ -26,4 +26,5 @@
     width: 300px;
     height: 300px;
     position: relative;
+    border-radius: 5px;
 }

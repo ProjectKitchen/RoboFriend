@@ -111,10 +111,9 @@
         <div id="camContainer" class="six columns">
             <div class="center-div" style="position: relative">
                 <!-- padding is 75% of width for aspect ratio 4:3 -->
-                <span style="position: absolute; width: 100%; left: 0; top: 40%; z-index: -1">Live view loading...</span>
-                <div style="width: 70%; padding-bottom: 52.5%; border: 1px solid black">
-                    <img id="webcam"/>
-                </div>
+                <span style="position: absolute; width: 100%; left: 0; top: 40%">Live view loading...</span>
+                <img id="webcamPlaceholder" src="static/img/placeholder.png" style="width: 80%; border: solid 1px; z-index: -1; border-radius: 5px"/>
+                <img id="webcam" style="width: 80%; position: absolute; left: 10%; top: 1px; border-radius: 5px"/>
             </div>
             <div class="center-div">
                 <span id="posIndicator" style="position: absolute; top: 20px; left: 150px; font-size: 4em; color: red; display: none">&#8226;</span>
