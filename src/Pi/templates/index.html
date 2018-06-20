@@ -1,24 +1,31 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Robot Cam</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Robot Cam</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="static/css/normalize.css">
+    <link rel="stylesheet" href="static/css/skeleton.css">
+    <link rel="stylesheet" href="static/css/custom.css">
 </head>
 
 <style>
-table, td, tr {
-    width: 30%;
-}
+    table, td, tr {
+        width: 30%;
+    }
 </style>
 
 <script language="javascript">
     /*var url_string = "http://www.example.com/t.html?a=1&b=3&c=m2-m3-m4-m5"; //window.location.href
     var url = new URL(window.location.href);
     var custom = url.searchParams ? url.searchParams.get("c") : null;*/
-
     window.const = {};
-    //window.const.hostname = '192.168.0.100';
-    window.const.hostname = window.location.hostname;
+    window.const.UP = 'UP';
+    window.const.DOWN = 'DOWN';
+    window.const.LEFT = 'LEFT';
+    window.const.RIGHT = 'RIGHT';
+    window.const.hostname = '192.168.1.137';
+    //window.const.hostname = window.location.hostname;
     window.const.RESTbaseUrl = "http://" + window.const.hostname + ":8765/";
     function loadUrl() {
         var url = "http://" + window.const.hostname + ":8080/?action=stream";
@@ -54,77 +61,112 @@ table, td, tr {
         var rgb = hexToRgb(value);
         sendHttpPost('ear/color/' + rgb.r + '/' + rgb.g + '/' + rgb.b)
     }
+
+    function doNothing(event) {
+        console.log('dragstart');
+        event.preventDefault();
+        return false;
+    }
+
+    function clickstart(event, direction) {
+        window.currentEvent = {};
+        window.currentEvent.mouseX = event.pageX;
+        window.currentEvent.mouseY = event.pageY;
+        window.currentEvent.direction = event.direction;
+        window.currentEvent.timer = setTimeout(function () {
+            setPosIndicator(currentEvent.mouseX, currentEvent.mouseY);
+            document.getElementById('posIndicator').style.display = 'block';
+        }, 500);
+        console.log(event.pageX + " " + event.pageY);
+        document.onmousemove  = evalMouseMove;
+        document.onmouseup = evalMouseUp;
+    }
+
+    function evalMouseMove(event) {
+        console.log("move: " + event.pageX + " " + event.pageY);
+        setPosIndicator(event.pageX, event.pageY)
+    }
+
+    function setPosIndicator(x,y) {
+        document.getElementById('posIndicator').style.top = (y-35) + 'px';
+        document.getElementById('posIndicator').style.left = (x-5) + 'px';
+    }
+
+    function evalMouseUp() {
+        document.onmousemove = null;
+        document.onmouseup = null;
+        document.getElementById('posIndicator').style.display = 'none';
+
+        console.log("mouseup")
+    }
 </script>
 
 <body onload="loadUrl();">
-<table style="width:100%; max-width: 500px; height:300px;">
-  <tr>
-    <td>&nbsp;</td>
-    <td>
-        <input type="image" onclick="sendHttpPost('move%3Bforward%3Bstep')" name="direction" src="/static/img/forward.svg" value="forward" style="float:left; width:80%;">
-        </br>
-    </td>
-    <td>&nbsp;</td>
-    <td>
-        <button type="submit" onclick="sendHttpPost('sound%3Bplay%3Bdata%252F%3Bmood')" name="sound"> Mood Sound </button>
-        </br>
-        <button type="submit" onclick="sendHttpPost('sound%3Bplay%3Bdata%252Ffabibox%252F%3Brandom')" name="sound2"> Random Sound </button>
-        </br>
-    </td>
-	<td>
-		<p> Akku:{{ battery }} %</p>
-	</td>
-  </tr>
-  <tr>
-    <td>
-        <input type="image" onclick="sendHttpPost('move%3Bleft%3Bstep')" name="direction" src="/static/img/left.svg" value="left" style="float:left; width:80%;">
-        </br>
-    </td>
-    <td>
-<!--      <form action="/5" method="POST">
-        <input type="image" name="direction" src="/static/img/stop.svg" value="stop" style="float:left; width:80%;">
-        </br>
-      </form>-->
-    </td>
-    <td>
-        <input type="image" onclick="sendHttpPost('move%3Bright%3Bstep')" name="direction" src="/static/img/right.svg" value="right" style="float:left; width:80%;">
-        </br>
-    </td>
-<!--    <td>
-      <form method="POST">
-        <button type="submit" name="sound2" value="/6"> Sound 2 </button>
-        </br>
-      </form>
-    </td>-->
-  </tr>
-  <tr>
-    <td>&nbsp;</td>
-    <td>
-        <input type="image" onclick="sendHttpPost('move%3Bbackward%3Bstep')" name="direction" src="/static/img/reverse.svg" value="reverse" style="float:left; width:80%;">
-        </br>
-    </td>
-    <td>&nbsp;</td>
-  </tr>
-</table>
-<img id="webcam" style="width:100%; max-width: 600px; max-height:600px; border-radius:10px" />
-</br>
-<button type="submit" onclick="sendHttpPost('camera/up')" name="camUp"> Camera UP </button>
-<button type="submit" onclick="sendHttpPost('camera/down')" name="camDown"> Camera DOWN </button>
-</br>
-<button type="submit" onclick="sendHttpPost('say%3Bhello')" name="speech"> Say Hello </button>
-<button type="submit" onclick="sendHttpPost('say%3BI like you')" name="speech"> Say I like you </button>
-<button type="submit" onclick="sendHttpPost('say%3BYou look funny')" name="speech"> You look funny </button>
-</br>
-<button type="submit" onclick="sendHttpPost('face%3Bsmile%3Bincrease')" name="smileMore"> Smile more </button>
-<button type="submit" onclick="sendHttpPost('face%3Bsmile%3Bdecrease')" name="smileLess"> Smile less </button>
-</br>
-<button type="submit" onclick="sendHttpPost('face%3Beyes%3Bup')" name="lookUp"> Look up </button>
-<button type="submit" onclick="sendHttpPost('face%3Beyes%3Bdown')" name="lookDown"> Look down </button>
-<button type="submit" onclick="sendHttpPost('face%3Beyes%3Bleft')" name="lookLeft"> Look left </button>
-<button type="submit" onclick="sendHttpPost('face%3Beyes%3Bright')" name="lookRight"> Look right </button>
-<br>
-<label for="colorPicker">Choose ear color: </label>
-<input id="colorPicker" type="color" onchange="colorChanged(this.value)"/>
-</br>
+<div class="container">
+    <div>
+        <h1 class="inline">RoboFriend</h1>
+        <span id="batIndicator" class="inline">Akku:{{ battery }} %</span>
+    </div>
+    <div class="row">
+        <div id="camContainer" class="six columns">
+            <div class="center-div" style="position: relative">
+                <!-- padding is 75% of width for aspect ratio 4:3 -->
+                <span style="position: absolute; width: 100%; left: 0; top: 40%; z-index: -1">Live view loading...</span>
+                <div style="width: 70%; padding-bottom: 52.5%; border: 1px solid black">
+                    <img id="webcam"/>
+                </div>
+            </div>
+            <div class="center-div">
+                <span id="posIndicator" style="position: absolute; top: 20px; left: 150px; font-size: 4em; color: red; display: none">&#8226;</span>
+                <div class="navigation-box">
+                    <input class="button navbutton" style="top:0px; left: 90px" type="image" onclick="sendHttpPost('move%3Bforward%3Bstep')" ondragstart="doNothing(event)" src="./static/img/forward.svg">
+                    <input class="button navbutton" style="top:115px; left: 0px" type="image" onclick="sendHttpPost('move%3Bleft%3Bstep')" ondragstart="doNothing(event)" src="./static/img/left.svg">
+                    <input class="button navbutton" style="top:115px; left: 180px" type="image" onclick="sendHttpPost('move%3Bright%3Bstep')" ondragstart="doNothing(event)" src="./static/img/right.svg">
+                    <input class="button navbutton" style="top:230px; left: 90px" type="image" onclick="sendHttpPost('move%3Bbackward%3Bstep')" ondragstart="doNothing(event)" src="./static/img/reverse.svg">
+                </div>
+            </div>
+        </div>
+        <div class="six columns">
+            <h2>Actions</h2>
+            <div class="row">
+                <label class="two columns">Sounds</label>
+                <div class="ten columns">
+                    <button type="submit" onclick="sendHttpPost('sound%3Bplay%3Bdata%252F%3Bmood')" name="sound"> Mood Sound </button>
+                    <button type="submit" onclick="sendHttpPost('sound%3Bplay%3Bdata%252Ffabibox%252F%3Brandom')" name="sound2"> Random Sound </button>
+                </div>
+            </div>
+            <div class="row">
+                <label class="two columns">Camera</label>
+                <div class="ten columns">
+                    <button type="submit" onclick="sendHttpPost('camera/up')" name="camUp"> Camera UP </button>
+                    <button type="submit" onclick="sendHttpPost('camera/down')" name="camDown"> Camera DOWN </button>
+                </div>
+            </div>
+            <div class="row">
+                <label class="two columns">Speak</label>
+                <div class="ten columns">
+                    <button type="submit" onclick="sendHttpPost('say%3Bhello')" name="speech"> Say Hello </button>
+                    <button type="submit" onclick="sendHttpPost('say%3BI like you')" name="speech"> Say I like you </button>
+                    <button type="submit" onclick="sendHttpPost('say%3BYou look funny')" name="speech"> You look funny </button>
+                </div>
+            </div>
+            <div class="row">
+                <label class="two columns">Eyes</label>
+                <div class="ten columns">
+                    <button type="submit" onclick="sendHttpPost('face%3Beyes%3Bup')" name="lookUp"> Look up </button>
+                    <button type="submit" onclick="sendHttpPost('face%3Beyes%3Bdown')" name="lookDown"> Look down </button>
+                    <button type="submit" onclick="sendHttpPost('face%3Beyes%3Bleft')" name="lookLeft"> Look left </button>
+                    <button type="submit" onclick="sendHttpPost('face%3Beyes%3Bright')" name="lookRight"> Look right </button>
+                </div>
+            </div>
+            <div class="row">
+                <label for="colorPicker" class="two columns">Ear color</label>
+                <div class="ten columns">
+                    <input id="colorPicker" type="color" onchange="colorChanged(this.value)"/>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
 </html>

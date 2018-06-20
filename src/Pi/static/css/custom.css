@@ -1,0 +1,29 @@
+.center-div div, .center-div input, .center-div video
+{
+    margin-right: auto;
+    margin-left: auto;
+}
+
+.center-div
+{
+    text-align: center;
+}
+
+.navbutton {
+    height: 70px;
+    width: 120px;
+    position: absolute;
+}
+
+.inline {
+    display: inline-block;
+    margin-right: 1em;
+}
+
+.navigation-box {
+    border-style: solid;
+    border-width: medium;
+    width: 300px;
+    height: 300px;
+    position: relative;
+}
