@@ -11,29 +11,33 @@ Atmel:
 	PWM Example
 	ADC Example
 
-Ĺadestation:
+Ladestation:
+	
 
 Allgemein:
+	Relais
 	Wer soll versorgt werden?
 	Kommunikation µC mit dem Controller (RPI od direkt über den Sensor?)
-		
-
+	2 pollige Stecker für Akkus, Boosterpacks
+	PCB bis 27.
+	Kabel für Batterien
 
 Veigl @ 10.04.2018
 
-bzgl. methoden / state of the art würde ich ein paar "klassische" verfahren vorschlagen:
+Bzgl. Methoden / State of the Art würde ich ein paar klassische Verfahren vorschlagen:
 
-*) laserscanner / 2d mapping
+	*) Laserscanner / 2D Mapping
+	*) WiFi - fingerprinting
+	*) BLE - beacons bzw. fingerprinting
+	*) SLAM (sofern das nicht in den kamerabasierten methoden behandelt wird) und die kombination mit anderen methoden (wie im gesendeten paper)
+	*) IR beacons
 
-*) wifi - fingerprinting
+Generell dies aber bitte recht überschaubar halten um sich dann stark auf die von uns angedachten Methoden und in Richting Implementierung konzentrieren zu können! Jede dieser Methoden liefert Stoff für eine eigene Arbeit.
 
-*) BLE - beacons bzw. fingerprinting
-
-*) SLAM (sofern das nicht in den kamerabasierten methoden behandelt wird) und die kombination mit anderen methoden (wie im gesendeten paper)
-
-*) IR beacons
-
-
-generell dies aber bitte recht "überschaubar" halten um sich dann stark auf die von uns angedachten methoden und in richting implementierung konzentrieren zu können ! - jede dieser methoden liefert "stoff" für eine eigene arbeit
-
-
+SLAM
+3x Infrarot
+BLE Beacons
+Infrarot Wii
+4x Ultraschall
+WiFi Fingerprinting
+Lidar + ROS Lidar Sensor
