@@ -33,6 +33,7 @@ pygame.init()
 
 #setup pyttsx / espeak
 speechEngine = pyttsx.init()
+speechEngine.setProperty('rate', 150) #150 words per minute
 speechEngine.say('i am robofriend')
 speechEngine.runAndWait()
 
