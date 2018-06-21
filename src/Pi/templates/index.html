@@ -72,10 +72,14 @@
             <div class="row">
                 <label class="two columns">Speak</label>
                 <div class="ten columns">
-                    <button type="submit" onclick="communicator.sendAction('say%3Bhello')" name="speech"> Say Hello </button>
-                    <button type="submit" onclick="communicator.sendAction('say%3BI like you')" name="speech"> Say I like you </button>
-                    <button type="submit" onclick="communicator.sendAction('say%3BYou look funny')" name="speech"> You look funny </button>
+                    <button type="submit" onclick="communicator.say('hello')" name="speech"> Say Hello </button>
+                    <button type="submit" onclick="communicator.say('I like you')" name="speech"> Say I like you </button>
+                    <button type="submit" onclick="communicator.say('You look funny')" name="speech"> You look funny </button>
                 </div>
+            </div>
+            <div class="row">
+                <input id="customText" type="text" maxlength="" class="eight columns offset-by-two">
+                <button onclick="communicator.say(L('#customText').value)"> Say </button>
             </div>
             <div class="row">
                 <label class="two columns">Eyes</label>
