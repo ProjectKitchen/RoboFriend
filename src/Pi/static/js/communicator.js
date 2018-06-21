@@ -27,6 +27,12 @@ function Communicator() {
         }
     };
 
+    this.say = function (stringToSay) {
+        if(stringToSay) {
+            thiz.sendAction(CONST.CMD_SAY + stringToSay)
+        }
+    };
+
     thiz.sendMoveXY = function (x,y) {
         console.log('sending move xy: ' + x + " " + y);
     };
