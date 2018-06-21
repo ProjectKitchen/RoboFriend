@@ -96,7 +96,7 @@ def sendSerial(commandString, readResponse=False):
     send_lock.acquire()
     print("sending serial command: " + str(commandString))
     try:
-        ser.write(str(commandString))
+        ser.write(str(commandString) + "\r")
         if readResponse:
             response = str(ser.readline())
     except:
