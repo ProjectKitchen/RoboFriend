@@ -72,7 +72,6 @@ def moveForwardLeftLoop():
     sendSerial("D 0 128 0")
 
 def stopMovement():
-    stopMovement()
     sendSerial("D")
 
 def shakeHeadForNo():
