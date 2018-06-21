@@ -1,4 +1,4 @@
-update=25/05/2018 15:31:10
+update=22/06/2018 00:54:01
 version=1
 last_client=kicad
 [pcbnew]
@@ -63,3 +63,4 @@ LibName31=contrib
 LibName32=valves
 LibName33=Teensy/teensy
 LibName34=LM4040/lm4040
+LibName35=OpAmp/amp
