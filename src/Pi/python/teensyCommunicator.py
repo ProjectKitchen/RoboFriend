@@ -1,9 +1,11 @@
 import serial
 import threading
+from time import sleep
 
 # globals
 send_lock = threading.Lock()
 ser = None
+driveDuration = 50
 
 def init():
     global ser
@@ -18,61 +20,69 @@ def close():
     ser.close()
 
 def moveRightStep():
+    global driveDuration
     stopMovement()
-    sendSerial("3")
+    sendSerial("D 128 -128 " + str(driveDuration))
 
 def moveRightLoop():
     stopMovement()
-    sendSerial("e")
+    sendSerial("D 128 -128 0")
 
 def moveLeftStep():
+    global driveDuration
     stopMovement()
-    sendSerial("4")
+    sendSerial("D -128 128 " + str(driveDuration))
 
 def moveLeftLoop():
     stopMovement()
-    sendSerial("f")
+    sendSerial("D -128 128 0")
 
 def moveForwardStep():
+    global driveDuration
     stopMovement()
-    sendSerial("1")
+    sendSerial("D 255 255 " + str(driveDuration))
 
 def moveForwardLoop():
     stopMovement()
-    sendSerial("c")
+    sendSerial("D 255 255 0")
 
 def moveBackStep():
+    global driveDuration
     stopMovement()
-    sendSerial("2")
+    sendSerial("D -255 -255 " + str(driveDuration))
 
 def moveBackLoop():
     stopMovement()
-    sendSerial("d")
+    sendSerial("D -255 -255 0")
 
 def moveBackLeftLoop():
     stopMovement()
-    sendSerial("6")
+    sendSerial("D -128 0 0")
 
 def moveBackRightLoop():
     stopMovement()
-    sendSerial("5")
+    sendSerial("D 0 -128 0")
 
 def moveForwardRightLoop():
     stopMovement()
-    sendSerial("a")
+    sendSerial("D 128 0 0")
 
 def moveForwardLeftLoop():
     stopMovement()
-    sendSerial("b")
+    sendSerial("D 0 128 0")
 
 def stopMovement():
-    sendSerial("7")
+    stopMovement()
+    sendSerial("D")
 
 def shakeHeadForNo():
-    sendSerial("9")
+    sendSerial("D 50 -50 10")
+    sleep(0.5)
+    sendSerial("D -50 50 10")
 
 def getStatus():
-    response = sendSerial("8", True)
+    response = sendSerial("R", True)
+    print "status: " + response
     batteryValue = -1
 #    try:
 #        batteryValue = int(response.strip(' \t\n\r'))
