@@ -37,6 +37,10 @@ function Communicator() {
         console.log('sending move xy: ' + x + " " + y);
     };
 
+    window.move = function (x, y, duration) {
+        thiz.sendAction('move/' + x + '/' + y + '/' + duration)
+    };
+
     thiz.initVideo = function () {
         var url = "http://" + hostname + ":8080/?action=stream";
         L('#webcam').setAttribute("src", url);
