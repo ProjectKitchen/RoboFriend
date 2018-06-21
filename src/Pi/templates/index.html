@@ -5,133 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <script type="text/javascript" src='static/lib/lquery.js'></script>
+    <script type="text/javascript" src='static/js/const.js'></script>
+    <script type="text/javascript" src='static/js/communicator.js'></script>
+    <script type="text/javascript" src='static/js/moveController.js'></script>
 
     <link rel="stylesheet" href="static/css/normalize.css">
     <link rel="stylesheet" href="static/css/skeleton.css">
     <link rel="stylesheet" href="static/css/custom.css">
 </head>
 
-<style>
-    table, td, tr {
-        width: 30%;
-    }
-</style>
-
 <script language="javascript">
-    /*var url_string = "http://www.example.com/t.html?a=1&b=3&c=m2-m3-m4-m5"; //window.location.href
-    var url = new URL(window.location.href);
-    var custom = url.searchParams ? url.searchParams.get("c") : null;*/
-    window.const = {};
-    window.const.UP = 'UP';
-    window.const.DOWN = 'DOWN';
-    window.const.LEFT = 'LEFT';
-    window.const.RIGHT = 'RIGHT';
-    window.const.hostname = '192.168.1.137';
-    //window.const.hostname = window.location.hostname;
-    window.const.RESTbaseUrl = "http://" + window.const.hostname + ":8765/";
-    function loadUrl() {
-        var url = "http://" + window.const.hostname + ":8080/?action=stream";
-        L('#webcam').setAttribute("src", url);
-    }
-
-    function sendHttpPost(restPath, successCallback, errorCallback) {
-        var url = window.const.RESTbaseUrl + restPath;
-        var xmlHttp = new XMLHttpRequest();
-        xmlHttp.onreadystatechange = function() {
-            if (xmlHttp.readyState === 4) {
-                if (xmlHttp.status === 200) {
-                    if(successCallback) successCallback(xmlHttp.responseText);
-                } else {
-                    if(errorCallback) errorCallback();
-                }
-            }
-        };
-        xmlHttp.open("POST", url);
-        xmlHttp.send();
-    }
-
-    function hexToRgb(hex) {
-        var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-        return result ? {
-            r: parseInt(result[1], 16),
-            g: parseInt(result[2], 16),
-            b: parseInt(result[3], 16)
-        } : null;
-    }
-
     function colorChanged(value) {
-        var rgb = hexToRgb(value);
-        sendHttpPost('ear/color/' + rgb.r + '/' + rgb.g + '/' + rgb.b)
-    }
-
-    function doNothing(event) {
-        console.log('dragstart');
-        event.preventDefault();
-        return false;
-    }
-
-    function clickstart(event, direction) {
-        event.preventDefault();
-        window.currentEvent = {};
-        window.currentEvent.mouseX = getXVal(event);
-        window.currentEvent.mouseY = getYVal(event);
-        window.currentEvent.direction = direction;
-        window.currentEvent.timer = setTimeout(function () {
-            setPosIndicator(currentEvent.mouseX, currentEvent.mouseY);
-            L.setVisible('#posIndicator');
-            L.setVisible('#posIndicatorHelpers');
-        }, 500);
-        console.log(currentEvent.mouseX + " " + currentEvent.mouseY);
-        document.onmousemove  = evalMouseMove;
-        document.ontouchmove  = evalMouseMove;
-        document.onmouseup = evalMouseUp;
-        document.ontouchend = evalMouseUp;
-    }
-
-    function evalMouseMove(event) {
-        window.currentEvent.mouseX = getXVal(event);
-        window.currentEvent.mouseY = getYVal(event);
-        var boundingRect = L('#navigation-box').getBoundingClientRect();
-        var bodyRect = L('body')[0].getBoundingClientRect();
-        var xVal = L.cutToIntRange(currentEvent.mouseX, boundingRect.left - bodyRect.left + 3, boundingRect.right - bodyRect.left - 3); //3px = border
-        var yVal = L.cutToIntRange(currentEvent.mouseY, boundingRect.top - bodyRect.top + 3, boundingRect.bottom - bodyRect.top - 3);
-        setPosIndicator(xVal, yVal);
-        var moveX = (xVal - boundingRect.left - (bodyRect.left * (-1)) - 3); //3px = border
-        var moveY = (yVal - boundingRect.top - (bodyRect.top * (-1)) - 3);
-        moveX = L.mapRange(moveX, 0, 300, -255, 255);
-        moveY = L.mapRange(moveY, 0, 300, -255, 255) * (-1);
-
-
-        L('#livePosX').innerHTML = Math.round(moveX);
-        L('#livePosY').innerHTML = Math.round(moveY);
-    }
-
-    function getXVal(event) {
-        return event.pageX != undefined ? event.pageX : event.touches[0].pageX;
-    }
-
-    function getYVal(event) {
-        return event.pageY != undefined ? event.pageY : event.touches[0].pageY;
-    }
-
-    function setPosIndicator(x,y) {
-        L('#posIndicator').style.top = y + 'px';
-        L('#posIndicator').style.left = x + 'px';
-    }
-
-    function evalMouseUp() {
-        document.onmousemove  = null;
-        document.ontouchmove  = null;
-        document.onmouseup = null;
-        document.ontouchend = null;
-        L.setVisible('#posIndicator', false);
-        L.setVisible('#posIndicatorHelpers', false);
-
-        console.log("mouseup")
+        var rgb = L.hexToRgb(value);
+        communicator.sendAction('ear/color/' + rgb.r + '/' + rgb.g + '/' + rgb.b)
     }
 </script>
 
-<body onload="loadUrl();" style="position: relative">
+<body onload="communicator.initVideo()" style="position: relative">
 <span id="posIndicator" style="position: absolute; top: 0px; left: 0px; z-index: 10; display: none">
     <span class="circle" style="position: absolute; top: -7px; left: -7px; color: red;"></span>
 </span>
@@ -148,11 +38,11 @@
                 <img id="webcam" style="width: 80%; position: absolute; left: 10%; top: 1px; border-radius: 5px"/>
             </div>
             <div class="center-div">
-                <div id="navigation-box" class="navigation-box">
-                    <input class="button navbutton" style="top:0px; left: 90px" type="image" onmousedown="clickstart(event, window.const.UP)" ontouchstart="clickstart(event, window.const.UP)" ondragstart="doNothing(event)" src="./static/img/forward.svg">
-                    <input class="button navbutton" style="top:115px; left: 0px" type="image" onclick="sendHttpPost('move%3Bleft%3Bstep')" ondragstart="doNothing(event)" src="./static/img/left.svg">
-                    <input class="button navbutton" style="top:115px; left: 180px" type="image" onclick="sendHttpPost('move%3Bright%3Bstep')" ondragstart="doNothing(event)" src="./static/img/right.svg">
-                    <input class="button navbutton" style="top:230px; left: 90px" type="image" onclick="sendHttpPost('move%3Bbackward%3Bstep')" ondragstart="doNothing(event)" src="./static/img/reverse.svg">
+                <div id="navigation-box" class="navigation-box" onmousedown="moveController.clickstart(event, CONST.DIR_NONE)" ontouchstart="moveController.clickstart(event, CONST.DIR_NONE)">
+                    <input class="button navbutton" style="top:0px; left: 90px; z-index: 1" type="image" onmousedown="moveController.clickstart(event, CONST.DIR_UP)" onkeydown="moveController.clickstart(event, CONST.DIR_UP)" ontouchstart="moveController.clickstart(event, CONST.DIR_UP)" ondragstart="moveController.doNothing(event)" src="./static/img/forward.svg">
+                    <input class="button navbutton" style="top:115px; left: 0px" type="image" onmousedown="moveController.clickstart(event, CONST.DIR_LEFT)" onkeydown="moveController.clickstart(event, CONST.DIR_LEFT)" ontouchstart="moveController.clickstart(event, CONST.DIR_LEFT)" ondragstart="moveController.doNothing(event)" src="./static/img/left.svg">
+                    <input class="button navbutton" style="top:115px; left: 180px" type="image" onmousedown="moveController.clickstart(event, CONST.DIR_RIGHT)" onkeydown="moveController.clickstart(event, CONST.DIR_RIGHT)" ontouchstart="moveController.clickstart(event, CONST.DIR_RIGHT)" ondragstart="moveController.doNothing(event)" src="./static/img/right.svg">
+                    <input class="button navbutton" style="top:230px; left: 90px" type="image"  onmousedown="moveController.clickstart(event, CONST.DIR_DOWN)" onkeydown="moveController.clickstart(event, CONST.DIR_DOWN)" ontouchstart="moveController.clickstart(event, CONST.DIR_DOWN)" ondragstart="moveController.doNothing(event)" src="./static/img/reverse.svg">
                     <div id="posIndicatorHelpers" style="display: none">
                         <div style="position: absolute; top: 250px; left: 10px; font-family: 'Courier New'">
                             <div class="text-left">X: <span id="livePosX"></span></div>
@@ -168,32 +58,32 @@
             <div class="row">
                 <label class="two columns">Sounds</label>
                 <div class="ten columns">
-                    <button type="submit" onclick="sendHttpPost('sound%3Bplay%3Bdata%252F%3Bmood')" name="sound"> Mood Sound </button>
-                    <button type="submit" onclick="sendHttpPost('sound%3Bplay%3Bdata%252Ffabibox%252F%3Brandom')" name="sound2"> Random Sound </button>
+                    <button type="submit" onclick="communicator.sendAction('sound%3Bplay%3Bdata%252F%3Bmood')" name="sound"> Mood Sound </button>
+                    <button type="submit" onclick="communicator.sendAction('sound%3Bplay%3Bdata%252Ffabibox%252F%3Brandom')" name="sound2"> Random Sound </button>
                 </div>
             </div>
             <div class="row">
                 <label class="two columns">Camera</label>
                 <div class="ten columns">
-                    <button type="submit" onclick="sendHttpPost('camera/up')" name="camUp"> Camera UP </button>
-                    <button type="submit" onclick="sendHttpPost('camera/down')" name="camDown"> Camera DOWN </button>
+                    <button type="submit" onclick="communicator.sendAction('camera/up')" name="camUp"> Camera UP </button>
+                    <button type="submit" onclick="communicator.sendAction('camera/down')" name="camDown"> Camera DOWN </button>
                 </div>
             </div>
             <div class="row">
                 <label class="two columns">Speak</label>
                 <div class="ten columns">
-                    <button type="submit" onclick="sendHttpPost('say%3Bhello')" name="speech"> Say Hello </button>
-                    <button type="submit" onclick="sendHttpPost('say%3BI like you')" name="speech"> Say I like you </button>
-                    <button type="submit" onclick="sendHttpPost('say%3BYou look funny')" name="speech"> You look funny </button>
+                    <button type="submit" onclick="communicator.sendAction('say%3Bhello')" name="speech"> Say Hello </button>
+                    <button type="submit" onclick="communicator.sendAction('say%3BI like you')" name="speech"> Say I like you </button>
+                    <button type="submit" onclick="communicator.sendAction('say%3BYou look funny')" name="speech"> You look funny </button>
                 </div>
             </div>
             <div class="row">
                 <label class="two columns">Eyes</label>
                 <div class="ten columns">
-                    <button type="submit" onclick="sendHttpPost('face%3Beyes%3Bup')" name="lookUp"> Look up </button>
-                    <button type="submit" onclick="sendHttpPost('face%3Beyes%3Bdown')" name="lookDown"> Look down </button>
-                    <button type="submit" onclick="sendHttpPost('face%3Beyes%3Bleft')" name="lookLeft"> Look left </button>
-                    <button type="submit" onclick="sendHttpPost('face%3Beyes%3Bright')" name="lookRight"> Look right </button>
+                    <button type="submit" onclick="communicator.sendAction('face%3Beyes%3Bup')" name="lookUp"> Look up </button>
+                    <button type="submit" onclick="communicator.sendAction('face%3Beyes%3Bdown')" name="lookDown"> Look down </button>
+                    <button type="submit" onclick="communicator.sendAction('face%3Beyes%3Bleft')" name="lookLeft"> Look left </button>
+                    <button type="submit" onclick="communicator.sendAction('face%3Beyes%3Bright')" name="lookRight"> Look right </button>
                 </div>
             </div>
             <div class="row">
