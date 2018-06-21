@@ -23,6 +23,7 @@ public:
   void init();
   void updateSensorData();
   void reportSensorValues();
+  void setSensorThresholds(int left, int middle, int right);
 
   int getBatteryValue();
   int getIRSensorLeftValue();

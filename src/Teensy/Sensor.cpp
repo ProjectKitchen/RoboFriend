@@ -46,6 +46,13 @@ void Sensor::reportSensorValues() {
     Serial.printf("Sensors,%04d,%04d,%04d,%04d\n",Battery,IRSensorLeft,IRSensorMiddle,IRSensorRight);
 }
 
+void Sensor::setSensorThresholds(int left, int middle, int right) {
+    IRSensorLeftThreshold=left;
+    IRSensorMiddleThreshold=middle;
+    IRSensorRightThreshold=right;
+}
+
+
 int Sensor::getIRSensorLeftValue() {
   return IRSensorLeft;
 }
