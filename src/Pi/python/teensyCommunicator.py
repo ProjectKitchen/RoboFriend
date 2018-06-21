@@ -19,6 +19,10 @@ def close():
     global ser
     ser.close()
 
+def move(left, right, duration):
+    stopMovement()
+    sendSerial("D " + str(left) + " " + str(right) + " " + str(duration))
+
 def moveRightStep():
     global driveDuration
     stopMovement()

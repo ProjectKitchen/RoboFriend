@@ -151,6 +151,11 @@ def setEarRGB(earColorR, earColorG, earColorB):
 	sendToIOWarrior(r, g, b, cameraPos)
 	return("OK")
 
+@app.route('/move/<left>/<right>/<duration>', methods=['POST'])
+def move(left, right, duration):
+	teensySender.move(left, right, duration)
+	return("OK")
+
 @app.route('/<action>', methods=['POST'])
 # webserver rerouting - action indicates the chosen command which will be decoded and then interpreted with the function chooseAction 
 def reroute(action):
