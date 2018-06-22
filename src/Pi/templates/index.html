@@ -113,7 +113,7 @@
                     <input id="rangeLeft" type="range" min="-255" max="255" value="255" oninput="L('#valLeft').innerHTML = this.value">
                     <input id="rangeRight" type="range" min="-255" max="255" value="255" oninput="L('#valRight').innerHTML = this.value">
                     Left:<span id="valLeft">255</span> Right:<span id="valRight">255</span>
-                    <button onclick="move(L('#rangeLeft').value, L('#rangeRight').value, 10)"> MOVE </button>
+                    <button onclick="communicator.sendMoveXY(L('#rangeLeft').value, L('#rangeRight').value)"> MOVE </button>
                 </div>
             </div>
         </div>
