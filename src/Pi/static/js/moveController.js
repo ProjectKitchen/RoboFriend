@@ -4,6 +4,30 @@ function MoveController() {
     var waitBeforeShowDot = 300;
     var waitBeforeStartMoving = 0;
     var moveSendInterval = 500;
+    var deadzone = 5;
+    var coordinateValues = [0, 150, 300];
+    var interpolatorLeft = new Interpolator(coordinateValues, coordinateValues, [
+        [0, 255, 255],
+        [-255, 0, 255],
+        [0, -255, -255]
+    ]);
+    var interpolatorRight = new Interpolator(coordinateValues, coordinateValues, [
+        [255, 255, 0],
+        [255, 0, -255],
+        [-255, -255, 0]
+    ]);
+    var array = Array.from({length: 61}, (v, k) => (k*5));
+    console.log(toCSV(interpolatorLeft.interpolateBilinearArray(array, array)));
+    console.log(toCSV(interpolatorRight.interpolateBilinearArray(array, array)));
+
+    function toCSV(data) {
+        var lineArray = [];
+        data.forEach(function (infoArray, index) {
+            var line = infoArray.join(";");
+            lineArray.push(line);
+        });
+        return lineArray.join("\n");
+    }
 
     thiz.doNothing = function(event) {
         event.preventDefault();
@@ -30,7 +54,7 @@ function MoveController() {
                     currentEvent.actionSendTimeoutHandler = setTimeout(function () {
                         currentEvent.actionSendIntervalHandler = setInterval(function () {
                             currentEvent.didDynamicMovement = true;
-                            communicator.sendMoveXY(currentEvent.moveX, currentEvent.moveY);
+                            communicator.sendMoveXY(currentEvent.moveLeft, currentEvent.moveRight);
                         }, moveSendInterval);
                     }, waitBeforeStartMoving);
                 }
@@ -63,12 +87,16 @@ function MoveController() {
         var xVal = L.cutToIntRange(currentEvent.mouseX, boundingRect.left - bodyRect.left + 3, boundingRect.right - bodyRect.left - 3); //3px = border
         var yVal = L.cutToIntRange(currentEvent.mouseY, boundingRect.top - bodyRect.top + 3, boundingRect.bottom - bodyRect.top - 3);
         setPosIndicator(xVal, yVal);
-        var moveX = (xVal - boundingRect.left - (bodyRect.left * (-1)) - 3); //3px = border
-        var moveY = (yVal - boundingRect.top - (bodyRect.top * (-1)) - 3);
-        currentEvent.moveX = Math.round(L.mapRange(moveX, 0, 300, -255, 255));
-        currentEvent.moveY = Math.round(L.mapRange(moveY, 0, 300, -255, 255) * (-1));
-        L('#livePosX').innerHTML = currentEvent.moveX;
-        L('#livePosY').innerHTML = currentEvent.moveY;
+        var xValNorm = (xVal - boundingRect.left - (bodyRect.left * (-1)) - 3); //3px = border
+        var yValNorm = (yVal - boundingRect.top - (bodyRect.top * (-1)) - 3);
+        currentEvent.moveLeft = Math.round(interpolatorLeft.interpolateBilinear(xValNorm, yValNorm));
+        currentEvent.moveRight = Math.round(interpolatorRight.interpolateBilinear(xValNorm, yValNorm));
+        currentEvent.moveLeft = Math.abs(currentEvent.moveLeft) >= deadzone ? currentEvent.moveLeft : 0;
+        currentEvent.moveRight = Math.abs(currentEvent.moveRight) >= deadzone ? currentEvent.moveRight : 0;
+        currentEvent.moveLeft = L.cutToIntRange(currentEvent.moveLeft, -255, 255);
+        currentEvent.moveRight = L.cutToIntRange(currentEvent.moveRight, -255, 255);
+        L('#liveMoveLeft').innerHTML = currentEvent.moveLeft;
+        L('#liveMoveRight').innerHTML = currentEvent.moveRight;
     }
 
     function setPosIndicator(x, y) {
