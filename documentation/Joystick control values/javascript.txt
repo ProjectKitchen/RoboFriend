@@ -1,4 +1,4 @@
-//interpolated values used for "joystick" control with web GUI
+//interpolated values used for "joystick" control with web GUI, also see https://github.com/ProjectKitchen/RoboFriend/commit/b937d425ff1e58c4cfaecabd73f0edea836352ae
 //created in javascript with:
 
     var coordinateValues = [0, 150, 300];
