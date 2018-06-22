@@ -23,7 +23,8 @@
 
     setInterval(function () {
         communicator.getStatus().then(response => {
-            console.log('got status: ' + response);
+            console.log('got status:');
+            console.log(response);
             if(response && response.batVolt) {
                 L('#batIndicator').innerHTML = response.batVolt;
             }
