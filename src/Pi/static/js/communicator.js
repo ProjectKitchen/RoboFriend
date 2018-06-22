@@ -39,7 +39,11 @@ function Communicator() {
     };
 
     thiz.getStatus = function () {
-        return sendHttp('get/status', 'GET');
+        return new Promise(resolve => {
+            sendHttp('get/status', 'GET').then(result => {
+                resolve(JSON.parse(result));
+            });
+        })
     };
 
     thiz.initVideo = function () {
