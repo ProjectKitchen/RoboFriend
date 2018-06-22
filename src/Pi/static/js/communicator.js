@@ -5,7 +5,7 @@ function Communicator() {
     var defaultMoveDuration = 50;
 
     thiz.sendAction = function (actionString) {
-        sendHttpPost(actionString);
+        sendHttp(actionString);
     };
 
     thiz.sendMove = function (directionConstant) {
@@ -38,26 +38,33 @@ function Communicator() {
         thiz.sendAction('move/' + x + '/' + y + '/' + defaultMoveDuration);
     };
 
+    thiz.getStatus = function () {
+        return sendHttp('get/status', 'GET');
+    };
+
     thiz.initVideo = function () {
         var url = "http://" + hostname + ":8080/?action=stream";
         L('#webcam').setAttribute("src", url);
     };
 
-    function sendHttpPost(restPath, successCallback, errorCallback) {
-        console.log('sending: ' + restPath);
-        var url = RESTbaseUrl + restPath;
-        var xmlHttp = new XMLHttpRequest();
-        xmlHttp.onreadystatechange = function() {
-            if (xmlHttp.readyState === 4) {
-                if (xmlHttp.status === 200) {
-                    if(successCallback) successCallback(xmlHttp.responseText);
-                } else {
-                    if(errorCallback) errorCallback();
+    function sendHttp(restPath, method) {
+        method = method || 'POST';
+        console.log('sending (' + method + '): ' + restPath);
+        return new Promise((resolve, reject) => {
+            var url = RESTbaseUrl + restPath;
+            var xmlHttp = new XMLHttpRequest();
+            xmlHttp.onreadystatechange = function() {
+                if (xmlHttp.readyState === 4) {
+                    if (xmlHttp.status === 200) {
+                        resolve(xmlHttp.responseText);
+                    } else {
+                        reject();
+                    }
                 }
-            }
-        };
-        xmlHttp.open("POST", url);
-        xmlHttp.send();
+            };
+            xmlHttp.open(method, url);
+            xmlHttp.send();
+        });
     }
 
 }
