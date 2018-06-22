@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <script type="text/javascript" src='static/lib/lquery.js'></script>
+    <script type="text/javascript" src='static/lib/everpolate.polynomial.js'></script>
     <script type="text/javascript" src='static/js/const.js'></script>
     <script type="text/javascript" src='static/js/communicator.js'></script>
     <script type="text/javascript" src='static/js/moveController.js'></script>
@@ -19,6 +20,15 @@
         var rgb = L.hexToRgb(value);
         communicator.sendAction('ear/color/' + rgb.r + '/' + rgb.g + '/' + rgb.b)
     }
+
+    setInterval(function () {
+        communicator.getStatus().then(response => {
+            console.log('got status: ' + response);
+            if(response && response.batVolt) {
+                L('#batIndicator').innerHTML = response.batVolt;
+            }
+        });
+    }, 1000);
 </script>
 
 <body onload="communicator.initVideo()" style="position: relative">
@@ -28,7 +38,7 @@
 <div class="container">
     <div>
         <h1 class="inline">RoboFriend</h1>
-        <span id="batIndicator" class="inline">Akku:{{ battery }} %</span>
+        <span class="inline">Akku: <span id="batIndicator">(?)</span> Volt</span>
     </div>
     <div class="row">
         <div id="camContainer" class="six columns">
@@ -45,8 +55,8 @@
                     <input class="button navbutton" style="top:230px; left: 90px" type="image"  onmousedown="moveController.clickstart(event, CONST.DIR_DOWN)" onkeydown="moveController.clickstart(event, CONST.DIR_DOWN)" ontouchstart="moveController.clickstart(event, CONST.DIR_DOWN)" ondragstart="moveController.doNothing(event)" src="./static/img/reverse.svg">
                     <div id="posIndicatorHelpers" style="display: none">
                         <div style="position: absolute; top: 250px; left: 10px; font-family: 'Courier New'">
-                            <div class="text-left">X: <span id="livePosX"></span></div>
-                            <div class="text-left">Y: <span id="livePosY"></span></div>
+                            <div class="text-left">L: <span id="liveMoveLeft"></span></div>
+                            <div class="text-left">R: <span id="liveMoveRight"></span></div>
                         </div>
                         <span class="circle" style="position: absolute; top: 143px; left: 143px; background-color: lightgray;"></span>
                     </div>
@@ -94,6 +104,15 @@
                 <label for="colorPicker" class="two columns">Ear color</label>
                 <div class="ten columns">
                     <input id="colorPicker" type="color" onchange="colorChanged(this.value)"/>
+                </div>
+            </div>
+            <div class="row">
+                <label for="colorPicker" class="two columns">Move test</label>
+                <div class="ten columns">
+                    <input id="rangeLeft" type="range" min="-255" max="255" value="255" oninput="L('#valLeft').innerHTML = this.value">
+                    <input id="rangeRight" type="range" min="-255" max="255" value="255" oninput="L('#valRight').innerHTML = this.value">
+                    Left:<span id="valLeft">255</span> Right:<span id="valRight">255</span>
+                    <button onclick="move(L('#rangeLeft').value, L('#rangeRight').value, 10)"> MOVE </button>
                 </div>
             </div>
         </div>
