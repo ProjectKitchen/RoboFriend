@@ -16,18 +16,6 @@ function MoveController() {
         [255, 0, -255],
         [-255, -255, 0]
     ]);
-    var array = Array.from({length: 61}, (v, k) => (k*5));
-    console.log(toCSV(interpolatorLeft.interpolateBilinearArray(array, array)));
-    console.log(toCSV(interpolatorRight.interpolateBilinearArray(array, array)));
-
-    function toCSV(data) {
-        var lineArray = [];
-        data.forEach(function (infoArray, index) {
-            var line = infoArray.join(";");
-            lineArray.push(line);
-        });
-        return lineArray.join("\n");
-    }
 
     thiz.doNothing = function(event) {
         event.preventDefault();
