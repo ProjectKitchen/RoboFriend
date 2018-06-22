@@ -2,6 +2,7 @@ function Communicator() {
     var thiz = this;
     var hostname = window.location.hostname != 'localhost' ? window.location.hostname : '192.168.1.137';
     var RESTbaseUrl = "http://" + hostname + ":8765/";
+    var defaultMoveDuration = 50;
 
     thiz.sendAction = function (actionString) {
         sendHttpPost(actionString);
@@ -27,18 +28,14 @@ function Communicator() {
         }
     };
 
-    this.say = function (stringToSay) {
+    thiz.say = function (stringToSay) {
         if(stringToSay) {
             thiz.sendAction(CONST.CMD_SAY + stringToSay)
         }
     };
 
     thiz.sendMoveXY = function (x,y) {
-        console.log('sending move xy: ' + x + " " + y);
-    };
-
-    window.move = function (x, y, duration) {
-        thiz.sendAction('move/' + x + '/' + y + '/' + duration)
+        thiz.sendAction('move/' + x + '/' + y + '/' + defaultMoveDuration);
     };
 
     thiz.initVideo = function () {
