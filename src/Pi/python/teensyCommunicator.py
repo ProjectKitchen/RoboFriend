@@ -85,14 +85,21 @@ def shakeHeadForNo():
 
 def getStatus():
     response = sendSerial("R", True)
-    print "status: " + response
-    batteryValue = -1
-#    try:
-#        batteryValue = int(response.strip(' \t\n\r'))
-#    except:
-#        print("error parsing battery value: " + str(batteryValue))
-#    return {'battery': batteryValue }
-    return response
+    batVolt = -1
+    irSensorLeft = -1
+    irSensorMiddle = -1
+    irSensorRight = -1
+    try:
+        statusArray = response.split(',')
+        if (statusArray[0] == "Sensors"):
+            batVolt = int(statusArray[1]) / 20
+            irSensorLeft = int(statusArray[2])
+            irSensorMiddle = int(statusArray[3])
+            irSensorRight = int(statusArray[4])
+    except:
+        print("error parsing status values: " + response)
+
+    return {'batVolt': batVolt, 'irLeft': irSensorLeft, 'irMiddle': irSensorMiddle, 'irRight': irSensorRight}
 
 def sendSerial(commandString, readResponse=False):
     global send_lock, ser
