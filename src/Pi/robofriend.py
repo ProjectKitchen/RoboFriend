@@ -15,6 +15,7 @@ from time import sleep
 from flask import Flask, render_template, request, redirect, url_for, make_response
 import urllib
 import pyttsx
+import json
 #import pyautogui
 
 #own modules
@@ -47,7 +48,7 @@ cameraPos = 140
 earColorR = 0
 earColorG = 10
 earColorB = 10
-
+currentStatus = None
 
 #face informationen
 radius = 0.8
@@ -156,6 +157,11 @@ def move(left, right, duration):
 	teensySender.move(left, right, duration)
 	return("OK")
 
+@app.route('/get/status', methods=['GET'])
+def getStatus():
+	global currentStatus
+	return json.dumps(currentStatus)
+
 @app.route('/<action>', methods=['POST'])
 # webserver rerouting - action indicates the chosen command which will be decoded and then interpreted with the function chooseAction 
 def reroute(action):
@@ -171,7 +177,7 @@ def reroute(action):
 
 # this functions handles input from the gamegui, as well as webserver and BatteryThread-thread
 def chooseAction(data):
-	global bat_prozent, bat_prozent_lock
+	global bat_prozent, bat_prozent_lock, currentStatus
 	dataArray = data.split(';') # Nachricht wird in ein Array gespeichert
 	print(dataArray)
 	action = dataArray[0] # erstes Argument
@@ -192,21 +198,8 @@ def chooseAction(data):
 		faceManipulation(dataArray)
 	elif action == "get":
 		info = dataArray[0]
-		dataArray = dataArray[1:]
-		if info == "status": #wenn status abgefragt wird
-			status = teensySender.getStatus()
-			statusArray=status.split(',')
-			if (statusArray[0] == "Sensors"):
-				bat = int (statusArray[1])
-				irSensorLeft= int (statusArray[2])
-				irSensorMiddle= int (statusArray[3])
-				irSensorRight= int (statusArray[4])
-				print ("Battery="+str(bat)+"("+str(bat/20)+" Volt)")
-				if (bat<630):
-					print ("LOW BATTERY !! - Please Recharge!!")
-				print ("IRSensors="+str(irSensorLeft)+"/"+str(irSensorMiddle)+"/"+str(irSensorRight))
-				sendtogui("battery;"+str(bat/20))
-
+		if info == "status" and currentStatus: #wenn status abgefragt wird
+			sendtogui("battery;"+str(currentStatus['batVolt']))
 	elif action == "IPcheck":
 		pass
 
@@ -448,8 +441,13 @@ def webserver():
 
 # This function is used as Thread to periodically update the battery information
 def StatusInfo():
+	global currentStatus
 	while True:
-		chooseAction("get;status")
+		currentStatus = teensySender.getStatus()
+		print ("Battery= " + currentStatus['batVolt'] + " Volt)")
+		if currentStatus['batVolt'] < 31.5:
+			print ("LOW BATTERY !! - Please Recharge!!")
+		print ("IRSensors="+str(currentStatus['irLeft'])+"/"+str(currentStatus['irMiddle'])+"/"+str(currentStatus['irRight']))
 		time.sleep(1)
 	
 # Main function starts all threads and handles event interrupts for closing this program	
