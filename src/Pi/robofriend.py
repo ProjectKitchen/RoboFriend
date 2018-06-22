@@ -444,7 +444,7 @@ def StatusInfo():
 	global currentStatus
 	while True:
 		currentStatus = teensySender.getStatus()
-		print ("Battery= " + currentStatus['batVolt'] + " Volt)")
+		print ("Battery= " + str(currentStatus['batVolt']) + " Volt)")
 		if currentStatus['batVolt'] < 31.5:
 			print ("LOW BATTERY !! - Please Recharge!!")
 		print ("IRSensors="+str(currentStatus['irLeft'])+"/"+str(currentStatus['irMiddle'])+"/"+str(currentStatus['irRight']))
