@@ -1,7 +1,7 @@
 (export (version D)
   (design
     (source C:/Users/mzahedi/Documents/Git/RoboFriend/pcb/kicad/robofriend.sch)
-    (date "02/07/2018 20:17:43")
+    (date "02/07/2018 20:30:15")
     (tool "Eeschema 4.0.7")
     (sheet (number 1) (name /) (tstamps /)
       (title_block
@@ -1145,10 +1145,10 @@
       (uri "C:\\Program Files\\KiCad\\share\\kicad\\library\\linear.lib"))
     (library (logical regul)
       (uri "C:\\Program Files\\KiCad\\share\\kicad\\library\\regul.lib"))
-    (library (logical lm4040)
-      (uri C:\Users\mzahedi\Documents\Git\RoboFriend\pcb\lib\LM4040\lm4040.lib))
     (library (logical teensy)
       (uri C:\Users\mzahedi\Documents\Git\RoboFriend\pcb\lib\Teensy\teensy.lib))
+    (library (logical lm4040)
+      (uri C:\Users\mzahedi\Documents\Git\RoboFriend\pcb\lib\LM4040\lm4040.lib))
     (library (logical usb)
       (uri C:\Users\mzahedi\Documents\Git\RoboFriend\pcb\lib\USB\usb.lib)))
   (nets
