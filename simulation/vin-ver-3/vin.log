@@ -1,6 +1,7 @@
-Circuit: * C:\Users\mzahedi\Documents\Git\RoboFriend\simulation\vin-ver-2\vin.asc
+Circuit: * C:\Users\mzahedi\Documents\Git\RoboFriend\simulation\vin-ver-3\vin.asc
 
-WARNING: Less than two connections to node AUDIOAMP.  This node is used by S1.
+V2: both pins shorted together -- ignoring.
+WARNING: Less than two connections to node N004.  This node is used by V1.
 Direct Newton iteration failed to find .op point.  (Use ".option noopiter" to skip.)
 Starting Gmin stepping
 Gmin = 10
@@ -22,20 +23,20 @@ Gmin = 0
 Gmin stepping succeeded in finding the operating point.
 
 
-Date: Fri Jul 06 10:37:01 2018
-Total elapsed time: 0.617 seconds.
+Date: Mon Jul 09 16:21:22 2018
+Total elapsed time: 0.237 seconds.
 
 tnom = 27
 temp = 27
 method = modified trap
-totiter = 11254
-traniter = 10842
-tranpoints = 3319
-accept = 2587
-rejected = 732
-matrix size = 57
-fillins = 25
+totiter = 3469
+traniter = 3008
+tranpoints = 1132
+accept = 892
+rejected = 240
+matrix size = 65
+fillins = 24
 solver = Normal
-Matrix Compiler1: 5.02 KB object code size  1.8/0.8/[0.6]
-Matrix Compiler2: 5.19 KB object code size  1.0/1.2/[0.6]
+Matrix Compiler1: 4.44 KB object code size  2.1/1.2/[0.6]
+Matrix Compiler2: 5.45 KB object code size  1.2/1.6/[0.7]
 
