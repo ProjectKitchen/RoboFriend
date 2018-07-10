@@ -62,7 +62,7 @@ eyestep = 10
 main_dir = os.path.split(os.path.abspath(__file__))[0]
 
 #set up flask server
-app = Flask(__name__, static_url_path='')
+app = Flask(__name__)
 
 teensySender.init()
 
