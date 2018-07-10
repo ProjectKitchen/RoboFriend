@@ -1,22 +1,23 @@
-Circuit: * C:\Users\mzahedi\Documents\Git\RoboFriend\simulation\adc1\adc.asc
+Circuit: * C:\Users\mzahedi\Documents\Git\RoboFriend\simulation\adc\adc.asc
 
-WARNING: Less than two connections to node 24V.  This node is used by V3.
-.OP point found by inspection.
+WARNING: Less than two connections to node 12V.  This node is used by V3.
+WARNING: Less than two connections to node 24V.  This node is used by V5.
+Direct Newton iteration for .op point succeeded.
 
-Date: Wed May 23 00:40:04 2018
-Total elapsed time: 0.098 seconds.
+Date: Tue Jul 10 11:53:40 2018
+Total elapsed time: 0.168 seconds.
 
 tnom = 27
 temp = 27
 method = modified trap
-totiter = 2604
-traniter = 2604
-tranpoints = 1065
-accept = 835
-rejected = 230
-matrix size = 23
+totiter = 2826
+traniter = 2813
+tranpoints = 1115
+accept = 889
+rejected = 226
+matrix size = 32
 fillins = 0
 solver = Normal
-Matrix Compiler1: 726 bytes object code size  0.6/0.3/[0.2]
-Matrix Compiler2: 1.50 KB object code size  0.2/0.5/[0.2]
+Matrix Compiler1: 1.06 KB object code size  0.6/0.3/[0.3]
+Matrix Compiler2: off  [0.2]/0.4/0.3
 
