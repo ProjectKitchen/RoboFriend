@@ -64,7 +64,7 @@ def ipauswahl():
 	ipelse=Buttons.Button()
 	iphotspot = Buttons.Button()
 	ippk.create_button(screen, GREEN, 100, 100, B_LENGTH,    B_HEIGHT,       "ProjectKitchen", WHITE, 0) #dunkelgruen button, weisse schrift
-	ipelse.create_button(screen, GREEN, 400, 100, B_LENGTH,    B_HEIGHT,      "Handy-IP: 192.168.43.218", WHITE, 0)
+	ipelse.create_button(screen, GREEN, 400, 100, B_LENGTH,    B_HEIGHT,      "ArtLab: 192.168.1.137", WHITE, 0)
 	iphotspot.create_button(screen, GREEN, 200, 300, B_LENGTH,    B_HEIGHT,      "HotspotIP: 192.168.0.100", WHITE, 0)
 	pygame.display.flip()
 	ip = 0
@@ -83,7 +83,7 @@ def ipauswahl():
 					UDP_IP = '10.10.10.104'
 					ip =1
 				if ipelse.pressed(pygame.mouse.get_pos()):
-					UDP_IP = '192.168.43.218' 
+					UDP_IP = '192.168.1.137'
 					ip = 1
 				if iphotspot.pressed(pygame.mouse.get_pos()):
 					UDP_IP = '192.168.0.100' 
