@@ -20,6 +20,10 @@ import json
 
 #own modules
 import python.teensyCommunicator as teensySender
+import python.pygameModule as pygameModule
+
+print "from main:"
+print pygameModule.test()
 
 """ SETUP """
 

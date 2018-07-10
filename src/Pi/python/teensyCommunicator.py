@@ -2,6 +2,10 @@ import serial
 import threading
 from time import sleep
 
+import python.pygameModule as pygameModule
+print "from teensy:"
+print pygameModule.test()
+
 # globals
 send_lock = threading.Lock()
 ser = None
