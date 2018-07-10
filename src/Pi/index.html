@@ -26,7 +26,14 @@
             console.log('got status:');
             console.log(response);
             if(response && response.batVolt) {
+                var irMax = 512;
                 L('#batIndicator').innerHTML = response.batVolt;
+                L('#irval-left').innerHTML = response.irLeft;
+                L('#irval-middle').innerHTML = response.irMiddle;
+                L('#irval-right').innerHTML = response.irRight;
+                L('#ircontainer-left').style.width = (response.irLeft/irMax*100) + '%';
+                L('#ircontainer-middle').style.width = (response.irMiddle/irMax*100) + '%';
+                L('#ircontainer-right').style.width = (response.irRight/irMax*100) + '%';
             }
         });
     }, 1000);
@@ -37,9 +44,21 @@
     <span class="circle" style="position: absolute; top: -7px; left: -7px; color: red;"></span>
 </span>
 <div class="container">
-    <div>
-        <h1 class="inline">RoboFriend</h1>
-        <span class="inline">Akku: <span id="batIndicator">(?)</span> Volt</span>
+    <div class="row">
+        <h1 class="three columns">RoboFriend</h1>
+        <span class="two columns">Akku: <span id="batIndicator">(?)</span> Volt</span>
+        <div class="two columns irval-container" style="border: solid thin; position: relative">
+            <div class="irval-indicator" id="ircontainer-left" style="width: 0%"></div>
+            IR Left: <span id="irval-left">(?)</span>
+        </div>
+        <div class="two columns irval-container" style="border: solid thin; position: relative">
+            <div class="irval-indicator" id="ircontainer-middle" style="width: 0%"></div>
+            IR Middle: <span id="irval-middle">(?)</span>
+        </div>
+        <div class="two columns irval-container" style="border: solid thin; position: relative">
+            <div class="irval-indicator" id="ircontainer-right" style="width: 0%"></div>
+            IR Right: <span id="irval-right">(?)</span>
+        </div>
     </div>
     <div class="row">
         <div id="camContainer" class="six columns">

@@ -40,3 +40,16 @@
     border-radius: 50%;
     display: inline-block;
 }
+
+.irval-container {
+    border: solid thin;
+    position: relative;
+    margin-bottom: 1em;
+}
+
+.irval-indicator {
+    position: absolute;
+    background-color: lightcoral;
+    height: 100%;
+    z-index: -1;
+}
