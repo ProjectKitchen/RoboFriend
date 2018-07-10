@@ -1,2 +1,4 @@
+*.pyc
 *.iml
+
 src/Pi/index.html
