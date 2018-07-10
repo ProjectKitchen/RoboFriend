@@ -2,22 +2,18 @@ import serial
 import threading
 from time import sleep
 
-import python.pygameModule as pygameModule
-print "from teensy:"
-print pygameModule.test()
-
 # globals
 send_lock = threading.Lock()
 ser = None
 driveDuration = 50
 
-def init():
-    global ser
-    try:
-        ser = serial.Serial("/dev/ttyACM0", 9600, timeout=1)
-        print('***Serial for Teensy opened***')
-    except:
-        print('***Serial for Teensy could not be opened***')
+#init
+print "initializing teensyCommunicator..."
+try:
+    ser = serial.Serial("/dev/ttyACM0", 9600, timeout=1)
+    print('***Serial for Teensy opened***')
+except:
+    print('***Serial for Teensy could not be opened***')
 
 def close():
     global ser

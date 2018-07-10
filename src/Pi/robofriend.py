@@ -1,9 +1,6 @@
 #!/usr/bin/env python
-# neues Kommunikationsprotokoll implementiert
-"""Proof of concept gfxdraw example"""
 
 import pygame
-import pygame.gfxdraw
 import socket
 import sys
 import threading
@@ -20,10 +17,9 @@ import json
 
 #own modules
 import python.teensyCommunicator as teensySender
-import python.pygameModule as pygameModule
+import python.faceModule as faceModule
 
-print "from main:"
-print pygameModule.test()
+faceModule.drawHappyFace()
 
 """ SETUP """
 
@@ -33,9 +29,6 @@ print pygameModule.test()
 #switch on head, LEDS and Servo
 p=os.system('sudo ./iowarrior/iow 0 10 10 140')
 
-#setup pygame
-pygame.init()
-
 #setup pyttsx / espeak
 speechEngine = pyttsx.init()
 speechEngine.setProperty('rate', 150) #150 words per minute
@@ -43,32 +36,17 @@ speechEngine.say('i am robofriend')
 speechEngine.runAndWait()
 
 #global
-#screen = pygame.display.set_mode((654,380))
-screen = pygame.display.set_mode((654, 380), pygame.FULLSCREEN)
-screen.fill((0, 0, 0))
-bat_prozent = 0
-bat_prozent_lock = threading.Lock()
 cameraPos = 140
 earColorR = 0
 earColorG = 10
 earColorB = 10
 currentStatus = None
 
-#face informationen
-radius = 0.8
-eyex = 0
-eyey = 0
-sadFace = 0
-eyestep=10
-eyestep = 10
-
 #directory manager (eg. for sound)
 main_dir = os.path.split(os.path.abspath(__file__))[0]
 
 #set up flask server
 app = Flask(__name__)
-
-teensySender.init()
 
 UDP_PORT = 9000 #socket port
 
@@ -184,7 +162,7 @@ def getResponse(responseString):
 
 # this functions handles input from the gamegui, as well as webserver and BatteryThread-thread
 def chooseAction(data):
-	global bat_prozent, bat_prozent_lock, currentStatus
+	global currentStatus
 	dataArray = data.split(';') # Nachricht wird in ein Array gespeichert
 	print(dataArray)
 	action = dataArray[0] # erstes Argument
@@ -202,7 +180,7 @@ def chooseAction(data):
 		if info == "play":
 			playsound(dataArray)
 	elif action == "face":
-		faceManipulation(dataArray)
+		faceModule.faceManipulation(dataArray)
 	elif action == "get":
 		info = dataArray[0]
 		if info == "status" and currentStatus: #wenn status abgefragt wird
@@ -266,7 +244,7 @@ def playsound(dataArray):
 		elif info == "mood":
 			print ("mood sound")
 			mood_sounds = ["sad","happy"]
-			if sadFace:
+			if faceModule.isSad():
 				soundpath = soundname+mood_sounds[0]+".wav"
 			else:
 				soundpath = soundname+mood_sounds[1]+".wav"
@@ -281,79 +259,6 @@ def playsound(dataArray):
 		print ("could not open "+soundpath)
 	else:
 		selectedSound.play()
-
-# this function is called by chooseAction if the facial expression of the robot has to change
-def faceManipulation(dataArray):
-	global radius, eyey, eyex, sadFace, eyestep
-	faceObject = dataArray[0] #eyes or smile
-	dataArray = dataArray[1:]
-	if faceObject == "smile":
-		changing = dataArray[0]
-		if changing == "increase":
-			if (radius < 1.3 and sadFace == 0):
-				radius=radius+0.1
-			elif (sadFace ==1):
-				if radius < 0.3:
-					sadFace = 0
-					radius = radius +0.1
-				else:
-					sadFace = 1
-					radius = radius-0.1				
-		elif changing == "decrease":
-			if (radius > 0.3 and sadFace == 0):
-				radius=radius-0.1
-			elif ((sadFace==1 or radius < 0.3) and radius < 0.8):
-				sadFace=1
-				radius=radius+0.1
-	elif faceObject == "eyes":
-		changing = dataArray[0]
-		if changing == "up":
-			if eyey > -40:
-				eyey=eyey-eyestep
-		elif changing == "down":
-			if eyey < 40:
-				eyey=eyey+eyestep
-		elif changing == "right":
-			if eyex < 40:
-				eyex=eyex+eyestep
-		elif changing == "left":
-			if eyex > -40:
-				eyex=eyex-eyestep
-	elif faceObject == "answer":
-		changing = dataArray[0]
-		if changing == "correct":
-			sadFace = 0
-			radius = 0.8
-		if changing == "wrong":
-			sadFace = 1
-			radius = 0.8
-			teensySender.shakeHeadForNo()
-	if sadFace == 0:
-		DrawFace()
-	elif sadFace == 1:
-		DrawSadFace()	
-
-# Updating Facial expression of robot in case of a happy expression
-def DrawFace():
-	global screen, eyex, eyey, radius
-	screen.fill((0, 0, 0))
-	pygame.draw.circle(screen, (100,250,250), (163,100), 60) #lefteye
-	pygame.draw.circle(screen, (100,250,250), (491,100), 60) #righteye
-	pygame.draw.circle(screen, (10,10,10), (163+eyex,100+eyey), 20) #leftpupil
-	pygame.draw.circle(screen, (10,10,10), (491+eyex,100+eyey), 20) #rightpupil
-	pygame.draw.arc(screen, (100,200,200), (57, -30, 540, 400), 4.7-radius, 4.7+radius, 20) #smile
-	pygame.display.flip()
-
-# Updating Facial expression of robot in case of a sad expression	
-def DrawSadFace():
-	global screen, eyex, eyey, radius
-	screen.fill((0, 0, 0))
-	pygame.draw.circle(screen, (100,250,250), (163,100), 60) #lefteye
-	pygame.draw.circle(screen, (100,250,250), (491,100), 60) #righteye
-	pygame.draw.circle(screen, (10,10,10), (163+eyex,100+eyey), 20) #leftpupil
-	pygame.draw.circle(screen, (10,10,10), (491+eyex,100+eyey), 20) #rightpupil
-	pygame.draw.arc(screen, (100,200,200), (57, 300, 540, 400), 1.57-radius, 1.57+radius, 20) #smile
-	pygame.display.flip()
 
 # This function is used to send information to the gamegui and can be called by the Thread serialRFIDread (for RFID data) and chooseAction (for battery information)
 def sendtogui(i):	
@@ -371,7 +276,7 @@ def sendtogui(i):
 		
 # This function is used as Thread to always listen if there is a client (gamegui) sending commands
 def data_listener():
-	global screen, IP, radius, eyex, eyey, sadFace
+	global IP
 	
 	#Connect the UDP_Port
 	try:
@@ -380,8 +285,6 @@ def data_listener():
 		print('***** UDP SOCKET opened ******')
 	except:
 		print('Could not open UDP SOCKET!')
-
-	DrawFace()
 	
 	try:
 		startFlag = ":RUN:"
