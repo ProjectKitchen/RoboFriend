@@ -18,6 +18,7 @@ import json
 #own modules
 import python.teensyCommunicator as teensySender
 import python.faceModule as faceModule
+import python.soundModule as soundModule
 
 faceModule.drawHappyFace()
 
@@ -42,9 +43,6 @@ earColorG = 10
 earColorB = 10
 currentStatus = None
 
-#directory manager (eg. for sound)
-main_dir = os.path.split(os.path.abspath(__file__))[0]
-
 #set up flask server
 app = Flask(__name__)
 
@@ -61,27 +59,7 @@ else:
 		UDP_IP = ''
 IP = ''
 
-#sound setup
-if pygame.mixer and not pygame.mixer.get_init():
-    print ('Warning, no sound')
-    pygame.mixer = None
-
-class dummysound:
-	def play(self): pass
-	
 SendToApp = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) # UDP
-	
-""" FUNCTIONS """
-#loading sounds from subdir 'data'    
-def load_sound(file):
-	if not pygame.mixer: return dummysound()
-	file = os.path.join(main_dir, 'data', file)
-	try:
-		sound = pygame.mixer.Sound(file)
-		return sound
-	except pygame.error:
-		print ('Warning, unable to load, %s' % file)
-	return dummysound()
 
 def setCameraPos(pos):
 	global earColorR, earColorG, earColorB
@@ -174,11 +152,10 @@ def chooseAction(data):
 		speechEngine.say(dataArray[0])
 		speechEngine.runAndWait()
 	elif action == "sound":
-		pygame.mixer.stop()
 		info = dataArray[0]
 		dataArray = dataArray[1:]
 		if info == "play":
-			playsound(dataArray)
+			soundModule.playsound(dataArray)
 	elif action == "face":
 		faceModule.faceManipulation(dataArray)
 	elif action == "get":
@@ -224,41 +201,6 @@ def move(dataArray):
 			teensySender.moveBackLeftLoop()
 		elif dir == "stop":
 			teensySender.stopMovement()
-
-# this function is called by chooseAction if the robot has to speak/make a sound			
-def playsound(dataArray):
-	soundname = dataArray[0] #sound(name +) pfad!
-	if len(dataArray) > 1: #random sounds oder Aehnliches
-		dataArray = dataArray[1:]
-		info = dataArray[0]
-		print ("info = " + info)
-
-		if len(dataArray) > 1: # sollten mal noch mehr parameter notwendig sein
-			dataArray = dataArray[1:]
-			return
-		elif info == "random":
-			print ("random sound")
-			r_sounds = ["s1", "s2", "s3", "s4", "s5", "s6", "s7", "s8"]
-			rsnr =random.randint(0,7)
-			soundpath = soundname+r_sounds[rsnr]+".wav"
-		elif info == "mood":
-			print ("mood sound")
-			mood_sounds = ["sad","happy"]
-			if faceModule.isSad():
-				soundpath = soundname+mood_sounds[0]+".wav"
-			else:
-				soundpath = soundname+mood_sounds[1]+".wav"
-	else:
-		print ("playing soundfile " + soundname)
-		soundpath = soundname
-	
-	try:
-		print ("playing sound "+soundpath)
-		selectedSound = pygame.mixer.Sound(soundpath)
-	except:
-		print ("could not open "+soundpath)
-	else:
-		selectedSound.play()
 
 # This function is used to send information to the gamegui and can be called by the Thread serialRFIDread (for RFID data) and chooseAction (for battery information)
 def sendtogui(i):	
@@ -395,10 +337,10 @@ def main():
 					sys.exit()
 				if event.unicode == '1':
 					print('smile increase via keyboard')
-					chooseAction("face;smile;increase");
+					faceModule.increaseSmile()
 				if event.unicode == '2':
 					print('smile decrease via keyboard')
-					chooseAction("face;smile;decrease");
+					faceModule.decreaseSmile()
 				if event.key == pygame.K_UP:
 					print("move forward via keyboard")
 					teensySender.moveForwardLoop()
@@ -416,10 +358,10 @@ def main():
 					teensySender.stopMovement()
 				if event.unicode == '3':
 					print('sound play random via keyboard')
-					chooseAction("sound;play;data/fabibox/;random");
+					soundModule.playRandom()
 				if event.unicode == '4':
 					print('sound play mood via keyboard')
-					chooseAction("sound;play;data/;mood");
+					soundModule.playMood()
 			time.sleep(0.1)
 
 	except Exception, e:
