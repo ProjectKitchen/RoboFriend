@@ -12,7 +12,7 @@ import time
 import curses
 import random, os.path
 from time import sleep
-from flask import Flask, render_template, request, redirect, url_for, make_response
+from flask import Flask, render_template, request, redirect, url_for, make_response, send_file
 import urllib
 import pyttsx
 import json
@@ -62,7 +62,7 @@ eyestep = 10
 main_dir = os.path.split(os.path.abspath(__file__))[0]
 
 #set up flask server
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='')
 
 teensySender.init()
 
@@ -122,8 +122,7 @@ def translateIntRange(value, leftMin, leftMax, rightMin, rightMax):
 #when the root IP is selected, return index.html page
 @app.route('/')
 def index():
-
-	return render_template('index.html', battery = bat_prozent )
+	return make_response(send_file('index.html'))
 
 @app.route('/camera/up', methods=['POST'])
 def cameraup():
@@ -132,7 +131,7 @@ def cameraup():
 	if cameraPos <= 150:
 		cameraPos += 10
 	setCameraPos(cameraPos)
-	return("OK")
+	return getResponse("OK")
 
 @app.route('/camera/down', methods=['POST'])
 def cameradown():
@@ -141,7 +140,7 @@ def cameradown():
 	if cameraPos >= 20:
 		cameraPos -= 10
 	setCameraPos(cameraPos)
-	return("OK")
+	return getResponse("OK")
 
 @app.route('/ear/color/<earColorR>/<earColorG>/<earColorB>', methods=['POST'])
 def setEarRGB(earColorR, earColorG, earColorB):
@@ -150,17 +149,17 @@ def setEarRGB(earColorR, earColorG, earColorB):
 	g = translateIntRange(int(earColorG), 0, 255, 0, 15)
 	b = translateIntRange(int(earColorB), 0, 255, 0, 15)
 	sendToIOWarrior(r, g, b, cameraPos)
-	return("OK")
+	return getResponse("OK")
 
 @app.route('/move/<left>/<right>/<duration>', methods=['POST'])
 def move(left, right, duration):
 	teensySender.move(left, right, duration)
-	return("OK")
+	return getResponse("OK")
 
 @app.route('/get/status', methods=['GET'])
 def getStatus():
 	global currentStatus
-	return json.dumps(currentStatus)
+	return getResponse(json.dumps(currentStatus))
 
 @app.route('/<action>', methods=['POST'])
 # webserver rerouting - action indicates the chosen command which will be decoded and then interpreted with the function chooseAction 
@@ -172,8 +171,12 @@ def reroute(action):
 		print("action is not valid")
 	else:
 		chooseAction(action)
-	response = make_response(redirect(url_for('index')))
-	return(response)
+	return getResponse("OK")
+
+def getResponse(responseString):
+    resp = make_response(responseString)
+    resp.headers['Access-Control-Allow-Origin'] = '*'
+    return resp
 
 # this functions handles input from the gamegui, as well as webserver and BatteryThread-thread
 def chooseAction(data):
