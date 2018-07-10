@@ -102,6 +102,13 @@
                 </div>
             </div>
             <div class="row">
+                <label class="two columns">Mouth</label>
+                <div class="ten columns">
+                    <button type="submit" onclick="communicator.sendAction('face%3Bsmile%3Bincrease')" name="lookUp"> Smile more </button>
+                    <button type="submit" onclick="communicator.sendAction('face%3Bsmile%3Bdecrease')" name="lookDown"> Smile less </button>
+                </div>
+            </div>
+            <div class="row">
                 <label for="colorPicker" class="two columns">Ear color</label>
                 <div class="ten columns">
                     <input id="colorPicker" type="color" onchange="colorChanged(this.value)"/>
