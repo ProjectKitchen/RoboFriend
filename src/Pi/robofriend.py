@@ -6,19 +6,16 @@ import sys
 import threading
 import serial
 import time
-import curses
 import os
-from time import sleep
 from flask import Flask, render_template, request, redirect, url_for, make_response, send_file
 import urllib
-import pyttsx
 import json
-#import pyautogui
 
 #own modules
 import python.teensyCommunicator as teensySender
 import python.faceModule as faceModule
 import python.soundModule as soundModule
+import python.speechModule as speechModule
 
 faceModule.drawHappyFace()
 
@@ -29,12 +26,6 @@ faceModule.drawHappyFace()
 
 #switch on head, LEDS and Servo
 p=os.system('sudo ./iowarrior/iow 0 10 10 140')
-
-#setup pyttsx / espeak
-speechEngine = pyttsx.init()
-speechEngine.setProperty('rate', 150) #150 words per minute
-speechEngine.say('i am robofriend')
-speechEngine.runAndWait()
 
 #global
 cameraPos = 140
@@ -149,8 +140,7 @@ def chooseAction(data):
 		move(dataArray)
 	elif action == "say":
 		print('saying :' + dataArray[0])
-		speechEngine.say(dataArray[0])
-		speechEngine.runAndWait()
+		speechModule.speak(dataArray[0])
 	elif action == "sound":
 		info = dataArray[0]
 		dataArray = dataArray[1:]
