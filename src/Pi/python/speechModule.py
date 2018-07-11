@@ -11,5 +11,6 @@ speechEngine.runAndWait()
 
 def speak(text):
     global speechEngine
+    print "speaking: " + text
     speechEngine.say(text)
     speechEngine.runAndWait()
