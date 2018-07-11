@@ -1,6 +1,6 @@
 import serial
 import threading
-import python.gameCommunicator as gameCommunicator
+import gameCommunicator
 
 # globals
 serRFID = None

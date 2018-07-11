@@ -3,7 +3,7 @@ import time
 import threading
 
 #own modules
-import python.teensyCommunicator as teensyCommunicator
+import teensyCommunicator
 
 # globals
 currentStatus = None

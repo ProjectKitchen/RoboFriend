@@ -5,9 +5,9 @@ import urllib
 import json
 
 #own modules
-import python.ioWarriorModule as ioWarriorModule
-import python.teensyCommunicator as teensyCommunicator
-import python.legacyApiModule as legacyApiModule
+import ioWarriorModule
+import teensyCommunicator
+import legacyApiModule
 
 #init
 app = Flask(__name__)

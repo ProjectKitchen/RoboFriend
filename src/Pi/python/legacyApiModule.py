@@ -1,8 +1,8 @@
-import python.teensyCommunicator as teensySender
-import python.faceModule as faceModule
-import python.soundModule as soundModule
-import python.speechModule as speechModule
-import python.gameCommunicator as gameCommunicator
+import teensyCommunicator
+import faceModule
+import soundModule
+import speechModule
+import gameCommunicator
 
 #init
 print "initializing legacyApiModule..."
@@ -44,30 +44,30 @@ def move(dataArray):
         dataArray = dataArray[1:]
         step = dataArray[0] # fuer spaeter hier Erweiterung moeglich auf Laenge der steps eingehen, jetzt nur standardwert verwendet
         if dir == "forward":
-            teensySender.moveForwardStep()
+            teensyCommunicator.moveForwardStep()
         elif dir == "backward":
-            teensySender.moveBackStep()
+            teensyCommunicator.moveBackStep()
         elif dir == "left":
-            teensySender.moveLeftStep()
+            teensyCommunicator.moveLeftStep()
         elif dir == "right":
-            teensySender.moveRightStep()
+            teensyCommunicator.moveRightStep()
     else: # keine step informationen vorhanden, daher loop, Joystick verwendet
         print ("loop")
         if dir == "forward":
-            teensySender.moveForwardLoop()
+            teensyCommunicator.moveForwardLoop()
         elif dir == "backward":
-            teensySender.moveBackLoop()
+            teensyCommunicator.moveBackLoop()
         elif dir == "left":
-            teensySender.moveLeftLoop()
+            teensyCommunicator.moveLeftLoop()
         elif dir == "right":
-            teensySender.moveRightLoop()
+            teensyCommunicator.moveRightLoop()
         elif dir == "forward_right":
-            teensySender.moveForwardRightLoop()
+            teensyCommunicator.moveForwardRightLoop()
         elif dir == "forward_left":
-            teensySender.moveForwardLeftLoop()
+            teensyCommunicator.moveForwardLeftLoop()
         elif dir == "backward_right":
-            teensySender.moveBackRightLoop()
+            teensyCommunicator.moveBackRightLoop()
         elif dir == "backward_left":
-            teensySender.moveBackLeftLoop()
+            teensyCommunicator.moveBackLeftLoop()
         elif dir == "stop":
-            teensySender.stopMovement()
+            teensyCommunicator.stopMovement()

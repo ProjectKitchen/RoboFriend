@@ -1,7 +1,7 @@
 import pygame
 import pygame.gfxdraw
 
-import python.teensyCommunicator as teensySender
+import teensyCommunicator
 
 #init
 print "initializing faceModule..."
@@ -110,7 +110,7 @@ def faceManipulation(dataArray):
         if changing == "wrong":
             sadFace = 1
             radius = 0.8
-            teensySender.shakeHeadForNo()
+            teensyCommunicator.shakeHeadForNo()
     if sadFace == 0:
         drawHappyFace()
     elif sadFace == 1:

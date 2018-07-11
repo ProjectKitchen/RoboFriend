@@ -3,7 +3,7 @@ import threading
 import sys
 
 # own modules
-import python.legacyApiModule as legacyApiModule
+import legacyApiModule
 
 # globals
 UDP_PORT = 9000 #socket port

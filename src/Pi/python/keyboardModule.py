@@ -4,9 +4,9 @@ import sys
 import threading
 
 # own modules
-import python.teensyCommunicator as teensyCommunicator
-import python.faceModule as faceModule
-import python.soundModule as soundModule
+import teensyCommunicator
+import faceModule
+import soundModule
 
 # globals
 currentStatus = None

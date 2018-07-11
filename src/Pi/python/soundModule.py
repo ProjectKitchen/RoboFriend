@@ -2,7 +2,7 @@ import pygame
 import random
 
 #own modules
-import python.faceModule as faceModule
+import faceModule
 
 #init
 print "initializing soundModule..."
