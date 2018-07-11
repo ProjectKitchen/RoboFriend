@@ -83,23 +83,8 @@ def shakeHeadForNo():
     sleep(0.5)
     sendSerial("D -50 50 10")
 
-def getStatus():
-    response = sendSerial("R", True)
-    batVolt = -1
-    irSensorLeft = -1
-    irSensorMiddle = -1
-    irSensorRight = -1
-    try:
-        statusArray = response.split(',')
-        if (statusArray[0] == "Sensors"):
-            batVolt = int(statusArray[1]) / 20
-            irSensorLeft = int(statusArray[2])
-            irSensorMiddle = int(statusArray[3])
-            irSensorRight = int(statusArray[4])
-    except:
-        print("error parsing status values: " + response)
-
-    return {'batVolt': batVolt, 'irLeft': irSensorLeft, 'irMiddle': irSensorMiddle, 'irRight': irSensorRight}
+def getRawStatus():
+    return sendSerial("R", True)
 
 def sendSerial(commandString, readResponse=False):
     global send_lock, ser
@@ -116,3 +101,8 @@ def sendSerial(commandString, readResponse=False):
         send_lock.release()
 
     return response
+
+def stop():
+    global ser
+    print "stopping teensyCommunicator..."
+    ser.close()
