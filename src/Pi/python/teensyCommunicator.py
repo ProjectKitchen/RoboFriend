@@ -97,8 +97,8 @@ def sendSerial(commandString, readResponse=False):
             response = str(ser.readline())
     except:
         print('***Serial write error ***')
-    finally:
-        send_lock.release()
+
+    send_lock.release()
 
     return response
 
