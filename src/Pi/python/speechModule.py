@@ -8,6 +8,7 @@ speechEngine.say('i am robofriend')
 speechEngine.runAndWait()
 
 # globals
+# --- none ---
 
 def speak(text):
     global speechEngine
