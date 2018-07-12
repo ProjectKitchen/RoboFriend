@@ -10,7 +10,7 @@ import teensyCommunicator
 import legacyApiModule
 
 #init
-app = Flask(__name__)
+app = Flask(__name__, static_folder='../static')
 webserverDebug = False
 webserverHost = '0.0.0.0'
 webserverPort = 8765
@@ -20,7 +20,7 @@ webserverPort = 8765
 
 @app.route('/')
 def index():
-    return make_response(send_file('index.html'))
+    return make_response(send_file('../index.html'))
 
 @app.route('/camera/up', methods=['POST'])
 def cameraup():
