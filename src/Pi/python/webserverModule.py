@@ -8,6 +8,7 @@ import json
 import ioWarriorModule
 import teensyCommunicator
 import legacyApiModule
+import statusModule
 
 #init
 app = Flask(__name__, static_folder='../static')
@@ -49,8 +50,7 @@ def move(left, right, duration):
 
 @app.route('/get/status', methods=['GET'])
 def getStatus():
-    global currentStatus
-    return getResponse(json.dumps(currentStatus))
+    return getResponse(json.dumps(statusModule.getStatus()))
 
 @app.route('/<action>', methods=['POST'])
 # webserver rerouting - action indicates the chosen command which will be decoded and then interpreted with the function chooseAction
