@@ -1,18 +1,15 @@
 import pyttsx
-import threading
 
 # globals
-lock = threading.Lock()
+# --- none ---
 
 def speak(text):
-    global speechEngine, lock
+    global speechEngine
 
-    if not lock.locked():
-        lock.acquire()
+    if not speechEngine.isBusy():
         print "speaking: " + text
         speechEngine.say(text)
         speechEngine.runAndWait()
-        lock.release()
 
 #init
 print "initializing speechModule..."
