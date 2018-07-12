@@ -2,6 +2,7 @@
 
 # external modules
 import signal
+import time
 
 # own modules
 import python.faceModule as faceModule
@@ -12,7 +13,12 @@ import python.gameCommunicator as gameCommunicator
 import python.keyboardModule as keyboardModule
 import python.teensyCommunicator as teensyCommunicator
 
+# globals
+runFlag = True
+
 def handler_stop_signals(signum, frame):
+	global runFlag
+
 	print "*** shutting down ... ***"
 	rfidModule.stop()
 	webserverModule.stop()
@@ -21,8 +27,11 @@ def handler_stop_signals(signum, frame):
 	keyboardModule.stop()
 	teensyCommunicator.stop()
 	faceModule.close()
+	runFlag = False
 
 def main():
+	global runFlag
+
 	# starting modules
 	rfidModule.start()
 	webserverModule.start()
@@ -36,6 +45,8 @@ def main():
 	signal.signal(signal.SIGINT, handler_stop_signals)
 	signal.signal(signal.SIGTERM, handler_stop_signals)
 	print "*** startup completed! ***"
+
+	while runFlag: time.sleep(0.5) # keep program running until stopped
 
 if __name__ == '__main__':
 	main()
