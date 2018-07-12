@@ -97,7 +97,7 @@ function MoveController() {
         if(!hasMoved && currentEvent.direction && currentEvent.direction != CONST.DIR_NONE && !currentEvent.didDynamicMovement) {
             communicator.sendMove(currentEvent.direction);
         } else {
-            communicator.sendMove(CONST.MOVECMD_STOP);
+            communicator.moveStop();
         }
 
         //reset

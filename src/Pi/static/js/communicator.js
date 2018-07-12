@@ -11,31 +11,32 @@ function Communicator() {
     thiz.sendMove = function (directionConstant) {
         switch (directionConstant) {
             case CONST.DIR_UP:
-                thiz.sendAction(CONST.MOVECMD_FORWARD);
+                thiz.sendAction('move/simple/forward');
                 break;
             case CONST.DIR_DOWN:
-                thiz.sendAction(CONST.MOVECMD_BACKWARD);
+                thiz.sendAction('move/simple/backward');
                 break;
             case CONST.DIR_LEFT:
-                thiz.sendAction(CONST.MOVECMD_LEFT);
+                thiz.sendAction('move/simple/left');
                 break;
             case CONST.DIR_RIGHT:
-                thiz.sendAction(CONST.MOVECMD_RIGHT);
+                thiz.sendAction('move/simple/right');
                 break;
         }
-        if(CONST.MOVECOMMANDS.includes(directionConstant)) {
-            thiz.sendAction(directionConstant);
-        }
+    };
+
+    thiz.moveStop = function () {
+        thiz.sendAction('move/stop');
     };
 
     thiz.say = function (stringToSay) {
         if(stringToSay) {
-            thiz.sendAction(CONST.CMD_SAY + stringToSay)
+            thiz.sendAction('speech/say/' + stringToSay)
         }
     };
 
     thiz.sendMoveXY = function (x,y) {
-        thiz.sendAction('move/' + x + '/' + y + '/' + defaultMoveDuration);
+        thiz.sendAction('move/flex/' + x + '/' + y + '/' + defaultMoveDuration);
     };
 
     thiz.getStatus = function () {
