@@ -30,10 +30,12 @@ def main():
 	gameCommunicator.start()
 	keyboardModule.start()
 	faceModule.drawHappyFace()
+	print "init done! register signal handlers..."
 
 	# setting up signal handlers for shutdown
 	signal.signal(signal.SIGINT, handler_stop_signals)
 	signal.signal(signal.SIGTERM, handler_stop_signals)
+	print "*** startup completed! ***"
 
 if __name__ == '__main__':
 	main()
