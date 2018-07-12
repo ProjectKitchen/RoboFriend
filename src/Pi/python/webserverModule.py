@@ -58,7 +58,7 @@ def moveEyes(direction):
 @app.route('/mouth/smile/<action>', methods=['POST'])
 def changeSmile(action):
     methods = {'increase': faceModule.increaseSmile,
-               'dencrease': faceModule.decreaseSmile
+               'decrease': faceModule.decreaseSmile
                }
     if action in methods: methods[action]()
     return getResponse("OK")

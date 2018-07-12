@@ -20,22 +20,22 @@ def close():
     pygame.quit()
 
 def increaseSmile():
-    faceManipulation("face;smile;increase")
+    faceManipulation("smile;increase")
 
 def decreaseSmile():
-    faceManipulation("face;smile;decrease")
+    faceManipulation("smile;decrease")
 
 def eyesUp():
-    faceManipulation("face;eyes;up")
+    faceManipulation("eyes;up")
 
 def eyesDown():
-    faceManipulation("face;eyes;down")
+    faceManipulation("eyes;down")
 
 def eyesLeft():
-    faceManipulation("face;eyes;left")
+    faceManipulation("eyes;left")
 
 def eyesRight():
-    faceManipulation("face;eyes;right")
+    faceManipulation("eyes;right")
 
 def isSad():
     global sadFace
