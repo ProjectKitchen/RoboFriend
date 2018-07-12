@@ -19,10 +19,10 @@ def stop():
     pygame.mixer.stop()
 
 def playRandom():
-    playsound("data/fabibox/;random")
+    playsound(["data/fabibox/","random"])
 
 def playMood():
-    playsound("data/;mood")
+    playsound(["data/","mood"])
 
 # deprecated: use single methods like playRandom()
 # this function is called by chooseAction if the robot has to speak/make a sound
