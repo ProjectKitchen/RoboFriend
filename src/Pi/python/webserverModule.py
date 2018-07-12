@@ -79,7 +79,7 @@ def moveSimple(direction):
     return getResponse("OK")
 
 @app.route('/move/stop', methods=['POST'])
-def move():
+def moveStop():
     teensyCommunicator.stopMovement()
     return getResponse("OK")
 
