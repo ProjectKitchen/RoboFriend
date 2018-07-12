@@ -5,11 +5,10 @@ import pyttsx
 
 def speak(text):
     global speechEngine
-
-    if not speechEngine.isBusy():
-        print "speaking: " + text
-        speechEngine.say(text)
-        speechEngine.runAndWait()
+    print "speaking: " + text
+    speechEngine.stop()
+    speechEngine.say(text)
+    speechEngine.runAndWait()
 
 #init
 print "initializing speechModule..."
