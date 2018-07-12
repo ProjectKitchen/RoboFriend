@@ -28,6 +28,7 @@ def handler_stop_signals(signum, frame):
 	teensyCommunicator.stop()
 	faceModule.close()
 	runFlag = False
+	print "*** graceful shutdown completed! ***"
 
 def main():
 	global runFlag
