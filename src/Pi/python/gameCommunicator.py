@@ -23,7 +23,7 @@ def sendtogui(i):
 
     if IP == '':
         return
-    BytesToSend = bytes(":RUN:" + str(i) + ":EOL:")
+
     try:
         SendToApp.sendto(BytesToSend, (IP, UDP_PORT+1))
         print(BytesToSend)
