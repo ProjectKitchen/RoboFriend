@@ -52,7 +52,7 @@ def moveEyes(direction):
                'left': faceModule.eyesLeft,
                'right': faceModule.eyesRight
                }
-    if methods[direction]: methods[direction]()
+    if direction in methods: methods[direction]()
     return getResponse("OK")
 
 @app.route('/mouth/smile/<action>', methods=['POST'])
@@ -60,7 +60,7 @@ def changeSmile(action):
     methods = {'increase': faceModule.increaseSmile,
                'dencrease': faceModule.decreaseSmile
                }
-    if methods[action]: methods[action]()
+    if action in methods: methods[action]()
     return getResponse("OK")
 
 @app.route('/move/flex/<left>/<right>/<duration>', methods=['POST'])
@@ -75,7 +75,7 @@ def moveSimple(direction):
                'left': teensyCommunicator.moveLeftStep,
                'right': teensyCommunicator.moveRightStep
                }
-    if methods[direction]: methods[direction]()
+    if direction in methods: methods[direction]()
     return getResponse("OK")
 
 @app.route('/move/stop', methods=['POST'])
