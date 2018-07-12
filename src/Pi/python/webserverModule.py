@@ -72,7 +72,7 @@ def getResponse(responseString):
 # This function is used as Thread to open and handle the webserver
 def webserver():
     global app, webserverDebug, webserverHost, webserverPort
-    app.run(webserverDebug, webserverHost, webserverPort)
+    app.run(debug=webserverDebug, host=webserverHost, port=webserverPort)
 
 def start():
     print "starting webserverModule..."
