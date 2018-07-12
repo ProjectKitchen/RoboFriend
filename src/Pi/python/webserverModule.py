@@ -7,8 +7,10 @@ import json
 #own modules
 import ioWarriorModule
 import teensyCommunicator
-import legacyApiModule
 import statusModule
+import soundModule
+import faceModule
+import speechModule
 
 #init
 app = Flask(__name__, static_folder='../static')
@@ -43,25 +45,62 @@ def setEarRGB(earColorR, earColorG, earColorB):
     ioWarriorModule.setEarColor(r, g, b)
     return getResponse("OK")
 
-@app.route('/move/<left>/<right>/<duration>', methods=['POST'])
+@app.route('/eyes/move/<direction>', methods=['POST'])
+def moveEyes(direction):
+    methods = {'up': faceModule.eyesUp,
+               'down': faceModule.eyesDown,
+               'left': faceModule.eyesLeft,
+               'right': faceModule.eyesRight
+               }
+    if methods[direction]: methods[direction]()
+    return getResponse("OK")
+
+@app.route('/mouth/smile/<action>', methods=['POST'])
+def changeSmile(action):
+    methods = {'increase': faceModule.increaseSmile,
+               'dencrease': faceModule.decreaseSmile
+               }
+    if methods[action]: methods[action]()
+    return getResponse("OK")
+
+@app.route('/move/flex/<left>/<right>/<duration>', methods=['POST'])
 def move(left, right, duration):
     teensyCommunicator.move(left, right, duration)
+    return getResponse("OK")
+
+@app.route('/move/simple/<direction>', methods=['POST'])
+def moveSimple(direction):
+    methods = {'forward': teensyCommunicator.moveForwardStep,
+               'backward': teensyCommunicator.moveBackStep,
+               'left': teensyCommunicator.moveLeftStep,
+               'right': teensyCommunicator.moveRightStep
+               }
+    if methods[direction]: methods[direction]()
+    return getResponse("OK")
+
+@app.route('/move/stop', methods=['POST'])
+def move():
+    teensyCommunicator.stopMovement()
     return getResponse("OK")
 
 @app.route('/get/status', methods=['GET'])
 def getStatus():
     return getResponse(json.dumps(statusModule.getStatus()))
 
-@app.route('/<action>', methods=['POST'])
-# webserver rerouting - action indicates the chosen command which will be decoded and then interpreted with the function chooseAction
-def reroute(action):
-    print(action)
-    try:
-        action = urllib.unquote(action).decode('utf8') #decode action to string
-    except:
-        print("action is not valid")
-    else:
-        legacyApiModule.chooseAction(action)
+@app.route('/sound/play/random', methods=['POST'])
+def randomSound():
+    soundModule.playRandom()
+    return getResponse("OK")
+
+@app.route('/sound/play/mood', methods=['POST'])
+def moodSound():
+    soundModule.playMood()
+    return getResponse("OK")
+
+@app.route('/speech/say/<text>', methods=['POST'])
+def speak(text):
+    text = urllib.unquote(text).decode('utf8') #decode action to string
+    speechModule.speak(text)
     return getResponse("OK")
 
 def getResponse(responseString):
