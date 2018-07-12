@@ -59,8 +59,8 @@ def handleKeyboard():
                 if event.unicode == '4':
                     print('sound play mood via keyboard')
                     soundModule.playMood()
-    except Exception, e:
-        print ('Exception:'+ str(e))
+    except Exception:
+        pygame.quit()
 
 def start():
     global KeyboardThred
