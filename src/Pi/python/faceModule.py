@@ -20,26 +20,61 @@ def close():
     pygame.quit()
 
 def increaseSmile():
-    faceManipulation("smile;increase")
+    global radius, sadFace
+    if (radius < 1.3 and sadFace == 0):
+        radius=radius+0.1
+    elif (sadFace ==1):
+        if radius < 0.3:
+            sadFace = 0
+            radius = radius +0.1
+        else:
+            sadFace = 1
+            radius = radius-0.1
+    drawFace()
 
 def decreaseSmile():
-    faceManipulation("smile;decrease")
+    global radius, sadFace
+    if (radius > 0.3 and sadFace == 0):
+        radius=radius-0.1
+    elif ((sadFace==1 or radius < 0.3) and radius < 0.8):
+        sadFace=1
+        radius=radius+0.1
+    drawFace()
 
 def eyesUp():
-    faceManipulation("eyes;up")
+    global eyey, eyestep
+    if eyey > -40:
+        eyey=eyey-eyestep
+    drawFace()
 
 def eyesDown():
-    faceManipulation("eyes;down")
+    global eyey, eyestep
+    if eyey < 40:
+        eyey=eyey+eyestep
+    drawFace()
 
 def eyesLeft():
-    faceManipulation("eyes;left")
+    global eyex, eyestep
+    if eyex > -40:
+        eyex=eyex-eyestep
+    drawFace()
 
 def eyesRight():
-    faceManipulation("eyes;right")
+    global eyex, eyestep
+    if eyex < 40:
+        eyex=eyex+eyestep
+    drawFace()
 
 def isSad():
     global sadFace
     return sadFace
+
+def drawFace():
+    global sadFace
+    if sadFace == 0:
+        drawHappyFace()
+    elif sadFace == 1:
+        drawSadFace()
 
 # Updating Facial expression of robot in case of a happy expression
 def drawHappyFace():
@@ -67,41 +102,25 @@ def drawSadFace():
 # deprecated - use the distinct methods like increaseSmile() instead
 # this function is called by chooseAction if the facial expression of the robot has to change
 def faceManipulation(dataArray):
-    global radius, eyey, eyex, sadFace, eyestep
+    global radius, sadFace
     faceObject = dataArray[0] #eyes or smile
     dataArray = dataArray[1:]
     if faceObject == "smile":
         changing = dataArray[0]
         if changing == "increase":
-            if (radius < 1.3 and sadFace == 0):
-                radius=radius+0.1
-            elif (sadFace ==1):
-                if radius < 0.3:
-                    sadFace = 0
-                    radius = radius +0.1
-                else:
-                    sadFace = 1
-                    radius = radius-0.1
+            increaseSmile()
         elif changing == "decrease":
-            if (radius > 0.3 and sadFace == 0):
-                radius=radius-0.1
-            elif ((sadFace==1 or radius < 0.3) and radius < 0.8):
-                sadFace=1
-                radius=radius+0.1
+            decreaseSmile()
     elif faceObject == "eyes":
         changing = dataArray[0]
         if changing == "up":
-            if eyey > -40:
-                eyey=eyey-eyestep
+            eyesUp()
         elif changing == "down":
-            if eyey < 40:
-                eyey=eyey+eyestep
+            eyesDown()
         elif changing == "right":
-            if eyex < 40:
-                eyex=eyex+eyestep
+            eyesRight()
         elif changing == "left":
-            if eyex > -40:
-                eyex=eyex-eyestep
+            eyesLeft()
     elif faceObject == "answer":
         changing = dataArray[0]
         if changing == "correct":
@@ -111,7 +130,4 @@ def faceManipulation(dataArray):
             sadFace = 1
             radius = 0.8
             teensyCommunicator.shakeHeadForNo()
-    if sadFace == 0:
-        drawHappyFace()
-    elif sadFace == 1:
-        drawSadFace()
+    drawFace()
