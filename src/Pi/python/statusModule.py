@@ -4,6 +4,7 @@ import threading
 
 #own modules
 import teensyCommunicator
+import gameCommunicator
 
 # globals
 currentStatus = None
@@ -40,6 +41,7 @@ def StatusInfo():
     while runFlag:
         rawStatus = teensyCommunicator.getRawStatus()
         currentStatus = parseRawStatus(rawStatus)
+        gameCommunicator.sendtogui("battery;"+str(getBatteryVoltage()))
 
         print ("Battery= " + str(getBatteryVoltage()) + " Volt)")
         if getBatteryVoltage() < 31.5:

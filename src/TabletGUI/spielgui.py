@@ -934,7 +934,7 @@ def ScreenUpdate():
 	global bat_prozent
 	
 	while True:
-		akku = "Akku:"+str(bat_prozent)+"%"
+		akku = "Akku: "+str(bat_prozent)+"V"
 		print("akku aktualisierung")
 		pygame.draw.rect(screen, SCREEN_COLOR, (950,100, B_LENGTH, B_HEIGHT))
 		#paint.create_button(screen, , 950, 100, B_LENGTH, B_HEIGHT, "Akku:", BLACK)
