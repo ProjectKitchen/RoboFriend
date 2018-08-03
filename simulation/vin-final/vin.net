@@ -1,0 +1,94 @@
+* C:\Users\mzahedi\Documents\Git\RoboFriend\simulation\vin-final\vin.asc
+R7 N002 N017 1k
+D1 N017 0 D
+R5 N002 N003 18k
+R8 N003 0 3k
+D9 0 N003 BAT54
+R10 N018 N022 0.01
+R11 N018 N019 1k
+R12 N022 N020 1k
+R13 N019 0 33k
+R14 N020 N021 33k
+V7 OC 0 PULSE(5V 0 0 1u 1u 30ms 100ms)
+R15 N022 P001 1k
+XU1 N019 N020 5V 0 N021 level.2 Avol=1Meg GBW=10Meg Slew=10Meg ilimit=25m rail=0 Vos=0 phimargin=45 en=0 enk=0 in=0 ink=0 Rin=500Meg
+XU2 N023 N021 5V 0 \OC_INT level.2 Avol=1Meg GBW=10Meg Slew=10Meg ilimit=25m rail=0 Vos=0 phimargin=45 en=0 enk=0 in=0 ink=0 Rin=500Meg
+XX1 5V N023 0 pot params: R=10k Val=36
+R17 N015 OC 1k
+D7 N018 N002 1N4148
+R9 N002 N012 1k
+M3 N018 N012 N002 N002 FDS6576
+Q1 N012 N015 0 0 2N4124
+R16 N015 0 10k
+V3 5V 0 5V
+XU3 N003 ADC 5V 0 ADC level.2 Avol=1Meg GBW=10Meg Slew=10Meg ilimit=25m rail=0 Vos=0 phimargin=45 en=0 enk=0 in=0 ink=0 Rin=500Meg
+D10 N003 5V BAT54
+V1 N001 0 PULSE(10V 15V 0 50m 50m 0 50m)
+D2 0 N005 BZX84B6V2L
+R1 N001 N005 4.7k
+R2 N014 0 47k
+R3 N001 N008 20k
+R6 N008 0 10k
+R21 N009 0 10k
+R22 N004 N011 150
+XX2 N005 N013 N014 pot params: R=100k Val=84
+XX3 N005 N010 N014 pot params: R=100k Val=41
+XX4 N001 N004 N001 N002 relais params: ION=7m IOFF=2m LL=63m RR=510
+C1 N001 0 0.1µ V=16V
+C2 N016 0 47µ V=16V
+C3 N007 N011 470µ V=16V
+XU4 N010 N008 N006 0 N009 level.2 Avol=1Meg GBW=10Meg Slew=10Meg ilimit=25m rail=0 Vos=0 phimargin=45 en=0 enk=0 in=0 ink=0 Rin=500Meg
+XU5 N008 N013 N006 0 N009 level.2 Avol=1Meg GBW=10Meg Slew=10Meg ilimit=25m rail=0 Vos=0 phimargin=45 en=0 enk=0 in=0 ink=0 Rin=500Meg
+M1 N011 N009 0 0 2N7002
+D3 N001 N006 1N4148
+D4 N004 N001 1N4148
+V4 +12V 0 12V
+R4 N002 N003 12k
+R18 N003 0 39k
+D5 P001 0 D
+R19 N022 0 1.2
+R20 N002 0 12
+R23 N002 0 24
+R24 N002 0 24
+
+* block symbol definitions
+.subckt pot 1 2 3
+R1 1 2 {Ra}
+R2 2 3 {Rb}
+.param Ra = R * (Val / 100)
+.param Rb = R * (1 - (Val / 100))
+.ends pot
+
+.subckt relais 1 2 3 4
+L1 1 N001 {LL} Ipk=20m Rser=0 Rpar=100Meg Cpar=0
+R1 N001 2 {RR}
+S1 4 3 N001 2 SW
+.param LL=63mH
+.param RR=510
+.param ION=7mA
+.param IOFF=2mA
+.param VTH=RR*(ION+IOFF)/2
+.param VHY=RR*(ION-IOFF)/2
+.model SW SW(vt={VTH} vh={VHY})
+.ends relais
+
+.model D D
+.lib C:\Users\mzahedi\Documents\LTspiceXVII\lib\cmp\standard.dio
+.model NPN NPN
+.model PNP PNP
+.lib C:\Users\mzahedi\Documents\LTspiceXVII\lib\cmp\standard.bjt
+.model NMOS NMOS
+.model PMOS PMOS
+.lib C:\Users\mzahedi\Documents\LTspiceXVII\lib\cmp\standard.mos
+.tran 0 200m 0 100m
+* Overcurrent Protection\nShunt: 0,1 V / 10 A = 0,01 Ohm\nShunt: P = 10² A * 0,01 Ohm = 1 W\nDifferential Amp: \nUa = (U+ - U-) * R14 / R12 = 3.3 V\nPoti: Ua = 3.25 V
+* Reverse\nPolarity\nProtection
+* Deep Discharge Protection
+* Monitor
+* Audio\nAmp
+* Boost\nModules
+* Vbat\nMeasurement
+* Buck\nModule
+.lib UniversalOpamps2.sub
+.backanno
+.end

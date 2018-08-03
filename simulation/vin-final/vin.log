@@ -1,0 +1,61 @@
+Circuit: * C:\Users\mzahedi\Documents\Git\RoboFriend\simulation\vin-final\vin.asc
+
+WARNING: Specified period is not longer than the sum of Trise, Tfall, and Ton for v1.  Increasing period to 0.1
+WARNING: Node N016 is floating.
+WARNING: Node N007 is floating.
+
+WARNING: Less than two connections to node N016.  This node is used by C2.
+WARNING: Less than two connections to node N007.  This node is used by C3.
+WARNING: Less than two connections to node +12V.  This node is used by V4.
+Direct Newton iteration failed to find .op point.  (Use ".option noopiter" to skip.)
+Starting Gmin stepping
+Gmin = 10
+Gmin = 1.07374
+Gmin = 0.115292
+Gmin = 0.0123794
+Gmin = 0.00132923
+Gmin = 0.000142725
+Gmin = 1.5325e-005
+vernier = 0.5
+vernier = 0.25
+vernier = 0.125
+vernier = 0.0625
+vernier = 0.03125
+vernier = 0.015625
+vernier = 0.0078125
+vernier = 0.00390625
+vernier = 0.00195313
+vernier = 0.000976563
+Gmin = 1.91562e-005
+vernier = 0.000488281
+Gmin = 0
+Gmin stepping failed
+
+Starting source stepping with srcstepmethod=0
+Source Step = 3.0303%
+vernier = 0.25
+Source Step = 0.0177557%
+Starting source stepping with srcstepmethod=1
+Source Step = 3.0303%
+vernier = 0.25
+Source stepping failed
+
+Pseudo Transient succeeded in finding the operating point at 327.695 ms.
+
+Date: Fri Aug 03 17:28:32 2018
+Total elapsed time: 2.136 seconds.
+
+tnom = 27
+temp = 27
+method = modified trap
+totiter = 73335
+traniter = 65199
+tranpoints = 21789
+accept = 15298
+rejected = 6501
+matrix size = 55
+fillins = 29
+solver = Normal
+Matrix Compiler1: 4.43 KB object code size  2.0/1.0/[0.6]
+Matrix Compiler2: 5.07 KB object code size  0.8/1.1/[0.6]
+
