@@ -13,7 +13,7 @@ V7 OC 0 PULSE(5V 0 0 1u 1u 600ms 2s)
 R15 N018 P001 1k
 XU1 N014 N015 5V 0 N016 level.2 Avol=1Meg GBW=10Meg Slew=10Meg ilimit=25m rail=0 Vos=0 phimargin=45 en=0 enk=0 in=0 ink=0 Rin=500Meg
 XU2 N016 N017 5V 0 OC_INT level.2 Avol=1Meg GBW=10Meg Slew=10Meg ilimit=25m rail=0 Vos=0 phimargin=45 en=0 enk=0 in=0 ink=0 Rin=500Meg
-XX1 5V N017 0 pot params: R=10k Val=34
+XX1 5V N017 0 pot params: R=100k Val=34
 R17 N012 OC 1k
 D7 N013 +12V 1N4148
 R9 +12V N011 1k
