@@ -1,4 +1,4 @@
-update=05/08/2018 22:47:27
+update=10/08/2018 23:32:43
 version=1
 last_client=kicad
 [pcbnew]
@@ -62,7 +62,8 @@ LibName30=atmel
 LibName31=contrib
 LibName32=valves
 LibName33=LM4040/lm4040
-LibName34=OpAmp/opamp
-LibName35=Regulator/vreg
-LibName36=Teensy/teensy
-LibName37=USB/usb
+LibName34=LvlShift/lvlshift
+LibName35=OpAmp/opamp
+LibName36=Regulator/vreg
+LibName37=Teensy/teensy
+LibName38=USB/usb
