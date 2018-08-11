@@ -1,5 +1,11 @@
 EESchema-DOCLIB  Version 2.0
 #
+$CMP 74LVC1T45
+D Dual bidirectional I2C Bus and SMBus voltage level translator
+K Dual bidirectional I2C Bus and SMBus voltage level translator
+F http://www.ti.com/lit/ds/symlink/pca9306.pdf
+$ENDCMP
+#
 $CMP DRV8860
 D 8-Channel Serial Interface Low-Side Driver
 K Relay Driver
@@ -229,9 +235,9 @@ F http://www.ti.com/lit/ds/symlink/pca9306.pdf
 $ENDCMP
 #
 $CMP PCA9517
-D 2-Bit Bidirectional Voltage-Level Translator in TSSOP Package With Auto Direction Sensing and ±15-kV ESD Protection
-K Level-Shifter CMOS-TTL-Translation
-F http://www.ti.com/lit/ds/symlink/txb0102.pdf
+D Dual bidirectional I2C Bus and SMBus voltage level translator
+K Dual bidirectional I2C Bus and SMBus voltage level translator
+F http://www.ti.com/lit/ds/symlink/pca9306.pdf
 $ENDCMP
 #
 $CMP TCA9555PWR
