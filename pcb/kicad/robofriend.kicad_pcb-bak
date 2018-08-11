@@ -2,11 +2,11 @@
 
   (general
     (links 300)
-    (no_connects 285)
-    (area 81.839999 68.504999 171.525001 160.095001)
+    (no_connects 296)
+    (area 80.241 67.234999 172.795001 161.365001)
     (thickness 1.6)
     (drawings 134)
-    (tracks 28)
+    (tracks 0)
     (zones 0)
     (modules 122)
     (nets 78)
@@ -37,8 +37,8 @@
   )
 
   (setup
-    (last_trace_width 0.25)
-    (trace_clearance 0.2)
+    (last_trace_width 0.254)
+    (trace_clearance 0.254)
     (zone_clearance 0.508)
     (zone_45_only no)
     (trace_min 0.2)
@@ -170,8 +170,8 @@
   (net 77 "Net-(JP4-Pad2)")
 
   (net_class Default "This is the default net class."
-    (clearance 0.2)
-    (trace_width 0.25)
+    (clearance 0.254)
+    (trace_width 0.254)
     (via_dia 0.6)
     (via_drill 0.4)
     (uvia_dia 0.3)
@@ -246,7 +246,7 @@
   )
 
   (net_class 10A ""
-    (clearance 0.2)
+    (clearance 0.254)
     (trace_width 2)
     (via_dia 0.6)
     (via_drill 0.4)
@@ -255,7 +255,7 @@
   )
 
   (net_class 3A ""
-    (clearance 0.2)
+    (clearance 0.254)
     (trace_width 0.48)
     (via_dia 0.6)
     (via_drill 0.4)
@@ -274,7 +274,7 @@
   )
 
   (net_class 5A ""
-    (clearance 0.2)
+    (clearance 0.254)
     (trace_width 0.96)
     (via_dia 0.6)
     (via_drill 0.4)
@@ -5907,33 +5907,24 @@
     (effects (font (size 1.5 1.5) (thickness 0.3)))
   )
 
-  (segment (start 147.481 92.837) (end 147.481 91.032) (width 0.48) (layer B.Cu) (net 1))
-  (segment (start 147.481 91.032) (end 147.381 90.932) (width 0.48) (layer B.Cu) (net 1) (tstamp 5B6CAD4D))
-  (segment (start 147.381 90.932) (end 147.381 89.027) (width 0.48) (layer B.Cu) (net 1) (tstamp 5B6CAD4E))
-  (segment (start 107.635 139.7) (end 107.635 140.02) (width 0.48) (layer B.Cu) (net 1))
-  (segment (start 104.775 142.605) (end 104.775 142.875) (width 0.48) (layer B.Cu) (net 1))
-  (segment (start 141.571 92.837) (end 141.571 95.107) (width 0.48) (layer B.Cu) (net 2))
-  (segment (start 141.571 95.107) (end 143.576 97.112) (width 0.48) (layer B.Cu) (net 2) (tstamp 5B6CAD0C))
-  (segment (start 135.355 131.275) (end 135.255 131.175) (width 0.48) (layer B.Cu) (net 2) (tstamp 5B6CACA8))
-  (segment (start 145.476 97.112) (end 145.372 97.112) (width 0.25) (layer B.Cu) (net 7))
-  (segment (start 145.372 97.112) (end 143.576 95.316) (width 0.25) (layer B.Cu) (net 7) (tstamp 5B6CACFB))
-  (segment (start 143.576 95.316) (end 143.576 94.912) (width 0.25) (layer B.Cu) (net 7) (tstamp 5B6CAD00))
-  (segment (start 141.671 89.027) (end 141.671 90.932) (width 0.25) (layer B.Cu) (net 47))
-  (segment (start 101.08 140.605) (end 100.775 140.91) (width 0.48) (layer B.Cu) (net 48) (tstamp 5B6B53C9))
-  (segment (start 105.41 138.81) (end 105.03 138.81) (width 0.48) (layer B.Cu) (net 48))
-  (segment (start 139.38 127.31) (end 139.07 127) (width 0.25) (layer B.Cu) (net 53) (tstamp 5B6CAC86))
-  (segment (start 118.425 132.4) (end 118.425 132.715) (width 0.48) (layer B.Cu) (net 55) (tstamp 5B6B5B62))
-  (segment (start 145.476 94.912) (end 145.476 92.932) (width 0.25) (layer B.Cu) (net 58))
-  (segment (start 145.476 92.932) (end 145.381 92.837) (width 0.25) (layer B.Cu) (net 58) (tstamp 5B6CACE3))
-  (segment (start 145.481 89.027) (end 145.481 92.737) (width 0.25) (layer B.Cu) (net 58))
-  (segment (start 145.481 92.737) (end 145.381 92.837) (width 0.25) (layer B.Cu) (net 58) (tstamp 5B6CACDE))
-  (segment (start 143.571 89.027) (end 145.481 89.027) (width 0.25) (layer B.Cu) (net 58))
-  (segment (start 143.571 89.027) (end 143.571 92.737) (width 0.25) (layer B.Cu) (net 58))
-  (segment (start 143.571 92.737) (end 143.671 92.837) (width 0.25) (layer B.Cu) (net 58) (tstamp 5B6CACCD))
-  (segment (start 143.29 136.16) (end 143.19 136.06) (width 0.48) (layer B.Cu) (net 70) (tstamp 5B6CAAFF))
-  (segment (start 109.22 130.18) (end 109.225 130.175) (width 0.48) (layer B.Cu) (net 74) (tstamp 5B6B5CD9))
-  (segment (start 144.145 103.505) (end 145.935 103.505) (width 0.25) (layer B.Cu) (net 77))
-  (segment (start 145.935 103.505) (end 146.885 104.455) (width 0.25) (layer B.Cu) (net 77) (tstamp 5B6CB00F))
-  (segment (start 146.885 104.455) (end 148.225 104.455) (width 0.25) (layer B.Cu) (net 77) (tstamp 5B6CB010))
-
+  (zone (net 1) (net_name GND) (layer B.Cu) (tstamp 5B6F438F) (hatch edge 0.508)
+    (connect_pads (clearance 0.508))
+    (min_thickness 0.254)
+    (fill (arc_segments 16) (thermal_gap 0.508) (thermal_bridge_width 0.508))
+    (polygon
+      (pts
+        (xy 81.28 67.945) (xy 172.085 67.945) (xy 172.085 160.655) (xy 81.28 160.655)
+      )
+    )
+  )
+  (zone (net 1) (net_name GND) (layer F.Cu) (tstamp 5B6F438F) (hatch edge 0.508)
+    (connect_pads (clearance 0.508))
+    (min_thickness 0.254)
+    (fill (arc_segments 16) (thermal_gap 0.508) (thermal_bridge_width 0.508))
+    (polygon
+      (pts
+        (xy 81.28 67.945) (xy 172.085 67.945) (xy 172.085 160.655) (xy 81.28 160.655)
+      )
+    )
+  )
 )
