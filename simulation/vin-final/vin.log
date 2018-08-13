@@ -1,9 +1,8 @@
-Circuit: * C:\Users\mzahedi\Documents\Git\RoboFriend\simulation\vin-final\vin.asc
+Circuit: * C:\Users\mzahedi\Documents\Git\RoboFriend\simulation\sw-module\vin.asc
 
 WARNING: Node NC_01 is floating.
 
 WARNING: Less than two connections to node NC_01.  This node is used by C2.
-WARNING: Less than two connections to node +12V.  This node is used by V4.
 Direct Newton iteration failed to find .op point.  (Use ".option noopiter" to skip.)
 Starting Gmin stepping
 Gmin = 10
@@ -11,21 +10,103 @@ Gmin = 1.07374
 Gmin = 0.115292
 Gmin = 0.0123794
 Gmin = 0.00132923
-Gmin = 0.000142725
-Gmin = 1.5325e-005
-Gmin = 1.6455e-006
 vernier = 0.5
 vernier = 0.25
 vernier = 0.125
 vernier = 0.0625
 vernier = 0.03125
-vernier = 0.015625
-vernier = 0.0078125
-vernier = 0.00390625
-vernier = 0.00195313
-Gmin = 1.6455e-006
-vernier = 0.000976563
-vernier = 0.000488281
+Gmin = 0.000544452
+vernier = 0.0416667
+Gmin = 0.000497231
+vernier = 0.0555555
+vernier = 0.074074
+Gmin = 0.000428755
+vernier = 0.0987653
+vernier = 0.131687
+Gmin = 0.000339372
+vernier = 0.0658435
+vernier = 0.0329218
+vernier = 0.0164609
+vernier = 0.00823044
+Gmin = 0.000335902
+vernier = 0.0109739
+vernier = 0.0146319
+Gmin = 0.000325635
+vernier = 0.0195092
+vernier = 0.0260122
+Gmin = 0.000309921
+vernier = 0.034683
+Gmin = 0.000286744
+vernier = 0.046244
+vernier = 0.0616586
+Gmin = 0.000251749
+vernier = 0.0822114
+vernier = 0.0411057
+vernier = 0.0205529
+Gmin = 0.000237986
+vernier = 0.0274038
+vernier = 0.0365384
+Gmin = 0.000220275
+vernier = 0.0487178
+vernier = 0.0649571
+vernier = 0.0324786
+Gmin = 0.000201151
+vernier = 0.0162393
+vernier = 0.0216524
+Gmin = 0.000192906
+vernier = 0.0288698
+vernier = 0.0384931
+Gmin = 0.000179307
+vernier = 0.0513241
+vernier = 0.025662
+vernier = 0.012831
+Gmin = 0.000170918
+vernier = 0.017108
+vernier = 0.0228107
+Gmin = 0.000163661
+vernier = 0.0304143
+Gmin = 0.000152872
+vernier = 0.0405523
+vernier = 0.0202762
+vernier = 0.0270349
+Gmin = 0.000146074
+vernier = 0.0360465
+vernier = 0.0180232
+Gmin = 0.00013997
+vernier = 0.024031
+vernier = 0.0320413
+Gmin = 0.000130788
+vernier = 0.0427217
+vernier = 0.0213609
+vernier = 0.0106804
+Gmin = 0.000127013
+vernier = 0.0142406
+vernier = 0.0189874
+Gmin = 0.000122
+vernier = 0.0253166
+vernier = 0.0337554
+vernier = 0.0168777
+Gmin = 0.000116361
+vernier = 0.00843885
+vernier = 0.0112518
+Gmin = 0.000113854
+vernier = 0.0150024
+vernier = 0.0200032
+Gmin = 0.000109603
+vernier = 0.0266709
+vernier = 0.0133355
+Gmin = 0.000106017
+vernier = 0.0177806
+vernier = 0.0237075
+Gmin = 0.000101082
+vernier = 0.03161
+vernier = 0.015805
+vernier = 0.00790249
+vernier = 0.00395124
+vernier = 0.00197562
+vernier = 0.000987811
+vernier = 0.000493906
+Gmin = 9.93056e-005
 Gmin = 0
 Gmin stepping failed
 
@@ -38,22 +119,22 @@ Source Step = 3.0303%
 vernier = 0.25
 Source stepping failed
 
-Pseudo Transient succeeded in finding the operating point at 639.967 ms.
+Pseudo Transient succeeded in finding the operating point at 642.395 ms.
 
-Date: Sun Aug 12 21:44:55 2018
-Total elapsed time: 2.839 seconds.
+Date: Mon Aug 13 12:17:19 2018
+Total elapsed time: 2.859 seconds.
 
 tnom = 27
 temp = 27
 method = modified trap
-totiter = 66249
-traniter = 58067
-tranpoints = 22034
-accept = 16075
-rejected = 5969
-matrix size = 53
-fillins = 27
+totiter = 85069
+traniter = 74305
+tranpoints = 28225
+accept = 20285
+rejected = 7950
+matrix size = 51
+fillins = 24
 solver = Normal
-Matrix Compiler1: 4.21 KB object code size  1.5/0.6/[0.6]
-Matrix Compiler2: 4.83 KB object code size  0.8/1.2/[0.6]
+Matrix Compiler1: 3.95 KB object code size  1.9/0.9/[0.6]
+Matrix Compiler2: 4.72 KB object code size  0.8/1.1/[0.7]
 
