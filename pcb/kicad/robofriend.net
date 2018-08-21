@@ -1,7 +1,7 @@
 (export (version D)
   (design
     (source C:/Users/mzahedi/Documents/Git/RoboFriend/pcb/kicad/robofriend.sch)
-    (date "21/08/2018 23:43:51")
+    (date "22/08/2018 00:58:07")
     (tool "Eeschema 4.0.7")
     (sheet (number 1) (name /) (tstamps /)
       (title_block
@@ -491,7 +491,7 @@
       (tstamp 5B3EC534))
     (comp (ref J17)
       (value USB_A_4_PIN)
-      (footprint USB_A_4_PIN:MOLEX_48258_0001)
+      (footprint USB_A_4_PIN:WURTH_61400416021)
       (fields
         (field (name "Part No") 48258-0001))
       (libsource (lib usb) (part USB_A_4_PIN))
