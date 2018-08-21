@@ -1317,17 +1317,6 @@ F 3 "" H 1400 7750 50  0001 C CNN
 	1    1400 7750
 	0    1    1    0   
 $EndComp
-$Comp
-L FINDER-32.21-x300 K1
-U 1 1 5B32A178
-P 5150 1850
-F 0 "K1" H 5100 2150 50  0000 L CNN
-F 1 "SCHRACK-RTx3" H 4850 1400 50  0000 L CNN
-F 2 "Relay:SPST_Schrack-RTx3_RM5mm" H 6420 1820 50  0001 C CNN
-F 3 "" H 5150 1850 50  0001 C CNN
-	1    5150 1850
-	1    0    0    -1  
-$EndComp
 Text Notes 4900 1400 0    60   ~ 0
 RT334012\nRTD34012 
 $Comp
@@ -3818,10 +3807,6 @@ Wire Wire Line
 Wire Wire Line
 	4950 2200 4950 2150
 Wire Wire Line
-	5350 2150 5350 2200
-Wire Wire Line
-	5350 2200 5800 2200
-Wire Wire Line
 	5550 2200 5550 2250
 Wire Wire Line
 	5550 2550 5550 2600
@@ -3909,9 +3894,9 @@ Connection ~ 3150 1500
 Connection ~ 2800 1500
 Connection ~ 2450 1500
 Wire Wire Line
-	5350 1550 5350 1500
+	5400 1550 5400 1500
 Wire Wire Line
-	5350 1500 5800 1500
+	5250 1500 5800 1500
 Wire Wire Line
 	5800 1500 5800 1400
 Wire Wire Line
@@ -4021,7 +4006,7 @@ Wire Wire Line
 Wire Wire Line
 	3450 4600 3450 4950
 Wire Wire Line
-	3150 4750 3150 4800
+	3150 4800 3150 4750
 Wire Wire Line
 	1300 4800 3800 4800
 Connection ~ 2200 5200
@@ -4106,4 +4091,25 @@ F 3 "" H 10900 10450 50  0001 C CNN
 	1    10900 10450
 	1    0    0    -1  
 $EndComp
+$Comp
+L Schrak-RT334012WG K1
+U 1 1 5B7C9BC5
+P 5150 1850
+F 0 "K1" H 5050 2100 50  0000 L CNN
+F 1 "Schrak-RT334012" H 4800 1400 50  0000 L CNN
+F 2 "Relay:SPST_Schrack-RT33_RM5mm" H 5600 1810 50  0001 L CNN
+F 3 "" H 5150 1850 50  0001 C CNN
+	1    5150 1850
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5250 2200 5800 2200
+Wire Wire Line
+	5250 1550 5250 1500
+Connection ~ 5400 1500
+Wire Wire Line
+	5250 2200 5250 2150
+Wire Wire Line
+	5400 2150 5400 2200
+Connection ~ 5400 2200
 $EndSCHEMATC
