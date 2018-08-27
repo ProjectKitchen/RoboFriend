@@ -35,8 +35,9 @@ function Communicator() {
         }
     };
 
-    thiz.sendMoveXY = function (x,y) {
-        thiz.sendAction('move/flex/' + x + '/' + y + '/' + defaultMoveDuration);
+    thiz.sendMoveXY = function (x,y, duration) {
+        duration = duration || defaultMoveDuration;
+        thiz.sendAction('move/flex/' + x + '/' + y + '/' + duration);
     };
 
     thiz.getStatus = function () {
