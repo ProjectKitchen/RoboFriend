@@ -106,7 +106,7 @@ def speak(text):
 @app.route('/face/image', methods=['GET'])
 def getface():
     global app
-    response = make_response(send_file(faceModule.getScreenshotFilename()))
+    response = make_response(send_file("../" + faceModule.getScreenshotFilename()))
     response.headers['Cache-control'] = 'no-cache'
     return response
 
