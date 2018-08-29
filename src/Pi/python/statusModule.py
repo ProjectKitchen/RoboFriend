@@ -7,13 +7,15 @@ import teensyCommunicator
 import gameCommunicator
 
 # globals
-currentStatus = None
+currentStatus = {}
 StatusThread = None
 refreshIntervalMs = 1000
 keyBat = 'batVolt'
 keyIrL = 'irLeft'
 keyIrM = 'irMiddle'
 keyIrR = 'irRight'
+keyScreenshotTimestamp = 'screenshotTimestamp'
+screenshotTimestamp = None
 runFlag = True
 
 def getStatus():
@@ -35,12 +37,22 @@ def getIRRight():
     global currentStatus, keyIrR
     return currentStatus[keyIrR]
 
+def getScreenshotTimestamp():
+    global currentStatus, keyScreenshotTimestamp
+    return currentStatus[keyScreenshotTimestamp]
+
+def setScreenshotTimestamp(timestamp):
+    if not timestamp:
+        timestamp = time.time()
+    global currentStatus, keyScreenshotTimestamp
+    currentStatus[keyScreenshotTimestamp] = timestamp
+
 # This function is used as Thread to periodically update the battery information
 def StatusInfo():
     global currentStatus, refreshIntervalMs, keyBat, keyIrL, keyIrM, keyIrR, runFlag
     while runFlag:
         rawStatus = teensyCommunicator.getRawStatus()
-        currentStatus = parseRawStatus(rawStatus)
+        currentStatus = updateFromRawStatus(rawStatus)
         gameCommunicator.sendtogui("battery;"+str(getBatteryVoltage()))
 
         print ("Battery= " + str(getBatteryVoltage()) + " Volt)")
@@ -49,8 +61,8 @@ def StatusInfo():
         print ("IRSensors="+str(getIRLeft())+"/"+str(getIRMiddle())+"/"+str(getIRRight()))
         time.sleep(refreshIntervalMs / 1000.0)
 
-def parseRawStatus(rawStatus):
-    global keyBat, keyIrL, keyIrM, keyIrR
+def updateFromRawStatus(rawStatus):
+    global currentStatus, keyBat, keyIrL, keyIrM, keyIrR
 
     batVolt = -1
     irSensorLeft = -1
@@ -66,7 +78,11 @@ def parseRawStatus(rawStatus):
     except:
         print("error parsing status values: " + rawStatus)
 
-    return {keyBat: batVolt, keyIrL: irSensorLeft, keyIrM: irSensorMiddle, keyIrR: irSensorRight}
+    currentStatus[keyBat] = batVolt
+    currentStatus[keyIrL] = irSensorLeft
+    currentStatus[keyIrM] = irSensorMiddle
+    currentStatus[keyIrR] = irSensorRight
+    return currentStatus
 
 def start():
     global StatusThread
