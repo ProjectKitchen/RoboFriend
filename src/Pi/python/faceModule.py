@@ -81,12 +81,10 @@ def drawFace():
         drawHappyFace()
     elif sadFace == 1:
         drawSadFace()
-    pygame.image.save(screen, screenshotFilename)
-    statusModule.setScreenshotTimestamp()
 
 # Updating Facial expression of robot in case of a happy expression
 def drawHappyFace():
-    global screen, eyex, eyey, radius
+    global screen, eyex, eyey, radius, screenshotFilename
     screen.fill((0, 0, 0))
     pygame.draw.circle(screen, (100,250,250), (163,100), 60) #lefteye
     pygame.draw.circle(screen, (100,250,250), (491,100), 60) #righteye
@@ -94,10 +92,12 @@ def drawHappyFace():
     pygame.draw.circle(screen, (10,10,10), (491+eyex,100+eyey), 20) #rightpupil
     pygame.draw.arc(screen, (100,200,200), (57, -30, 540, 400), 4.7-radius, 4.7+radius, 20) #smile
     pygame.display.flip()
+    pygame.image.save(screen, screenshotFilename)
+    statusModule.setScreenshotTimestamp()
 
 # Updating Facial expression of robot in case of a sad expression
 def drawSadFace():
-    global screen, eyex, eyey, radius
+    global screen, eyex, eyey, radius, screenshotFilename
     screen.fill((0, 0, 0))
     pygame.draw.circle(screen, (100,250,250), (163,100), 60) #lefteye
     pygame.draw.circle(screen, (100,250,250), (491,100), 60) #righteye
@@ -105,6 +105,8 @@ def drawSadFace():
     pygame.draw.circle(screen, (10,10,10), (491+eyex,100+eyey), 20) #rightpupil
     pygame.draw.arc(screen, (100,200,200), (57, 300, 540, 400), 1.57-radius, 1.57+radius, 20) #smile
     pygame.display.flip()
+    pygame.image.save(screen, screenshotFilename)
+    statusModule.setScreenshotTimestamp()
 
 
 # deprecated - use the distinct methods like increaseSmile() instead
