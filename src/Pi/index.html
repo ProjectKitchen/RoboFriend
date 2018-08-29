@@ -33,6 +33,10 @@
                 L('#ircontainer-left').style.width = (response.irLeft/irMax*100) + '%';
                 L('#ircontainer-middle').style.width = (response.irMiddle/irMax*100) + '%';
                 L('#ircontainer-right').style.width = (response.irRight/irMax*100) + '%';
+                if(window.screenshotTimestamp != response.screenshotTimestamp) {
+                    window.screenshotTimestamp = response.screenshotTimestamp;
+                    L('#faceScreenshot').src = './face/image?t=' + new Date().getTime();
+                }
             }
         });
     }, 1000);
@@ -140,6 +144,9 @@
                     Left:<span id="valLeft">0</span> Right:<span id="valRight">255</span>
                     <button onclick="communicator.sendMoveXY(L('#rangeLeft').value, L('#rangeRight').value, 1)"> MOVE </button>
                 </div>
+            </div>
+            <div class="row">
+                <img id="faceScreenshot" src=""/>
             </div>
         </div>
     </div>
