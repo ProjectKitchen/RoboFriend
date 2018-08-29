@@ -2,6 +2,7 @@ import pygame
 import pygame.gfxdraw
 
 import teensyCommunicator
+import statusModule
 
 #init
 print "initializing faceModule..."
@@ -15,9 +16,14 @@ eyex = 0
 eyey = 0
 sadFace = 0
 eyestep = 10
+screenshotFilename = 'screenshot.jpg'
 
 def close():
     pygame.quit()
+
+def getScreenshotFilename():
+    global screenshotFilename
+    return screenshotFilename
 
 def increaseSmile():
     global radius, sadFace
@@ -70,11 +76,13 @@ def isSad():
     return sadFace
 
 def drawFace():
-    global sadFace
+    global sadFace, screen, screenshotFilename
     if sadFace == 0:
         drawHappyFace()
     elif sadFace == 1:
         drawSadFace()
+    pygame.image.save(screen, screenshotFilename)
+    statusModule.setScreenshotTimestamp()
 
 # Updating Facial expression of robot in case of a happy expression
 def drawHappyFace():
