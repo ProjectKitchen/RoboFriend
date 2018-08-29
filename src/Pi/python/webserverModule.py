@@ -103,6 +103,13 @@ def speak(text):
     speechModule.speak(text)
     return getResponse("OK")
 
+@app.route('/face/image', methods=['GET'])
+def getface():
+    global app
+    response = make_response(send_file(faceModule.getScreenshotFilename()))
+    response.headers['Cache-control'] = 'no-cache'
+    return response
+
 def getResponse(responseString):
     resp = make_response(responseString)
     resp.headers['Access-Control-Allow-Origin'] = '*'
