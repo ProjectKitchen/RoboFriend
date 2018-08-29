@@ -41,7 +41,7 @@ def getScreenshotTimestamp():
     global currentStatus, keyScreenshotTimestamp
     return currentStatus[keyScreenshotTimestamp]
 
-def setScreenshotTimestamp(timestamp):
+def setScreenshotTimestamp(timestamp = None):
     if not timestamp:
         timestamp = time.time()
     global currentStatus, keyScreenshotTimestamp
