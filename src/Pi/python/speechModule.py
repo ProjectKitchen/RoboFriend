@@ -3,13 +3,14 @@ import random
 import time
 
 # globals
-lastSpeakTimestamp = None
+lastSpeakTimestamp = time.time()
 wordRate = 150 #words per minute
 
 def speak(text, minPause = 0):
     global speechEngine, wordRate, lastSpeakTimestamp
-    if lastSpeakTimestamp and time.time() - lastSpeakTimestamp > minPause:
+    if time.time() - lastSpeakTimestamp > minPause:
         print "speaking: " + text
+        lastSpeakTimestamp = time.time()
         speechEngine = pyttsx.init()
         speechEngine.setProperty('rate', wordRate)
         speechEngine.say(text)
