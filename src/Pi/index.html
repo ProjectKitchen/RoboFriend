@@ -121,6 +121,21 @@
                 <button onclick="communicator.say(L('#customText').value)"> Say </button>
             </div>
             <div class="row">
+                <label for="colorPicker" class="two columns">Ear color</label>
+                <div class="ten columns">
+                    <input id="colorPicker" value="#00A0A0" type="color" onchange="colorChanged(this.value)"/>
+                </div>
+            </div>
+            <!--<div class="row">
+                <label for="colorPicker" class="two columns">Move test</label>
+                <div class="ten columns">
+                    <input id="rangeLeft" type="range" min="-255" max="255" value="0" oninput="L('#valLeft').innerHTML = this.value">
+                    <input id="rangeRight" type="range" min="-255" max="255" value="255" oninput="L('#valRight').innerHTML = this.value">
+                    Left:<span id="valLeft">0</span> Right:<span id="valRight">255</span>
+                    <button onclick="communicator.sendMoveXY(L('#rangeLeft').value, L('#rangeRight').value, 1)"> MOVE </button>
+                </div>
+            </div>-->
+            <div class="row">
                 <label class="two columns">Eyes</label>
                 <div class="ten columns">
                     <button type="submit" onclick="communicator.sendAction('eyes/move/up')" name="lookUp"> Look up </button>
@@ -137,22 +152,7 @@
                 </div>
             </div>
             <div class="row">
-                <label for="colorPicker" class="two columns">Ear color</label>
-                <div class="ten columns">
-                    <input id="colorPicker" type="color" onchange="colorChanged(this.value)"/>
-                </div>
-            </div>
-            <div class="row">
-                <label for="colorPicker" class="two columns">Move test</label>
-                <div class="ten columns">
-                    <input id="rangeLeft" type="range" min="-255" max="255" value="0" oninput="L('#valLeft').innerHTML = this.value">
-                    <input id="rangeRight" type="range" min="-255" max="255" value="255" oninput="L('#valRight').innerHTML = this.value">
-                    Left:<span id="valLeft">0</span> Right:<span id="valRight">255</span>
-                    <button onclick="communicator.sendMoveXY(L('#rangeLeft').value, L('#rangeRight').value, 1)"> MOVE </button>
-                </div>
-            </div>
-            <div class="row">
-                <img id="faceScreenshot" src=""/>
+                <img id="faceScreenshot" width="300" src=""/>
             </div>
         </div>
     </div>
