@@ -2,7 +2,6 @@ import pygame
 import random
 
 #own modules
-from . import faceModule
 
 #init
 print("initializing soundModule...")
@@ -27,6 +26,7 @@ def playMood():
 # deprecated: use single methods like playRandom()
 # this function is called by chooseAction if the robot has to speak/make a sound
 def playsound(dataArray):
+    from . import faceModule
     stop()
     soundname = dataArray[0] #sound(name +) pfad!
     if len(dataArray) > 1: #random sounds oder Aehnliches
