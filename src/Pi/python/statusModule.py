@@ -70,7 +70,7 @@ def StatusInfo():
             speechModule.speakBatteryShutdown()
             sleep(5)
             os.system("init 0")
-        if batWasLow and getBatteryVoltage() > 12.2:
+        if batWasLow and getBatteryVoltage() > 12.15:
             batWasLow = False
             speechModule.speakOnRecharge()
         print ("IRSensors="+str(getIRLeft())+"/"+str(getIRMiddle())+"/"+str(getIRRight()))
