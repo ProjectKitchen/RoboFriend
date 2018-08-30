@@ -26,7 +26,7 @@
         communicator.getStatus().then(response => {
             if(response) {
                 var irMax = 512;
-                L('#batIndicator').innerHTML = response.batVolt;
+                L('#batIndicator').innerHTML = parseFloat(response.batVolt).toFixed(2);
                 L('#irval-left').innerHTML = response.irLeft;
                 L('#irval-middle').innerHTML = response.irMiddle;
                 L('#irval-right').innerHTML = response.irRight;
