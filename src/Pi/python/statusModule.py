@@ -27,23 +27,23 @@ def getStatus():
 
 def getBatteryVoltage():
     global currentStatus, keyBat
-    return currentStatus[keyBat]
+    return currentStatus[keyBat] if keyBat in currentStatus else None
 
 def getIRLeft():
     global currentStatus, keyIrL
-    return currentStatus[keyIrL]
+    return currentStatus[keyIrL] if keyIrL in currentStatus else None
 
 def getIRMiddle():
     global currentStatus, keyIrM
-    return currentStatus[keyIrM]
+    return currentStatus[keyIrM] if keyIrM in currentStatus else None
 
 def getIRRight():
     global currentStatus, keyIrR
-    return currentStatus[keyIrR]
+    return currentStatus[keyIrR] if keyIrR in currentStatus else None
 
 def getScreenshotTimestamp():
     global currentStatus, keyScreenshotTimestamp
-    return currentStatus[keyScreenshotTimestamp]
+    return currentStatus[keyScreenshotTimestamp] if keyScreenshotTimestamp in currentStatus else None
 
 def setScreenshotTimestamp(timestamp = None):
     if not timestamp:
