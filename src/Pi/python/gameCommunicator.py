@@ -30,7 +30,7 @@ def sendtogui(i):
     BytesToSend = bytes(":RUN:" + str(i) + ":EOL:")
     try:
         SendToApp.sendto(BytesToSend, (IP, UDP_PORT+1))
-    except socket.error, msg:
+    except socket.error as msg:
         print('Error Code: ' + str(msg[0]) + 'Message ' + msg[1])
         IP = ''
 
