@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import pyttsx3
 import random
 import time
