@@ -17,6 +17,7 @@ keyIrR = 'irRight'
 keyScreenshotTimestamp = 'screenshotTimestamp'
 screenshotTimestamp = None
 runFlag = True
+batCoversionConstant =  0.0480769
 
 def getStatus():
     return currentStatus
@@ -62,7 +63,7 @@ def StatusInfo():
         time.sleep(refreshIntervalMs / 1000.0)
 
 def updateFromRawStatus(rawStatus):
-    global currentStatus, keyBat, keyIrL, keyIrM, keyIrR
+    global currentStatus, keyBat, keyIrL, keyIrM, keyIrR, batCoversionConstant
 
     batVolt = -1
     irSensorLeft = -1
@@ -71,7 +72,7 @@ def updateFromRawStatus(rawStatus):
     try:
         statusArray = rawStatus.split(',')
         if (statusArray[0] == "Sensors"):
-            batVolt = int(statusArray[1]) / 20
+            batVolt = int(statusArray[1]) * batCoversionConstant
             irSensorLeft = int(statusArray[2])
             irSensorMiddle = int(statusArray[3])
             irSensorRight = int(statusArray[4])
