@@ -22,6 +22,7 @@ screenshotTimestamp = None
 runFlag = True
 batCoversionConstant =  0.04783948
 batMovingAverageN = 20
+batWasLow = False
 
 def getStatus():
     return currentStatus
@@ -54,7 +55,7 @@ def setScreenshotTimestamp(timestamp = None):
 
 # This function is used as Thread to periodically update the battery information
 def StatusInfo():
-    global currentStatus, refreshIntervalMs, keyBat, keyIrL, keyIrM, keyIrR, runFlag
+    global currentStatus, refreshIntervalMs, keyBat, keyIrL, keyIrM, keyIrR, runFlag, batWasLow
     while runFlag:
         rawStatus = teensyCommunicator.getRawStatus()
         currentStatus = updateFromRawStatus(rawStatus)
@@ -62,12 +63,16 @@ def StatusInfo():
 
         print ("Battery= " + str(getBatteryVoltage()) + " Volt)")
         if getBatteryVoltage() < 12.0:
+            batWasLow = True
             speechModule.speakBatteryLow()
             print ("LOW BATTERY - Please Recharge! Robofriend will shutdown automatically at 11.8 Volt!")
         if getBatteryVoltage() < 11.8:
             speechModule.speakBatteryShutdown()
             sleep(5)
             os.system("init 0")
+        if batWasLow and getBatteryVoltage() > 13.0:
+            batWasLow = False
+            speechModule.speakOnRecharge()
         print ("IRSensors="+str(getIRLeft())+"/"+str(getIRMiddle())+"/"+str(getIRRight()))
         time.sleep(refreshIntervalMs / 1000.0)
 

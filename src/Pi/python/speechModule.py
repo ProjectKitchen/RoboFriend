@@ -22,11 +22,13 @@ def speakBatteryLow():
     speak(random.choice(possibleTexts), minimumPause)
     lastSpeakTimestamp = time.time()
 
+def speakOnRecharge():
+    possibleTexts = ['Oh. Thank you very much!', 'Ah. This is good!', 'I am feeling refreshed.', 'Yeah. This is engergy.']
+    speak(random.choice(possibleTexts))
+
 def speakBatteryShutdown():
-    global lastSpeakTimestamp
     possibleTexts = ['I am tired. I have to go to sleep. Bye bye.', 'My energy is too low. Bye bye.']
     speak(random.choice(possibleTexts))
-    lastSpeakTimestamp = time.time()
 
 
 #init
