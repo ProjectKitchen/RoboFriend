@@ -4,7 +4,6 @@ import sys
 
 # own modules
 from . import teensyCommunicator
-from . import faceModule
 from . import soundModule
 from . import speechModule
 from . import gameCommunicator
@@ -69,6 +68,7 @@ def data_listener():
     sock.close()
 
 def chooseAction(data):
+    from . import faceModule
     global currentStatus
     dataArray = data.split(';') # Nachricht wird in ein Array gespeichert
     print(dataArray)
