@@ -4,7 +4,7 @@ import time
 
 # globals
 lastSpeakTimestamp = time.time()
-wordRate = 150 #words per minute
+wordRate = 110 #words per minute
 
 def speak(text):
     global speechEngine, wordRate
