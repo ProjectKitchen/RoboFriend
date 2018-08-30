@@ -10,7 +10,7 @@ language = 'german'
 
 def speak(text):
     global speechEngine
-    print "speaking: " + text
+    print("speaking: " + text)
     speechEngine.say(text)
     speechEngine.runAndWait()
 
@@ -32,7 +32,7 @@ def speakBatteryShutdown():
 
 
 #init
-print "initializing speechModule..."
+print("initializing speechModule...")
 speechEngine.setProperty('rate', wordRate)
 speak('i am robofriend')
 speechEngine.setProperty('voice', language)

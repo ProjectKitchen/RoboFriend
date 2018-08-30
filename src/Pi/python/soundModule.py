@@ -5,7 +5,7 @@ import random
 import faceModule
 
 #init
-print "initializing soundModule..."
+print("initializing soundModule...")
 pygame.init()
 if pygame.mixer and not pygame.mixer.get_init():
     print ('Warning, no sound')

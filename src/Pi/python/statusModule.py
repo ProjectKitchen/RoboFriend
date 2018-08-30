@@ -110,12 +110,12 @@ def getMovingAverage(newValue, currentMean, n):
 def start():
     global StatusThread
 
-    print "starting statusModule..."
+    print("starting statusModule...")
     StatusThread = threading.Thread(target=StatusInfo)
     StatusThread.daemon = True
     StatusThread.start()
 
 def stop():
     global runFlag
-    print "stopping statusModule..."
+    print("stopping statusModule...")
     runFlag = False

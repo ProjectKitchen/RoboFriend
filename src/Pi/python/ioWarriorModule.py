@@ -23,5 +23,5 @@ def setEarColor(r, g, b):
     sendToIOWarrior(r, g, b, cameraPos)
 
 #init
-print "initializing ioWarriorModule..."
+print("initializing ioWarriorModule...")
 sendToIOWarrior(earColorR, earColorG, earColorB, cameraPos)

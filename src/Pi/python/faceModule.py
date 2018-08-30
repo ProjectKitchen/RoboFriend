@@ -5,7 +5,7 @@ import teensyCommunicator
 import statusModule
 
 #init
-print "initializing faceModule..."
+print("initializing faceModule...")
 pygame.init()
 screen = pygame.display.set_mode((654, 380), pygame.FULLSCREEN)
 screen.fill((0, 0, 0))

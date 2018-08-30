@@ -32,7 +32,7 @@ def serialRFIDread():
 def start():
     global serRFID, RFIDReader
 
-    print "starting rfidModule..."
+    print("starting rfidModule...")
     try:
         serRFID = serial.Serial("/dev/ttyUSB0", 9600)
         print('***Serial for RFID reader opened***')
@@ -44,6 +44,6 @@ def start():
 
 def stop():
     global serRFID, runFlag
-    print "stopping rfidModule..."
+    print("stopping rfidModule...")
     runFlag = False
     serRFID.close()

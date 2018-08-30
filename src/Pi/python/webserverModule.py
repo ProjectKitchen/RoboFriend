@@ -122,13 +122,13 @@ def webserver():
     app.run(debug=webserverDebug, host=webserverHost, port=webserverPort)
 
 def start():
-    print "starting webserverModule..."
+    print("starting webserverModule...")
     WebserverThread = threading.Thread(target=webserver)
     WebserverThread.daemon = True
     WebserverThread.start()
 
 def stop():
-    print "stopping webserverModule..."
+    print("stopping webserverModule...")
     # TODO: stop flask?!
 
 # TODO: move to util module

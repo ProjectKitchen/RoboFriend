@@ -8,7 +8,7 @@ ser = None
 driveDuration = 50
 
 #init
-print "initializing teensyCommunicator..."
+print("initializing teensyCommunicator...")
 try:
     ser = serial.Serial("/dev/ttyACM0", 9600, timeout=1)
     print('***Serial for Teensy opened***')
@@ -104,5 +104,5 @@ def sendSerial(commandString, readResponse=False):
 
 def stop():
     global ser
-    print "stopping teensyCommunicator..."
+    print("stopping teensyCommunicator...")
     ser.close()
