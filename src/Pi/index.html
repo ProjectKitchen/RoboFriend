@@ -27,7 +27,7 @@
             if(response) {
                 var irMax = 512;
                 L('#batIndicator').innerHTML = parseFloat(response.batVolt).toFixed(2);
-                window.showBatWarning = window.showBatWarning || parseFloat(response.batVolt) < 12.0;
+                window.showBatWarning = (window.showBatWarning || parseFloat(response.batVolt) < 12.0) && parseFloat(response.batVolt) < 12.2;
                 L.setVisible('#batteryWarning', window.showBatWarning);
                 L('#irval-left').innerHTML = response.irLeft;
                 L('#irval-middle').innerHTML = response.irMiddle;
