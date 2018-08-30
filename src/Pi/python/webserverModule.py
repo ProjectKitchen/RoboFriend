@@ -108,6 +108,7 @@ def getface():
     global app
     response = make_response(send_file("../" + faceModule.getScreenshotFilename()))
     response.headers['Cache-control'] = 'no-cache'
+    response.headers['Access-Control-Allow-Origin'] = '*'
     return response
 
 def getResponse(responseString):
