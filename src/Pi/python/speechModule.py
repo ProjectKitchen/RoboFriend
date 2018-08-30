@@ -9,10 +9,11 @@ speechEngine = pyttsx.init(debug=True)
 language = 'german'
 
 def speak(text):
-    global speechEngine, wordRate
-    print "speaking: " + text
-    speechEngine.say(text)
-    speechEngine.runAndWait()
+    global speechEngine
+    if not speechEngine.isBusy():
+        print "speaking: " + text
+        speechEngine.say(text)
+        speechEngine.runAndWait()
 
 def speakBatteryLow():
     global lastSpeakTimestamp
