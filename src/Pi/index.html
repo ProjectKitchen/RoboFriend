@@ -71,6 +71,7 @@
                 <img id="webcam" onclick="imageClicker.webcamClicked(event)" style="width: 80%; position: absolute; left: 10%; top: 1px; border-radius: 5px"/>
             </div>
             <div class="center-div">
+                <button style="width: 300px; font-size: large" onclick="communicator.moveStop()"><b>STOP</b></button>
                 <div id="navigation-box" class="navigation-box" onmousedown="moveController.clickstart(event, CONST.DIR_NONE)" ontouchstart="moveController.clickstart(event, CONST.DIR_NONE)">
                     <input class="button navbutton" style="top:0px; left: 90px; z-index: 1" type="image" onmousedown="moveController.clickstart(event, CONST.DIR_UP)" onkeydown="moveController.clickstart(event, CONST.DIR_UP)" ontouchstart="moveController.clickstart(event, CONST.DIR_UP)" ondragstart="moveController.doNothing(event)" src="./static/img/forward.svg">
                     <input class="button navbutton" style="top:115px; left: 0px" type="image" onmousedown="moveController.clickstart(event, CONST.DIR_LEFT)" onkeydown="moveController.clickstart(event, CONST.DIR_LEFT)" ontouchstart="moveController.clickstart(event, CONST.DIR_LEFT)" ondragstart="moveController.doNothing(event)" src="./static/img/left.svg">
