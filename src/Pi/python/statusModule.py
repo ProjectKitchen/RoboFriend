@@ -19,7 +19,7 @@ keyIrR = 'irRight'
 keyScreenshotTimestamp = 'screenshotTimestamp'
 screenshotTimestamp = None
 runFlag = True
-batCoversionConstant =  0.0480769
+batCoversionConstant =  0.04783948
 batMovingAverageN = 20
 
 def getStatus():
