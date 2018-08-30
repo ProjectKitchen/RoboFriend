@@ -1,11 +1,11 @@
-import pyttsx
+import pyttsx3
 import random
 import time
 
 # globals
 lastSpeakTimestamp = time.time()
 wordRate = 110 #words per minute
-speechEngine = pyttsx.init(debug=True)
+speechEngine = pyttsx3.init(debug=True)
 language = 'german'
 
 def speak(text):
