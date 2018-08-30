@@ -10,10 +10,9 @@ language = 'german'
 
 def speak(text):
     global speechEngine
-    if not speechEngine.isBusy():
-        print "speaking: " + text
-        speechEngine.say(text)
-        speechEngine.runAndWait()
+    speechEngine.stop()
+    print "speaking: " + text
+    speechEngine.say(text)
 
 def speakBatteryLow():
     global lastSpeakTimestamp
