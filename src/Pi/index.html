@@ -27,6 +27,8 @@
             if(response) {
                 var irMax = 512;
                 L('#batIndicator').innerHTML = parseFloat(response.batVolt).toFixed(2);
+                window.showBatWarning = window.showBatWarning || parseFloat(response.batVolt) < 12.0;
+                L.setVisible('#batteryWarning', window.showBatWarning);
                 L('#irval-left').innerHTML = response.irLeft;
                 L('#irval-middle').innerHTML = response.irMiddle;
                 L('#irval-right').innerHTML = response.irRight;
@@ -49,7 +51,10 @@
 <div class="container">
     <div class="row">
         <h1 class="three columns">RoboFriend</h1>
-        <span class="two columns">Akku: <span id="batIndicator">(?)</span> Volt</span>
+        <div class="two columns">
+            <div>Akku: <span id="batIndicator">(?)</span> Volt</div>
+            <div id="batteryWarning" style="color: red; display: none"><b>Battery Low! Please recharge!</b></div>
+        </div>
         <div class="two columns irval-container" style="border: solid thin; position: relative">
             <div class="irval-indicator" id="ircontainer-left" style="width: 0%"></div>
             IR Left: <span id="irval-left">(?)</span>
