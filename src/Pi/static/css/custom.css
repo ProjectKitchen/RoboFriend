@@ -53,3 +53,9 @@
     height: 100%;
     z-index: -1;
 }
+
+#faceScreenshot {
+    -webkit-filter: invert(1) grayscale(1);
+    filter: invert(1) grayscale(1);
+    border: medium solid;
+}
