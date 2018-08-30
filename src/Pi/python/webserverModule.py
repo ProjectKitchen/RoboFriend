@@ -5,12 +5,12 @@ import urllib
 import json
 
 #own modules
-import ioWarriorModule
-import teensyCommunicator
-import statusModule
-import soundModule
-import faceModule
-import speechModule
+from . import ioWarriorModule
+from . import teensyCommunicator
+from . import statusModule
+from . import soundModule
+from . import faceModule
+from . import speechModule
 
 #init
 app = Flask(__name__, static_folder='../static')

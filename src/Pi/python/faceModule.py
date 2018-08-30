@@ -1,8 +1,8 @@
 import pygame
 import pygame.gfxdraw
 
-import teensyCommunicator
-import statusModule
+from . import teensyCommunicator
+from . import statusModule
 
 #init
 print("initializing faceModule...")

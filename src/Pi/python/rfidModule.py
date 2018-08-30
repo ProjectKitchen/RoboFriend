@@ -1,6 +1,7 @@
 import serial
 import threading
-import gameCommunicator
+
+from . import gameCommunicator
 
 # globals
 serRFID = None

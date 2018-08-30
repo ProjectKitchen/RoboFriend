@@ -3,11 +3,11 @@ import threading
 import sys
 
 # own modules
-import teensyCommunicator
-import faceModule
-import soundModule
-import speechModule
-import gameCommunicator
+from . import teensyCommunicator
+from . import faceModule
+from . import soundModule
+from . import speechModule
+from . import gameCommunicator
 
 # globals
 UDP_PORT = 9000 #socket port

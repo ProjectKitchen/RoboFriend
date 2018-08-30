@@ -5,9 +5,9 @@ import threading
 import os
 
 #own modules
-import teensyCommunicator
-import gameCommunicator
-import speechModule
+from . import teensyCommunicator
+from . import gameCommunicator
+from . import speechModule
 
 # globals
 currentStatus = {}
