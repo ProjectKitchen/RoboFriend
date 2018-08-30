@@ -1,10 +1,12 @@
 # external modules
 import time
 import threading
+import os
 
 #own modules
 import teensyCommunicator
 import gameCommunicator
+import speechModule
 
 # globals
 currentStatus = {}
@@ -57,8 +59,13 @@ def StatusInfo():
         gameCommunicator.sendtogui("battery;"+str(getBatteryVoltage()))
 
         print ("Battery= " + str(getBatteryVoltage()) + " Volt)")
-        if getBatteryVoltage() < 31.5:
-            print ("LOW BATTERY !! - Please Recharge!!")
+        if getBatteryVoltage() < 11.0:
+            speechModule.speakBatteryLow()
+            print ("LOW BATTERY - Please Recharge! Robofriend will shutdown automatically at 10.5 Volt!")
+        if getBatteryVoltage() < 10.5:
+            speechModule.speakBatteryShutdown()
+            sleep(5)
+            os.system("init 0")
         print ("IRSensors="+str(getIRLeft())+"/"+str(getIRMiddle())+"/"+str(getIRRight()))
         time.sleep(refreshIntervalMs / 1000.0)
 
