@@ -11,6 +11,11 @@ language = 'german'
 def speak(text):
     global speechEngine
     print "speaking: " + text
+    text = text.lower()
+    text = text.replace('ä', 'e')
+    text = text.replace('ö', 'o')
+    text = text.replace('ü', 'u')
+    text = text.replace('ß', 'ss')
     speechEngine.say(text)
     speechEngine.runAndWait()
 
