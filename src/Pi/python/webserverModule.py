@@ -99,7 +99,7 @@ def moodSound():
 
 @app.route('/speech/say/<text>', methods=['POST'])
 def speak(text):
-    text = urllib.unquote(text) #decode action to string
+    text = unicode(urllib.unquote(text), "utf-8") #decode action to string
     speechModule.speak(text)
     return getResponse("OK")
 
