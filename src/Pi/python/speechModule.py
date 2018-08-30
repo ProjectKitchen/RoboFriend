@@ -5,12 +5,12 @@ import time
 # globals
 lastSpeakTimestamp = time.time()
 wordRate = 110 #words per minute
+speechEngine = pyttsx.init(debug=True)
+language = 'german'
 
 def speak(text):
     global speechEngine, wordRate
     print "speaking: " + text
-    speechEngine = pyttsx.init()
-    speechEngine.setProperty('rate', wordRate)
     speechEngine.say(text)
     speechEngine.runAndWait()
 
@@ -33,4 +33,6 @@ def speakBatteryShutdown():
 
 #init
 print "initializing speechModule..."
+speechEngine.setProperty('rate', wordRate)
 speak('i am robofriend')
+speechEngine.setProperty('voice', language)
