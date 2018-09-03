@@ -1,11 +1,9 @@
-.center-div > div, .center-div > input, .center-div > img
-{
+.center-div > div, .center-div > input, .center-div > img {
     margin-right: auto;
     margin-left: auto;
 }
 
-.center-div
-{
+.center-div {
     text-align: center;
 }
 
@@ -60,4 +58,13 @@
     -webkit-transform: scaleX(-1);
     transform: scaleX(-1);
     border: medium solid;
+}
+
+.noselect {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
