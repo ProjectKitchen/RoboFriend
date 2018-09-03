@@ -1,53 +1,61 @@
 function ImageClicker() {
     var thiz = this;
+    thiz.isMoving = false;
     thiz.lastMove = new Date().getTime();
-    thiz.movePause = 500;
+    thiz.eyeMovePause = 500;
+    thiz.cameraPause = 200;
+    thiz.movePause = 200;
+    thiz.eyeTimeoutHandler = null;
     thiz.moveTimeoutHandler = null;
+    thiz.cameraTimeoutHandler = null;
+    thiz.moveL = 0;
+    thiz.moveR = 0;
+    thiz.moveCam = 0;
 
-    thiz.webcamClicked = function (event) {
-        var rect = L('#webcamPlaceholder').getBoundingClientRect();
-        var x = event.x - rect.left;
-        var y = event.y - rect.top;
-        var px = (x / rect.width) * 100;
-        var py = (y / rect.height) * 100;
-
-        var isLeft = px < 30;
-        var isRight = px > 70;
-        var isUp = py < 30;
-        var isDown = py > 70;
-        var isMiddleY = !isUp && !isDown;
-        var isMiddleX = !isLeft && !isRight;
-        if (isMiddleY && isLeft) {
-            communicator.sendMoveXY(-50, 50, 1);
-        } else if (isMiddleY && isRight) {
-            communicator.sendMoveXY(50, -50, 1);
-        } else if (isMiddleX && isMiddleY) {
-            communicator.sendMoveXY(50, 50, 1);
-        } else if (isUp) {
-            communicator.sendAction('camera/up')
-        } else if (isDown) {
-            communicator.sendAction('camera/down')
-        }
+    thiz.webcamMouseDown = function (event) {
+        thiz.isMoving = true;
+        calcMovementValues(event);
+        wheelMove();
+        cameraMove();
     };
 
-    thiz.webcamMouseMoved = function (event) {
-        if(thiz.moveTimeoutHandler) {
-            clearInterval(thiz.moveTimeoutHandler);
+    thiz.mouseMoved = function (event) {
+        //wheel movement
+        calcMovementValues(event);
+
+        //eye movement
+        if (thiz.eyeTimeoutHandler) {
+            clearInterval(thiz.eyeTimeoutHandler);
         }
-        if(new Date().getTime() - thiz.lastMove > thiz.movePause) {
+        if (new Date().getTime() - thiz.lastMove > thiz.eyeMovePause) {
             setEyeDirection(event)
         } else {
-            thiz.moveTimeoutHandler = setTimeout(function () {
+            thiz.eyeTimeoutHandler = setTimeout(function () {
                 setEyeDirection(event)
-            }, thiz.movePause);
+            }, thiz.eyeMovePause);
         }
     };
 
-    thiz.stopEyeMovement = function (event) {
-        if(thiz.moveTimeoutHandler) {
+    thiz.stopMovement = function () {
+        thiz.isMoving = false;
+        if (thiz.moveTimeoutHandler) {
             clearInterval(thiz.moveTimeoutHandler);
         }
-        communicator.setEyes(0,0);
+        if (thiz.cameraTimeoutHandler) {
+            clearInterval(thiz.cameraTimeoutHandler);
+        }
+        communicator.moveStop();
+        thiz.moveL = 0;
+        thiz.moveR = 0;
+        thiz.moveCam = 0;
+    };
+
+    thiz.stop = function (event) {
+        if (thiz.eyeTimeoutHandler) {
+            clearInterval(thiz.eyeTimeoutHandler);
+        }
+        thiz.stopMovement();
+        communicator.setEyes(0, 0);
     };
 
     function setEyeDirection(event) {
@@ -58,6 +66,64 @@ function ImageClicker() {
         var px = Math.round((((x / rect.width) * 100) - 50) * -2); // +/- 100%, middle is 0 %
         var py = Math.round((((y / rect.height) * 100) - 50) * 2);
         communicator.setEyes(px, py);
+    }
+
+    function cameraMove() {
+        if(!thiz.isMoving) return;
+
+        if (thiz.moveCam) {
+            communicator.changeCamera(thiz.moveCam);
+        }
+        thiz.cameraTimeoutHandler = setTimeout(function () {
+            cameraMove();
+        }, thiz.cameraPause);
+    }
+
+    function wheelMove() {
+        communicator.sendMoveXY(thiz.moveL, thiz.moveR, 100);
+        thiz.moveTimeoutHandler = setTimeout(function () {
+            wheelMove();
+        }, thiz.movePause);
+    }
+
+    function calcMovementValues(event) {
+        if(!thiz.isMoving) return;
+
+        var rect = L('#webcamPlaceholder').getBoundingClientRect();
+        var x = event.x - rect.left;
+        var y = event.y - rect.top;
+        var px = (x / rect.width) * 100;
+        var py = (y / rect.height) * 100;
+
+        var isLeft = px < 40;
+        var isRight = px > 60;
+        var isUp = py < 30;
+        var isDown = py > 70;
+        var isMiddleY = !isUp && !isDown;
+        var isMiddleX = !isLeft && !isRight;
+        var isMoving = thiz.moveL != 0 || thiz.moveR != 0;
+        var shouldMove = isMoving || isMiddleY;
+        if (shouldMove && isMiddleX) {
+            thiz.moveL = 100;
+            thiz.moveR = 100;
+        } else if (shouldMove && isLeft) {
+            thiz.moveL = Math.round(((px / 40)) * 200 - 100);
+            thiz.moveR = Math.round(((px / 40)) * 0 + 100);
+        } else if (shouldMove && isRight) {
+            thiz.moveL = Math.round((1 - ((px - 60) / 40)) * 0 + 100);
+            thiz.moveR = Math.round((1 - ((px - 60) / 40)) * 200 - 100);
+        } else {
+            thiz.moveL = 0;
+            thiz.moveR = 0;
+        }
+
+        if (isUp) {
+            thiz.moveCam = 4;
+        } else if (isDown) {
+            thiz.moveCam = -4;
+        } else {
+            thiz.moveCam = 0;
+        }
     }
 }
 
