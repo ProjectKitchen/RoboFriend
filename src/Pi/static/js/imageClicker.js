@@ -48,8 +48,8 @@ function ImageClicker() {
         var rect = L('#webcamPlaceholder').getBoundingClientRect();
         var x = event.x - rect.left;
         var y = event.y - rect.top;
-        var px = Math.round((((x / rect.width) * 100) - 50) * 2); // +/- 100%, middle is 0 %
-        var py = Math.round((((y / rect.height) * 100) - 50) * -2);
+        var px = Math.round((((x / rect.width) * 100) - 50) * -2); // +/- 100%, middle is 0 %
+        var py = Math.round((((y / rect.height) * 100) - 50) * 2);
         communicator.setEyes(px, py);
     }
 }
