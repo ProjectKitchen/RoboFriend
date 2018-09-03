@@ -55,7 +55,7 @@
 }
 
 #faceScreenshot {
-    -webkit-filter: invert(1) grayscale(1);
-    filter: invert(1) grayscale(1);
+    -webkit-filter: invert(1) grayscale(1) scaleX(-1);
+    filter: invert(1) grayscale(1) scaleX(-1);
     border: medium solid;
 }
