@@ -73,7 +73,7 @@
             <div class="center-div" style="position: relative">
                 <span style="position: absolute; width: 100%; left: 0; top: 40%">Live view loading...</span>
                 <img id="webcamPlaceholder" onclick="imageClicker.webcamClicked(event)" src="static/img/placeholder.png" style="width: 80%; border: solid 1px; z-index: -1; border-radius: 5px"/>
-                <img id="webcam" onclick="imageClicker.webcamClicked(event)" onmousemove="imageClicker.webcamMouseMoved(event)" style="width: 80%; position: absolute; left: 10%; top: 1px; border-radius: 5px"/>
+                <img id="webcam" onclick="imageClicker.webcamClicked(event)" onmousemove="imageClicker.webcamMouseMoved(event)" onmouseleave="imageClicker.stopEyeMovement()" style="width: 80%; position: absolute; left: 10%; top: 1px; border-radius: 5px"/>
             </div>
             <div class="center-div">
                 <button style="width: 300px; font-size: large" onclick="communicator.moveStop()"><b>STOP</b></button>

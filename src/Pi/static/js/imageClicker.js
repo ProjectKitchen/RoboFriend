@@ -43,6 +43,13 @@ function ImageClicker() {
         }
     };
 
+    thiz.stopEyeMovement = function (event) {
+        if(thiz.moveTimeoutHandler) {
+            clearInterval(thiz.moveTimeoutHandler);
+        }
+        communicator.setEyes(0,0);
+    };
+
     function setEyeDirection(event) {
         thiz.lastMove = new Date().getTime();
         var rect = L('#webcamPlaceholder').getBoundingClientRect();
