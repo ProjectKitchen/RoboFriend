@@ -29,6 +29,10 @@ function Communicator() {
         thiz.sendAction('eyes/set/' + xPercent + '/' + yPercent);
     };
 
+    thiz.changeCamera = function (increment) {
+        thiz.sendAction('camera/change/' + increment)
+    };
+
     thiz.moveStop = function () {
         thiz.sendAction('move/stop');
     };
