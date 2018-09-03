@@ -23,9 +23,9 @@ function ImageClicker() {
             communicator.sendMoveXY(50, -50, 1);
         } else if (isMiddleX && isMiddleY) {
             communicator.sendMoveXY(50, 50, 1);
-        } else if (isMiddleX && isUp) {
+        } else if (isUp) {
             communicator.sendAction('camera/up')
-        } else if (isMiddleX && isDown) {
+        } else if (isDown) {
             communicator.sendAction('camera/down')
         }
     };
