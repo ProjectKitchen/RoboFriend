@@ -38,9 +38,9 @@ def cameradown():
     return getResponse("OK")
 
 @app.route('/camera/change/<increment>', methods=['POST'])
-def camerachange(inc):
+def camerachange(increment):
     global cameraPos
-    ioWarriorModule.changeCameraPos(int(inc))
+    ioWarriorModule.changeCameraPos(int(increment))
     return getResponse("OK")
 
 @app.route('/ear/color/<earColorR>/<earColorG>/<earColorB>', methods=['POST'])
