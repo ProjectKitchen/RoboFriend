@@ -58,8 +58,8 @@ def setEyes(xPercent, yPercent):
     elif yPercent > 100:
         yPercent = 100
 
-    eyex = xPercent * (40 / 100)
-    eyey = yPercent * (40 / 100)
+    eyex = int(xPercent * (40.0 / 100))
+    eyey = int(yPercent * (40.0 / 100))
     drawFace()
 
 def eyesUp():
