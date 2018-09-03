@@ -60,7 +60,7 @@ function ImageClicker() {
 
     function setEyeDirection(event) {
         thiz.lastMove = new Date().getTime();
-        var rect = L('#webcamPlaceholder').getBoundingClientRect();
+        var rect = L('#' + event.target.id).getBoundingClientRect();
         var x = event.x - rect.left;
         var y = event.y - rect.top;
         var px = Math.round((((x / rect.width) * 100) - 50) * -2); // +/- 100%, middle is 0 %
@@ -89,7 +89,7 @@ function ImageClicker() {
     function calcMovementValues(event) {
         if(!thiz.isMoving) return;
 
-        var rect = L('#webcamPlaceholder').getBoundingClientRect();
+        var rect = L('#' + event.target.id).getBoundingClientRect();
         var x = event.x - rect.left;
         var y = event.y - rect.top;
         var px = (x / rect.width) * 100;
