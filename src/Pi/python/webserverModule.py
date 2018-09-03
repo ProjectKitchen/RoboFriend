@@ -57,7 +57,7 @@ def moveEyes(direction):
 
 @app.route('/eyes/set/<xPercent>/<yPercent>', methods=['POST'])
 def moveEyesXY(xPercent, yPercent):
-    faceModule.setEyes(xPercent, yPercent)
+    faceModule.setEyes(float(xPercent), float(yPercent))
     return getResponse("OK")
 
 @app.route('/mouth/smile/<action>', methods=['POST'])
