@@ -25,17 +25,21 @@ function Communicator() {
         }
     };
 
+    thiz.setEyes = function (xPercent, yPercent) {
+        thiz.sendAction('eyes/set/' + xPercent + '/' + yPercent);
+    };
+
     thiz.moveStop = function () {
         thiz.sendAction('move/stop');
     };
 
     thiz.say = function (stringToSay) {
-        if(stringToSay) {
+        if (stringToSay) {
             thiz.sendAction('speech/say/' + stringToSay)
         }
     };
 
-    thiz.sendMoveXY = function (x,y, duration) {
+    thiz.sendMoveXY = function (x, y, duration) {
         duration = duration || defaultMoveDuration;
         thiz.sendAction('move/flex/' + x + '/' + y + '/' + duration);
     };
@@ -59,7 +63,7 @@ function Communicator() {
         return new Promise((resolve, reject) => {
             var url = RESTbaseUrl + restPath;
             var xmlHttp = new XMLHttpRequest();
-            xmlHttp.onreadystatechange = function() {
+            xmlHttp.onreadystatechange = function () {
                 if (xmlHttp.readyState === 4) {
                     if (xmlHttp.status === 200) {
                         resolve(xmlHttp.responseText);
