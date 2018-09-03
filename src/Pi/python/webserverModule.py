@@ -37,6 +37,12 @@ def cameradown():
     ioWarriorModule.changeCameraPos(-10)
     return getResponse("OK")
 
+@app.route('/camera/change/<increment>', methods=['POST'])
+def camerachange(inc):
+    global cameraPos
+    ioWarriorModule.changeCameraPos(int(inc))
+    return getResponse("OK")
+
 @app.route('/ear/color/<earColorR>/<earColorG>/<earColorB>', methods=['POST'])
 def setEarRGB(earColorR, earColorG, earColorB):
     r = translateIntRange(int(earColorR), 0, 255, 0, 15)
