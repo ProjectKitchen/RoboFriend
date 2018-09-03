@@ -10,6 +10,7 @@
     <script type="text/javascript" src='static/js/communicator.js'></script>
     <script type="text/javascript" src='static/js/moveController.js'></script>
     <script type="text/javascript" src='static/js/imageClicker.js'></script>
+    <script type="text/javascript" src='static/js/earColorService.js'></script>
 
     <link rel="stylesheet" href="static/css/normalize.css">
     <link rel="stylesheet" href="static/css/skeleton.css">
@@ -122,9 +123,11 @@
             </div>
             <div class="row">
                 <label for="colorPicker" class="two columns">Ear color</label>
-                <div class="ten columns">
+                <div class="one column">
                     <input id="colorPicker" value="#00A0A0" type="color" onchange="colorChanged(this.value)"/>
                 </div>
+                <img id="colorPickerImg" class="noselect seven columns" draggable="false" src="./static/img/rainbow.png" onmousedown="earColorService.onMousedown(event)" onmouseup="earColorService.stop()" onmousemove="earColorService.onMouseMove(event)" onmouseleave="earColorService.stop()"/>
+                <button onclick="earColorService.random()"> Random </button>
             </div>
             <!--<div class="row">
                 <label for="colorPicker" class="two columns">Move test</label>
