@@ -47,6 +47,21 @@ def decreaseSmile():
         radius=radius+0.1
     drawFace()
 
+def setEyes(xPercent, yPercent):
+    global eyex, eyey
+    if xPercent < -100:
+        xPercent = -100
+    elif xPercent > 100:
+        xPercent = 100
+    if yPercent < -100:
+        yPercent = -100
+    elif yPercent > 100:
+        yPercent = 100
+
+    eyex = xPercent * (40 / 100)
+    eyey = yPercent * (40 / 100)
+    drawFace()
+
 def eyesUp():
     global eyey, eyestep
     if eyey > -40:

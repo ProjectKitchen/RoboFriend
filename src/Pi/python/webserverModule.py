@@ -55,6 +55,11 @@ def moveEyes(direction):
     if direction in methods: methods[direction]()
     return getResponse("OK")
 
+@app.route('/eyes/set/<xPercent>/<yPercent>', methods=['POST'])
+def moveEyes(xPercent, yPercent):
+    faceModule.setEyes(xPercent, yPercent)
+    return getResponse("OK")
+
 @app.route('/mouth/smile/<action>', methods=['POST'])
 def changeSmile(action):
     methods = {'increase': faceModule.increaseSmile,
