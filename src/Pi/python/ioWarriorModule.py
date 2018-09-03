@@ -11,7 +11,7 @@ def sendToIOWarrior(earColorR, earColorG, earColorB, cameraPos):
 
 def changeCameraPos(diff):
     global earColorR, earColorG, earColorB, cameraPos
-    if 10 <= cameraPos + diff <= 160:
+    if 10 <= cameraPos + diff <= 150:
         cameraPos = cameraPos + diff
         sendToIOWarrior(earColorR, earColorG, earColorB, cameraPos)
 
