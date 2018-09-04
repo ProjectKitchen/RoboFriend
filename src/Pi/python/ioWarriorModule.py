@@ -38,7 +38,7 @@ def setEarColor(r, g, b):
 
 def setEarColorSeries(seriesRGB, repeatNum=1, waitTimeMs=500):
     global earColorR, earColorG, earColorB
-    for x in range(repeatNum-1):
+    for x in range(repeatNum):
         for rgb in seriesRGB:
             setEarColor(rgb[0], rgb[1], rgb[2])
             time.sleep(waitTimeMs / 1000.0)
