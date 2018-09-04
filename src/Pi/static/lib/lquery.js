@@ -275,10 +275,6 @@ L.flattenArray = function (array) {
     return [].concat.apply([], array);
 };
 
-L.flattenArrayDeep = function (arr) {
-    return arr.reduce((acc, e) => Array.isArray(e) ? acc.concat(L.flattenArrayDeep(e)) : acc.concat(e), []);
-};
-
 L.convertToKeyCode = function(character) {
     if(/^[a-zA-Z0-9]$/.test(character)) {
         return character.toUpperCase().charCodeAt(0);
