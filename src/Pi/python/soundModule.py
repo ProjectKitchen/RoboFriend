@@ -18,6 +18,16 @@ def close():
 def stop():
     pygame.mixer.stop()
 
+def playSoundFile(path):
+    sound = None
+    try:
+        print ("playing sound " + path)
+        sound = pygame.mixer.Sound(path)
+    except:
+        print ("could not open " + path)
+    else:
+        sound.play()
+
 def playRandom():
     playsound(["data/fabibox/","random"])
 
@@ -52,11 +62,4 @@ def playsound(dataArray):
     else:
         print ("playing soundfile " + soundname)
         soundpath = soundname
-
-    try:
-        print ("playing sound "+soundpath)
-        selectedSound = pygame.mixer.Sound(soundpath)
-    except:
-        print ("could not open "+soundpath)
-    else:
-        selectedSound.play()
+    playSoundFile(soundpath)
