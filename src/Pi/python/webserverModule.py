@@ -93,7 +93,8 @@ def setMood(moodState):
     methods = {'happy': moodModule.setHappy,
                'sad': moodModule.setSad,
                'angry': moodModule.setAngry,
-               'neutral': moodModule.setNeutral
+               'neutral': moodModule.setNeutral,
+               'tired': moodModule.setTired
                }
     if moodState in methods: methods[moodState]()
     return getResponse("OK")
