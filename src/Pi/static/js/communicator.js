@@ -39,7 +39,7 @@ function Communicator() {
 
     thiz.say = function (stringToSay) {
         if (stringToSay) {
-            thiz.sendAction('speech/say/' + stringToSay)
+            thiz.sendAction('speech/say/custom/' + stringToSay)
         }
     };
 
