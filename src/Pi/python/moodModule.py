@@ -18,7 +18,7 @@ def setHappy():
     faceModule.setEyes(9, -47)
     faceModule.setSmile(80)
     soundModule.playSoundFile('data/mood/happy.wav')
-    ioWarriorModule.setEarColor(0,255,0)
+    ioWarriorModule.setEarColorSeries([[255,69,0],[255,191,0]], 5, 200)
 
 def setAngry():
     faceModule.setEyes(-46, -40)
