@@ -107,7 +107,7 @@ def move(left, right, duration):
     return getResponse("OK")
 
 @app.route('/control/shutdown/<password>', methods=['POST'])
-def move(password):
+def shutdown(password):
     if password == "!robo!":
         return getResponse("OK")
         speechModule.speakShutdown()
