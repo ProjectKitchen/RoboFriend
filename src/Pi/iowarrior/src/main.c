@@ -71,7 +71,7 @@ int main(int argc, char** argv)
         for (j = 0; j < 9; j++)
                 snt[j] = sn[j];
 
-        printf("\n\n  IoWarrior: SerialNumber = %s\n", snt);
+        //printf("\n\n  IoWarrior: SerialNumber = %s\n", snt);
 
         if(argc == 1) {
             printf("  IoWarrior interface! \n  usage: sudo ./iow [<red> <green> <blue>] [<servo>]\n");
@@ -91,10 +91,10 @@ int main(int argc, char** argv)
             b = strtoul(argv[3],NULL,10);
 
             _data[1] = ~((byte) (((r&0x0f)<<4)+8));
-            printf("IoWarrior: set I/O value1 %d\n",_data[1]);
+            //printf("IoWarrior: set I/O value1 %d\n",_data[1]);
 
             _data[2] = ~((byte) (((g&0x0f)<<4) + (b&0x0f)));
-            printf("IoWarrior: set I/O value2 %d\n",_data[2]);
+            //printf("IoWarrior: set I/O value2 %d\n",_data[2]);
 
             //   _data[1] = (byte) (_data[1] & 0xF7);
             //   _data[1] = (byte)(_data[1] | 0x08);
@@ -122,7 +122,7 @@ int main(int argc, char** argv)
             }
 
             servoPos = strtoul(argv[argc-1],NULL,10);
-            printf("IoWarrior: Setting Servo Position: %d\n", servoPos);
+            //printf("IoWarrior: Setting Servo Position: %d\n", servoPos);
             SetServo(1,servoPos);
         }
 
