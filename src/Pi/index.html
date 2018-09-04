@@ -119,15 +119,21 @@
             </div>
             <div class="row">
                 <input id="customText" type="text" maxlength="" class="eight columns offset-by-two">
-                <button onclick="communicator.say(L('#customText').value)"> Say </button>
+                <button class="two columns" onclick="communicator.say(L('#customText').value)"> Say </button>
             </div>
             <div class="row">
                 <label for="colorPicker" class="two columns">Ear color</label>
                 <div class="one column">
                     <input id="colorPicker" value="#00A0A0" type="color" onchange="colorChanged(this.value)"/>
                 </div>
-                <img id="colorPickerImg" class="noselect seven columns" draggable="false" src="./static/img/rainbow.png" onmousedown="earColorService.onMousedown(event)" onmouseup="earColorService.stop()" onmousemove="earColorService.onMouseMove(event)" onmouseleave="earColorService.stop()"/>
-                <button onclick="earColorService.random()"> Random </button>
+                <div class="six columns" style="position: relative">
+                    <input type="range" style="z-index: 1; width: 100%" min="1" max="99" value="80" oninput="earColorService.onchange(event)"/>
+                    <img id="colorPickerImg" class="noselect" draggable="false" src="./static/img/rainbow.png" style="position: absolute; left: 0; top: 0; z-index: -1; max-width: 100%"/>
+                </div>
+                <div class="three columns">
+                    <button class="randomEarBtn" onclick="earColorService.randomOn()"> Random on </button>
+                    <button class="randomEarBtn" onclick="earColorService.randomOff()" style="display: none"> Random off </button>
+                </div>
             </div>
             <!--<div class="row">
                 <label for="colorPicker" class="two columns">Move test</label>
