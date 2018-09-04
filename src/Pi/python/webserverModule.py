@@ -12,7 +12,7 @@ import statusModule
 import soundModule
 import faceModule
 import speechModule
-import moodModule
+#import moodModule
 
 #init
 app = Flask(__name__, static_folder='../static')
