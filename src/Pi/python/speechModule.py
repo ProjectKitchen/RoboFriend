@@ -69,6 +69,14 @@ def speakBatteryShutdown():
     possibleInLang = possibleTexts[language]
     speak(random.choice(possibleInLang))
 
+def speakShutdown():
+    global language
+    texts = {
+        'english': 'I am shutting down... Do not forget to turn off the switch at the bottom front!',
+        'german' : 'Ich schalte mich aus... Vergiss nicht den Schalter vorne unten auszuschalten!'
+    }
+    speak(texts[language])
+
 
 #init
 print "initializing speechModule..."

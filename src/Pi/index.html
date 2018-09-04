@@ -172,6 +172,13 @@
                     <button type="submit" onclick="communicator.sendAction('mood/set/tired')"> Tired </button>
                 </div>
             </div>
+            <div class="row">
+                <label class="two columns">Shutdown</label>
+                <div class="ten columns">
+                    <input id="password" type="password" placeholder="password"/>
+                    <button type="submit" onclick="communicator.sendAction('control/shutdown/' + L('#password').value)"> Shutdown! </button>
+                </div>
+            </div>
         </div>
     </div>
 </div>

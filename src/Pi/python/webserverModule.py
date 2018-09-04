@@ -4,6 +4,8 @@ import threading
 import urllib
 import json
 import logging
+import os
+import time
 
 #own modules
 import ioWarriorModule
@@ -103,6 +105,16 @@ def setMood(moodState):
 def move(left, right, duration):
     teensyCommunicator.move(left, right, duration)
     return getResponse("OK")
+
+@app.route('/control/shutdown/<password>', methods=['POST'])
+def move(password):
+    if password == "!robo!":
+        return getResponse("OK")
+        speechModule.speakShutdown()
+        time.sleep(5)
+        os.system('sudo shutdown')
+    else:
+        return getResponse("WRONG PASSWORD")
 
 @app.route('/move/simple/<direction>', methods=['POST'])
 def moveSimple(direction):
