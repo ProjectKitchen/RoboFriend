@@ -49,8 +49,8 @@ function Communicator() {
     };
 
     thiz.getStatus = function () {
-        return new Promise(resolve => {
-            sendHttp('get/status', 'GET').then(result => {
+        return new Promise(function(resolve) {
+            sendHttp('get/status', 'GET').then(function(result) {
                 resolve(JSON.parse(result));
             });
         })
@@ -64,7 +64,7 @@ function Communicator() {
     function sendHttp(restPath, method) {
         method = method || 'POST';
         console.log('sending (' + method + '): ' + restPath);
-        return new Promise((resolve, reject) => {
+        return new Promise(function(resolve, reject) {
             var url = RESTbaseUrl + restPath;
             var xmlHttp = new XMLHttpRequest();
             xmlHttp.onreadystatechange = function () {

@@ -24,7 +24,7 @@
     }
 
     setInterval(function () {
-        communicator.getStatus().then(response => {
+        communicator.getStatus().then(function(response) {
             if(response) {
                 var irMax = 512;
                 L('#batIndicator').innerHTML = parseFloat(response.batVolt).toFixed(2);
