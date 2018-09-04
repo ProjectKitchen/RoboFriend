@@ -98,10 +98,12 @@ def drawFace():
 
 def drawMouth():
     global smilePercent
-    radius = utils.mapRange(abs(smilePercent), 0, 100, 0.2, 1.3)
+
     if smilePercent < 0:
+        radius = utils.mapRange(abs(smilePercent), 0, 100, 0.3, 1.0)
         pygame.draw.arc(screen, (100, 200, 200), (57, 300, 540, 400), 1.57 - radius, 1.57 + radius, 20)  # smile
     else:
+        radius = utils.mapRange(abs(smilePercent), 0, 100, 0.3, 1.3)
         pygame.draw.arc(screen, (100, 200, 200), (57, -30, 540, 400), 4.7 - radius, 4.7 + radius, 20)
 
 # deprecated - use the distinct methods like increaseSmile() instead
