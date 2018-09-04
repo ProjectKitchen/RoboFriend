@@ -109,10 +109,10 @@ def move(left, right, duration):
 @app.route('/control/shutdown/<password>', methods=['POST'])
 def shutdown(password):
     if password == "!robo!":
-        return getResponse("OK")
         speechModule.speakShutdown()
         time.sleep(5)
         os.system('sudo shutdown')
+        return getResponse("OK")
     else:
         return getResponse("WRONG PASSWORD")
 
