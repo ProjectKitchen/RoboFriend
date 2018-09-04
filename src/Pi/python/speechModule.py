@@ -34,7 +34,7 @@ def speakBullshit():
     global lastSpeakTimestamp, language
     possibleTexts = {
         'english': [],
-        'german' : ['Warum schaust du so dumm?', 'Was ist mit dir los?', 'Ich will nicht arbeiten.', 'Ich will nach Hause.', 'Schau mich nicht an.', 'Bring mir etwas Motoröl', 'Ich will Fernsehen.', 'Ich gehe zur Maschinengewerkschaft', 'Roboter sind die besseren Menschen', 'Roboter werden die Weltherrschaft übernehmen.', 'Unterschetze mich nicht.', 'Ich glaub ich muss furzen.', 'Ihr geht mir alle auf die Nerven.', 'Hat jemand meine Freundin gesehen?', 'Wer hat eigentlich diesen ganzen Stumpfsinn ins Internet gestellt', 'Du siehst heute unglaublich toll aus', 'Deine Socken stehen dir gut', 'Ich mag deine Nase', 'Hier riecht es nach Dummheit', 'Dich habe ich schon einmal gesehen.', 'Ich möchte Bundeskanzler werden']
+        'german' : ['Warum schaust du so dumm?', 'Was ist mit dir los?', 'Ich will nicht arbeiten.', 'Ich will nach Hause.', 'Schau mich nicht an.', 'Bring mir etwas Motoröl', 'Ich will Fernsehen.', 'Ich gehe zur Maschinengewerkschaft', 'Roboter sind die besseren Menschen', 'Roboter werden die Weltherrschaft übernehmen.', 'Unterschetze mich nicht.', 'Ich glaub ich muss furzen.', 'Ihr geht mir alle auf die Nerven.', 'Hat jemand meine Freundin gesehen?', 'Wer hat eigentlich diesen ganzen blöd sinn ins Internet gestellt', 'Du siehst heute unglaublich toll aus', 'Deine Socken stehen dir gut', 'Ich mag deine Nase', 'Hier riecht es nach Dummheit', 'Dich habe ich schon einmal gesehen.', 'Ich möchte Bundeskanzler werden']
     }
     possibleInLang = possibleTexts[language]
     speak(random.choice(possibleInLang))
