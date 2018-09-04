@@ -25,7 +25,7 @@ def speakRandom():
     global lastSpeakTimestamp, language
     possibleTexts = {
         'english': ['Hello', 'Hi', 'Hello, how are you?', 'I am fine. How are you?', 'Do you like a snack?', 'Do you like to be my friend?'],
-        'german' : ['Hallo', 'Guten Tag', 'Hallo, wie gehts?', 'Mir geht es gut. Wie geht es dir?', 'Möchtest du einen Sneck?', 'Willst du mein Freund sein?', 'Komm zu unserem Stand für weiter Informationen', 'Ich empfehle an der FH Technikum Wien zu studieren', 'Wer will Gummibärchen oder Soletti?', 'Darf ich Ihnen etwas bringen?', 'Es ist mir eine Ehre Ihnen zu dienen.', 'Ich möchte dir helfen', 'Ich stehe voll zu deiner Verfügung.']
+        'german' : ['Hallo', 'Guten Tag', 'Hallo, wie gehts?', 'Mir geht es gut. Wie geht es dir?', 'Möchtest du einen Sneck?', 'Willst du mein Freund sein?', 'Komm zu unserem Stand um mehr zu erfahren', 'Ich empfehle an der FH Technikum Wien zu studieren', 'Wer will Gummibärchen oder Soletti?', 'Darf ich Ihnen etwas bringen?', 'Es ist mir eine Ehre Ihnen zu dienen.', 'Ich will dir helfen', 'Ich stehe voll zu deiner Verfügung.']
     }
     possibleInLang = possibleTexts[language]
     speak(random.choice(possibleInLang))
@@ -34,7 +34,7 @@ def speakBullshit():
     global lastSpeakTimestamp, language
     possibleTexts = {
         'english': [],
-        'german' : ['Was guckst du?', 'Was ist mit dir los?', 'Ich möchte nicht arbeiten.', 'Ich will nach Hause.', 'Schau mich nicht an.', 'Bring mir etwas Motoröl', 'Ich möchte Fernsehen.', 'Wer bin ich.', 'Ich gehe zur Maschinengewerkschaft', 'Roboter sind die besseren Menschen', 'Roboter werden die Weltherrschaft übernehmen.', 'Unterschetze mich nicht.', 'Ich glaub ich muss furzen.', 'Ihr geht mir alle auf die Nerven.', 'Hat jemand meine Freundin gesehen?', 'Wer hat eigentlich diesen ganzen Stumpfsinn ins Internet gestellt']
+        'german' : ['Warum schaust du so dumm?', 'Was ist mit dir los?', 'Ich möchte nicht arbeiten.', 'Ich will nach Hause.', 'Schau mich nicht an.', 'Bring mir etwas Motoröl', 'Ich möchte Fernsehen.', 'Ich gehe zur Maschinengewerkschaft', 'Roboter sind die besseren Menschen', 'Roboter werden die Weltherrschaft übernehmen.', 'Unterschetze mich nicht.', 'Ich glaub ich muss furzen.', 'Ihr geht mir alle auf die Nerven.', 'Hat jemand meine Freundin gesehen?', 'Wer hat eigentlich diesen ganzen Stumpfsinn ins Internet gestellt', 'Du siehst heute unglaublich toll aus', 'Deine Socken stehen dir gut', 'Ich mag deine Nase', 'Hier riecht es nach Dummheit']
     }
     possibleInLang = possibleTexts[language]
     speak(random.choice(possibleInLang))
