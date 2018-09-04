@@ -24,6 +24,16 @@
         communicator.sendAction('ear/color/' + rgb.r + '/' + rgb.g + '/' + rgb.b)
     }
 
+    function shutdown(password) {
+        password = password || 'none';
+        L.setVisible('#wrongPassword', false);
+        communicator.sendAction('control/shutdown/' + password).then(function (response) {
+            if(response != "OK") {
+                L.setVisible('#wrongPassword', true);
+            }
+        })
+    }
+
     setInterval(function () {
         communicator.getStatus().then(function(response) {
             if(response) {
@@ -163,7 +173,7 @@
                 </div>
             </div>
             <div class="row offset-by-two">
-                <img id="faceScreenshot" onclick="imageClicker.mouseMoved(event)" class="six columns offset-by-two" width="300" src=""/>
+                <img id="faceScreenshot" onclick="imageClicker.mouseMoved(event)" class="six columns offset-by-two" width="300" src="" style="margin-bottom: 1em"/>
                 <div class="four columns">
                     <button type="submit" onclick="communicator.sendAction('mood/set/neutral')"> Neutral </button>
                     <button type="submit" onclick="communicator.sendAction('mood/set/happy')"> Happy </button>
@@ -176,7 +186,10 @@
                 <label class="two columns">Shutdown</label>
                 <div class="ten columns">
                     <input id="password" type="password" placeholder="password"/>
-                    <button type="submit" onclick="communicator.sendAction('control/shutdown/' + L('#password').value)"> Shutdown! </button>
+                    <button type="submit" onclick="shutdown(L('#password').value)"> Shutdown! </button>
+                    <div class="inline">
+                        <span id="wrongPassword" style="color: red; display: none">Wrong password!</span>
+                    </div>
                 </div>
             </div>
         </div>
