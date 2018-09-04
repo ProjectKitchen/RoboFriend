@@ -3,6 +3,7 @@ import pygame.gfxdraw
 
 import teensyCommunicator
 import statusModule
+import utils
 
 #init
 print "initializing faceModule..."
@@ -11,10 +12,9 @@ screen = pygame.display.set_mode((654, 380), pygame.FULLSCREEN)
 screen.fill((0, 0, 0))
 
 # globals
-radius = 0.8
 eyex = 0
 eyey = 0
-sadFace = 0
+smilePercent = 60
 eyestep = 10
 screenshotFilename = 'screenshot.jpg'
 
@@ -25,26 +25,20 @@ def getScreenshotFilename():
     global screenshotFilename
     return screenshotFilename
 
+#set smile in percent, +100 is most happy, -100 is most sad, 0 is neutral
+def setSmile(percent):
+    global smilePercent
+    smilePercent = utils.restrictRange(percent, -100, 100)
+    drawFace()
+
 def increaseSmile():
-    global radius, sadFace
-    if (radius < 1.3 and sadFace == 0):
-        radius=radius+0.1
-    elif (sadFace ==1):
-        if radius < 0.3:
-            sadFace = 0
-            radius = radius +0.1
-        else:
-            sadFace = 1
-            radius = radius-0.1
+    global smilePercent
+    smilePercent = utils.restrictRange(smilePercent + 10, -100, 100)
     drawFace()
 
 def decreaseSmile():
-    global radius, sadFace
-    if (radius > 0.3 and sadFace == 0):
-        radius=radius-0.1
-    elif ((sadFace==1 or radius < 0.3) and radius < 0.8):
-        sadFace=1
-        radius=radius+0.1
+    global smilePercent
+    smilePercent = utils.restrictRange(smilePercent - 10, -100, 100)
     drawFace()
 
 def setEyes(xPercent, yPercent):
@@ -87,47 +81,33 @@ def eyesRight():
     drawFace()
 
 def isSad():
-    global sadFace
-    return sadFace
+    global smilePercent
+    return smilePercent < 0
 
 def drawFace():
-    global sadFace, screen, screenshotFilename
-    if sadFace == 0:
-        drawHappyFace()
-    elif sadFace == 1:
-        drawSadFace()
-
-# Updating Facial expression of robot in case of a happy expression
-def drawHappyFace():
-    global screen, eyex, eyey, radius, screenshotFilename
+    global screen, eyex, eyey, screenshotFilename
     screen.fill((0, 0, 0))
     pygame.draw.circle(screen, (100,250,250), (163,100), 60) #lefteye
     pygame.draw.circle(screen, (100,250,250), (491,100), 60) #righteye
     pygame.draw.circle(screen, (10,10,10), (163+eyex,100+eyey), 20) #leftpupil
     pygame.draw.circle(screen, (10,10,10), (491+eyex,100+eyey), 20) #rightpupil
-    pygame.draw.arc(screen, (100,200,200), (57, -30, 540, 400), 4.7-radius, 4.7+radius, 20) #smile
+    drawMouth()
     pygame.display.flip()
     pygame.image.save(screen, screenshotFilename)
     statusModule.setScreenshotTimestamp()
 
-# Updating Facial expression of robot in case of a sad expression
-def drawSadFace():
-    global screen, eyex, eyey, radius, screenshotFilename
-    screen.fill((0, 0, 0))
-    pygame.draw.circle(screen, (100,250,250), (163,100), 60) #lefteye
-    pygame.draw.circle(screen, (100,250,250), (491,100), 60) #righteye
-    pygame.draw.circle(screen, (10,10,10), (163+eyex,100+eyey), 20) #leftpupil
-    pygame.draw.circle(screen, (10,10,10), (491+eyex,100+eyey), 20) #rightpupil
-    pygame.draw.arc(screen, (100,200,200), (57, 300, 540, 400), 1.57-radius, 1.57+radius, 20) #smile
-    pygame.display.flip()
-    pygame.image.save(screen, screenshotFilename)
-    statusModule.setScreenshotTimestamp()
-
+def drawMouth():
+    global smilePercent
+    radius = utils.mapRange(abs(smilePercent), 0, 100, 0.2, 1.3)
+    if smilePercent < 0:
+        pygame.draw.arc(screen, (100, 200, 200), (57, 300, 540, 400), 1.57 - radius, 1.57 + radius, 20)  # smile
+    else:
+        pygame.draw.arc(screen, (100, 200, 200), (57, -30, 540, 400), 4.7 - radius, 4.7 + radius, 20)
 
 # deprecated - use the distinct methods like increaseSmile() instead
 # this function is called by chooseAction if the facial expression of the robot has to change
 def faceManipulation(dataArray):
-    global radius, sadFace
+    global smilePercent
     faceObject = dataArray[0] #eyes or smile
     dataArray = dataArray[1:]
     if faceObject == "smile":
@@ -149,10 +129,8 @@ def faceManipulation(dataArray):
     elif faceObject == "answer":
         changing = dataArray[0]
         if changing == "correct":
-            sadFace = 0
-            radius = 0.8
+            smilePercent = 60
         if changing == "wrong":
-            sadFace = 1
-            radius = 0.8
+            smilePercent = -60
             teensyCommunicator.shakeHeadForNo()
     drawFace()
