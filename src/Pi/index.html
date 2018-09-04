@@ -165,6 +165,12 @@
             </div>
             <div class="row offset-by-two">
                 <img id="faceScreenshot" onclick="imageClicker.mouseMoved(event)" class="six columns offset-by-two" width="300" src=""/>
+                <div class="four columns">
+                    <button type="submit" onclick="communicator.sendAction('mood/set/neutral')"> Neutral </button>
+                    <button type="submit" onclick="communicator.sendAction('mood/set/happy')"> Happy </button>
+                    <button type="submit" onclick="communicator.sendAction('mood/set/angry')"> Angry </button>
+                    <button type="submit" onclick="communicator.sendAction('mood/set/sad')"> Sad </button>
+                </div>
             </div>
         </div>
     </div>
