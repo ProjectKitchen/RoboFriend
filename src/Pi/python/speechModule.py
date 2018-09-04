@@ -6,7 +6,7 @@ import time
 
 # globals
 lastSpeakTimestamp = time.time()
-wordRate = 110 #words per minute
+wordRate = 140 #words per minute
 speechEngine = pyttsx3.init(debug=True)
 language = 'german'
 
