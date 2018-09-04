@@ -111,7 +111,7 @@ def shutdown(password):
     if password == "!robo!":
         speechModule.speakShutdown()
         time.sleep(5)
-        os.system('sudo shutdown')
+        os.system('sudo init 0')
         return getResponse("OK")
     else:
         return getResponse("WRONG PASSWORD")
