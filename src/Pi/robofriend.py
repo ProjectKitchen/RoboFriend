@@ -41,7 +41,7 @@ def main():
 	statusModule.start()
 	gameCommunicator.start()
 	keyboardModule.start()
-	faceModule.drawHappyFace()
+	faceModule.drawFace()
 	print "init done! register signal handlers..."
 
 	# setting up signal handlers for shutdown
