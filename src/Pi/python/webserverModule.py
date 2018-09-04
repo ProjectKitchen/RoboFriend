@@ -12,6 +12,7 @@ import statusModule
 import soundModule
 import faceModule
 import speechModule
+import moodModule
 
 #init
 app = Flask(__name__, static_folder='../static')
@@ -87,6 +88,14 @@ def changeSmile(action):
     if action in methods: methods[action]()
     return getResponse("OK")
 
+# @app.route('/mood/set/<moodState>', methods=['POST'])
+# def changeSmile(moodState):
+#     methods = {'increase': faceModule.increaseSmile,
+#                'decrease': faceModule.decreaseSmile
+#                }
+#     if moodModule in methods: methods[action]()
+#     return getResponse("OK")
+
 @app.route('/move/flex/<left>/<right>/<duration>', methods=['POST'])
 def move(left, right, duration):
     teensyCommunicator.move(left, right, duration)
@@ -130,6 +139,11 @@ def speak(text):
 @app.route('/speech/say/random', methods=['POST'])
 def speakRandom():
     speechModule.speakRandom()
+    return getResponse("OK")
+
+@app.route('/speech/say/bullshit', methods=['POST'])
+def speakRandom():
+    speechModule.speakBullshit()
     return getResponse("OK")
 
 @app.route('/face/image', methods=['GET'])
