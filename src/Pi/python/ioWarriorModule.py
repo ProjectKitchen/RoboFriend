@@ -31,6 +31,7 @@ def changeCameraPos(diff):
 
 def setEarColor(r, g, b):
     global earColorR, earColorG, earColorB
+    stopRandomEarColor()
     earColorR = r
     earColorG = g
     earColorB = b
@@ -62,7 +63,7 @@ def randomThreadMethod():
         earColorR, randFactorR = getNewRandomColor(earColorR, randFactorR)
         earColorG, randFactorG  = getNewRandomColor(earColorG, randFactorG)
         earColorB, randFactorB  = getNewRandomColor(earColorB, randFactorB)
-        setEarColor(earColorR, earColorG, earColorB)
+        sendToIOWarrior(earColorR, earColorG, earColorB)
         time.sleep(refreshIntervalMs / 1000.0)
 
 def getNewRandomColor(oldColor, factor):
