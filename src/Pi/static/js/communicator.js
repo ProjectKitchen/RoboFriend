@@ -5,7 +5,7 @@ function Communicator() {
     var defaultMoveDuration = 50;
 
     thiz.sendAction = function (actionString) {
-        sendHttp(actionString);
+        return sendHttp(actionString);
     };
 
     thiz.sendMove = function (directionConstant) {
