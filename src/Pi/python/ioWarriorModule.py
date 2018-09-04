@@ -36,6 +36,13 @@ def setEarColor(r, g, b):
     earColorB = b
     sendToIOWarrior(r, g, b)
 
+def setEarColorSeries(seriesRGB, repeatNum=1, waitTimeMs=500):
+    global earColorR, earColorG, earColorB
+    for x in range(repeatNum-1):
+        for rgb in seriesRGB:
+            setEarColor(rgb[0], rgb[1], rgb[2])
+            time.sleep(waitTimeMs / 1000.0)
+
 def startRandomEarColor():
     global runFlag, RandomThread
 
