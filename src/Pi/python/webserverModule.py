@@ -51,6 +51,16 @@ def setEarRGB(earColorR, earColorG, earColorB):
     ioWarriorModule.setEarColor(r, g, b)
     return getResponse("OK")
 
+@app.route('/ear/color/random/on', methods=['POST'])
+def earRandomOn():
+    ioWarriorModule.startRandomEarColor()
+    return getResponse("OK")
+
+@app.route('/ear/color/random/off', methods=['POST'])
+def earRandomOn():
+    ioWarriorModule.stopRandomEarColor()
+    return getResponse("OK")
+
 @app.route('/eyes/move/<direction>', methods=['POST'])
 def moveEyes(direction):
     methods = {'up': faceModule.eyesUp,

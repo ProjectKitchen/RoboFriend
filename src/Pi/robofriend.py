@@ -12,6 +12,7 @@ import python.statusModule as statusModule
 import python.gameCommunicator as gameCommunicator
 import python.keyboardModule as keyboardModule
 import python.teensyCommunicator as teensyCommunicator
+import python.ioWarriorModule as ioWarriorModule
 
 # globals
 runFlag = True
@@ -26,6 +27,7 @@ def handler_stop_signals(signum, frame):
 	gameCommunicator.stop()
 	keyboardModule.stop()
 	teensyCommunicator.stop()
+	ioWarriorModule.stop()
 	faceModule.close()
 	runFlag = False
 	print "*** graceful shutdown completed! ***"
