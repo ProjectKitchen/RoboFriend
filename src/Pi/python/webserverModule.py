@@ -57,7 +57,7 @@ def earRandomOn():
     return getResponse("OK")
 
 @app.route('/ear/color/random/off', methods=['POST'])
-def earRandomOn():
+def earRandomOff():
     ioWarriorModule.stopRandomEarColor()
     return getResponse("OK")
 
