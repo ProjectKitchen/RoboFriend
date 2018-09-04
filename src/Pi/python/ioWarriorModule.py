@@ -17,7 +17,7 @@ randFactorG = 1
 randFactorB = 1
 
 def sendToIOWarrior(earColorR, earColorG, earColorB, cameraPos):
-    os.system('sudo ./iowarrior/iow ' + str(int(round(earColorR)) + ' ' + str(int(round(earColorG)) + ' ' + str(int(round(earColorB)) + ' ' + str(cameraPos))
+    os.system('sudo ./iowarrior/iow ' + str(int(round(earColorR))) + ' ' + str(int(round(earColorG))) + ' ' + str(int(round(earColorB))) + ' ' + str(cameraPos))
 
 def changeCameraPos(diff):
     global earColorR, earColorG, earColorB, cameraPos
