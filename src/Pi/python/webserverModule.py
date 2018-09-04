@@ -3,6 +3,7 @@ from flask import Flask, render_template, request, redirect, url_for, make_respo
 import threading
 import urllib
 import json
+import logging
 
 #own modules
 import ioWarriorModule
@@ -17,6 +18,8 @@ app = Flask(__name__, static_folder='../static')
 webserverDebug = False
 webserverHost = '0.0.0.0'
 webserverPort = 8765
+log = logging.getLogger('werkzeug')
+log.setLevel(logging.ERROR)
 
 # globals
 # --- none ---
