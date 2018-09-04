@@ -6,7 +6,7 @@ import random
 # globals
 runFlag = False
 RandomThread = None
-refreshIntervalMs = 500
+refreshIntervalMs = 300
 cameraPos = 140
 earColorR = 0
 earColorG = 10
@@ -16,8 +16,10 @@ randFactorR = 1
 randFactorG = 1
 randFactorB = 1
 
-def sendToIOWarrior(earColorR, earColorG, earColorB, cameraPos):
-    cmd = 'sudo ./iowarrior/iow ' + str(int(round(earColorR))) + ' ' + str(int(round(earColorG))) + ' ' + str(int(round(earColorB))) + ' ' + str(cameraPos)
+def sendToIOWarrior(earColorR, earColorG, earColorB, cameraPos = None):
+    cmd = 'sudo ./iowarrior/iow ' + str(int(round(earColorR))) + ' ' + str(int(round(earColorG))) + ' ' + str(int(round(earColorB)))
+    if cameraPos:
+        cmd = cmd + ' ' + str(cameraPos)
     print "starting cmd: " + cmd
     os.system(cmd)
 
@@ -28,11 +30,11 @@ def changeCameraPos(diff):
         sendToIOWarrior(earColorR, earColorG, earColorB, cameraPos)
 
 def setEarColor(r, g, b):
-    global earColorR, earColorG, earColorB, cameraPos
+    global earColorR, earColorG, earColorB
     earColorR = r
     earColorG = g
     earColorB = b
-    sendToIOWarrior(r, g, b, cameraPos)
+    sendToIOWarrior(r, g, b)
 
 def startRandomEarColor():
     global runFlag, RandomThread
