@@ -12,7 +12,7 @@ import statusModule
 import soundModule
 import faceModule
 import speechModule
-#import moodModule
+import moodModule
 
 #init
 app = Flask(__name__, static_folder='../static')
@@ -88,13 +88,15 @@ def changeSmile(action):
     if action in methods: methods[action]()
     return getResponse("OK")
 
-# @app.route('/mood/set/<moodState>', methods=['POST'])
-# def changeSmile(moodState):
-#     methods = {'increase': faceModule.increaseSmile,
-#                'decrease': faceModule.decreaseSmile
-#                }
-#     if moodModule in methods: methods[action]()
-#     return getResponse("OK")
+@app.route('/mood/set/<moodState>', methods=['POST'])
+def setMood(moodState):
+    methods = {'happy': moodModule.setHappy,
+               'sad': moodModule.setSad,
+               'angry': moodModule.setAngry,
+               'neutral': moodModule.setNeutral
+               }
+    if moodState in methods: methods[moodState]()
+    return getResponse("OK")
 
 @app.route('/move/flex/<left>/<right>/<duration>', methods=['POST'])
 def move(left, right, duration):
