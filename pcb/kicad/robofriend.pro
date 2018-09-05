@@ -1,4 +1,4 @@
-update=10/08/2018 23:32:43
+update=05/09/2018 16:54:32
 version=1
 last_client=kicad
 [pcbnew]
@@ -27,7 +27,7 @@ NetIExt=net
 version=1
 [eeschema]
 version=1
-LibDir=C:/Users/mzahedi/Documents/Git/RoboFriend/pcb/lib
+LibDir=../lib
 [eeschema/libraries]
 LibName1=power
 LibName2=device
