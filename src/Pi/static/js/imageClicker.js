@@ -13,6 +13,7 @@ function ImageClicker() {
     thiz.moveCam = 0;
 
     thiz.webcamMouseDown = function (event) {
+        event.preventDefault();
         thiz.isMoving = true;
         calcMovementValues(event);
         wheelMove();
@@ -20,6 +21,7 @@ function ImageClicker() {
     };
 
     thiz.mouseMoved = function (event) {
+        event.preventDefault();
         //wheel movement
         calcMovementValues(event);
 
