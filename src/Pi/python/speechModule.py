@@ -90,6 +90,3 @@ speechEngine.setProperty('rate', wordRate)
 speechEngine.setProperty('volume', 1.0)
 speak('i am robofriend')
 speechEngine.setProperty('voice', language)
-voices = speechEngine.getProperty('voices')
-for voice in voices:
-    print str(voice.name) + " " + str(voice.id)
