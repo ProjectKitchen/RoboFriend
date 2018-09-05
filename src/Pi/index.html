@@ -12,6 +12,7 @@
     <script type="text/javascript" src='static/js/moveController.js'></script>
     <script type="text/javascript" src='static/js/imageClicker.js'></script>
     <script type="text/javascript" src='static/js/earColorService.js'></script>
+    <script type="text/javascript" src='static/js/keyController.js'></script>
 
     <link rel="stylesheet" href="static/css/normalize.css">
     <link rel="stylesheet" href="static/css/skeleton.css">
@@ -19,6 +20,8 @@
 </head>
 
 <script language="javascript">
+    window.keyController.init();
+
     function colorChanged(value) {
         var rgb = L.hexToRgb(value);
         communicator.sendAction('ear/color/' + rgb.r + '/' + rgb.g + '/' + rgb.b)
