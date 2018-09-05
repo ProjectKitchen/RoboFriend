@@ -1,4 +1,5 @@
 EESchema Schematic File Version 2
+LIBS:robofriend-rescue
 LIBS:power
 LIBS:device
 LIBS:switches
@@ -501,7 +502,7 @@ F 3 "" H 14600 9150 50  0001 C CNN
 	-1   0    0    -1  
 $EndComp
 $Comp
-L Jumper_NC_Dual JP5
+L Jumper_NC_Dual-RESCUE-robofriend JP5
 U 1 1 5B086E62
 P 13850 8600
 F 0 "JP5" H 13800 8650 50  0000 L CNN
@@ -513,7 +514,7 @@ F 3 "" H 13850 8600 50  0001 C CNN
 $EndComp
 $Bitmap
 Pos 15500 10270
-Scale 1.000000
+Scale 1,000000
 Data
 89 50 4E 47 0D 0A 1A 0A 00 00 00 0D 49 48 44 52 00 00 01 2C 00 00 00 A0 08 06 00 00 00 B6 78 51 
 62 00 00 00 04 73 42 49 54 08 08 08 08 7C 08 64 88 00 00 1E 6B 49 44 41 54 78 9C ED 9D 7F 6C 54 
@@ -1795,7 +1796,7 @@ F 3 "" H 6200 8550 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L Jumper_NC_Dual JP3
+L Jumper_NC_Dual-RESCUE-robofriend JP3
 U 1 1 5B3C6796
 P 6450 8600
 F 0 "JP3" H 6400 8650 50  0000 L CNN
@@ -2680,7 +2681,7 @@ F 3 "" H 3450 4600 50  0001 C CNN
 	-1   0    0    -1  
 $EndComp
 $Comp
-L Jumper_NC_Dual JP2
+L Jumper_NC_Dual-RESCUE-robofriend JP2
 U 1 1 5B714FC0
 P 3150 4650
 F 0 "JP2" H 3100 4700 50  0000 L CNN

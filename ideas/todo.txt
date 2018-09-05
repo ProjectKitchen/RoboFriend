@@ -3,7 +3,7 @@ Motoren:
 
 PCB:
 	KiKad installieren ✓
-	KiKad Tutorials
+	KiKad Tutorials ✓
 
 Atmel:
 	IDE aufsetzen ✓
@@ -11,16 +11,10 @@ Atmel:
 	PWM Example
 	ADC Example
 
-Ladestation:
-	
-
 Allgemein:
-	Relais
-	Wer soll versorgt werden?
+	Relais ✓
+	Welche Verbraucher werden versorgt? ✓
 	Kommunikation µC mit dem Controller (RPI od direkt über den Sensor?)
-	2 pollige Stecker für Akkus, Boosterpacks
-	PCB bis 27.
-	Kabel für Batterien
 
 Veigl @ 10.04.2018
 
