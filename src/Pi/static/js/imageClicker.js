@@ -63,8 +63,10 @@ function ImageClicker() {
     function setEyeDirection(event) {
         thiz.lastMove = new Date().getTime();
         var rect = L('#' + event.target.id).getBoundingClientRect();
-        var x = event.x - rect.left;
-        var y = event.y - rect.top;
+        var eventX = event.x || event.targetTouches[0].clientX;
+        var eventY = event.y || event.targetTouches[0].clientY;
+        var x = eventX - rect.left;
+        var y = eventY - rect.top;
         var px = Math.round((((x / rect.width) * 100) - 50) * -2); // +/- 100%, middle is 0 %
         var py = Math.round((((y / rect.height) * 100) - 50) * 2);
         communicator.setEyes(px, py);
@@ -92,8 +94,10 @@ function ImageClicker() {
         if(!thiz.isMoving) return;
 
         var rect = L('#' + event.target.id).getBoundingClientRect();
-        var x = event.x - rect.left;
-        var y = event.y - rect.top;
+        var eventX = event.x || event.targetTouches[0].clientX;
+        var eventY = event.y || event.targetTouches[0].clientY;
+        var x = eventX - rect.left;
+        var y = eventY - rect.top;
         var px = (x / rect.width) * 100;
         var py = (y / rect.height) * 100;
 
