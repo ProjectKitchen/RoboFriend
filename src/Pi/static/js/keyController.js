@@ -36,10 +36,16 @@ function KeyController() {
                     thiz.pressedRight = true;
                     sendMoveInternal(event);
                     break;
-                case 81: //Q
+                case 81: // Q
                     event.preventDefault();
                     stopMoving();
                     imageClicker.stop();
+                    break;
+                case 49: // 1
+                    communicator.sendAction('speech/say/random');
+                    break;
+                case 50: // 2
+                    communicator.sendAction('speech/say/bullshit');
                     break;
             }
         });
