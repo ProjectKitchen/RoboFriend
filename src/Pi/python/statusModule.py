@@ -19,10 +19,11 @@ keyIsIdle = 'isIdle'
 currentStatus = {keyIsIdle: False}
 screenshotTimestamp = None
 idleTimestamp = time.time()
-idleThresholdSeconds = 10
+idleThresholdSeconds = 90
 runFlag = True
 batCoversionConstant =  0.04783948
 batMovingAverageN = 30
+statusCount = 0
 batWasLow = False
 
 def getStatus():
@@ -61,7 +62,6 @@ def isIdle():
 
 def setNonIdle():
     global currentStatus, idleTimestamp, keyIsIdle
-    print "!!!!!!! set non idle"
     currentStatus[keyIsIdle] = False
     idleTimestamp = time.time()
 
@@ -70,21 +70,21 @@ def setNonIdle():
 def StatusInfo():
     import gameCommunicator
     import teensyCommunicator
-    global currentStatus, refreshIntervalMs, keyBat, keyIrL, keyIrM, keyIrR, runFlag, batWasLow, idleTimestamp, idleThresholdSeconds, keyIsIdle
+    global currentStatus, refreshIntervalMs, keyBat, keyIrL, keyIrM, keyIrR, runFlag, batWasLow, idleTimestamp, idleThresholdSeconds, keyIsIdle, statusCount, batMovingAverageN
     while runFlag:
+        statusCount += 1
         if time.time() - idleTimestamp > idleThresholdSeconds:
-            print "!!!!!!! set idle"
             currentStatus[keyIsIdle] = True
         rawStatus = teensyCommunicator.getRawStatus()
         currentStatus = updateFromRawStatus(rawStatus)
         gameCommunicator.sendtogui("battery;"+str(getBatteryVoltage()))
 
         print ("Battery= " + str(getBatteryVoltage()) + " Volt)")
-        if getBatteryVoltage() < 12.0:
+        if statusCount >= batMovingAverageN and getBatteryVoltage() < 12.0:
             batWasLow = True
             speechModule.speakBatteryLow()
             print ("LOW BATTERY - Please Recharge! Robofriend will shutdown automatically at 11.8 Volt!")
-        if getBatteryVoltage() < 11.8:
+        if statusCount >= batMovingAverageN and getBatteryVoltage() < 11.8:
             speechModule.speakBatteryShutdown()
             sleep(5)
             os.system("init 0")
