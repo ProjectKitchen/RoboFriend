@@ -84,7 +84,6 @@ function KeyController() {
     }
 
     function sendMoveInternal(event) {
-        event.preventDefault();
         if (new Date().getTime() - thiz.lastMove > thiz.movePause && new Date().getTime() - thiz.lastStop > thiz.stopPause && thiz.moving) {
             thiz.lastMove = new Date().getTime();
             if(thiz.pressedUp) {
