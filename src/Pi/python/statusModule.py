@@ -55,8 +55,8 @@ def setScreenshotTimestamp(timestamp = None):
     currentStatus[keyScreenshotTimestamp] = timestamp
 
 def isIdle():
-    global currentStatus, idleTimestamp
-    return currentStatus[idleTimestamp]
+    global currentStatus, idleTimestamp, keyIsIdle
+    return currentStatus[keyIsIdle]
 
 
 def setNonIdle():
