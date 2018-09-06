@@ -6,7 +6,7 @@ function KeyController() {
     thiz.keyCoderight = 68; //D
 
     thiz.lastMove = new Date().getTime();
-    thiz.movePause = 200;
+    thiz.movePause = 400;
     thiz.pressedLeft = false;
     thiz.pressedRight = false;
     thiz.pressedUp = false;
@@ -93,7 +93,7 @@ function KeyController() {
         if(thiz.moving) {
             setTimeout(function () {
                 sendMoveInternal(event);
-            }, 100)
+            }, thiz.movePause + 1)
         }
     }
 }
