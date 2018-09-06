@@ -36,7 +36,7 @@ function KeyController() {
                     thiz.pressedRight = true;
                     sendMoveInternal(event);
                     break;
-                case 27: //ESC
+                case 81: //Q
                     event.preventDefault();
                     stopMoving();
                     imageClicker.stop();
