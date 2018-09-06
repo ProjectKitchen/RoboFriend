@@ -10,7 +10,6 @@ import gameCommunicator
 import speechModule
 
 # globals
-currentStatus = {}
 StatusThread = None
 refreshIntervalMs = 1000
 keyBat = 'batVolt'
@@ -18,10 +17,14 @@ keyIrL = 'irLeft'
 keyIrM = 'irMiddle'
 keyIrR = 'irRight'
 keyScreenshotTimestamp = 'screenshotTimestamp'
+keyIsIdle = 'isIdle'
+currentStatus = {keyIsIdle: False}
 screenshotTimestamp = None
+idleTimestamp = time.time()
+idleThresholdSeconds = 90
 runFlag = True
 batCoversionConstant =  0.04783948
-batMovingAverageN = 20
+batMovingAverageN = 30
 batWasLow = False
 
 def getStatus():
@@ -53,10 +56,23 @@ def setScreenshotTimestamp(timestamp = None):
     global currentStatus, keyScreenshotTimestamp
     currentStatus[keyScreenshotTimestamp] = timestamp
 
+def isIdle():
+    global currentStatus, idleTimestamp
+    return currentStatus[idleTimestamp]
+
+
+def setNonIdle():
+    global currentStatus, idleTimestamp
+    currentStatus[idleTimestamp] = False
+    idleTimestamp = time.time()
+
+
 # This function is used as Thread to periodically update the battery information
 def StatusInfo():
-    global currentStatus, refreshIntervalMs, keyBat, keyIrL, keyIrM, keyIrR, runFlag, batWasLow
+    global currentStatus, refreshIntervalMs, keyBat, keyIrL, keyIrM, keyIrR, runFlag, batWasLow, idleTimestamp, idleThresholdSeconds, keyIsIdle
     while runFlag:
+        if time.time() - idleTimestamp > idleThresholdSeconds:
+            currentStatus[keyIsIdle] = True
         rawStatus = teensyCommunicator.getRawStatus()
         currentStatus = updateFromRawStatus(rawStatus)
         gameCommunicator.sendtogui("battery;"+str(getBatteryVoltage()))
