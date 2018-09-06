@@ -2,7 +2,6 @@ import pygame
 import pygame.gfxdraw
 
 import teensyCommunicator
-import statusModule
 import utils
 
 #init
@@ -85,6 +84,7 @@ def isSad():
     return smilePercent < 0
 
 def drawFace():
+    import statusModule
     global screen, eyex, eyey, screenshotFilename
     screen.fill((0, 0, 0))
     pygame.draw.circle(screen, (100,250,250), (163,100), 60) #lefteye
