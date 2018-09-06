@@ -6,13 +6,15 @@ import time
 
 # globals
 lastSpeakTimestamp = time.time()
+lastSpeakWord = None
 wordRate = 140 #words per minute
 speechEngine = pyttsx3.init(debug=True)
 language = 'german'
 
 def speak(text):
-    global speechEngine
+    global speechEngine, lastSpeakWord
     print "speaking: " + text
+    lastSpeakWord = text
     text = text.lower()
     text = text.replace('ä', 'e')
     text = text.replace('ö', 'oe')
@@ -22,7 +24,7 @@ def speak(text):
     speechEngine.runAndWait()
 
 def speakRandom():
-    global lastSpeakTimestamp, language
+    global lastSpeakTimestamp, language, lastSpeakWord
     possibleTexts = {
         'english': ['Hello', 'Hi', 'Hello, how are you?', 'I am fine. How are you?', 'Do you like a snack?', 'Do you like to be my friend?'],
         'german' : ['Hallo', 'Guten Tag', 'Hallo, wie gehts?', 'Mir geht es gut. Wie geht es dir?', 'Möchtest du einen Sneck?', 'Willst du mein Freund sein?',
@@ -30,10 +32,11 @@ def speakRandom():
                     'Darf ich Ihnen etwas bringen?', 'Es ist mir eine Ehre dir zu dienen.', 'Ich will dir helfen', 'Ich stehe voll zu deiner Verfügung.']
     }
     possibleInLang = possibleTexts[language]
+    possibleInLang.remove(lastSpeakWord)
     speak(random.choice(possibleInLang))
 
 def speakBullshit():
-    global lastSpeakTimestamp, language
+    global lastSpeakTimestamp, language, lastSpeakWord
     possibleTexts = {
         'english': [],
         'german' : ['Warum schaust du so dumm?', 'Was ist mit dir los?', 'Ich will nicht arbeiten.', 'Ich will nach Hause.', 'Schau mich nicht an.', 'Bring mir etwas Motoröl',
@@ -43,6 +46,7 @@ def speakBullshit():
                     'Hier riecht es nach Dummheit', 'Dich habe ich schon einmal gesehen.', 'Ich möchte Bundeskanzler werden', 'Selbst Zerstörung aktiviert... 3... 2... 1... 0... bum... hahahaha.']
     }
     possibleInLang = possibleTexts[language]
+    possibleInLang.remove(lastSpeakWord)
     speak(random.choice(possibleInLang))
 
 def speakBatteryLow():
