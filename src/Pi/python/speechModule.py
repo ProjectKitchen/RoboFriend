@@ -53,7 +53,7 @@ def speakBullshit():
                     'Wer hat eigentlich diesen ganzen blöd sinn ins Internet gestellt', 'Du siehst heute unglaublich toll aus', 'Deine Socken stehen dir gut', 'Ich mag deine Nase',
                     'Hier riecht es nach Dummheit', 'du kommst mir eigenartig vor', 'Ich möchte Bundeskanzler werden', 'Selbst Zerstörung aktiviert... 3... 2... 1... 0... bum... hahahaha.',
                     'Besser heimlich schlau als unheimlich blöd.', 'Wenn ich du wäre, wäre ich lieber ich!', 'Was meinst du als Unbeteiligter eigentlich zum Thema Intelligenz?',
-                    'Was ist dein Friseur eigentlich von Berruf?', 'Kann mir bitte jemand das Wasser reichen.', 'Es ist Zeit schreiend im Kreis zu laufen!', 'noch ein tag dann ist morgen.'
+                    'Was ist dein Friseur eigentlich von Berruf?', 'Kann mir bitte jemand das Wasser reichen.', 'Es ist Zeit schreiend im Kreis zu laufen!', 'noch ein tag dann ist morgen.',
                     'es reicht mir schön langsam']
     }
     possibleInLang = possibleTexts[language]
