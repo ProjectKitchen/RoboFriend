@@ -6,7 +6,9 @@ function KeyController() {
     thiz.keyCoderight = 68; //D
 
     thiz.lastMove = new Date().getTime();
+    thiz.lastStop = new Date().getTime();
     thiz.movePause = 400;
+    thiz.stopPause = 1000;
     thiz.pressedLeft = false;
     thiz.pressedRight = false;
     thiz.pressedUp = false;
@@ -15,7 +17,6 @@ function KeyController() {
 
     thiz.init = function () {
         document.addEventListener('keydown', function (event) {
-            alert(event.which);
             switch (event.keyCode) {
                 case thiz.keyCodeUp:
                     thiz.moving = true;
@@ -42,7 +43,6 @@ function KeyController() {
                     imageClicker.stop();
                     break;
                 case 49: // 1
-                    alert('1');
                     communicator.sendAction('speech/say/random');
                     break;
                 case 50: // 2
@@ -77,12 +77,13 @@ function KeyController() {
         thiz.pressedDown = false;
         thiz.pressedLeft = false;
         thiz.pressedRight = false;
+        thiz.lastStop = new Date().getTime();
         communicator.moveStop();
     }
 
     function sendMoveInternal(event) {
         event.preventDefault();
-        if (new Date().getTime() - thiz.lastMove > thiz.movePause && thiz.moving) {
+        if (new Date().getTime() - thiz.lastMove > thiz.movePause && new Date().getTime() - thiz.lastStop > thiz.stopPause && thiz.moving) {
             thiz.lastMove = new Date().getTime();
             if(thiz.pressedUp) {
                 communicator.sendMoveXY(100, 100, 100);
