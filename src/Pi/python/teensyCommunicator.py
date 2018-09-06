@@ -2,8 +2,6 @@ import serial
 import threading
 from time import sleep
 
-import statusModule
-
 # globals
 send_lock = threading.Lock()
 ser = None
@@ -78,6 +76,7 @@ def moveForwardLeftLoop():
     sendSerial("D 0 128 0")
 
 def stopMovement():
+    import statusModule
     statusModule.setNonIdle()
     sendSerial("D")
 
