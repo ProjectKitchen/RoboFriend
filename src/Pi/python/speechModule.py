@@ -34,7 +34,7 @@ def speakRandom(additionalTexts = None, disablesIdle = True):
         'english': ['Hello', 'Hi', 'Hello, how are you?', 'I am fine. How are you?', 'Do you like a snack?', 'Do you like to be my friend?'],
         'german' : ['Hallo', 'Guten Tag', 'Hallo, wie gehts?', 'Mir geht es gut. Wie geht es dir?', 'Möchtest du einen Sneck?', 'Willst du mein Freund sein?',
                     'Komm zu unserem Stand um mehr zu erfahren', 'Ich empfehle an der FH Technikum Wien zu studieren', 'Wer will Gummi berchen oder Soletti?',
-                    'Darf ich Ihnen etwas bringen?', 'Es ist mir eine Ehre dir zu dienen.', 'Ich will dir helfen', 'Ich stehe voll zu deiner Verfügung.']
+                    'Darf ich Ihnen etwas bringen?', 'Es ist mir eine Ehre dir zu dienen.', 'Ich stehe voll zu deiner Verfügung.']
     }
     possibleInLang = possibleTexts[language]
     if lastSpeakWord in possibleInLang:
@@ -109,8 +109,7 @@ def startAutoRandomSpeak():
 def autoSpeak():
     global runFlag
     while runFlag:
-        time.sleep(random.randint(5, 10))
-        print "!!!!!!! is idle: " + str(statusModule.isIdle())
+        time.sleep(random.randint(45, 90))
         if statusModule.isIdle():
             speakRandom({
                 'english': ['I am bored.'],
