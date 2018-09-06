@@ -39,7 +39,7 @@ function KeyController() {
                     sendMoveInternal(event);
                     break;
                 case 81: // Q
-                    stopMoving();
+                    stopMoving(true);
                     imageClicker.stop();
                     break;
                 case 49: // 1
@@ -71,13 +71,15 @@ function KeyController() {
         });
     };
 
-    function stopMoving() {
+    function stopMoving(explicitStop) {
+        if(explicitStop) {
+            thiz.lastStop = new Date().getTime();
+        }
         thiz.moving = false;
         thiz.pressedUp = false;
         thiz.pressedDown = false;
         thiz.pressedLeft = false;
         thiz.pressedRight = false;
-        thiz.lastStop = new Date().getTime();
         communicator.moveStop();
     }
 
