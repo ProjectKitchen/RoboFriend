@@ -60,9 +60,9 @@ def isIdle():
 
 
 def setNonIdle():
-    global currentStatus, idleTimestamp
+    global currentStatus, idleTimestamp, keyIsIdle
     print "!!!!!!! set non idle"
-    currentStatus[idleTimestamp] = False
+    currentStatus[keyIsIdle] = False
     idleTimestamp = time.time()
 
 
