@@ -5,8 +5,6 @@ import threading
 import os
 
 #own modules
-import teensyCommunicator
-import gameCommunicator
 import speechModule
 
 # globals
@@ -69,6 +67,8 @@ def setNonIdle():
 
 # This function is used as Thread to periodically update the battery information
 def StatusInfo():
+    import gameCommunicator
+    import teensyCommunicator
     global currentStatus, refreshIntervalMs, keyBat, keyIrL, keyIrM, keyIrR, runFlag, batWasLow, idleTimestamp, idleThresholdSeconds, keyIsIdle
     while runFlag:
         if time.time() - idleTimestamp > idleThresholdSeconds:
