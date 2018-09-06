@@ -40,7 +40,7 @@ def speakRandom(additionalTexts = None, disablesIdle = True):
     if lastSpeakWord in possibleInLang:
         possibleInLang.remove(lastSpeakWord)
     if additionalTexts and additionalTexts[language]:
-        possibleInLang = possibleInLang.extend(additionalTexts[language])
+        possibleInLang.extend(additionalTexts[language])
     speak(random.choice(possibleInLang), disablesIdle)
 
 def speakBullshit():
