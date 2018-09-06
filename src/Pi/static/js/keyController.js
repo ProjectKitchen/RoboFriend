@@ -15,6 +15,7 @@ function KeyController() {
 
     thiz.init = function () {
         document.addEventListener('keydown', function (event) {
+            alert(event.which);
             switch (event.keyCode) {
                 case thiz.keyCodeUp:
                     thiz.moving = true;
@@ -37,11 +38,11 @@ function KeyController() {
                     sendMoveInternal(event);
                     break;
                 case 81: // Q
-                    event.preventDefault();
                     stopMoving();
                     imageClicker.stop();
                     break;
                 case 49: // 1
+                    alert('1');
                     communicator.sendAction('speech/say/random');
                     break;
                 case 50: // 2
