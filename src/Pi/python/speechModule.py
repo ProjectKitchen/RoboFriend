@@ -25,8 +25,11 @@ def speak(text, disablesIdle = True):
     text = text.replace('ö', 'oe')
     text = text.replace('ü', 'u')
     text = text.replace('ß', 'ss')
-    speechEngine.say(text)
-    speechEngine.runAndWait()
+    try:
+        speechEngine.say(text)
+        speechEngine.runAndWait()
+    except:
+        print "speech engine error!"
 
 def speakRandom(additionalTexts = None, disablesIdle = True):
     global lastSpeakTimestamp, language, lastSpeakWord
