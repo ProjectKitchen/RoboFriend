@@ -3,6 +3,8 @@
 import pyttsx3
 import random
 import time
+import threading
+import statusModule
 
 # globals
 lastSpeakTimestamp = time.time()
@@ -10,9 +12,12 @@ lastSpeakWord = None
 wordRate = 140 #words per minute
 speechEngine = pyttsx3.init(debug=True)
 language = 'german'
+runFlag = True
 
-def speak(text):
+def speak(text, disablesIdle = True):
     global speechEngine, lastSpeakWord
+    if disablesIdle:
+        statusModule.setNonIdle()
     print "speaking: " + text
     lastSpeakWord = text
     text = text.lower()
@@ -23,7 +28,7 @@ def speak(text):
     speechEngine.say(text)
     speechEngine.runAndWait()
 
-def speakRandom():
+def speakRandom(additionalTexts = None, disablesIdle = True):
     global lastSpeakTimestamp, language, lastSpeakWord
     possibleTexts = {
         'english': ['Hello', 'Hi', 'Hello, how are you?', 'I am fine. How are you?', 'Do you like a snack?', 'Do you like to be my friend?'],
@@ -33,7 +38,9 @@ def speakRandom():
     }
     possibleInLang = possibleTexts[language]
     possibleInLang.remove(lastSpeakWord)
-    speak(random.choice(possibleInLang))
+    if additionalTexts and additionalTexts[language]:
+        possibleInLang = possibleInLang.extend(additionalTexts[language])
+    speak(random.choice(possibleInLang), disablesIdle)
 
 def speakBullshit():
     global lastSpeakTimestamp, language, lastSpeakWord
@@ -90,6 +97,26 @@ def speakShutdown():
     }
     speak(texts[language])
 
+def startAutoRandomSpeak():
+    global runFlag
+    runFlag = True
+    RandomThread = threading.Thread(target=autoSpeak)
+    RandomThread.daemon = True
+    RandomThread.start()
+
+def autoSpeak():
+    global runFlag
+    while runFlag:
+        time.sleep(random.randint(45, 90))
+        if statusModule.isIdle():
+            speakRandom({
+                'english': ['I am bored.'],
+                'german' : ['Mir ist langweilig.']
+            }, False)
+
+def stop():
+    global runFlag
+    runFlag = False
 
 #init
 print "initializing speechModule..."
