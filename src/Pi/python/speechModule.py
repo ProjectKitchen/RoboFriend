@@ -37,7 +37,8 @@ def speakRandom(additionalTexts = None, disablesIdle = True):
                     'Darf ich Ihnen etwas bringen?', 'Es ist mir eine Ehre dir zu dienen.', 'Ich will dir helfen', 'Ich stehe voll zu deiner Verfügung.']
     }
     possibleInLang = possibleTexts[language]
-    possibleInLang.remove(lastSpeakWord)
+    if lastSpeakWord in possibleInLang:
+        possibleInLang.remove(lastSpeakWord)
     if additionalTexts and additionalTexts[language]:
         possibleInLang = possibleInLang.extend(additionalTexts[language])
     speak(random.choice(possibleInLang), disablesIdle)
@@ -56,7 +57,8 @@ def speakBullshit():
                     'es reicht mir schön langsam']
     }
     possibleInLang = possibleTexts[language]
-    possibleInLang.remove(lastSpeakWord)
+    if lastSpeakWord in possibleInLang:
+        possibleInLang.remove(lastSpeakWord)
     speak(random.choice(possibleInLang))
 
 def speakBatteryLow():
