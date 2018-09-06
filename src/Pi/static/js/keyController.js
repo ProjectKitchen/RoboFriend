@@ -65,7 +65,8 @@ function KeyController() {
                     thiz.pressedRight = false;
                     break;
             }
-            if (!thiz.pressedUp && !thiz.pressedDown && !thiz.pressedLeft && !thiz.pressedRight) {
+            if ([thiz.keyCodeUp, thiz.keyCodeDown, thiz.keyCodeLeft, thiz.keyCoderight].includes(event.keyCode) &&
+                !thiz.pressedUp && !thiz.pressedDown && !thiz.pressedLeft && !thiz.pressedRight) {
                 stopMoving();
             }
         });
