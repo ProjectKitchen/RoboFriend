@@ -109,7 +109,8 @@ def startAutoRandomSpeak():
 def autoSpeak():
     global runFlag
     while runFlag:
-        time.sleep(random.randint(45, 90))
+        time.sleep(random.randint(5, 10))
+        print "!!!!!!! is idle: " + str(statusModule.isIdle())
         if statusModule.isIdle():
             speakRandom({
                 'english': ['I am bored.'],

@@ -19,7 +19,7 @@ keyIsIdle = 'isIdle'
 currentStatus = {keyIsIdle: False}
 screenshotTimestamp = None
 idleTimestamp = time.time()
-idleThresholdSeconds = 90
+idleThresholdSeconds = 10
 runFlag = True
 batCoversionConstant =  0.04783948
 batMovingAverageN = 30
@@ -61,6 +61,7 @@ def isIdle():
 
 def setNonIdle():
     global currentStatus, idleTimestamp
+    print "!!!!!!! set non idle"
     currentStatus[idleTimestamp] = False
     idleTimestamp = time.time()
 
@@ -72,6 +73,7 @@ def StatusInfo():
     global currentStatus, refreshIntervalMs, keyBat, keyIrL, keyIrM, keyIrR, runFlag, batWasLow, idleTimestamp, idleThresholdSeconds, keyIsIdle
     while runFlag:
         if time.time() - idleTimestamp > idleThresholdSeconds:
+            print "!!!!!!! set idle"
             currentStatus[keyIsIdle] = True
         rawStatus = teensyCommunicator.getRawStatus()
         currentStatus = updateFromRawStatus(rawStatus)
