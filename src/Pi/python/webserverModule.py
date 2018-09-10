@@ -120,7 +120,7 @@ def shutdown(userPassword):
         return getResponse("WRONG PASSWORD")
 
 @app.route('/control/update/<userPassword>', methods=['POST'])
-def shutdown(userPassword):
+def update(userPassword):
     global password
     if userPassword == password:
         speechModule.speak('Ich aktualisiere mich.')
