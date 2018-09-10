@@ -42,7 +42,7 @@ def main():
 
 	# starting modules
 	rfidModule.start()
-	webserverModule.start(stop)
+	webserverModule.start()
 	statusModule.start()
 	gameCommunicator.start()
 	keyboardModule.start()
