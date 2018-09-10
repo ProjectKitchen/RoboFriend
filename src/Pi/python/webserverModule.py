@@ -124,7 +124,7 @@ def update(userPassword):
     global password
     if userPassword == password:
         speechModule.speak('Ich aktualisiere mich.')
-        p = subprocess.Popen(['git pull'], stdout=subprocess.PIPE)
+        p = subprocess.Popen(['git', 'pull'], stdout=subprocess.PIPE)
         p.wait()
         if p.returncode == 0:
             speechModule.speak('Neustart. Bis gleich!')
