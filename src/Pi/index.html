@@ -27,10 +27,10 @@
         communicator.sendAction('ear/color/' + rgb.r + '/' + rgb.g + '/' + rgb.b)
     }
 
-    function shutdown(password) {
+    function controlAction(action, password) {
         password = password || 'none';
         L.setVisible('#wrongPassword', false);
-        communicator.sendAction('control/shutdown/' + password).then(function (response) {
+        communicator.sendAction('control/' + action + '/' + password).then(function (response) {
             if(response != "OK") {
                 L.setVisible('#wrongPassword', true);
             }
@@ -186,10 +186,11 @@
                 </div>
             </div>
             <div class="row">
-                <label class="two columns">Shutdown</label>
+                <label class="two columns">Control</label>
                 <div class="ten columns">
                     <input id="password" type="password" placeholder="password"/>
-                    <button type="submit" onclick="shutdown(L('#password').value)"> Shutdown! </button>
+                    <button type="submit" onclick="controlAction('shutdown', L('#password').value)"> Shutdown </button>
+                    <button type="submit" onclick="controlAction('update', L('#password').value)"> Update </button>
                     <div class="inline">
                         <span id="wrongPassword" style="color: red; display: none">Wrong password!</span>
                     </div>

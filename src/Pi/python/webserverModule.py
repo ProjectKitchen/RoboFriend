@@ -5,6 +5,7 @@ import urllib
 import json
 import logging
 import os
+import subprocess
 import time
 
 #own modules
@@ -118,7 +119,19 @@ def shutdown(userPassword):
     else:
         return getResponse("WRONG PASSWORD")
 
-
+@app.route('/control/update/<userPassword>', methods=['POST'])
+def shutdown(userPassword):
+    global password
+    if userPassword == password:
+        speechModule.speak('Ich aktualisiere mich.')
+        p = subprocess.Popen('git pull', stdout=subprocess.PIPE)
+        p.wait()
+        if p.returncode == 0:
+            speechModule.speak('Neustart. Bis gleich!')
+            os.system('sudo pkill python && sudo sh start_robofriend.sh')
+        return getResponse("OK")
+    else:
+        return getResponse("WRONG PASSWORD")
 
 @app.route('/move/simple/<direction>', methods=['POST'])
 def moveSimple(direction):
