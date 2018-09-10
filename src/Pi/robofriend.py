@@ -18,7 +18,7 @@ import python.speechModule as speechModule
 # globals
 runFlag = True
 
-def handler_stop_signals(signum, frame):
+def stop():
 	global runFlag
 
 	print "*** shutting down ... ***"
@@ -34,12 +34,15 @@ def handler_stop_signals(signum, frame):
 	runFlag = False
 	print "*** graceful shutdown completed! ***"
 
+def handler_stop_signals(signum, frame):
+	stop()
+
 def main():
 	global runFlag
 
 	# starting modules
 	rfidModule.start()
-	webserverModule.start()
+	webserverModule.start(stop)
 	statusModule.start()
 	gameCommunicator.start()
 	keyboardModule.start()
