@@ -23,6 +23,7 @@ webserverHost = '0.0.0.0'
 webserverPort = 8765
 log = logging.getLogger('werkzeug')
 log.setLevel(logging.ERROR)
+password = 'iamrobo'
 
 # globals
 # --- none ---
@@ -106,15 +107,18 @@ def move(left, right, duration):
     teensyCommunicator.move(left, right, duration)
     return getResponse("OK")
 
-@app.route('/control/shutdown/<password>', methods=['POST'])
-def shutdown(password):
-    if password == "!robo!":
+@app.route('/control/shutdown/<userPassword>', methods=['POST'])
+def shutdown(userPassword):
+    global password
+    if userPassword == password:
         speechModule.speakShutdown()
         time.sleep(5)
         os.system('sudo init 0')
         return getResponse("OK")
     else:
         return getResponse("WRONG PASSWORD")
+
+
 
 @app.route('/move/simple/<direction>', methods=['POST'])
 def moveSimple(direction):
