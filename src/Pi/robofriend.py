@@ -33,6 +33,7 @@ def stop():
 	faceModule.close()
 	runFlag = False
 	print "*** graceful shutdown completed! ***"
+	exit()
 
 def handler_stop_signals(signum, frame):
 	stop()
@@ -42,7 +43,7 @@ def main():
 
 	# starting modules
 	rfidModule.start()
-	webserverModule.start()
+	webserverModule.start(stop)
 	statusModule.start()
 	gameCommunicator.start()
 	keyboardModule.start()

@@ -25,6 +25,7 @@ webserverPort = 8765
 log = logging.getLogger('werkzeug')
 log.setLevel(logging.ERROR)
 password = 'iamrobo'
+globalStopMethod = None
 
 # globals
 # --- none ---
@@ -121,15 +122,15 @@ def shutdown(userPassword):
 
 @app.route('/control/update/<userPassword>', methods=['POST'])
 def update(userPassword):
-    global password
+    global password, globalStopMethod
     if userPassword == password:
         speechModule.speak('Ich aktualisiere mich.')
         p = subprocess.Popen(['git', 'pull'], stdout=subprocess.PIPE)
         p.wait()
         if p.returncode == 0:
             speechModule.speak('Neustart. Bis gleich!')
-            os.system('sudo pkill python && sleep 5 && sudo sh start_robofriend.sh')
-            time.sleep(5)
+            os.system('sleep 5 && sudo sh start_robofriend.sh')
+            globalStopMethod()
         return getResponse("OK")
     else:
         return getResponse("WRONG PASSWORD")
@@ -197,7 +198,9 @@ def webserver():
     global app, webserverDebug, webserverHost, webserverPort
     app.run(debug=webserverDebug, host=webserverHost, port=webserverPort)
 
-def start():
+def start(stopMethod):
+    global globalStopMethod
+    globalStopMethod = stopMethod
     print "starting webserverModule..."
     WebserverThread = threading.Thread(target=webserver)
     WebserverThread.daemon = True
