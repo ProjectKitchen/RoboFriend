@@ -128,7 +128,7 @@ def update(userPassword):
         p.wait()
         if p.returncode == 0:
             speechModule.speak('Neustart. Bis gleich!')
-            os.system('sudo pkill python && sleep 2 && sudo sh start_robofriend.sh')
+            os.system('sudo pkill python && sleep 5 && sudo sh start_robofriend.sh')
         return getResponse("OK")
     else:
         return getResponse("WRONG PASSWORD")
