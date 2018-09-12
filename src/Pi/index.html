@@ -13,6 +13,7 @@
     <script type="text/javascript" src='static/js/imageClicker.js'></script>
     <script type="text/javascript" src='static/js/earColorService.js'></script>
     <script type="text/javascript" src='static/js/keyController.js'></script>
+    <script type="text/javascript" src='static/js/speechComboHandler.js'></script>
 
     <link rel="stylesheet" href="static/css/normalize.css">
     <link rel="stylesheet" href="static/css/skeleton.css">
@@ -20,46 +21,50 @@
 </head>
 
 <script language="javascript">
-    window.keyController.init();
+    window.onload = function () {
+        communicator.initVideo();
+        window.keyController.init();
+        window.speechComboHandler.init();
 
-    function colorChanged(value) {
-        var rgb = L.hexToRgb(value);
-        communicator.sendAction('ear/color/' + rgb.r + '/' + rgb.g + '/' + rgb.b)
-    }
+        function colorChanged(value) {
+            var rgb = L.hexToRgb(value);
+            communicator.sendAction('ear/color/' + rgb.r + '/' + rgb.g + '/' + rgb.b)
+        }
 
-    function controlAction(action, password) {
-        password = password || 'none';
-        L.setVisible('#wrongPassword', false);
-        communicator.sendAction('control/' + action + '/' + password).then(function (response) {
-            if(response != "OK") {
-                L.setVisible('#wrongPassword', true);
-            }
-        })
-    }
-
-    setInterval(function () {
-        communicator.getStatus().then(function(response) {
-            if(response) {
-                var irMax = 512;
-                L('#batIndicator').innerHTML = parseFloat(response.batVolt).toFixed(2);
-                window.showBatWarning = (window.showBatWarning || parseFloat(response.batVolt) < 12.0) && parseFloat(response.batVolt) < 12.15;
-                L.setVisible('#batteryWarning', window.showBatWarning);
-                L('#irval-left').innerHTML = response.irLeft;
-                L('#irval-middle').innerHTML = response.irMiddle;
-                L('#irval-right').innerHTML = response.irRight;
-                L('#ircontainer-left').style.width = (response.irLeft/irMax*100) + '%';
-                L('#ircontainer-middle').style.width = (response.irMiddle/irMax*100) + '%';
-                L('#ircontainer-right').style.width = (response.irRight/irMax*100) + '%';
-                if(window.screenshotTimestamp != response.screenshotTimestamp) {
-                    window.screenshotTimestamp = response.screenshotTimestamp;
-                    L('#faceScreenshot').src = './face/image?t=' + new Date().getTime();
+        function controlAction(action, password) {
+            password = password || 'none';
+            L.setVisible('#wrongPassword', false);
+            communicator.sendAction('control/' + action + '/' + password).then(function (response) {
+                if(response != "OK") {
+                    L.setVisible('#wrongPassword', true);
                 }
-            }
-        });
-    }, 1000);
+            })
+        }
+
+        setInterval(function () {
+            communicator.getStatus().then(function(response) {
+                if(response) {
+                    var irMax = 512;
+                    L('#batIndicator').innerHTML = parseFloat(response.batVolt).toFixed(2);
+                    window.showBatWarning = (window.showBatWarning || parseFloat(response.batVolt) < 12.0) && parseFloat(response.batVolt) < 12.15;
+                    L.setVisible('#batteryWarning', window.showBatWarning);
+                    L('#irval-left').innerHTML = response.irLeft;
+                    L('#irval-middle').innerHTML = response.irMiddle;
+                    L('#irval-right').innerHTML = response.irRight;
+                    L('#ircontainer-left').style.width = (response.irLeft/irMax*100) + '%';
+                    L('#ircontainer-middle').style.width = (response.irMiddle/irMax*100) + '%';
+                    L('#ircontainer-right').style.width = (response.irRight/irMax*100) + '%';
+                    if(window.screenshotTimestamp != response.screenshotTimestamp) {
+                        window.screenshotTimestamp = response.screenshotTimestamp;
+                        L('#faceScreenshot').src = './face/image?t=' + new Date().getTime();
+                    }
+                }
+            });
+        }, 1000);
+    }
 </script>
 
-<body onload="communicator.initVideo()" style="position: relative">
+<body style="position: relative">
 <span id="posIndicator" style="position: absolute; top: 0px; left: 0px; z-index: 10; display: none">
     <span class="circle" style="position: absolute; top: -7px; left: -7px; color: red;"></span>
 </span>
@@ -127,9 +132,12 @@
                 <div class="ten columns">
                     <button type="submit" onclick="communicator.sendAction('speech/say/random')" name="speech"> Random </button>
                     <button type="submit" onclick="communicator.sendAction('speech/say/bullshit')" name="speech"> Bullshit </button>
-                    <button type="submit" onclick="communicator.say('hello')" name="speech"> Say Hello </button>
-                    <button type="submit" onclick="communicator.say('I like you')" name="speech"> Say I like you </button>
-                    <button type="submit" onclick="communicator.say('You look funny')" name="speech"> You look funny </button>
+                    <div class="row">
+                        <select id="comboRandom" class="six columns" onchange="speechComboHandler.selected(event)">
+                        </select>
+                        <select id="comboBullshit" class="six columns" onchange="speechComboHandler.selected(event)">
+                        </select>
+                    </div>
                 </div>
             </div>
             <div class="row">
