@@ -35,6 +35,9 @@ def playRandom():
     playFile = path + random.choice(filenames)
     playSoundFile(playFile)
 
+def getRandomSounds():
+    return utils.getFilenames('data/random/')
+
 def playMood():
     playsound(["data/","mood"])
 
