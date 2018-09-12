@@ -45,7 +45,7 @@
             communicator.getStatus().then(function(response) {
                 if(response) {
                     var irMax = 512;
-                    L('#batIndicator').innerHTML = parseFloat(response.batVolt).toFixed(2);
+                    L('#batIndicator').innerHTML = response.batPercent + "% (" + parseFloat(response.batVolt).toFixed(2) + "V)";
                     window.showBatWarning = (window.showBatWarning || parseFloat(response.batVolt) < 12.0) && parseFloat(response.batVolt) < 12.15;
                     L.setVisible('#batteryWarning', window.showBatWarning);
                     L('#irval-left').innerHTML = response.irLeft;
@@ -72,7 +72,7 @@
     <div class="row">
         <h1 class="three columns">RoboFriend</h1>
         <div class="two columns">
-            <div>Akku: <span id="batIndicator">(?)</span> Volt</div>
+            <div>Akku: <span id="batIndicator">(?)</span></div>
             <div id="batteryWarning" style="color: red; display: none"><b>Battery Low! Please recharge!</b></div>
         </div>
         <div class="two columns irval-container" style="border: solid thin; position: relative">
