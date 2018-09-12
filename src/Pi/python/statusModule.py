@@ -35,6 +35,10 @@ def getBatteryVoltage():
     global currentStatus, keyBat
     return currentStatus[keyBat] if keyBat in currentStatus else None
 
+def getBatteryPercent():
+    global currentStatus, keyBatPercent
+    return currentStatus[keyBatPercent] if keyBatPercent in currentStatus else None
+
 def getIRLeft():
     global currentStatus, keyIrL
     return currentStatus[keyIrL] if keyIrL in currentStatus else None
@@ -81,7 +85,7 @@ def StatusInfo():
         currentStatus = updateFromRawStatus(rawStatus)
         gameCommunicator.sendtogui("battery;"+str(getBatteryVoltage()))
 
-        print ("Battery= " + str(getBatteryVoltage()) + " Volt)")
+        print ("Battery= " + str(getBatteryPercent()) + "% ("  + str(getBatteryVoltage()) + " Volt)")
         if statusCount >= batMovingAverageN and getBatteryVoltage() < 12.0:
             batWasLow = True
             speechModule.speakBatteryLow()
