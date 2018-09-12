@@ -43,7 +43,7 @@ function KeyController() {
                     imageClicker.stop();
                     break;
                 case 49: // 1
-                    communicator.sendAction('speech/say/random');
+                    communicator.sendAction('sound/play/random');
                     break;
                 case 50: // 2
                     communicator.sendAction('speech/say/bullshit');
