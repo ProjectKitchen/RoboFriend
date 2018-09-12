@@ -4,8 +4,8 @@ function Communicator() {
     var RESTbaseUrl = "http://" + hostname + ":8765/";
     var defaultMoveDuration = 50;
 
-    thiz.sendAction = function (actionString) {
-        return sendHttp(actionString);
+    thiz.sendAction = function (actionString, method) {
+        return sendHttp(actionString, method);
     };
 
     thiz.sendMove = function (directionConstant) {
