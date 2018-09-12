@@ -1,4 +1,4 @@
-function SpeechComboHandler() {
+function ComboHandler() {
     var thiz = this;
 
     thiz.init = function () {
@@ -32,6 +32,6 @@ function SpeechComboHandler() {
     }
 }
 
-window.speechComboHandler = new SpeechComboHandler();
+window.comboHandler = new ComboHandler();
 
 

@@ -13,7 +13,7 @@
     <script type="text/javascript" src='static/js/imageClicker.js'></script>
     <script type="text/javascript" src='static/js/earColorService.js'></script>
     <script type="text/javascript" src='static/js/keyController.js'></script>
-    <script type="text/javascript" src='static/js/speechComboHandler.js'></script>
+    <script type="text/javascript" src='static/js/comboHandler.js'></script>
 
     <link rel="stylesheet" href="static/css/normalize.css">
     <link rel="stylesheet" href="static/css/skeleton.css">
@@ -24,7 +24,7 @@
     window.onload = function () {
         communicator.initVideo();
         window.keyController.init();
-        window.speechComboHandler.init();
+        window.comboHandler.init();
 
         function colorChanged(value) {
             var rgb = L.hexToRgb(value);
@@ -118,7 +118,7 @@
                 <label class="two columns">Sounds</label>
                 <div class="ten columns">
                     <button type="submit" onclick="communicator.sendAction('sound/play/random')" name="sound2"> Random Sound </button>
-                    <select id="comboSounds" class="six columns" onchange="speechComboHandler.selectedSound(event)">
+                    <select id="comboSounds" class="six columns" onchange="comboHandler.selectedSound(event)">
                     </select>
                 </div>
             </div>
@@ -135,9 +135,9 @@
                     <button type="submit" onclick="communicator.sendAction('speech/say/random')" name="speech"> Random </button>
                     <button type="submit" onclick="communicator.sendAction('speech/say/bullshit')" name="speech"> Bullshit </button>
                     <div class="row">
-                        <select id="comboRandom" class="six columns" onchange="speechComboHandler.selectedSpeech(event)">
+                        <select id="comboRandom" class="six columns" onchange="comboHandler.selectedSpeech(event)">
                         </select>
-                        <select id="comboBullshit" class="six columns" onchange="speechComboHandler.selectedSpeech(event)">
+                        <select id="comboBullshit" class="six columns" onchange="comboHandler.selectedSpeech(event)">
                         </select>
                     </div>
                 </div>
