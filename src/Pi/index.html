@@ -117,9 +117,12 @@
             <div class="row">
                 <label class="two columns">Sounds</label>
                 <div class="ten columns">
-                    <button type="submit" onclick="communicator.sendAction('sound/play/random')" name="sound2"> Random Sound </button>
-                    <select id="comboSounds" class="six columns" onchange="comboHandler.selectedSound(event)">
-                    </select>
+                    <div>
+                        <select id="comboSounds" class="six columns" onchange="comboHandler.selectedSound(event)">
+                        </select>
+                        <button type="submit" onclick="communicator.sendAction('sound/play/random')" name="sound2"> Random Sound </button>
+                    </div>
+
                 </div>
             </div>
             <div class="row">
