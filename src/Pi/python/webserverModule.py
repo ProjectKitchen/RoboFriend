@@ -182,7 +182,7 @@ def speakRandom():
     speechModule.speakRandom()
     return getResponse("OK")
 
-@app.route('/speech/say/bullshit', methods=['GET'])
+@app.route('/speech/say/bullshit', methods=['POST'])
 def speakBullshit():
     speechModule.speakBullshit()
     return getResponse("OK")
