@@ -1,4 +1,5 @@
 import os
+import constants
 
 def getFilenames(path):
     return next(os.walk(path))[2]
@@ -16,3 +17,13 @@ def mapRange(value, leftMin, leftMax, rightMin, rightMax):
 
 def restrictRange(value, minValue, maxValue):
     return value if minValue <= value <= maxValue else (minValue if value < minValue else maxValue)
+
+def getBatPercent(batVoltage):
+    batVoltageRounded = round(batVoltage, 2)
+    mapping = constants.getBatPercentMapping()
+    percent = 100
+    for pair in mapping:
+        if batVoltageRounded <= pair[0]:
+            percent = pair[1]
+    return percent
+
