@@ -1,3 +1,8 @@
+import os
+
+def getFilenames(path):
+    return next(os.walk(path))[2]
+
 def mapRange(value, leftMin, leftMax, rightMin, rightMax):
     # Figure out how 'wide' each range is
     leftSpan = leftMax - leftMin
