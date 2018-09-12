@@ -21,25 +21,26 @@
 </head>
 
 <script language="javascript">
+
+    function colorChanged(value) {
+        var rgb = L.hexToRgb(value);
+        communicator.sendAction('ear/color/' + rgb.r + '/' + rgb.g + '/' + rgb.b)
+    }
+
+    function controlAction(action, password) {
+        password = password || 'none';
+        L.setVisible('#wrongPassword', false);
+        communicator.sendAction('control/' + action + '/' + password).then(function (response) {
+            if(response != "OK") {
+                L.setVisible('#wrongPassword', true);
+            }
+        })
+    }
+
     window.onload = function () {
         communicator.initVideo();
         window.keyController.init();
         window.comboHandler.init();
-
-        function colorChanged(value) {
-            var rgb = L.hexToRgb(value);
-            communicator.sendAction('ear/color/' + rgb.r + '/' + rgb.g + '/' + rgb.b)
-        }
-
-        function controlAction(action, password) {
-            password = password || 'none';
-            L.setVisible('#wrongPassword', false);
-            communicator.sendAction('control/' + action + '/' + password).then(function (response) {
-                if(response != "OK") {
-                    L.setVisible('#wrongPassword', true);
-                }
-            })
-        }
 
         setInterval(function () {
             communicator.getStatus().then(function(response) {
