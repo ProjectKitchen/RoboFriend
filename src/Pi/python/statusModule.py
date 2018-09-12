@@ -6,11 +6,13 @@ import os
 
 #own modules
 import speechModule
+import utils
 
 # globals
 StatusThread = None
 refreshIntervalMs = 1000
 keyBat = 'batVolt'
+keyBatPercent = 'batPercent'
 keyIrL = 'irLeft'
 keyIrM = 'irMiddle'
 keyIrR = 'irRight'
@@ -95,7 +97,7 @@ def StatusInfo():
         time.sleep(refreshIntervalMs / 1000.0)
 
 def updateFromRawStatus(rawStatus):
-    global currentStatus, keyBat, keyIrL, keyIrM, keyIrR, batCoversionConstant, batMovingAverageN
+    global currentStatus, keyBat, keyBatPercent, keyIrL, keyIrM, keyIrR, batCoversionConstant, batMovingAverageN
 
     batVolt = getBatteryVoltage()
     irSensorLeft = -1
@@ -113,6 +115,7 @@ def updateFromRawStatus(rawStatus):
         print("error parsing status values: " + rawStatus)
 
     currentStatus[keyBat] = batVolt
+    currentStatus[keyBatPercent] = utils.getBatPercent(batVolt)
     currentStatus[keyIrL] = irSensorLeft
     currentStatus[keyIrM] = irSensorMiddle
     currentStatus[keyIrR] = irSensorRight
