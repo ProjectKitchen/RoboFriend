@@ -178,6 +178,18 @@ def speakBullshit():
     speechModule.speakBullshit()
     return getResponse("OK")
 
+@app.route('/speech/get/<textCategory>', methods=['POST'])
+def getTextsBullshit(textCategory):
+    methods = {'random': speechModule.getRandomTexts,
+               'bullshit': speechModule.getBullshitTexts,
+               'left': teensyCommunicator.moveLeftStep,
+               'right': teensyCommunicator.moveRightStep
+               }
+    texts = []
+    if textCategory in methods:
+        texts = methods[textCategory]()
+    return getResponse(json.dumps(texts))
+
 @app.route('/face/image', methods=['GET'])
 def getface():
     global app

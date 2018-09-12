@@ -33,13 +33,7 @@ def speak(text, disablesIdle = True):
 
 def speakRandom(additionalTexts = None, disablesIdle = True):
     global lastSpeakTimestamp, language, lastSpeakWord
-    possibleTexts = {
-        'english': ['Hello', 'Hi', 'Hello, how are you?', 'I am fine. How are you?', 'Do you like a snack?', 'Do you like to be my friend?'],
-        'german' : ['Hallo', 'Guten Tag', 'Hallo, wie gehts?', 'Mir geht es gut. Wie geht es dir?', 'Möchtest du einen Sneck?', 'Willst du mein Freund sein?',
-                    'Komm zu unserem Stand um mehr zu erfahren', 'Ich empfehle an der FH Technikum Wien zu studieren', 'Wer will Gummi berchen oder Soletti?',
-                    'Darf ich Ihnen etwas bringen?', 'Es ist mir eine Ehre dir zu dienen.', 'Ich stehe voll zu deiner Verfügung.']
-    }
-    possibleInLang = possibleTexts[language]
+    possibleInLang = getRandomTexts()
     if lastSpeakWord in possibleInLang:
         possibleInLang.remove(lastSpeakWord)
     if additionalTexts and additionalTexts[language]:
@@ -47,7 +41,24 @@ def speakRandom(additionalTexts = None, disablesIdle = True):
     speak(random.choice(possibleInLang), disablesIdle)
 
 def speakBullshit():
-    global lastSpeakTimestamp, language, lastSpeakWord
+    global lastSpeakTimestamp, lastSpeakWord
+    possibleInLang = getBullshitTexts()
+    if lastSpeakWord in possibleInLang:
+        possibleInLang.remove(lastSpeakWord)
+    speak(random.choice(possibleInLang))
+
+def getRandomTexts():
+    global language
+    possibleTexts = {
+        'english': ['Hello', 'Hi', 'Hello, how are you?', 'I am fine. How are you?', 'Do you like a snack?', 'Do you like to be my friend?'],
+        'german' : ['Hallo', 'Guten Tag', 'Hallo, wie gehts?', 'Mir geht es gut. Wie geht es dir?', 'Möchtest du einen Sneck?', 'Willst du mein Freund sein?',
+                    'Komm zu unserem Stand um mehr zu erfahren', 'Ich empfehle an der FH Technikum Wien zu studieren', 'Wer will Gummi berchen oder Soletti?',
+                    'Darf ich Ihnen etwas bringen?', 'Es ist mir eine Ehre dir zu dienen.', 'Ich stehe voll zu deiner Verfügung.']
+    }
+    return possibleTexts[language]
+
+def getBullshitTexts():
+    global language
     possibleTexts = {
         'english': [],
         'german' : ['Warum schaust du so dumm?', 'Was ist mit dir los?', 'Ich will nicht arbeiten.', 'Ich will nach Hause.', 'Schau mich nicht an.', 'Bring mir etwas Motoröl',
@@ -59,10 +70,7 @@ def speakBullshit():
                     'Was ist dein Friseur eigentlich von Berruf?', 'Kann mir bitte jemand das Wasser reichen.', 'Es ist Zeit schreiend im Kreis zu laufen!', 'noch ein tag dann ist morgen.',
                     'es reicht mir schön langsam']
     }
-    possibleInLang = possibleTexts[language]
-    if lastSpeakWord in possibleInLang:
-        possibleInLang.remove(lastSpeakWord)
-    speak(random.choice(possibleInLang))
+    return possibleTexts[language]
 
 def speakBatteryLow():
     global lastSpeakTimestamp, language
