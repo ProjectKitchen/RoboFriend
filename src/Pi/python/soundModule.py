@@ -3,6 +3,7 @@ import random
 
 #own modules
 import faceModule
+import utils
 
 #init
 print "initializing soundModule..."
@@ -29,7 +30,10 @@ def playSoundFile(path):
         sound.play()
 
 def playRandom():
-    playsound(["data/fabibox/","random"])
+    path = 'data/random/'
+    filenames = utils.getFilenames(path)
+    playFile = path + random.choice(filenames)
+    playSoundFile(playFile)
 
 def playMood():
     playsound(["data/","mood"])
@@ -49,9 +53,7 @@ def playsound(dataArray):
             return
         elif info == "random":
             print ("random sound")
-            r_sounds = ["s1", "s2", "s3", "s4", "s5", "s6", "s7", "s8"]
-            rsnr =random.randint(0,7)
-            soundpath = soundname+r_sounds[rsnr]+".wav"
+            playRandom()
         elif info == "mood":
             print ("mood sound")
             mood_sounds = ["sad","happy"]
