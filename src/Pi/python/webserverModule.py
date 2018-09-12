@@ -152,6 +152,11 @@ def moveStop():
 def getStatus():
     return getResponse(json.dumps(statusModule.getStatus()))
 
+@app.route('/sound/play/file/<filename>', methods=['POST'])
+def playSound(filename):
+    soundModule.playSoundFile('data/random/' + filename)
+    return getResponse("OK")
+
 @app.route('/sound/play/random', methods=['POST'])
 def randomSound():
     soundModule.playRandom()
@@ -161,6 +166,10 @@ def randomSound():
 def moodSound():
     soundModule.playMood()
     return getResponse("OK")
+
+@app.route('/sound/get/random', methods=['GET'])
+def getRandomSounds():
+    return getResponse(json.dumps(soundModule.getRandomSounds()))
 
 @app.route('/speech/say/custom/<text>', methods=['POST'])
 def speak(text):
@@ -173,12 +182,12 @@ def speakRandom():
     speechModule.speakRandom()
     return getResponse("OK")
 
-@app.route('/speech/say/bullshit', methods=['POST'])
+@app.route('/speech/say/bullshit', methods=['GET'])
 def speakBullshit():
     speechModule.speakBullshit()
     return getResponse("OK")
 
-@app.route('/speech/get/<textCategory>', methods=['POST'])
+@app.route('/speech/get/<textCategory>', methods=['GET'])
 def getTextsBullshit(textCategory):
     methods = {'random': speechModule.getRandomTexts,
                'bullshit': speechModule.getBullshitTexts,
