@@ -40,16 +40,16 @@ def handleKeyboard():
                     faceModule.decreaseSmile()
                 if event.key == pygame.K_UP:
                     print("move forward via keyboard")
-                    teensyCommunicator.moveForwardLoop()
+                    teensyCommunicator.moveForwardStep()
                 if event.key == pygame.K_DOWN:
                     print('move back via keyboard')
-                    teensyCommunicator.moveBackLoop()
+                    teensyCommunicator.moveBackStep()
                 if event.key == pygame.K_LEFT:
                     print("move left via keyboard")
-                    teensyCommunicator.moveLeftLoop()
+                    teensyCommunicator.moveLeftStep()
                 if event.key == pygame.K_RIGHT:
                     print('move right via keyboard')
-                    teensyCommunicator.moveRightLoop()
+                    teensyCommunicator.moveRightStep()
                 if event.key == pygame.K_RETURN:
                     print('move stop via keyboard')
                     teensyCommunicator.stopMovement()
