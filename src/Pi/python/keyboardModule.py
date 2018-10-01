@@ -49,7 +49,7 @@ def handleKeyboard():
                 elif event.key == pygame.K_ESCAPE:
                     print('clearing speech buffer...')
                     speechBuffer = ''
-                elif event.key == pygame.BACKSPACE:
+                elif event.key == pygame.K_BACKSPACE:
                     if lastSay:
                         speechModule.speak(lastSay)
 
