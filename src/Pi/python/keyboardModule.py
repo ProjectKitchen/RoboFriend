@@ -3,6 +3,7 @@ import pygame
 import sys
 import threading
 import re
+import traceback
 
 # own modules
 import teensyCommunicator
