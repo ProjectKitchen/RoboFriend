@@ -5,6 +5,9 @@ import random
 import faceModule
 import utils
 
+#globals
+lastPlayFile = None
+
 #init
 print "initializing soundModule..."
 pygame.init()
@@ -30,10 +33,18 @@ def playSoundFile(path):
         sound.play()
 
 def playRandom():
+    global lastPlayFile
     path = 'data/random/'
     filenames = utils.getFilenames(path)
     playFile = path + random.choice(filenames)
+    lastPlayFile = playFile
     playSoundFile(playFile)
+
+def playLastRandom():
+    global lastPlayFile
+    if not lastPlayFile:
+        playRandom()
+    playSoundFile(lastPlayFile)
 
 def getRandomSounds():
     return utils.getFilenames('data/random/')
