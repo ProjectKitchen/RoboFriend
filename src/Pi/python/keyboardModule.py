@@ -33,8 +33,22 @@ def handleKeyboard():
                 teensyCommunicator.stopMovement()
             if event.type == pygame.KEYDOWN:
                 print('***** Key press recognized: ')
+
+                if event.key == pygame.K_RETURN:
+                    if speechBuffer == shutdownKeyword:
+                        systemModule.shutdown()
+                    if speechBuffer == quitKeyword:
+                        pygame.quit()
+                        sys.exit()
+                    elif speechBuffer:
+                        speechModule.speak(speechBuffer)
+                    speechBuffer = ''
+                elif event.key == pygame.K_ESCAPE:
+                    print('clearing speech buffer...')
+                    speechBuffer = ''
+
                 # ------------ move ---------------
-                if event.key == pygame.K_DOWN:
+                elif event.key == pygame.K_DOWN:
                     print('move back via keyboard')
                     teensyCommunicator.moveBackStep()
                 elif event.key == pygame.K_LEFT:
@@ -82,18 +96,6 @@ def handleKeyboard():
                     speechModule.speakRandom()
                 elif event.unicode == '0':
                     speechModule.speakBullshit()
-                elif event.key == pygame.K_RETURN:
-                    if speechBuffer == shutdownKeyword:
-                        systemModule.shutdown()
-                    if speechBuffer == quitKeyword:
-                        pygame.quit()
-                        sys.exit()
-                    elif speechBuffer:
-                        speechModule.speak(speechBuffer)
-                    speechBuffer = ''
-                elif event.key == pygame.K_ESCAPE:
-                    print('clearing speech buffer...')
-                    speechBuffer = ''
                 elif re.match('^[a-zA-Z ]$', event.unicode):
                     speechBuffer += event.unicode
                     print('speech buffer is now: ' + str(speechBuffer))
