@@ -78,7 +78,7 @@ def handleKeyboard():
                 elif event.unicode == '7':
                     speechModule.speak('Mir ist langweilig')
                 elif event.unicode == '8':
-                    speechModule.speak('Heute ist ein schöner Tag.')
+                    speechModule.speak('Heute ist ein schoener Tag.')
                 elif event.unicode == '9':
                     speechModule.speakRandom()
                 elif event.unicode == '0':
