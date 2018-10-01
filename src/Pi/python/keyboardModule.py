@@ -101,6 +101,7 @@ def handleKeyboard():
                     print('speech buffer is now: ' + str(speechBuffer))
         except Exception as e:
             print('keyboard exception: ' + str(e))
+            print(traceback.format_exc())
 
 def start():
     global KeyboardThread
