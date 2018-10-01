@@ -32,7 +32,7 @@ def handleKeyboard():
                 print('move stop via keyboard')
                 teensyCommunicator.stopMovement()
             if event.type == pygame.KEYDOWN:
-                print('***** Key press recognized: ' + str(event.unicode))
+                print('***** Key press recognized: ')
                 # ------------ move ---------------
                 if event.key == pygame.K_DOWN:
                     print('move back via keyboard')
@@ -48,20 +48,18 @@ def handleKeyboard():
                     teensyCommunicator.moveForwardStep()
 
                 # ------------ face ---------------
-                elif event.unicode == '>':
+                elif event.unicode == ',':
                     print('smile increase via keyboard')
                     faceModule.increaseSmile()
-                elif event.unicode == '<':
+                elif event.unicode == '.':
                     print('smile decrease via keyboard')
                     faceModule.decreaseSmile()
 
                 # ------------ sounds ---------------
-                elif event.unicode == '(':
+                elif event.unicode == '-':
                     soundModule.playRandom()
-                elif event.unicode == ')':
+                elif event.unicode == '#':
                     soundModule.playLastRandom()
-                elif event.unicode == '.':
-                    soundModule.playMood()
 
                 # ------------ speech ---------------
                 elif event.unicode == '1':
