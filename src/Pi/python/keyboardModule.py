@@ -21,8 +21,9 @@ quitKeyword = 'quit'
 
 def handleKeyboard():
     global runFlag, speechBuffer, shutdownKeyword, quitKeyword
-    try:
-        while runFlag:
+
+    while runFlag:
+        try:
             event = pygame.event.wait()
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -98,9 +99,8 @@ def handleKeyboard():
                 elif re.match('^[a-zA-Z ]$', event.unicode):
                     speechBuffer += event.unicode
                     print('speech buffer is now: ' + str(speechBuffer))
-
-    except Exception as e:
-        print('keyboard exception: ' + str(e))
+        except Exception as e:
+            print('keyboard exception: ' + str(e))
 
 def start():
     global KeyboardThread
