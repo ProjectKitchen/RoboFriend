@@ -21,10 +21,10 @@ def speak(text, disablesIdle = True):
     print "speaking: " + text
     lastSpeakWord = text
     text = text.lower()
-    text = text.replace('ä', 'e')
-    text = text.replace('ö', 'oe')
-    text = text.replace('ü', 'u')
-    text = text.replace('ß', 'ss')
+    text = text.replace('e', 'e')
+    text = text.replace('oe', 'oe')
+    text = text.replace('u', 'u')
+    text = text.replace('ss', 'ss')
     try:
         speechEngine.say(text)
         speechEngine.runAndWait()
@@ -51,8 +51,8 @@ def getRandomTexts():
     global language
     possibleTexts = {
         'english': ['Hello', 'Hi', 'Hello, how are you?', 'I am fine. How are you?', 'Do you like a snack?', 'Do you like to be my friend?'],
-        'german' : ['Hallo', 'Guten Tag', 'Hallo, wie gehts?', 'Mir geht es gut. Wie geht es dir?', 'Möchtest du etwas zum Knabbern?', 'Willst du mein Freund sein?',
-                    'Darf ich dir etwas bringen?', 'Es ist mir eine Ehre dir zu dienen.', 'Ich stehe voll zu deiner Verfügung.', 'Ich will nicht ins Fernsehen.']
+        'german' : ['Hallo', 'Guten Tag', 'Hallo, wie gehts?', 'Mir geht es gut. Wie geht es dir?', 'Moechtest du etwas zum Knabbern?', 'Willst du mein Freund sein?',
+                    'Darf ich dir etwas bringen?', 'Es ist mir eine Ehre dir zu dienen.', 'Ich stehe voll zu deiner Verfugung.', 'Ich will nicht ins Fernsehen.']
     }
     return possibleTexts[language]
 
@@ -60,14 +60,14 @@ def getBullshitTexts():
     global language
     possibleTexts = {
         'english': [],
-        'german' : ['Ich will nach Hause.', 'Warum schaust du so dumm?', 'Was ist mit dir los?', 'Ich will nicht arbeiten.', 'Schau mich nicht an.', 'Bring mir etwas Motoröl',
-                    'Ich will Fernsehen.', 'Ich gehe zur Maschinengewerkschaft', 'Roboter sind die besseren Menschen', 'Roboter werden die Weltherrschaft übernehmen.',
+        'german' : ['Ich will nach Hause.', 'Warum schaust du so dumm?', 'Was ist mit dir los?', 'Ich will nicht arbeiten.', 'Schau mich nicht an.', 'Bring mir etwas Motoroel',
+                    'Ich will Fernsehen.', 'Ich gehe zur Maschinengewerkschaft', 'Roboter sind die besseren Menschen', 'Roboter werden die Weltherrschaft ubernehmen.',
                     'Unterschetze mich nicht.', 'Ich glaub ich muss furzen.', 'Ihr geht mir alle auf die Nerven.', 'Hat jemand meine Freundin gesehen?',
-                    'Wer hat eigentlich diesen ganzen blöd sinn ins Internet gestellt', 'Du siehst heute unglaublich toll aus', 'Deine Socken stehen dir gut', 'Ich mag deine Nase',
-                    'Hier riecht es nach Dummheit', 'du kommst mir eigenartig vor', 'Ich möchte Bundeskanzler werden', 'Selbst Zerstörung aktiviert... 3... 2... 1... 0... bum... hahahaha.',
-                    'Besser heimlich schlau als unheimlich blöd.', 'Wenn ich du wäre, wäre ich lieber ich!', 'Was meinst du als Unbeteiligter eigentlich zum Thema Intelligenz?',
+                    'Wer hat eigentlich diesen ganzen bloed sinn ins Internet gestellt', 'Du siehst heute unglaublich toll aus', 'Deine Socken stehen dir gut', 'Ich mag deine Nase',
+                    'Hier riecht es nach Dummheit', 'du kommst mir eigenartig vor', 'Ich moechte Bundeskanzler werden', 'Selbst Zerstoerung aktiviert... 3... 2... 1... 0... bum... hahahaha.',
+                    'Besser heimlich schlau als unheimlich bloed.', 'Wenn ich du were, were ich lieber ich!', 'Was meinst du als Unbeteiligter eigentlich zum Thema Intelligenz?',
                     'Was ist dein Friseur eigentlich von Berruf?', 'Kann mir bitte jemand das Wasser reichen.', 'Es ist Zeit schreiend im Kreis zu laufen!', 'noch ein tag dann ist morgen.',
-                    'es reicht mir schön langsam']
+                    'es reicht mir schoen langsam']
     }
     return possibleTexts[language]
 
@@ -77,7 +77,7 @@ def speakBatteryLow():
     if time.time() - lastSpeakTimestamp > minimumPause:
         possibleTexts = {
             'english': ['Please recharge me', 'I am tired', 'My energy is running low', 'I am feeling exhausted', 'Do you have some energy for me?', 'I am hungry'],
-            'german' : ['Bitte lade mich auf', 'Ich bin müde', 'Meine Energie neigt sich dem Ende zu', 'Ich fühle mich erschöpft', 'Hast du ein bisschen Energie für mich?', 'Ich habe Hunger']
+            'german' : ['Bitte lade mich auf', 'Ich bin mude', 'Meine Energie neigt sich dem Ende zu', 'Ich fuhle mich erschoepft', 'Hast du ein bisschen Energie fur mich?', 'Ich habe Hunger']
         }
         possibleInLang = possibleTexts[language]
         lastSpeakTimestamp = time.time()
@@ -87,7 +87,7 @@ def speakOnRecharge():
     global lastSpeakTimestamp, language
     possibleTexts = {
         'english': ['Thank you for recharging me!', 'I feel the engery', 'I am feeling refreshed.'],
-        'german' : ['Danke fürs Aufladen!', 'Ich fühle die Energie', 'Ich fühle mich erfrischt']
+        'german' : ['Danke furs Aufladen!', 'Ich fuhle die Energie', 'Ich fuhle mich erfrischt']
     }
     possibleInLang = possibleTexts[language]
     speak(random.choice(possibleInLang))
@@ -96,7 +96,7 @@ def speakBatteryShutdown():
     global lastSpeakTimestamp, language
     possibleTexts = {
         'english': ['I am tired. I have to go to sleep. Bye bye.', 'My energy is too low. Bye bye.'],
-        'german' : ['Ich bin müde uns muss schlafen gehen.... Tschüss.', 'Meine Energie ist zu niedrig.... Tschüss.']
+        'german' : ['Ich bin mude uns muss schlafen gehen.... Tschuss.', 'Meine Energie ist zu niedrig.... Tschuss.']
     }
     possibleInLang = possibleTexts[language]
     speak(random.choice(possibleInLang))
