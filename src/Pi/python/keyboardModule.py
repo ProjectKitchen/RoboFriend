@@ -2,73 +2,113 @@
 import pygame
 import sys
 import threading
+import re
 
 # own modules
 import teensyCommunicator
 import faceModule
 import soundModule
+import speechModule
+import systemModule
 
 # globals
-currentStatus = None
-KeyboardThred = None
-refreshIntervalMs = 1000
-keyBat = 'batVolt'
-keyIrL = 'irLeft'
-keyIrM = 'irMiddle'
-keyIrR = 'irRight'
+KeyboardThread = None
 runFlag = True
+speechBuffer = ''
+shutdownKeyword = 'exit'
+quitKeyword = 'quit'
+
 
 def handleKeyboard():
-    global runFlag
+    global runFlag, speechBuffer, shutdownKeyword, quitKeyword
     try:
         while runFlag:
             event = pygame.event.wait()
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+            if event.type == pygame.KEYUP and event.key in [pygame.K_DOWN, pygame.K_LEFT, pygame.K_RIGHT, pygame.K_UP]:
+                print('move stop via keyboard')
+                teensyCommunicator.stopMovement()
             if event.type == pygame.KEYDOWN:
-                print('***** Key press recognized ******')
-                if event.key == pygame.K_ESCAPE or event.unicode == 'q':
-                    print('quit via keyboard')
-                    pygame.quit()
-                    sys.exit()
-                if event.unicode == '1':
-                    print('smile increase via keyboard')
-                    faceModule.increaseSmile()
-                if event.unicode == '2':
-                    print('smile decrease via keyboard')
-                    faceModule.decreaseSmile()
-                if event.key == pygame.K_UP:
-                    print("move forward via keyboard")
-                    teensyCommunicator.moveForwardStep()
+                print('***** Key press recognized: ' + str(event.unicode))
+                # ------------ move ---------------
                 if event.key == pygame.K_DOWN:
                     print('move back via keyboard')
                     teensyCommunicator.moveBackStep()
-                if event.key == pygame.K_LEFT:
+                elif event.key == pygame.K_LEFT:
                     print("move left via keyboard")
                     teensyCommunicator.moveLeftStep()
-                if event.key == pygame.K_RIGHT:
+                elif event.key == pygame.K_RIGHT:
                     print('move right via keyboard')
                     teensyCommunicator.moveRightStep()
-                if event.key == pygame.K_RETURN:
-                    print('move stop via keyboard')
-                    teensyCommunicator.stopMovement()
-                if event.unicode == '3':
-                    print('sound play random via keyboard')
+                elif event.key == pygame.K_UP:
+                    print("move forward via keyboard")
+                    teensyCommunicator.moveForwardStep()
+
+                # ------------ face ---------------
+                elif event.unicode == '>':
+                    print('smile increase via keyboard')
+                    faceModule.increaseSmile()
+                elif event.unicode == '<':
+                    print('smile decrease via keyboard')
+                    faceModule.decreaseSmile()
+
+                # ------------ sounds ---------------
+                elif event.unicode == '(':
                     soundModule.playRandom()
-                if event.unicode == '4':
-                    print('sound play mood via keyboard')
+                elif event.unicode == ')':
+                    soundModule.playLastRandom()
+                elif event.unicode == '.':
                     soundModule.playMood()
-    except Exception:
-        pygame.quit()
+
+                # ------------ speech ---------------
+                elif event.unicode == '1':
+                    speechModule.speak('Hallo, wie gehts?')
+                elif event.unicode == '2':
+                    speechModule.speak('Danke, mir geht es gut.')
+                elif event.unicode == '3':
+                    speechModule.speak('Willst du etwas zum knabbern?')
+                elif event.unicode == '4':
+                    speechModule.speak('Bitte, gerne.')
+                elif event.unicode == '5':
+                    speechModule.speak('Wie heisst du?')
+                elif event.unicode == '6':
+                    speechModule.speak('Ich heisse Robofreund.')
+                elif event.unicode == '7':
+                    speechModule.speak('Mir ist langweilig')
+                elif event.unicode == '8':
+                    speechModule.speak('Heute ist ein schöner Tag.')
+                elif event.unicode == '9':
+                    speechModule.speakRandom()
+                elif event.unicode == '0':
+                    speechModule.speakBullshit()
+                elif event.key == pygame.K_RETURN:
+                    if speechBuffer == shutdownKeyword:
+                        systemModule.shutdown()
+                    if speechBuffer == quitKeyword:
+                        pygame.quit()
+                        sys.exit()
+                    elif speechBuffer:
+                        speechModule.speak(speechBuffer)
+                    speechBuffer = ''
+                elif event.key == pygame.K_ESCAPE:
+                    print('clearing speech buffer...')
+                    speechBuffer = ''
+                elif re.match('^[a-zA-Z ]$', event.unicode):
+                    speechBuffer += event.unicode
+                    print('speech buffer is now: ' + str(speechBuffer))
+
+    except Exception as e:
+        print('keyboard exception: ' + str(e))
 
 def start():
-    global KeyboardThred
+    global KeyboardThread
 
     print "starting keyboardModule..."
-    KeyboardThred = threading.Thread(target=handleKeyboard)
-    KeyboardThred.daemon = True
-    KeyboardThred.start()
+    KeyboardThread = threading.Thread(target=handleKeyboard)
+    KeyboardThread.daemon = True
+    KeyboardThread.start()
 
 def stop():
     global runFlag
