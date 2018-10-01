@@ -18,10 +18,11 @@ runFlag = True
 speechBuffer = ''
 shutdownKeyword = 'exit'
 quitKeyword = 'quit'
+lastSay = None
 
 
 def handleKeyboard():
-    global runFlag, speechBuffer, shutdownKeyword, quitKeyword
+    global runFlag, speechBuffer, shutdownKeyword, quitKeyword, lastSay
 
     while runFlag:
         try:
@@ -43,24 +44,28 @@ def handleKeyboard():
                         sys.exit()
                     elif speechBuffer:
                         speechModule.speak(speechBuffer)
+                        lastSay = speechBuffer
                     speechBuffer = ''
                 elif event.key == pygame.K_ESCAPE:
                     print('clearing speech buffer...')
                     speechBuffer = ''
+                elif event.key == pygame.BACKSPACE:
+                    if lastSay:
+                        speechModule.speak(lastSay)
 
                 # ------------ move ---------------
                 elif event.key == pygame.K_DOWN:
                     print('move back via keyboard')
-                    teensyCommunicator.moveBackStep()
+                    teensyCommunicator.moveBackLoop()
                 elif event.key == pygame.K_LEFT:
                     print("move left via keyboard")
-                    teensyCommunicator.moveLeftStep()
+                    teensyCommunicator.moveLeftLoop()
                 elif event.key == pygame.K_RIGHT:
                     print('move right via keyboard')
-                    teensyCommunicator.moveRightStep()
+                    teensyCommunicator.moveRightLoop()
                 elif event.key == pygame.K_UP:
                     print("move forward via keyboard")
-                    teensyCommunicator.moveForwardStep()
+                    teensyCommunicator.moveForwardLoop()
 
                 # ------------ face ---------------
                 elif event.unicode == ',':
