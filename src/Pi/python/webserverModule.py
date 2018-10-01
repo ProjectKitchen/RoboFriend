@@ -6,7 +6,6 @@ import json
 import logging
 import os
 import subprocess
-import time
 
 #own modules
 import ioWarriorModule
@@ -16,6 +15,7 @@ import soundModule
 import faceModule
 import speechModule
 import moodModule
+import systemModule
 
 #init
 app = Flask(__name__, static_folder='../static')
@@ -112,9 +112,7 @@ def move(left, right, duration):
 def shutdown(userPassword):
     global password
     if userPassword == password:
-        speechModule.speakShutdown()
-        time.sleep(5)
-        os.system('sudo init 0')
+        systemModule.shutdown()
         return getResponse("OK")
     else:
         return getResponse("WRONG PASSWORD")
