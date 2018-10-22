@@ -1,4 +1,4 @@
-Circuit: * C:\Users\mzahedi\Documents\Git\RoboFriend\simulation\sw-module\vin.asc
+Circuit: * C:\Users\mzahedi\Documents\Git\RoboFriend\simulation\vin-final\vin.asc
 
 WARNING: Node NC_01 is floating.
 
@@ -13,128 +13,55 @@ Gmin = 0.00132923
 vernier = 0.5
 vernier = 0.25
 vernier = 0.125
-vernier = 0.0625
-vernier = 0.03125
-Gmin = 0.000544452
-vernier = 0.0416667
-Gmin = 0.000497231
+Gmin = 0.000620551
+vernier = 0.166667
+vernier = 0.222222
+vernier = 0.111111
+Gmin = 0.000456748
 vernier = 0.0555555
 vernier = 0.074074
-Gmin = 0.000428755
+Gmin = 0.000396141
 vernier = 0.0987653
 vernier = 0.131687
-Gmin = 0.000339372
-vernier = 0.0658435
-vernier = 0.0329218
-vernier = 0.0164609
-vernier = 0.00823044
-Gmin = 0.000335902
-vernier = 0.0109739
-vernier = 0.0146319
-Gmin = 0.000325635
-vernier = 0.0195092
-vernier = 0.0260122
-Gmin = 0.000309921
-vernier = 0.034683
-Gmin = 0.000286744
-vernier = 0.046244
-vernier = 0.0616586
-Gmin = 0.000251749
-vernier = 0.0822114
-vernier = 0.0411057
-vernier = 0.0205529
-Gmin = 0.000237986
-vernier = 0.0274038
-vernier = 0.0365384
-Gmin = 0.000220275
-vernier = 0.0487178
-vernier = 0.0649571
-vernier = 0.0324786
-Gmin = 0.000201151
-vernier = 0.0162393
-vernier = 0.0216524
-Gmin = 0.000192906
-vernier = 0.0288698
-vernier = 0.0384931
-Gmin = 0.000179307
-vernier = 0.0513241
-vernier = 0.025662
-vernier = 0.012831
-Gmin = 0.000170918
-vernier = 0.017108
-vernier = 0.0228107
-Gmin = 0.000163661
-vernier = 0.0304143
-Gmin = 0.000152872
-vernier = 0.0405523
-vernier = 0.0202762
-vernier = 0.0270349
-Gmin = 0.000146074
-vernier = 0.0360465
-vernier = 0.0180232
-Gmin = 0.00013997
-vernier = 0.024031
-vernier = 0.0320413
-Gmin = 0.000130788
-vernier = 0.0427217
-vernier = 0.0213609
-vernier = 0.0106804
-Gmin = 0.000127013
-vernier = 0.0142406
-vernier = 0.0189874
-Gmin = 0.000122
-vernier = 0.0253166
-vernier = 0.0337554
-vernier = 0.0168777
-Gmin = 0.000116361
-vernier = 0.00843885
-vernier = 0.0112518
-Gmin = 0.000113854
-vernier = 0.0150024
-vernier = 0.0200032
-Gmin = 0.000109603
-vernier = 0.0266709
-vernier = 0.0133355
-Gmin = 0.000106017
-vernier = 0.0177806
-vernier = 0.0237075
-Gmin = 0.000101082
-vernier = 0.03161
-vernier = 0.015805
-vernier = 0.00790249
-vernier = 0.00395124
-vernier = 0.00197562
-vernier = 0.000987811
-vernier = 0.000493906
-Gmin = 9.93056e-005
+Gmin = 0.000309185
+vernier = 0.175583
+Gmin = 0.000209897
+vernier = 0.23411
+vernier = 0.312147
+Gmin = 0.000110474
+vernier = 0.416196
+vernier = 0.554928
+Gmin = 4.0478e-005
+vernier = 0.739903
+Gmin = 8.69513e-006
+vernier = 0.986537
+vernier = 1
+Gmin = 9.48858e-007
+Gmin = 1.01883e-007
+Gmin = 1.09396e-008
+Gmin = 1.17463e-009
+Gmin = 1.26125e-010
+Gmin = 1.35426e-011
+Gmin = 1.45412e-012
+Gmin = 1.56135e-013
 Gmin = 0
-Gmin stepping failed
+Gmin stepping succeeded in finding the operating point.
 
-Starting source stepping with srcstepmethod=0
-Source Step = 3.0303%
-vernier = 0.25
-Source Step = 0.0177557%
-Starting source stepping with srcstepmethod=1
-Source Step = 3.0303%
-vernier = 0.25
-Source stepping failed
 
-Pseudo Transient succeeded in finding the operating point at 642.395 ms.
-
-Date: Mon Aug 13 12:17:19 2018
-Total elapsed time: 2.859 seconds.
+Date: Mon Oct 22 17:51:38 2018
+Total elapsed time: 0.541 seconds.
 
 tnom = 27
 temp = 27
 method = modified trap
-totiter = 85069
-traniter = 74305
-tranpoints = 28225
-accept = 20285
-rejected = 7950
+totiter = 9020
+traniter = 7720
+tranpoints = 2854
+accept = 2403
+rejected = 451
 matrix size = 51
-fillins = 24
+fillins = 19
 solver = Normal
-Matrix Compiler1: 3.95 KB object code size  1.9/0.9/[0.6]
-Matrix Compiler2: 4.72 KB object code size  0.8/1.1/[0.7]
+Matrix Compiler1: 3.93 KB object code size  1.7/0.8/[0.5]
+Matrix Compiler2: 4.62 KB object code size  1.1/1.2/[0.6]
 

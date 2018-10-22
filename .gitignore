@@ -8,3 +8,8 @@
 
 # Pictures
 *.jpg
+
+# LTspice
+*.log
+*.plt
+*.raw
