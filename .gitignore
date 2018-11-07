@@ -13,3 +13,7 @@
 *.log
 *.plt
 *.raw
+
+# src
+*.pyc
+*.iml
