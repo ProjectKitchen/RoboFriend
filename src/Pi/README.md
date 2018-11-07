@@ -1,9 +1,19 @@
-# Source for Raspberry Pi 2
 
-Like for the GUI you have to install Python 27 & Pygame 1.9.1 on your Raspberry Pi 2.  
-Please visit the folder "TabletGUI" for more information
 
-webrobot.py is the main Source Code file, which automatically will be started in the shellscript "start.sh" after setting up the RaspiCam and MJPG Streamer. In the folder "data" you will find audiofiles, which are used in webrobot.py as voices for the robot.
 
-## Work in Progress
-For the mjpg streamer to work properly you have to... -- some files will be uploaded soon to complete the folder "Pi", please be patient, we want to make sure everything works properly with only the files on GitHub, so some additionally checks are currently completed
+# Robofriend Raspberry Pi implementation
+# Web Controlled Robot With Video Stream
+
+ credits: Tom Heike for original Robofriend and mechanical platform
+          Karima Khlousy Neirukh and Florian Hackl (Dr. Wummi) for HW-updates and Software rework
+          Chris Veigl for coordination and glue logic
+
+
+- robofriend.py is the main python script (currently Python2.7 is used)
+- it handles UDP communication for remote control, keyboard input and opens a Flask Webserver for webbased remote control (port: 8765)
+- in the background, MJPG-Streamer is running and transmits a live camera image to the webpage (see start_robofriend.sh)
+- the motor control and collision prevention is done with a Teensy2.0++ microcontroller which is connected via USB (TTYACM0)
+- an RFID reader is connected to USB (TTYUSB0)
+- an iowarrior board is connected via USB (HID) - it allows to switch on/off the 12V power supply for the CRT TV and to control the LED-ears (PWM) and camera servo
+
+
