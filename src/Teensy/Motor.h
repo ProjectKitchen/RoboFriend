@@ -1,16 +1,8 @@
+#ifndef MOTOR_H_
+#define MOTOR_H_
 
 #define PRINT_MOTORSPEED_MESSAGES 0
 #define PRINT_SENSOR_MESSAGES     0
-
-/* Motor pins right */
-#define RightBackwardPin 10
-#define RightForwardPin  11
-#define RightPWMPin      14
-
-/* Motor pins left */
-#define LeftForwardPin   12
-#define LeftBackwardPin  13
-#define LeftPWMPin       15
 
 #define STEPLENGTH      50
 #define STEPLENGTH_TURN 20
@@ -40,3 +32,5 @@ protected:
   int handleObstacles();
 
 };
+
+#endif /* MOTOR_H_ */

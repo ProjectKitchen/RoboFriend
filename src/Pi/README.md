@@ -16,4 +16,5 @@
 - an RFID reader is connected to USB (TTYUSB0)
 - an iowarrior board is connected via USB (HID) - it allows to switch on/off the 12V power supply for the CRT TV and to control the LED-ears (PWM) and camera servo
 
-
+- Raspbian Image - Raspbian Strech with Desktop: https://www.raspberrypi.org/downloads/raspbian/
+- Etcher - Flash Software: https://www.balena.io/etcher/

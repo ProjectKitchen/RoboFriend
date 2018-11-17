@@ -14,8 +14,8 @@
 // add(x)  addValue(x)
 // avg()   getAverage()
 
-#ifndef RunningAverage_h
-#define RunningAverage_h
+#ifndef RUNNING_AVERAGE_H_
+#define RUNNING_AVERAGE_H_
 
 #define RUNNINGAVERAGE_LIB_VERSION "0.2.13"
 
@@ -67,5 +67,4 @@ protected:
   float   _max;
 };
 
-#endif
-// END OF FILE
+#endif /* RUNNING_AVERAGE_H_ */

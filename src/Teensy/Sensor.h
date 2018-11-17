@@ -1,3 +1,5 @@
+#ifndef SENSOR_H_
+#define SENSOR_H_
 
 #include "RunningAverage.h"   // Library used for averaging sensor data
 
@@ -6,11 +8,6 @@
 #define DEFAULT_IR_MIDDLE_THRESHOLD 450
 #define DEFAULT_IR_LEFT_THRESHOLD   220
 #define DEFAULT_IR_RIGHT_THRESHOLD  220
-
-#define IR_SENSOR_LEFT_PIN    38
-#define IR_SENSOR_MIDDLE_PIN  39
-#define IR_SENSOR_RIGHT_PIN   40
-#define BATTERY_SENSOR_PIN    41
 
 extern class Sensor Sensors;
 
@@ -54,6 +51,8 @@ protected:
   RunningAverage * IRSensorMiddleBuffer;
   RunningAverage * IRSensorRightBuffer;
 };
+
+#endif /* SENSOR_H_ */
 
 
 

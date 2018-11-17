@@ -1,5 +1,6 @@
 #include <Arduino.h>
 #include "LegacyPower.h"
+#include "GPIO.h"
 
 
 void legacyPower_init() {

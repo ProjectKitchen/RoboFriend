@@ -1,5 +1,6 @@
 
 #include "Sensor.h"
+#include "GPIO.h"
 
 extern long loopcounter;
 
@@ -22,11 +23,11 @@ void Sensor::init () {
 
 void Sensor::updateSensorData()
 {
-    BatterySensorBuffer->addValue(analogRead(BATTERY_SENSOR_PIN));
+    BatterySensorBuffer->addValue(analogRead(PIN_ADC_VBAT));
     
-    IRSensorMiddleBuffer->addValue(analogRead(IR_SENSOR_MIDDLE_PIN));
-    IRSensorLeftBuffer->addValue(analogRead(IR_SENSOR_LEFT_PIN));
-    IRSensorRightBuffer->addValue(analogRead(IR_SENSOR_RIGHT_PIN));
+    IRSensorMiddleBuffer->addValue(analogRead(PIN_ADC_IR2));
+    IRSensorLeftBuffer->addValue(analogRead(PIN_ADC_IR1));
+    IRSensorRightBuffer->addValue(analogRead(PIN_ADC_IR3));
 
     Battery        = BatterySensorBuffer->getFastAverage();
     IRSensorMiddle = IRSensorMiddleBuffer->getFastAverage();
