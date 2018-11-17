@@ -91,9 +91,9 @@ def shakeHeadForNo():
     sendSerial("D -50 50 10")
 
 def getRawStatus():
-#    return sendSerial("R", True)
-#    print('***Faking Teensy Values !! ***')
-    return ("Sensors,0500,0200,0100,0300\n")
+    return sendSerial("R", True)
+    #print('***Faking Teensy Values !! ***')
+    #return ("Sensors,0500,0200,0100,0300\n")
 
 def sendSerial(commandString, readResponse=False):
     global send_lock, ser
