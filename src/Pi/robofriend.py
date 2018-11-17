@@ -20,6 +20,7 @@ import teensyCommunicator as teensyCommunicator
 import ioWarriorModule as ioWarriorModule
 import speechModule as speechModule
 import facedetectionModule as facedetectionModule
+import systemModule as systemModule
 
 
 # globals
@@ -29,6 +30,7 @@ def stop():
 	global runFlag
 
 	print("*** shutting down ... ***")
+	systemModule.roscore_terminate()
 	rfidModule.stop()
 	webserverModule.stop()
 	statusModule.stop()
@@ -48,6 +50,7 @@ def main():
 	global runFlag
 
 	# starting modules
+	systemModule.roscore_start()
 	rfidModule.start()
 	webserverModule.start()
 	statusModule.start()
