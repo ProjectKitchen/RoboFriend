@@ -1,0 +1,8 @@
+prefix=/home/muhammed/Okul/ESP/RoboFriend/src/Pi/catkin_ws/devel
+
+Name: robofriend
+Description: Description of robofriend
+Version: 0.0.0
+Cflags: 
+Libs: -L/home/muhammed/Okul/ESP/RoboFriend/src/Pi/catkin_ws/devel/lib 
+Requires: 

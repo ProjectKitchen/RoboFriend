@@ -1,0 +1,2 @@
+robofriend
+-DCATKIN_DEVEL_PREFIX=/home/muhammed/Okul/ESP/RoboFriend/src/Pi/catkin_ws/devel -DCMAKE_INSTALL_PREFIX=/home/muhammed/Okul/ESP/RoboFriend/src/Pi/catkin_ws/install -G Unix Makefiles
