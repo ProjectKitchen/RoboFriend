@@ -1,2 +1,0 @@
-Source: 	http://www.ti.com/product/lm324-n
-Datasheet: 	http://www.ti.com/lit/ds/symlink/lm324-n.pdf

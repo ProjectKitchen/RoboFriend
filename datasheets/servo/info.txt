@@ -1,2 +1,0 @@
-Source:	http://www.microchip.com/wwwproducts/en/pic16f872
-SD20:	https://www.robot-electronics.co.uk/htm/sd20tech.htm
