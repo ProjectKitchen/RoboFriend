@@ -1,0 +1,1 @@
+For footprints look here: https://github.com/XenGi/teensy.pretty

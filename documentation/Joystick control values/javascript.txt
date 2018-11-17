@@ -1,0 +1,26 @@
+//interpolated values used for "joystick" control with web GUI, also see https://github.com/ProjectKitchen/RoboFriend/commit/b937d425ff1e58c4cfaecabd73f0edea836352ae
+//created in javascript with:
+
+    var coordinateValues = [0, 150, 300];
+    var interpolatorLeft = new Interpolator(coordinateValues, coordinateValues, [
+        [0, 255, 255],
+        [-255, 0, 255],
+        [0, -255, -255]
+    ]);
+    var interpolatorRight = new Interpolator(coordinateValues, coordinateValues, [
+        [255, 255, 0],
+        [255, 0, -255],
+        [-255, -255, 0]
+    ]);
+    var array = Array.from({length: 61}, (v, k) => (k*5));
+    console.log(toCSV(interpolatorLeft.interpolateBilinearArray(array, array)));
+    console.log(toCSV(interpolatorRight.interpolateBilinearArray(array, array)));
+
+    function toCSV(data) {
+        var lineArray = [];
+        data.forEach(function (infoArray, index) {
+            var line = infoArray.join(";");
+            lineArray.push(line);
+        });
+        return lineArray.join("\n");
+    }
