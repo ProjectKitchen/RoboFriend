@@ -85,7 +85,7 @@ def StatusInfo():
         currentStatus = updateFromRawStatus(rawStatus)
         gameCommunicator.sendtogui("battery;"+str(getBatteryVoltage()))
 
-        #print ("Battery= " + str(getBatteryPercent()) + "% ("  + str(getBatteryVoltage()) + " Volt)")
+        print ("Battery= " + str(getBatteryPercent()) + "% ("  + str(getBatteryVoltage()) + " Volt)")
         if statusCount >= batMovingAverageN and getBatteryVoltage() < 12.0:
             batWasLow = True
             speechModule.speakBatteryLow()
@@ -97,7 +97,7 @@ def StatusInfo():
         if batWasLow and getBatteryVoltage() > 12.15:
             batWasLow = False
             speechModule.speakOnRecharge()
-        #print ("IRSensors="+str(getIRLeft())+"/"+str(getIRMiddle())+"/"+str(getIRRight()))
+        print ("IRSensors="+str(getIRLeft())+"/"+str(getIRMiddle())+"/"+str(getIRRight()))
         time.sleep(refreshIntervalMs / 1000.0)
 
 def updateFromRawStatus(rawStatus):
