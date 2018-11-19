@@ -12,9 +12,11 @@
 #include "Sensor.h"
 #include "LegacyPower.h"
 #include "Parser.h"
+#include "Odometry.h"
 
 Sensor Sensors;
 Motor  Motors;
+Odometry odo;
 
 long loopcounter=0;
 long timestamp;
@@ -24,7 +26,8 @@ void setup()
     Serial.begin(9600);   // connects to RaspberryPi control interface (robofriend.py)
     Motors.init();
     Sensors.init();
-
+    odo.init();
+    
     parser_init();
     legacyPower_init();
     legacyPower_startup();
@@ -34,6 +37,8 @@ void setup()
 void loop()
 {   
     timestamp = micros();
+    odo.getStateRightMotor();
+    odo.getStateLeftMotor();
     Sensors.updateSensorData();
     parser_processSerialCommands();
     Motors.updateMotors();
