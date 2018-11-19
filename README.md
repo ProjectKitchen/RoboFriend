@@ -35,7 +35,6 @@ These game applications are also written in python and are usually launched on a
 To get the existing *Python2* code compatible for *Python3* following packages should be installed:
 *  mjpg-streamer: [MJPEG-Streamer Install & Setup](https://github.com/cncjs/cncjs/wiki/Setup-Guide:-Raspberry-Pi-%7C-MJPEG-Streamer-Install-&-Setup-&-FFMpeg-Recording)
 * speech engine:
-  * pip install pyttsx --user
   * pip install pyttsx3
   * pip3 install pyttsx3
   * sudo apt-get update && sudo apt-get install espeak
@@ -45,11 +44,17 @@ To get the existing *Python2* code compatible for *Python3* following packages s
 * yaml: pip3 install pyyaml --user
 
 **OpenCV 3:**
-* to install OpenCV 3 on a Raspberry Pi 3 follow the following tutorial (except the virtual environment part):
+* To install OpenCV 3 on a Raspberry Pi 3 follow the following tutorial (except the virtual environment part):
 [OpenCV 3 on Raspberry Pi 3](https://www.pyimagesearch.com/2017/09/04/raspbian-stretch-install-opencv-3-python-on-your-raspberry-pi/)
 
 **Roboter Operating System (ROS):**
-* to install ROS on a Rasberry Pi 3 follow the following tutorial:
+
+* To install ROS on a Ubuntu platform, visit http://wiki.ros.org/ROS/Installation
+* There are two main releases at the current time:
+** ROS Kinectic is available for Ubuntu Xenial (16.04 LTS) and Debian Jessie, among other platform options.
+** ROS Melodic is avialable for Ubuntu Bionic (18.04 LTS) and Debian Stretch, among other platform options.
+
+* To install ROS on a Rasberry Pi 3 follow the following tutorial:
 [ROS on Raspberry PI 3](https://www.intorobotics.com/how-to-install-ros-kinetic-on-raspberry-pi-3-running-raspbian-stretch-lite/)
 
 * following ROS-packages should also be installed:
