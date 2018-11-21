@@ -10,6 +10,7 @@
 
 #include <Arduino.h>
 #include "Odometry.h"
+#include "support.h"
 #include "GPIO.h"
 
 /*************************************************************** DEFINITIONS */
@@ -52,6 +53,7 @@ void Odometry::init() {
 void Odometry::getStateRightMotor() {
   /* read the "current" state of output "right increment" */
   riIncState = digitalRead(PIN_MT_RI_INC);
+  
   /* if the previous and the current state of the output "right increment" are different, that means a pulse has occured */
   if (riIncState != riLastIncState) {   
      // If the "right decrement" state is different to the "right increment" state, that means the encoder is rotating clockwise
@@ -73,6 +75,7 @@ void Odometry::getStateRightMotor() {
 void Odometry::getStateLeftMotor() {
   /* read the "current" state of output "left increment" */
   leIncState = digitalRead(PIN_MT_LE_INC);
+  
   /* if the previous and the current state of the output "left increment" are different, that means a pulse has occured */
   if (leIncState != leLastIncState) {   
      // If the "left decrement" state is different to the "left increment" state, that means the encoder is rotating clockwise
