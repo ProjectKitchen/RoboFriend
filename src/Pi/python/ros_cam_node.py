@@ -16,10 +16,10 @@ import Queue
 # globals
 runFlag = True
 
-def ros_node_camera_stop():
+def node_stop():
     runFlag = False
 
-def ros_node_camera_start():
+def node_start():
     coordinates = 0
 
     pub = rospy.Publisher('camera_coordinates_topc', Coordinates)
