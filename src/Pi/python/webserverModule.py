@@ -171,8 +171,8 @@ def getRandomSounds():
 
 @app.route('/speech/say/custom/<text>', methods=['POST'])
 def speak(text):
-    text = urllib.unquote(text).encode('utf8') #decode action to string
-    speechModule.speak(text)
+    text = urllib.parse.unquote(text).encode('utf8') #decode action to string
+    speechModule.speak(text.decode("utf-8"))
     return getResponse("OK")
 
 @app.route('/speech/say/random', methods=['POST'])

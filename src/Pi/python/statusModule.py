@@ -104,6 +104,8 @@ def updateFromRawStatus(rawStatus):
     global currentStatus, keyBat, keyBatPercent, keyIrL, keyIrM, keyIrR, batCoversionConstant, batMovingAverageN
 
     batVolt = getBatteryVoltage()
+    if batVolt == None:
+        batVolt=1000
     irSensorLeft = -1
     irSensorMiddle = -1
     irSensorRight = -1

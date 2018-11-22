@@ -101,7 +101,7 @@ def sendSerial(commandString, readResponse=False):
     send_lock.acquire()
     print("sending serial command: " + str(commandString))
     try:
-        ser.write(str.encode(commandString) + "\r")
+        ser.write(str.encode(commandString) + "\r".encode('ascii'))
         if readResponse:
             response = str(ser.readline())
     except Exception as inst:
