@@ -40,6 +40,7 @@ def stop():
 	ioWarriorModule.stop()
 	speechModule.stop()
 	faceModule.close()
+	ros_cam_node.stop()
 	runFlag = False
 	print("*** graceful shutdown completed! ***")
 
@@ -58,6 +59,7 @@ def main():
 	keyboardModule.start()
 	faceModule.drawFace()
 	facedetectionModule.listener()
+	ros_cam_node.start()
 	print("init done! register signal handlers...")
 
 	# setting up signal handlers for shutdown
