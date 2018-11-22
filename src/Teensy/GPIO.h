@@ -72,4 +72,3 @@
 #define PIN_ADC2        43 // F5
 
 #endif /* GPIO_H_ */
-

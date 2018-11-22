@@ -13,6 +13,9 @@
 #include "LegacyPower.h"
 #include "Parser.h"
 #include "Odometry.h"
+#include "GPIO.h"
+
+#define PRINT_ENCODER_VALUES
 
 Sensor Sensors;
 Motor  Motors;
@@ -37,16 +40,18 @@ void setup()
 void loop()
 {   
     timestamp = micros();
-    odo.getStateRightMotor();
-    odo.getStateLeftMotor();
     Sensors.updateSensorData();
     parser_processSerialCommands();
     Motors.updateMotors();
  
-    if (micros()-timestamp < 5000) 
-       delayMicroseconds(5000-(micros()-timestamp));        // main loop runs @ 200Hz 
-
     loopcounter++;   // used for limiting serial messages etc.
+
+    #ifdef PRINT_ENCODER_VALUES
+    if (!(loopcounter % 50)) {    // this is for printing current speed ! ( should be replaced by speed control algorithm )
+      odo.printEncoderValues();
+      odo.clearEncoderValues();   
+    }
+    #endif
+
+    while (micros()-timestamp < 5000);
 }
-
-

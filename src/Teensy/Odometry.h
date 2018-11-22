@@ -13,6 +13,9 @@
 
 #include "support.h"
 
+void getStateRightMotor(void);
+void getStateLeftMotor(void);
+
 /********************************************************** CLASS DEFINITION */
 
 class Odometry {
@@ -21,21 +24,10 @@ public:
   ~Odometry();
 
   void init();
-  void getStateRightMotor(void);
-  void getStateLeftMotor(void);
-
-private:
-  int riIncState;
-  int riLastIncState;    
-  int riDecState;
-  int riLastDecState;
-  int leIncState;
-  int leLastIncState;
-  int leDecState;
-  int leLastDecState;
-  int counterRe;
-  int counterLe;
+  void printEncoderValues();
+  void clearEncoderValues();
+  int32_t getRightEncoderValue();
+  int32_t getLeftEncoderValue();
 };
 
 #endif // ODOMETRY_H
-

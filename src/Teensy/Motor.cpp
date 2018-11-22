@@ -5,6 +5,22 @@
 #include "Sensor.h"
 #include "support.h"
 
+
+#define HANDLE_OBSTACLES 0       // currently disables because sensor values are not valid in Robofriend V2 !
+#define ROBOFRIEND_VERSION2      // version 1 and version 2 use different motor compensation settings
+
+#ifdef ROBOFRIEND_VERSION2
+  int LEFT_MOTOR_MINPWM =20;
+  int RIGHT_MOTOR_MINPWM = 20;
+  int RIGHT_MOTOR_MAXPWM = 1500; // actually a big difference for the right motor! - a motor speed control loop is mandatory !
+  int LEFT_MOTOR_MAXPWM = 512;
+#else
+  int LEFT_MOTOR_MINPWM = 20;
+  int RIGHT_MOTOR_MINPWM = 20;
+  int RIGHT_MOTOR_MAXPWM = 600;
+  int LEFT_MOTOR_MAXPWM = 512;
+#endif
+
 Motor::Motor() {}
 Motor::~Motor() {}
 
@@ -92,7 +108,7 @@ void Motor::updateMotors()
     }
   }
 
-  handleObstacles();
+  if (HANDLE_OBSTACLES) handleObstacles();
   
   if (leftSpeed == 0) { 
     digitalWrite(PIN_MT_LE_FWD, LOW); 
@@ -106,12 +122,12 @@ void Motor::updateMotors()
   else if (rightSpeed < -MOVE_THRESHOLD) { digitalWrite(PIN_MT_RI_FWD, LOW); digitalWrite(PIN_MT_RI_BCK, HIGH); }
 
   if (rightSpeed) {
-    Timer3.pwm(PIN_MT_RI_PWM, map((rightSpeed<0) ? -rightSpeed : rightSpeed,0,255,20,600));   // right motor slighty slower: compensate PWMs!
+    Timer3.pwm(PIN_MT_RI_PWM, map((rightSpeed<0) ? -rightSpeed : rightSpeed,0,255,LEFT_MOTOR_MINPWM,RIGHT_MOTOR_MAXPWM));   // right motor slighty slower: compensate PWMs!
   }
   else Timer3.pwm(PIN_MT_RI_PWM,0);
   
   if (leftSpeed)
-     Timer3.pwm(PIN_MT_LE_PWM, map((leftSpeed<0) ? -leftSpeed : leftSpeed,0,255,20,512));
+     Timer3.pwm(PIN_MT_LE_PWM, map((leftSpeed<0) ? -leftSpeed : leftSpeed,0,255,LEFT_MOTOR_MINPWM,LEFT_MOTOR_MAXPWM));
   else Timer3.pwm(PIN_MT_LE_PWM,0);
 
   if (PRINT_MOTORSPEED_MESSAGES) {
@@ -137,6 +153,7 @@ void Motor::stop()
 }
 
 void Motor::drive(int left, int right, int duration) {
+   Serial.printf("Drive right=%04d, left=%04d, duration=%04d\n",left,right,duration);
    intendedRightSpeed=right;
    intendedLeftSpeed=left;
    intendedDuration=duration;
