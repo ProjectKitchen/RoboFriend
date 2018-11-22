@@ -15,7 +15,7 @@
 #include "Odometry.h"
 #include "GPIO.h"
 
-#define PRINT_ENCODER_VALUES
+// #define PRINT_ENCODER_VALUES
 
 Sensor Sensors;
 Motor  Motors;
