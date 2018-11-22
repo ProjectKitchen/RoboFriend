@@ -283,30 +283,186 @@ gtest_main/fast:
 .PHONY : gtest_main/fast
 
 #=============================================================================
-# Target rules for targets named std_msgs_generate_messages_lisp
+# Target rules for targets named robofriend_genpy
 
 # Build rule for target.
-std_msgs_generate_messages_lisp: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 std_msgs_generate_messages_lisp
-.PHONY : std_msgs_generate_messages_lisp
+robofriend_genpy: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 robofriend_genpy
+.PHONY : robofriend_genpy
 
 # fast build rule for target.
-std_msgs_generate_messages_lisp/fast:
-	$(MAKE) -f robofriend/CMakeFiles/std_msgs_generate_messages_lisp.dir/build.make robofriend/CMakeFiles/std_msgs_generate_messages_lisp.dir/build
-.PHONY : std_msgs_generate_messages_lisp/fast
+robofriend_genpy/fast:
+	$(MAKE) -f robofriend/CMakeFiles/robofriend_genpy.dir/build.make robofriend/CMakeFiles/robofriend_genpy.dir/build
+.PHONY : robofriend_genpy/fast
 
 #=============================================================================
-# Target rules for targets named std_msgs_generate_messages_eus
+# Target rules for targets named robofriend_generate_messages_py
 
 # Build rule for target.
-std_msgs_generate_messages_eus: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 std_msgs_generate_messages_eus
-.PHONY : std_msgs_generate_messages_eus
+robofriend_generate_messages_py: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 robofriend_generate_messages_py
+.PHONY : robofriend_generate_messages_py
 
 # fast build rule for target.
-std_msgs_generate_messages_eus/fast:
-	$(MAKE) -f robofriend/CMakeFiles/std_msgs_generate_messages_eus.dir/build.make robofriend/CMakeFiles/std_msgs_generate_messages_eus.dir/build
-.PHONY : std_msgs_generate_messages_eus/fast
+robofriend_generate_messages_py/fast:
+	$(MAKE) -f robofriend/CMakeFiles/robofriend_generate_messages_py.dir/build.make robofriend/CMakeFiles/robofriend_generate_messages_py.dir/build
+.PHONY : robofriend_generate_messages_py/fast
+
+#=============================================================================
+# Target rules for targets named std_msgs_generate_messages_py
+
+# Build rule for target.
+std_msgs_generate_messages_py: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 std_msgs_generate_messages_py
+.PHONY : std_msgs_generate_messages_py
+
+# fast build rule for target.
+std_msgs_generate_messages_py/fast:
+	$(MAKE) -f robofriend/CMakeFiles/std_msgs_generate_messages_py.dir/build.make robofriend/CMakeFiles/std_msgs_generate_messages_py.dir/build
+.PHONY : std_msgs_generate_messages_py/fast
+
+#=============================================================================
+# Target rules for targets named roscpp_generate_messages_py
+
+# Build rule for target.
+roscpp_generate_messages_py: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 roscpp_generate_messages_py
+.PHONY : roscpp_generate_messages_py
+
+# fast build rule for target.
+roscpp_generate_messages_py/fast:
+	$(MAKE) -f robofriend/CMakeFiles/roscpp_generate_messages_py.dir/build.make robofriend/CMakeFiles/roscpp_generate_messages_py.dir/build
+.PHONY : roscpp_generate_messages_py/fast
+
+#=============================================================================
+# Target rules for targets named robofriend_generate_messages_nodejs
+
+# Build rule for target.
+robofriend_generate_messages_nodejs: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 robofriend_generate_messages_nodejs
+.PHONY : robofriend_generate_messages_nodejs
+
+# fast build rule for target.
+robofriend_generate_messages_nodejs/fast:
+	$(MAKE) -f robofriend/CMakeFiles/robofriend_generate_messages_nodejs.dir/build.make robofriend/CMakeFiles/robofriend_generate_messages_nodejs.dir/build
+.PHONY : robofriend_generate_messages_nodejs/fast
+
+#=============================================================================
+# Target rules for targets named rosgraph_msgs_generate_messages_eus
+
+# Build rule for target.
+rosgraph_msgs_generate_messages_eus: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 rosgraph_msgs_generate_messages_eus
+.PHONY : rosgraph_msgs_generate_messages_eus
+
+# fast build rule for target.
+rosgraph_msgs_generate_messages_eus/fast:
+	$(MAKE) -f robofriend/CMakeFiles/rosgraph_msgs_generate_messages_eus.dir/build.make robofriend/CMakeFiles/rosgraph_msgs_generate_messages_eus.dir/build
+.PHONY : rosgraph_msgs_generate_messages_eus/fast
+
+#=============================================================================
+# Target rules for targets named rosgraph_msgs_generate_messages_nodejs
+
+# Build rule for target.
+rosgraph_msgs_generate_messages_nodejs: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 rosgraph_msgs_generate_messages_nodejs
+.PHONY : rosgraph_msgs_generate_messages_nodejs
+
+# fast build rule for target.
+rosgraph_msgs_generate_messages_nodejs/fast:
+	$(MAKE) -f robofriend/CMakeFiles/rosgraph_msgs_generate_messages_nodejs.dir/build.make robofriend/CMakeFiles/rosgraph_msgs_generate_messages_nodejs.dir/build
+.PHONY : rosgraph_msgs_generate_messages_nodejs/fast
+
+#=============================================================================
+# Target rules for targets named roscpp_generate_messages_cpp
+
+# Build rule for target.
+roscpp_generate_messages_cpp: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 roscpp_generate_messages_cpp
+.PHONY : roscpp_generate_messages_cpp
+
+# fast build rule for target.
+roscpp_generate_messages_cpp/fast:
+	$(MAKE) -f robofriend/CMakeFiles/roscpp_generate_messages_cpp.dir/build.make robofriend/CMakeFiles/roscpp_generate_messages_cpp.dir/build
+.PHONY : roscpp_generate_messages_cpp/fast
+
+#=============================================================================
+# Target rules for targets named rosgraph_msgs_generate_messages_cpp
+
+# Build rule for target.
+rosgraph_msgs_generate_messages_cpp: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 rosgraph_msgs_generate_messages_cpp
+.PHONY : rosgraph_msgs_generate_messages_cpp
+
+# fast build rule for target.
+rosgraph_msgs_generate_messages_cpp/fast:
+	$(MAKE) -f robofriend/CMakeFiles/rosgraph_msgs_generate_messages_cpp.dir/build.make robofriend/CMakeFiles/rosgraph_msgs_generate_messages_cpp.dir/build
+.PHONY : rosgraph_msgs_generate_messages_cpp/fast
+
+#=============================================================================
+# Target rules for targets named std_msgs_generate_messages_cpp
+
+# Build rule for target.
+std_msgs_generate_messages_cpp: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 std_msgs_generate_messages_cpp
+.PHONY : std_msgs_generate_messages_cpp
+
+# fast build rule for target.
+std_msgs_generate_messages_cpp/fast:
+	$(MAKE) -f robofriend/CMakeFiles/std_msgs_generate_messages_cpp.dir/build.make robofriend/CMakeFiles/std_msgs_generate_messages_cpp.dir/build
+.PHONY : std_msgs_generate_messages_cpp/fast
+
+#=============================================================================
+# Target rules for targets named robofriend_genlisp
+
+# Build rule for target.
+robofriend_genlisp: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 robofriend_genlisp
+.PHONY : robofriend_genlisp
+
+# fast build rule for target.
+robofriend_genlisp/fast:
+	$(MAKE) -f robofriend/CMakeFiles/robofriend_genlisp.dir/build.make robofriend/CMakeFiles/robofriend_genlisp.dir/build
+.PHONY : robofriend_genlisp/fast
+
+#=============================================================================
+# Target rules for targets named rosgraph_msgs_generate_messages_py
+
+# Build rule for target.
+rosgraph_msgs_generate_messages_py: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 rosgraph_msgs_generate_messages_py
+.PHONY : rosgraph_msgs_generate_messages_py
+
+# fast build rule for target.
+rosgraph_msgs_generate_messages_py/fast:
+	$(MAKE) -f robofriend/CMakeFiles/rosgraph_msgs_generate_messages_py.dir/build.make robofriend/CMakeFiles/rosgraph_msgs_generate_messages_py.dir/build
+.PHONY : rosgraph_msgs_generate_messages_py/fast
+
+#=============================================================================
+# Target rules for targets named rosgraph_msgs_generate_messages_lisp
+
+# Build rule for target.
+rosgraph_msgs_generate_messages_lisp: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 rosgraph_msgs_generate_messages_lisp
+.PHONY : rosgraph_msgs_generate_messages_lisp
+
+# fast build rule for target.
+rosgraph_msgs_generate_messages_lisp/fast:
+	$(MAKE) -f robofriend/CMakeFiles/rosgraph_msgs_generate_messages_lisp.dir/build.make robofriend/CMakeFiles/rosgraph_msgs_generate_messages_lisp.dir/build
+.PHONY : rosgraph_msgs_generate_messages_lisp/fast
+
+#=============================================================================
+# Target rules for targets named roscpp_generate_messages_nodejs
+
+# Build rule for target.
+roscpp_generate_messages_nodejs: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 roscpp_generate_messages_nodejs
+.PHONY : roscpp_generate_messages_nodejs
+
+# fast build rule for target.
+roscpp_generate_messages_nodejs/fast:
+	$(MAKE) -f robofriend/CMakeFiles/roscpp_generate_messages_nodejs.dir/build.make robofriend/CMakeFiles/roscpp_generate_messages_nodejs.dir/build
+.PHONY : roscpp_generate_messages_nodejs/fast
 
 #=============================================================================
 # Target rules for targets named std_msgs_generate_messages_nodejs
@@ -335,17 +491,69 @@ roscpp_generate_messages_lisp/fast:
 .PHONY : roscpp_generate_messages_lisp/fast
 
 #=============================================================================
-# Target rules for targets named roscpp_generate_messages_nodejs
+# Target rules for targets named std_msgs_generate_messages_eus
 
 # Build rule for target.
-roscpp_generate_messages_nodejs: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 roscpp_generate_messages_nodejs
-.PHONY : roscpp_generate_messages_nodejs
+std_msgs_generate_messages_eus: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 std_msgs_generate_messages_eus
+.PHONY : std_msgs_generate_messages_eus
 
 # fast build rule for target.
-roscpp_generate_messages_nodejs/fast:
-	$(MAKE) -f robofriend/CMakeFiles/roscpp_generate_messages_nodejs.dir/build.make robofriend/CMakeFiles/roscpp_generate_messages_nodejs.dir/build
-.PHONY : roscpp_generate_messages_nodejs/fast
+std_msgs_generate_messages_eus/fast:
+	$(MAKE) -f robofriend/CMakeFiles/std_msgs_generate_messages_eus.dir/build.make robofriend/CMakeFiles/std_msgs_generate_messages_eus.dir/build
+.PHONY : std_msgs_generate_messages_eus/fast
+
+#=============================================================================
+# Target rules for targets named robofriend_gennodejs
+
+# Build rule for target.
+robofriend_gennodejs: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 robofriend_gennodejs
+.PHONY : robofriend_gennodejs
+
+# fast build rule for target.
+robofriend_gennodejs/fast:
+	$(MAKE) -f robofriend/CMakeFiles/robofriend_gennodejs.dir/build.make robofriend/CMakeFiles/robofriend_gennodejs.dir/build
+.PHONY : robofriend_gennodejs/fast
+
+#=============================================================================
+# Target rules for targets named std_msgs_generate_messages_lisp
+
+# Build rule for target.
+std_msgs_generate_messages_lisp: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 std_msgs_generate_messages_lisp
+.PHONY : std_msgs_generate_messages_lisp
+
+# fast build rule for target.
+std_msgs_generate_messages_lisp/fast:
+	$(MAKE) -f robofriend/CMakeFiles/std_msgs_generate_messages_lisp.dir/build.make robofriend/CMakeFiles/std_msgs_generate_messages_lisp.dir/build
+.PHONY : std_msgs_generate_messages_lisp/fast
+
+#=============================================================================
+# Target rules for targets named robofriend_generate_messages_lisp
+
+# Build rule for target.
+robofriend_generate_messages_lisp: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 robofriend_generate_messages_lisp
+.PHONY : robofriend_generate_messages_lisp
+
+# fast build rule for target.
+robofriend_generate_messages_lisp/fast:
+	$(MAKE) -f robofriend/CMakeFiles/robofriend_generate_messages_lisp.dir/build.make robofriend/CMakeFiles/robofriend_generate_messages_lisp.dir/build
+.PHONY : robofriend_generate_messages_lisp/fast
+
+#=============================================================================
+# Target rules for targets named _robofriend_generate_messages_check_deps_Coordinates
+
+# Build rule for target.
+_robofriend_generate_messages_check_deps_Coordinates: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 _robofriend_generate_messages_check_deps_Coordinates
+.PHONY : _robofriend_generate_messages_check_deps_Coordinates
+
+# fast build rule for target.
+_robofriend_generate_messages_check_deps_Coordinates/fast:
+	$(MAKE) -f robofriend/CMakeFiles/_robofriend_generate_messages_check_deps_Coordinates.dir/build.make robofriend/CMakeFiles/_robofriend_generate_messages_check_deps_Coordinates.dir/build
+.PHONY : _robofriend_generate_messages_check_deps_Coordinates/fast
 
 #=============================================================================
 # Target rules for targets named roscpp_generate_messages_eus
@@ -361,121 +569,69 @@ roscpp_generate_messages_eus/fast:
 .PHONY : roscpp_generate_messages_eus/fast
 
 #=============================================================================
-# Target rules for targets named std_msgs_generate_messages_cpp
+# Target rules for targets named robofriend_generate_messages_cpp
 
 # Build rule for target.
-std_msgs_generate_messages_cpp: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 std_msgs_generate_messages_cpp
-.PHONY : std_msgs_generate_messages_cpp
+robofriend_generate_messages_cpp: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 robofriend_generate_messages_cpp
+.PHONY : robofriend_generate_messages_cpp
 
 # fast build rule for target.
-std_msgs_generate_messages_cpp/fast:
-	$(MAKE) -f robofriend/CMakeFiles/std_msgs_generate_messages_cpp.dir/build.make robofriend/CMakeFiles/std_msgs_generate_messages_cpp.dir/build
-.PHONY : std_msgs_generate_messages_cpp/fast
+robofriend_generate_messages_cpp/fast:
+	$(MAKE) -f robofriend/CMakeFiles/robofriend_generate_messages_cpp.dir/build.make robofriend/CMakeFiles/robofriend_generate_messages_cpp.dir/build
+.PHONY : robofriend_generate_messages_cpp/fast
 
 #=============================================================================
-# Target rules for targets named roscpp_generate_messages_cpp
+# Target rules for targets named robofriend_generate_messages
 
 # Build rule for target.
-roscpp_generate_messages_cpp: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 roscpp_generate_messages_cpp
-.PHONY : roscpp_generate_messages_cpp
+robofriend_generate_messages: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 robofriend_generate_messages
+.PHONY : robofriend_generate_messages
 
 # fast build rule for target.
-roscpp_generate_messages_cpp/fast:
-	$(MAKE) -f robofriend/CMakeFiles/roscpp_generate_messages_cpp.dir/build.make robofriend/CMakeFiles/roscpp_generate_messages_cpp.dir/build
-.PHONY : roscpp_generate_messages_cpp/fast
+robofriend_generate_messages/fast:
+	$(MAKE) -f robofriend/CMakeFiles/robofriend_generate_messages.dir/build.make robofriend/CMakeFiles/robofriend_generate_messages.dir/build
+.PHONY : robofriend_generate_messages/fast
 
 #=============================================================================
-# Target rules for targets named rosgraph_msgs_generate_messages_nodejs
+# Target rules for targets named robofriend_gencpp
 
 # Build rule for target.
-rosgraph_msgs_generate_messages_nodejs: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 rosgraph_msgs_generate_messages_nodejs
-.PHONY : rosgraph_msgs_generate_messages_nodejs
+robofriend_gencpp: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 robofriend_gencpp
+.PHONY : robofriend_gencpp
 
 # fast build rule for target.
-rosgraph_msgs_generate_messages_nodejs/fast:
-	$(MAKE) -f robofriend/CMakeFiles/rosgraph_msgs_generate_messages_nodejs.dir/build.make robofriend/CMakeFiles/rosgraph_msgs_generate_messages_nodejs.dir/build
-.PHONY : rosgraph_msgs_generate_messages_nodejs/fast
+robofriend_gencpp/fast:
+	$(MAKE) -f robofriend/CMakeFiles/robofriend_gencpp.dir/build.make robofriend/CMakeFiles/robofriend_gencpp.dir/build
+.PHONY : robofriend_gencpp/fast
 
 #=============================================================================
-# Target rules for targets named rosgraph_msgs_generate_messages_eus
+# Target rules for targets named robofriend_generate_messages_eus
 
 # Build rule for target.
-rosgraph_msgs_generate_messages_eus: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 rosgraph_msgs_generate_messages_eus
-.PHONY : rosgraph_msgs_generate_messages_eus
+robofriend_generate_messages_eus: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 robofriend_generate_messages_eus
+.PHONY : robofriend_generate_messages_eus
 
 # fast build rule for target.
-rosgraph_msgs_generate_messages_eus/fast:
-	$(MAKE) -f robofriend/CMakeFiles/rosgraph_msgs_generate_messages_eus.dir/build.make robofriend/CMakeFiles/rosgraph_msgs_generate_messages_eus.dir/build
-.PHONY : rosgraph_msgs_generate_messages_eus/fast
+robofriend_generate_messages_eus/fast:
+	$(MAKE) -f robofriend/CMakeFiles/robofriend_generate_messages_eus.dir/build.make robofriend/CMakeFiles/robofriend_generate_messages_eus.dir/build
+.PHONY : robofriend_generate_messages_eus/fast
 
 #=============================================================================
-# Target rules for targets named roscpp_generate_messages_py
+# Target rules for targets named robofriend_geneus
 
 # Build rule for target.
-roscpp_generate_messages_py: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 roscpp_generate_messages_py
-.PHONY : roscpp_generate_messages_py
+robofriend_geneus: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 robofriend_geneus
+.PHONY : robofriend_geneus
 
 # fast build rule for target.
-roscpp_generate_messages_py/fast:
-	$(MAKE) -f robofriend/CMakeFiles/roscpp_generate_messages_py.dir/build.make robofriend/CMakeFiles/roscpp_generate_messages_py.dir/build
-.PHONY : roscpp_generate_messages_py/fast
-
-#=============================================================================
-# Target rules for targets named rosgraph_msgs_generate_messages_cpp
-
-# Build rule for target.
-rosgraph_msgs_generate_messages_cpp: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 rosgraph_msgs_generate_messages_cpp
-.PHONY : rosgraph_msgs_generate_messages_cpp
-
-# fast build rule for target.
-rosgraph_msgs_generate_messages_cpp/fast:
-	$(MAKE) -f robofriend/CMakeFiles/rosgraph_msgs_generate_messages_cpp.dir/build.make robofriend/CMakeFiles/rosgraph_msgs_generate_messages_cpp.dir/build
-.PHONY : rosgraph_msgs_generate_messages_cpp/fast
-
-#=============================================================================
-# Target rules for targets named rosgraph_msgs_generate_messages_lisp
-
-# Build rule for target.
-rosgraph_msgs_generate_messages_lisp: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 rosgraph_msgs_generate_messages_lisp
-.PHONY : rosgraph_msgs_generate_messages_lisp
-
-# fast build rule for target.
-rosgraph_msgs_generate_messages_lisp/fast:
-	$(MAKE) -f robofriend/CMakeFiles/rosgraph_msgs_generate_messages_lisp.dir/build.make robofriend/CMakeFiles/rosgraph_msgs_generate_messages_lisp.dir/build
-.PHONY : rosgraph_msgs_generate_messages_lisp/fast
-
-#=============================================================================
-# Target rules for targets named std_msgs_generate_messages_py
-
-# Build rule for target.
-std_msgs_generate_messages_py: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 std_msgs_generate_messages_py
-.PHONY : std_msgs_generate_messages_py
-
-# fast build rule for target.
-std_msgs_generate_messages_py/fast:
-	$(MAKE) -f robofriend/CMakeFiles/std_msgs_generate_messages_py.dir/build.make robofriend/CMakeFiles/std_msgs_generate_messages_py.dir/build
-.PHONY : std_msgs_generate_messages_py/fast
-
-#=============================================================================
-# Target rules for targets named rosgraph_msgs_generate_messages_py
-
-# Build rule for target.
-rosgraph_msgs_generate_messages_py: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 rosgraph_msgs_generate_messages_py
-.PHONY : rosgraph_msgs_generate_messages_py
-
-# fast build rule for target.
-rosgraph_msgs_generate_messages_py/fast:
-	$(MAKE) -f robofriend/CMakeFiles/rosgraph_msgs_generate_messages_py.dir/build.make robofriend/CMakeFiles/rosgraph_msgs_generate_messages_py.dir/build
-.PHONY : rosgraph_msgs_generate_messages_py/fast
+robofriend_geneus/fast:
+	$(MAKE) -f robofriend/CMakeFiles/robofriend_geneus.dir/build.make robofriend/CMakeFiles/robofriend_geneus.dir/build
+.PHONY : robofriend_geneus/fast
 
 # Help Target
 help:
@@ -499,21 +655,33 @@ help:
 	@echo "... gmock_main"
 	@echo "... gtest"
 	@echo "... gtest_main"
-	@echo "... std_msgs_generate_messages_lisp"
-	@echo "... std_msgs_generate_messages_eus"
+	@echo "... robofriend_genpy"
+	@echo "... robofriend_generate_messages_py"
+	@echo "... std_msgs_generate_messages_py"
+	@echo "... roscpp_generate_messages_py"
+	@echo "... robofriend_generate_messages_nodejs"
+	@echo "... rosgraph_msgs_generate_messages_eus"
+	@echo "... rosgraph_msgs_generate_messages_nodejs"
+	@echo "... roscpp_generate_messages_cpp"
+	@echo "... rosgraph_msgs_generate_messages_cpp"
+	@echo "... std_msgs_generate_messages_cpp"
+	@echo "... robofriend_genlisp"
+	@echo "... rosgraph_msgs_generate_messages_py"
+	@echo "... rosgraph_msgs_generate_messages_lisp"
+	@echo "... roscpp_generate_messages_nodejs"
 	@echo "... std_msgs_generate_messages_nodejs"
 	@echo "... roscpp_generate_messages_lisp"
-	@echo "... roscpp_generate_messages_nodejs"
+	@echo "... std_msgs_generate_messages_eus"
+	@echo "... robofriend_gennodejs"
+	@echo "... std_msgs_generate_messages_lisp"
+	@echo "... robofriend_generate_messages_lisp"
+	@echo "... _robofriend_generate_messages_check_deps_Coordinates"
 	@echo "... roscpp_generate_messages_eus"
-	@echo "... std_msgs_generate_messages_cpp"
-	@echo "... roscpp_generate_messages_cpp"
-	@echo "... rosgraph_msgs_generate_messages_nodejs"
-	@echo "... rosgraph_msgs_generate_messages_eus"
-	@echo "... roscpp_generate_messages_py"
-	@echo "... rosgraph_msgs_generate_messages_cpp"
-	@echo "... rosgraph_msgs_generate_messages_lisp"
-	@echo "... std_msgs_generate_messages_py"
-	@echo "... rosgraph_msgs_generate_messages_py"
+	@echo "... robofriend_generate_messages_cpp"
+	@echo "... robofriend_generate_messages"
+	@echo "... robofriend_gencpp"
+	@echo "... robofriend_generate_messages_eus"
+	@echo "... robofriend_geneus"
 .PHONY : help
 
 

@@ -68,49 +68,6 @@ install/fast: preinstall/fast
 	/usr/bin/cmake -P cmake_install.cmake
 .PHONY : install/fast
 
-# Special rule for the target install/local
-install/local: preinstall
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing only the local directory..."
-	/usr/bin/cmake -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake
-.PHONY : install/local
-
-# Special rule for the target install/local
-install/local/fast: install/local
-
-.PHONY : install/local/fast
-
-# Special rule for the target list_install_components
-list_install_components:
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Available install components are: \"Unspecified\""
-.PHONY : list_install_components
-
-# Special rule for the target list_install_components
-list_install_components/fast: list_install_components
-
-.PHONY : list_install_components/fast
-
-# Special rule for the target install/strip
-install/strip: preinstall
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing the project stripped..."
-	/usr/bin/cmake -DCMAKE_INSTALL_DO_STRIP=1 -P cmake_install.cmake
-.PHONY : install/strip
-
-# Special rule for the target install/strip
-install/strip/fast: install/strip
-
-.PHONY : install/strip/fast
-
-# Special rule for the target test
-test:
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running tests..."
-	/usr/bin/ctest --force-new-ctest-process $(ARGS)
-.PHONY : test
-
-# Special rule for the target test
-test/fast: test
-
-.PHONY : test/fast
-
 # Special rule for the target rebuild_cache
 rebuild_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake to regenerate build system..."
@@ -132,6 +89,49 @@ edit_cache:
 edit_cache/fast: edit_cache
 
 .PHONY : edit_cache/fast
+
+# Special rule for the target test
+test:
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running tests..."
+	/usr/bin/ctest --force-new-ctest-process $(ARGS)
+.PHONY : test
+
+# Special rule for the target test
+test/fast: test
+
+.PHONY : test/fast
+
+# Special rule for the target install/local
+install/local: preinstall
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing only the local directory..."
+	/usr/bin/cmake -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake
+.PHONY : install/local
+
+# Special rule for the target install/local
+install/local/fast: install/local
+
+.PHONY : install/local/fast
+
+# Special rule for the target install/strip
+install/strip: preinstall
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing the project stripped..."
+	/usr/bin/cmake -DCMAKE_INSTALL_DO_STRIP=1 -P cmake_install.cmake
+.PHONY : install/strip
+
+# Special rule for the target install/strip
+install/strip/fast: install/strip
+
+.PHONY : install/strip/fast
+
+# Special rule for the target list_install_components
+list_install_components:
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Available install components are: \"Unspecified\""
+.PHONY : list_install_components
+
+# Special rule for the target list_install_components
+list_install_components/fast: list_install_components
+
+.PHONY : list_install_components/fast
 
 # The main all target
 all: cmake_check_build_system
@@ -166,34 +166,214 @@ depend:
 .PHONY : depend
 
 # Convenience name for target.
-robofriend/CMakeFiles/std_msgs_generate_messages_lisp.dir/rule:
-	cd /home/muhammed/Okul/ESP/RoboFriend/src/Pi/catkin_ws/build && $(MAKE) -f CMakeFiles/Makefile2 robofriend/CMakeFiles/std_msgs_generate_messages_lisp.dir/rule
-.PHONY : robofriend/CMakeFiles/std_msgs_generate_messages_lisp.dir/rule
+robofriend/CMakeFiles/robofriend_genpy.dir/rule:
+	cd /home/muhammed/Okul/ESP/RoboFriend/src/Pi/catkin_ws/build && $(MAKE) -f CMakeFiles/Makefile2 robofriend/CMakeFiles/robofriend_genpy.dir/rule
+.PHONY : robofriend/CMakeFiles/robofriend_genpy.dir/rule
 
 # Convenience name for target.
-std_msgs_generate_messages_lisp: robofriend/CMakeFiles/std_msgs_generate_messages_lisp.dir/rule
+robofriend_genpy: robofriend/CMakeFiles/robofriend_genpy.dir/rule
 
-.PHONY : std_msgs_generate_messages_lisp
+.PHONY : robofriend_genpy
 
 # fast build rule for target.
-std_msgs_generate_messages_lisp/fast:
-	cd /home/muhammed/Okul/ESP/RoboFriend/src/Pi/catkin_ws/build && $(MAKE) -f robofriend/CMakeFiles/std_msgs_generate_messages_lisp.dir/build.make robofriend/CMakeFiles/std_msgs_generate_messages_lisp.dir/build
-.PHONY : std_msgs_generate_messages_lisp/fast
+robofriend_genpy/fast:
+	cd /home/muhammed/Okul/ESP/RoboFriend/src/Pi/catkin_ws/build && $(MAKE) -f robofriend/CMakeFiles/robofriend_genpy.dir/build.make robofriend/CMakeFiles/robofriend_genpy.dir/build
+.PHONY : robofriend_genpy/fast
 
 # Convenience name for target.
-robofriend/CMakeFiles/std_msgs_generate_messages_eus.dir/rule:
-	cd /home/muhammed/Okul/ESP/RoboFriend/src/Pi/catkin_ws/build && $(MAKE) -f CMakeFiles/Makefile2 robofriend/CMakeFiles/std_msgs_generate_messages_eus.dir/rule
-.PHONY : robofriend/CMakeFiles/std_msgs_generate_messages_eus.dir/rule
+robofriend/CMakeFiles/robofriend_generate_messages_py.dir/rule:
+	cd /home/muhammed/Okul/ESP/RoboFriend/src/Pi/catkin_ws/build && $(MAKE) -f CMakeFiles/Makefile2 robofriend/CMakeFiles/robofriend_generate_messages_py.dir/rule
+.PHONY : robofriend/CMakeFiles/robofriend_generate_messages_py.dir/rule
 
 # Convenience name for target.
-std_msgs_generate_messages_eus: robofriend/CMakeFiles/std_msgs_generate_messages_eus.dir/rule
+robofriend_generate_messages_py: robofriend/CMakeFiles/robofriend_generate_messages_py.dir/rule
 
-.PHONY : std_msgs_generate_messages_eus
+.PHONY : robofriend_generate_messages_py
 
 # fast build rule for target.
-std_msgs_generate_messages_eus/fast:
-	cd /home/muhammed/Okul/ESP/RoboFriend/src/Pi/catkin_ws/build && $(MAKE) -f robofriend/CMakeFiles/std_msgs_generate_messages_eus.dir/build.make robofriend/CMakeFiles/std_msgs_generate_messages_eus.dir/build
-.PHONY : std_msgs_generate_messages_eus/fast
+robofriend_generate_messages_py/fast:
+	cd /home/muhammed/Okul/ESP/RoboFriend/src/Pi/catkin_ws/build && $(MAKE) -f robofriend/CMakeFiles/robofriend_generate_messages_py.dir/build.make robofriend/CMakeFiles/robofriend_generate_messages_py.dir/build
+.PHONY : robofriend_generate_messages_py/fast
+
+# Convenience name for target.
+robofriend/CMakeFiles/std_msgs_generate_messages_py.dir/rule:
+	cd /home/muhammed/Okul/ESP/RoboFriend/src/Pi/catkin_ws/build && $(MAKE) -f CMakeFiles/Makefile2 robofriend/CMakeFiles/std_msgs_generate_messages_py.dir/rule
+.PHONY : robofriend/CMakeFiles/std_msgs_generate_messages_py.dir/rule
+
+# Convenience name for target.
+std_msgs_generate_messages_py: robofriend/CMakeFiles/std_msgs_generate_messages_py.dir/rule
+
+.PHONY : std_msgs_generate_messages_py
+
+# fast build rule for target.
+std_msgs_generate_messages_py/fast:
+	cd /home/muhammed/Okul/ESP/RoboFriend/src/Pi/catkin_ws/build && $(MAKE) -f robofriend/CMakeFiles/std_msgs_generate_messages_py.dir/build.make robofriend/CMakeFiles/std_msgs_generate_messages_py.dir/build
+.PHONY : std_msgs_generate_messages_py/fast
+
+# Convenience name for target.
+robofriend/CMakeFiles/roscpp_generate_messages_py.dir/rule:
+	cd /home/muhammed/Okul/ESP/RoboFriend/src/Pi/catkin_ws/build && $(MAKE) -f CMakeFiles/Makefile2 robofriend/CMakeFiles/roscpp_generate_messages_py.dir/rule
+.PHONY : robofriend/CMakeFiles/roscpp_generate_messages_py.dir/rule
+
+# Convenience name for target.
+roscpp_generate_messages_py: robofriend/CMakeFiles/roscpp_generate_messages_py.dir/rule
+
+.PHONY : roscpp_generate_messages_py
+
+# fast build rule for target.
+roscpp_generate_messages_py/fast:
+	cd /home/muhammed/Okul/ESP/RoboFriend/src/Pi/catkin_ws/build && $(MAKE) -f robofriend/CMakeFiles/roscpp_generate_messages_py.dir/build.make robofriend/CMakeFiles/roscpp_generate_messages_py.dir/build
+.PHONY : roscpp_generate_messages_py/fast
+
+# Convenience name for target.
+robofriend/CMakeFiles/robofriend_generate_messages_nodejs.dir/rule:
+	cd /home/muhammed/Okul/ESP/RoboFriend/src/Pi/catkin_ws/build && $(MAKE) -f CMakeFiles/Makefile2 robofriend/CMakeFiles/robofriend_generate_messages_nodejs.dir/rule
+.PHONY : robofriend/CMakeFiles/robofriend_generate_messages_nodejs.dir/rule
+
+# Convenience name for target.
+robofriend_generate_messages_nodejs: robofriend/CMakeFiles/robofriend_generate_messages_nodejs.dir/rule
+
+.PHONY : robofriend_generate_messages_nodejs
+
+# fast build rule for target.
+robofriend_generate_messages_nodejs/fast:
+	cd /home/muhammed/Okul/ESP/RoboFriend/src/Pi/catkin_ws/build && $(MAKE) -f robofriend/CMakeFiles/robofriend_generate_messages_nodejs.dir/build.make robofriend/CMakeFiles/robofriend_generate_messages_nodejs.dir/build
+.PHONY : robofriend_generate_messages_nodejs/fast
+
+# Convenience name for target.
+robofriend/CMakeFiles/rosgraph_msgs_generate_messages_eus.dir/rule:
+	cd /home/muhammed/Okul/ESP/RoboFriend/src/Pi/catkin_ws/build && $(MAKE) -f CMakeFiles/Makefile2 robofriend/CMakeFiles/rosgraph_msgs_generate_messages_eus.dir/rule
+.PHONY : robofriend/CMakeFiles/rosgraph_msgs_generate_messages_eus.dir/rule
+
+# Convenience name for target.
+rosgraph_msgs_generate_messages_eus: robofriend/CMakeFiles/rosgraph_msgs_generate_messages_eus.dir/rule
+
+.PHONY : rosgraph_msgs_generate_messages_eus
+
+# fast build rule for target.
+rosgraph_msgs_generate_messages_eus/fast:
+	cd /home/muhammed/Okul/ESP/RoboFriend/src/Pi/catkin_ws/build && $(MAKE) -f robofriend/CMakeFiles/rosgraph_msgs_generate_messages_eus.dir/build.make robofriend/CMakeFiles/rosgraph_msgs_generate_messages_eus.dir/build
+.PHONY : rosgraph_msgs_generate_messages_eus/fast
+
+# Convenience name for target.
+robofriend/CMakeFiles/rosgraph_msgs_generate_messages_nodejs.dir/rule:
+	cd /home/muhammed/Okul/ESP/RoboFriend/src/Pi/catkin_ws/build && $(MAKE) -f CMakeFiles/Makefile2 robofriend/CMakeFiles/rosgraph_msgs_generate_messages_nodejs.dir/rule
+.PHONY : robofriend/CMakeFiles/rosgraph_msgs_generate_messages_nodejs.dir/rule
+
+# Convenience name for target.
+rosgraph_msgs_generate_messages_nodejs: robofriend/CMakeFiles/rosgraph_msgs_generate_messages_nodejs.dir/rule
+
+.PHONY : rosgraph_msgs_generate_messages_nodejs
+
+# fast build rule for target.
+rosgraph_msgs_generate_messages_nodejs/fast:
+	cd /home/muhammed/Okul/ESP/RoboFriend/src/Pi/catkin_ws/build && $(MAKE) -f robofriend/CMakeFiles/rosgraph_msgs_generate_messages_nodejs.dir/build.make robofriend/CMakeFiles/rosgraph_msgs_generate_messages_nodejs.dir/build
+.PHONY : rosgraph_msgs_generate_messages_nodejs/fast
+
+# Convenience name for target.
+robofriend/CMakeFiles/roscpp_generate_messages_cpp.dir/rule:
+	cd /home/muhammed/Okul/ESP/RoboFriend/src/Pi/catkin_ws/build && $(MAKE) -f CMakeFiles/Makefile2 robofriend/CMakeFiles/roscpp_generate_messages_cpp.dir/rule
+.PHONY : robofriend/CMakeFiles/roscpp_generate_messages_cpp.dir/rule
+
+# Convenience name for target.
+roscpp_generate_messages_cpp: robofriend/CMakeFiles/roscpp_generate_messages_cpp.dir/rule
+
+.PHONY : roscpp_generate_messages_cpp
+
+# fast build rule for target.
+roscpp_generate_messages_cpp/fast:
+	cd /home/muhammed/Okul/ESP/RoboFriend/src/Pi/catkin_ws/build && $(MAKE) -f robofriend/CMakeFiles/roscpp_generate_messages_cpp.dir/build.make robofriend/CMakeFiles/roscpp_generate_messages_cpp.dir/build
+.PHONY : roscpp_generate_messages_cpp/fast
+
+# Convenience name for target.
+robofriend/CMakeFiles/rosgraph_msgs_generate_messages_cpp.dir/rule:
+	cd /home/muhammed/Okul/ESP/RoboFriend/src/Pi/catkin_ws/build && $(MAKE) -f CMakeFiles/Makefile2 robofriend/CMakeFiles/rosgraph_msgs_generate_messages_cpp.dir/rule
+.PHONY : robofriend/CMakeFiles/rosgraph_msgs_generate_messages_cpp.dir/rule
+
+# Convenience name for target.
+rosgraph_msgs_generate_messages_cpp: robofriend/CMakeFiles/rosgraph_msgs_generate_messages_cpp.dir/rule
+
+.PHONY : rosgraph_msgs_generate_messages_cpp
+
+# fast build rule for target.
+rosgraph_msgs_generate_messages_cpp/fast:
+	cd /home/muhammed/Okul/ESP/RoboFriend/src/Pi/catkin_ws/build && $(MAKE) -f robofriend/CMakeFiles/rosgraph_msgs_generate_messages_cpp.dir/build.make robofriend/CMakeFiles/rosgraph_msgs_generate_messages_cpp.dir/build
+.PHONY : rosgraph_msgs_generate_messages_cpp/fast
+
+# Convenience name for target.
+robofriend/CMakeFiles/std_msgs_generate_messages_cpp.dir/rule:
+	cd /home/muhammed/Okul/ESP/RoboFriend/src/Pi/catkin_ws/build && $(MAKE) -f CMakeFiles/Makefile2 robofriend/CMakeFiles/std_msgs_generate_messages_cpp.dir/rule
+.PHONY : robofriend/CMakeFiles/std_msgs_generate_messages_cpp.dir/rule
+
+# Convenience name for target.
+std_msgs_generate_messages_cpp: robofriend/CMakeFiles/std_msgs_generate_messages_cpp.dir/rule
+
+.PHONY : std_msgs_generate_messages_cpp
+
+# fast build rule for target.
+std_msgs_generate_messages_cpp/fast:
+	cd /home/muhammed/Okul/ESP/RoboFriend/src/Pi/catkin_ws/build && $(MAKE) -f robofriend/CMakeFiles/std_msgs_generate_messages_cpp.dir/build.make robofriend/CMakeFiles/std_msgs_generate_messages_cpp.dir/build
+.PHONY : std_msgs_generate_messages_cpp/fast
+
+# Convenience name for target.
+robofriend/CMakeFiles/robofriend_genlisp.dir/rule:
+	cd /home/muhammed/Okul/ESP/RoboFriend/src/Pi/catkin_ws/build && $(MAKE) -f CMakeFiles/Makefile2 robofriend/CMakeFiles/robofriend_genlisp.dir/rule
+.PHONY : robofriend/CMakeFiles/robofriend_genlisp.dir/rule
+
+# Convenience name for target.
+robofriend_genlisp: robofriend/CMakeFiles/robofriend_genlisp.dir/rule
+
+.PHONY : robofriend_genlisp
+
+# fast build rule for target.
+robofriend_genlisp/fast:
+	cd /home/muhammed/Okul/ESP/RoboFriend/src/Pi/catkin_ws/build && $(MAKE) -f robofriend/CMakeFiles/robofriend_genlisp.dir/build.make robofriend/CMakeFiles/robofriend_genlisp.dir/build
+.PHONY : robofriend_genlisp/fast
+
+# Convenience name for target.
+robofriend/CMakeFiles/rosgraph_msgs_generate_messages_py.dir/rule:
+	cd /home/muhammed/Okul/ESP/RoboFriend/src/Pi/catkin_ws/build && $(MAKE) -f CMakeFiles/Makefile2 robofriend/CMakeFiles/rosgraph_msgs_generate_messages_py.dir/rule
+.PHONY : robofriend/CMakeFiles/rosgraph_msgs_generate_messages_py.dir/rule
+
+# Convenience name for target.
+rosgraph_msgs_generate_messages_py: robofriend/CMakeFiles/rosgraph_msgs_generate_messages_py.dir/rule
+
+.PHONY : rosgraph_msgs_generate_messages_py
+
+# fast build rule for target.
+rosgraph_msgs_generate_messages_py/fast:
+	cd /home/muhammed/Okul/ESP/RoboFriend/src/Pi/catkin_ws/build && $(MAKE) -f robofriend/CMakeFiles/rosgraph_msgs_generate_messages_py.dir/build.make robofriend/CMakeFiles/rosgraph_msgs_generate_messages_py.dir/build
+.PHONY : rosgraph_msgs_generate_messages_py/fast
+
+# Convenience name for target.
+robofriend/CMakeFiles/rosgraph_msgs_generate_messages_lisp.dir/rule:
+	cd /home/muhammed/Okul/ESP/RoboFriend/src/Pi/catkin_ws/build && $(MAKE) -f CMakeFiles/Makefile2 robofriend/CMakeFiles/rosgraph_msgs_generate_messages_lisp.dir/rule
+.PHONY : robofriend/CMakeFiles/rosgraph_msgs_generate_messages_lisp.dir/rule
+
+# Convenience name for target.
+rosgraph_msgs_generate_messages_lisp: robofriend/CMakeFiles/rosgraph_msgs_generate_messages_lisp.dir/rule
+
+.PHONY : rosgraph_msgs_generate_messages_lisp
+
+# fast build rule for target.
+rosgraph_msgs_generate_messages_lisp/fast:
+	cd /home/muhammed/Okul/ESP/RoboFriend/src/Pi/catkin_ws/build && $(MAKE) -f robofriend/CMakeFiles/rosgraph_msgs_generate_messages_lisp.dir/build.make robofriend/CMakeFiles/rosgraph_msgs_generate_messages_lisp.dir/build
+.PHONY : rosgraph_msgs_generate_messages_lisp/fast
+
+# Convenience name for target.
+robofriend/CMakeFiles/roscpp_generate_messages_nodejs.dir/rule:
+	cd /home/muhammed/Okul/ESP/RoboFriend/src/Pi/catkin_ws/build && $(MAKE) -f CMakeFiles/Makefile2 robofriend/CMakeFiles/roscpp_generate_messages_nodejs.dir/rule
+.PHONY : robofriend/CMakeFiles/roscpp_generate_messages_nodejs.dir/rule
+
+# Convenience name for target.
+roscpp_generate_messages_nodejs: robofriend/CMakeFiles/roscpp_generate_messages_nodejs.dir/rule
+
+.PHONY : roscpp_generate_messages_nodejs
+
+# fast build rule for target.
+roscpp_generate_messages_nodejs/fast:
+	cd /home/muhammed/Okul/ESP/RoboFriend/src/Pi/catkin_ws/build && $(MAKE) -f robofriend/CMakeFiles/roscpp_generate_messages_nodejs.dir/build.make robofriend/CMakeFiles/roscpp_generate_messages_nodejs.dir/build
+.PHONY : roscpp_generate_messages_nodejs/fast
 
 # Convenience name for target.
 robofriend/CMakeFiles/std_msgs_generate_messages_nodejs.dir/rule:
@@ -226,19 +406,79 @@ roscpp_generate_messages_lisp/fast:
 .PHONY : roscpp_generate_messages_lisp/fast
 
 # Convenience name for target.
-robofriend/CMakeFiles/roscpp_generate_messages_nodejs.dir/rule:
-	cd /home/muhammed/Okul/ESP/RoboFriend/src/Pi/catkin_ws/build && $(MAKE) -f CMakeFiles/Makefile2 robofriend/CMakeFiles/roscpp_generate_messages_nodejs.dir/rule
-.PHONY : robofriend/CMakeFiles/roscpp_generate_messages_nodejs.dir/rule
+robofriend/CMakeFiles/std_msgs_generate_messages_eus.dir/rule:
+	cd /home/muhammed/Okul/ESP/RoboFriend/src/Pi/catkin_ws/build && $(MAKE) -f CMakeFiles/Makefile2 robofriend/CMakeFiles/std_msgs_generate_messages_eus.dir/rule
+.PHONY : robofriend/CMakeFiles/std_msgs_generate_messages_eus.dir/rule
 
 # Convenience name for target.
-roscpp_generate_messages_nodejs: robofriend/CMakeFiles/roscpp_generate_messages_nodejs.dir/rule
+std_msgs_generate_messages_eus: robofriend/CMakeFiles/std_msgs_generate_messages_eus.dir/rule
 
-.PHONY : roscpp_generate_messages_nodejs
+.PHONY : std_msgs_generate_messages_eus
 
 # fast build rule for target.
-roscpp_generate_messages_nodejs/fast:
-	cd /home/muhammed/Okul/ESP/RoboFriend/src/Pi/catkin_ws/build && $(MAKE) -f robofriend/CMakeFiles/roscpp_generate_messages_nodejs.dir/build.make robofriend/CMakeFiles/roscpp_generate_messages_nodejs.dir/build
-.PHONY : roscpp_generate_messages_nodejs/fast
+std_msgs_generate_messages_eus/fast:
+	cd /home/muhammed/Okul/ESP/RoboFriend/src/Pi/catkin_ws/build && $(MAKE) -f robofriend/CMakeFiles/std_msgs_generate_messages_eus.dir/build.make robofriend/CMakeFiles/std_msgs_generate_messages_eus.dir/build
+.PHONY : std_msgs_generate_messages_eus/fast
+
+# Convenience name for target.
+robofriend/CMakeFiles/robofriend_gennodejs.dir/rule:
+	cd /home/muhammed/Okul/ESP/RoboFriend/src/Pi/catkin_ws/build && $(MAKE) -f CMakeFiles/Makefile2 robofriend/CMakeFiles/robofriend_gennodejs.dir/rule
+.PHONY : robofriend/CMakeFiles/robofriend_gennodejs.dir/rule
+
+# Convenience name for target.
+robofriend_gennodejs: robofriend/CMakeFiles/robofriend_gennodejs.dir/rule
+
+.PHONY : robofriend_gennodejs
+
+# fast build rule for target.
+robofriend_gennodejs/fast:
+	cd /home/muhammed/Okul/ESP/RoboFriend/src/Pi/catkin_ws/build && $(MAKE) -f robofriend/CMakeFiles/robofriend_gennodejs.dir/build.make robofriend/CMakeFiles/robofriend_gennodejs.dir/build
+.PHONY : robofriend_gennodejs/fast
+
+# Convenience name for target.
+robofriend/CMakeFiles/std_msgs_generate_messages_lisp.dir/rule:
+	cd /home/muhammed/Okul/ESP/RoboFriend/src/Pi/catkin_ws/build && $(MAKE) -f CMakeFiles/Makefile2 robofriend/CMakeFiles/std_msgs_generate_messages_lisp.dir/rule
+.PHONY : robofriend/CMakeFiles/std_msgs_generate_messages_lisp.dir/rule
+
+# Convenience name for target.
+std_msgs_generate_messages_lisp: robofriend/CMakeFiles/std_msgs_generate_messages_lisp.dir/rule
+
+.PHONY : std_msgs_generate_messages_lisp
+
+# fast build rule for target.
+std_msgs_generate_messages_lisp/fast:
+	cd /home/muhammed/Okul/ESP/RoboFriend/src/Pi/catkin_ws/build && $(MAKE) -f robofriend/CMakeFiles/std_msgs_generate_messages_lisp.dir/build.make robofriend/CMakeFiles/std_msgs_generate_messages_lisp.dir/build
+.PHONY : std_msgs_generate_messages_lisp/fast
+
+# Convenience name for target.
+robofriend/CMakeFiles/robofriend_generate_messages_lisp.dir/rule:
+	cd /home/muhammed/Okul/ESP/RoboFriend/src/Pi/catkin_ws/build && $(MAKE) -f CMakeFiles/Makefile2 robofriend/CMakeFiles/robofriend_generate_messages_lisp.dir/rule
+.PHONY : robofriend/CMakeFiles/robofriend_generate_messages_lisp.dir/rule
+
+# Convenience name for target.
+robofriend_generate_messages_lisp: robofriend/CMakeFiles/robofriend_generate_messages_lisp.dir/rule
+
+.PHONY : robofriend_generate_messages_lisp
+
+# fast build rule for target.
+robofriend_generate_messages_lisp/fast:
+	cd /home/muhammed/Okul/ESP/RoboFriend/src/Pi/catkin_ws/build && $(MAKE) -f robofriend/CMakeFiles/robofriend_generate_messages_lisp.dir/build.make robofriend/CMakeFiles/robofriend_generate_messages_lisp.dir/build
+.PHONY : robofriend_generate_messages_lisp/fast
+
+# Convenience name for target.
+robofriend/CMakeFiles/_robofriend_generate_messages_check_deps_Coordinates.dir/rule:
+	cd /home/muhammed/Okul/ESP/RoboFriend/src/Pi/catkin_ws/build && $(MAKE) -f CMakeFiles/Makefile2 robofriend/CMakeFiles/_robofriend_generate_messages_check_deps_Coordinates.dir/rule
+.PHONY : robofriend/CMakeFiles/_robofriend_generate_messages_check_deps_Coordinates.dir/rule
+
+# Convenience name for target.
+_robofriend_generate_messages_check_deps_Coordinates: robofriend/CMakeFiles/_robofriend_generate_messages_check_deps_Coordinates.dir/rule
+
+.PHONY : _robofriend_generate_messages_check_deps_Coordinates
+
+# fast build rule for target.
+_robofriend_generate_messages_check_deps_Coordinates/fast:
+	cd /home/muhammed/Okul/ESP/RoboFriend/src/Pi/catkin_ws/build && $(MAKE) -f robofriend/CMakeFiles/_robofriend_generate_messages_check_deps_Coordinates.dir/build.make robofriend/CMakeFiles/_robofriend_generate_messages_check_deps_Coordinates.dir/build
+.PHONY : _robofriend_generate_messages_check_deps_Coordinates/fast
 
 # Convenience name for target.
 robofriend/CMakeFiles/roscpp_generate_messages_eus.dir/rule:
@@ -256,139 +496,79 @@ roscpp_generate_messages_eus/fast:
 .PHONY : roscpp_generate_messages_eus/fast
 
 # Convenience name for target.
-robofriend/CMakeFiles/std_msgs_generate_messages_cpp.dir/rule:
-	cd /home/muhammed/Okul/ESP/RoboFriend/src/Pi/catkin_ws/build && $(MAKE) -f CMakeFiles/Makefile2 robofriend/CMakeFiles/std_msgs_generate_messages_cpp.dir/rule
-.PHONY : robofriend/CMakeFiles/std_msgs_generate_messages_cpp.dir/rule
+robofriend/CMakeFiles/robofriend_generate_messages_cpp.dir/rule:
+	cd /home/muhammed/Okul/ESP/RoboFriend/src/Pi/catkin_ws/build && $(MAKE) -f CMakeFiles/Makefile2 robofriend/CMakeFiles/robofriend_generate_messages_cpp.dir/rule
+.PHONY : robofriend/CMakeFiles/robofriend_generate_messages_cpp.dir/rule
 
 # Convenience name for target.
-std_msgs_generate_messages_cpp: robofriend/CMakeFiles/std_msgs_generate_messages_cpp.dir/rule
+robofriend_generate_messages_cpp: robofriend/CMakeFiles/robofriend_generate_messages_cpp.dir/rule
 
-.PHONY : std_msgs_generate_messages_cpp
+.PHONY : robofriend_generate_messages_cpp
 
 # fast build rule for target.
-std_msgs_generate_messages_cpp/fast:
-	cd /home/muhammed/Okul/ESP/RoboFriend/src/Pi/catkin_ws/build && $(MAKE) -f robofriend/CMakeFiles/std_msgs_generate_messages_cpp.dir/build.make robofriend/CMakeFiles/std_msgs_generate_messages_cpp.dir/build
-.PHONY : std_msgs_generate_messages_cpp/fast
+robofriend_generate_messages_cpp/fast:
+	cd /home/muhammed/Okul/ESP/RoboFriend/src/Pi/catkin_ws/build && $(MAKE) -f robofriend/CMakeFiles/robofriend_generate_messages_cpp.dir/build.make robofriend/CMakeFiles/robofriend_generate_messages_cpp.dir/build
+.PHONY : robofriend_generate_messages_cpp/fast
 
 # Convenience name for target.
-robofriend/CMakeFiles/roscpp_generate_messages_cpp.dir/rule:
-	cd /home/muhammed/Okul/ESP/RoboFriend/src/Pi/catkin_ws/build && $(MAKE) -f CMakeFiles/Makefile2 robofriend/CMakeFiles/roscpp_generate_messages_cpp.dir/rule
-.PHONY : robofriend/CMakeFiles/roscpp_generate_messages_cpp.dir/rule
+robofriend/CMakeFiles/robofriend_generate_messages.dir/rule:
+	cd /home/muhammed/Okul/ESP/RoboFriend/src/Pi/catkin_ws/build && $(MAKE) -f CMakeFiles/Makefile2 robofriend/CMakeFiles/robofriend_generate_messages.dir/rule
+.PHONY : robofriend/CMakeFiles/robofriend_generate_messages.dir/rule
 
 # Convenience name for target.
-roscpp_generate_messages_cpp: robofriend/CMakeFiles/roscpp_generate_messages_cpp.dir/rule
+robofriend_generate_messages: robofriend/CMakeFiles/robofriend_generate_messages.dir/rule
 
-.PHONY : roscpp_generate_messages_cpp
+.PHONY : robofriend_generate_messages
 
 # fast build rule for target.
-roscpp_generate_messages_cpp/fast:
-	cd /home/muhammed/Okul/ESP/RoboFriend/src/Pi/catkin_ws/build && $(MAKE) -f robofriend/CMakeFiles/roscpp_generate_messages_cpp.dir/build.make robofriend/CMakeFiles/roscpp_generate_messages_cpp.dir/build
-.PHONY : roscpp_generate_messages_cpp/fast
+robofriend_generate_messages/fast:
+	cd /home/muhammed/Okul/ESP/RoboFriend/src/Pi/catkin_ws/build && $(MAKE) -f robofriend/CMakeFiles/robofriend_generate_messages.dir/build.make robofriend/CMakeFiles/robofriend_generate_messages.dir/build
+.PHONY : robofriend_generate_messages/fast
 
 # Convenience name for target.
-robofriend/CMakeFiles/rosgraph_msgs_generate_messages_nodejs.dir/rule:
-	cd /home/muhammed/Okul/ESP/RoboFriend/src/Pi/catkin_ws/build && $(MAKE) -f CMakeFiles/Makefile2 robofriend/CMakeFiles/rosgraph_msgs_generate_messages_nodejs.dir/rule
-.PHONY : robofriend/CMakeFiles/rosgraph_msgs_generate_messages_nodejs.dir/rule
+robofriend/CMakeFiles/robofriend_gencpp.dir/rule:
+	cd /home/muhammed/Okul/ESP/RoboFriend/src/Pi/catkin_ws/build && $(MAKE) -f CMakeFiles/Makefile2 robofriend/CMakeFiles/robofriend_gencpp.dir/rule
+.PHONY : robofriend/CMakeFiles/robofriend_gencpp.dir/rule
 
 # Convenience name for target.
-rosgraph_msgs_generate_messages_nodejs: robofriend/CMakeFiles/rosgraph_msgs_generate_messages_nodejs.dir/rule
+robofriend_gencpp: robofriend/CMakeFiles/robofriend_gencpp.dir/rule
 
-.PHONY : rosgraph_msgs_generate_messages_nodejs
+.PHONY : robofriend_gencpp
 
 # fast build rule for target.
-rosgraph_msgs_generate_messages_nodejs/fast:
-	cd /home/muhammed/Okul/ESP/RoboFriend/src/Pi/catkin_ws/build && $(MAKE) -f robofriend/CMakeFiles/rosgraph_msgs_generate_messages_nodejs.dir/build.make robofriend/CMakeFiles/rosgraph_msgs_generate_messages_nodejs.dir/build
-.PHONY : rosgraph_msgs_generate_messages_nodejs/fast
+robofriend_gencpp/fast:
+	cd /home/muhammed/Okul/ESP/RoboFriend/src/Pi/catkin_ws/build && $(MAKE) -f robofriend/CMakeFiles/robofriend_gencpp.dir/build.make robofriend/CMakeFiles/robofriend_gencpp.dir/build
+.PHONY : robofriend_gencpp/fast
 
 # Convenience name for target.
-robofriend/CMakeFiles/rosgraph_msgs_generate_messages_eus.dir/rule:
-	cd /home/muhammed/Okul/ESP/RoboFriend/src/Pi/catkin_ws/build && $(MAKE) -f CMakeFiles/Makefile2 robofriend/CMakeFiles/rosgraph_msgs_generate_messages_eus.dir/rule
-.PHONY : robofriend/CMakeFiles/rosgraph_msgs_generate_messages_eus.dir/rule
+robofriend/CMakeFiles/robofriend_generate_messages_eus.dir/rule:
+	cd /home/muhammed/Okul/ESP/RoboFriend/src/Pi/catkin_ws/build && $(MAKE) -f CMakeFiles/Makefile2 robofriend/CMakeFiles/robofriend_generate_messages_eus.dir/rule
+.PHONY : robofriend/CMakeFiles/robofriend_generate_messages_eus.dir/rule
 
 # Convenience name for target.
-rosgraph_msgs_generate_messages_eus: robofriend/CMakeFiles/rosgraph_msgs_generate_messages_eus.dir/rule
+robofriend_generate_messages_eus: robofriend/CMakeFiles/robofriend_generate_messages_eus.dir/rule
 
-.PHONY : rosgraph_msgs_generate_messages_eus
+.PHONY : robofriend_generate_messages_eus
 
 # fast build rule for target.
-rosgraph_msgs_generate_messages_eus/fast:
-	cd /home/muhammed/Okul/ESP/RoboFriend/src/Pi/catkin_ws/build && $(MAKE) -f robofriend/CMakeFiles/rosgraph_msgs_generate_messages_eus.dir/build.make robofriend/CMakeFiles/rosgraph_msgs_generate_messages_eus.dir/build
-.PHONY : rosgraph_msgs_generate_messages_eus/fast
+robofriend_generate_messages_eus/fast:
+	cd /home/muhammed/Okul/ESP/RoboFriend/src/Pi/catkin_ws/build && $(MAKE) -f robofriend/CMakeFiles/robofriend_generate_messages_eus.dir/build.make robofriend/CMakeFiles/robofriend_generate_messages_eus.dir/build
+.PHONY : robofriend_generate_messages_eus/fast
 
 # Convenience name for target.
-robofriend/CMakeFiles/roscpp_generate_messages_py.dir/rule:
-	cd /home/muhammed/Okul/ESP/RoboFriend/src/Pi/catkin_ws/build && $(MAKE) -f CMakeFiles/Makefile2 robofriend/CMakeFiles/roscpp_generate_messages_py.dir/rule
-.PHONY : robofriend/CMakeFiles/roscpp_generate_messages_py.dir/rule
+robofriend/CMakeFiles/robofriend_geneus.dir/rule:
+	cd /home/muhammed/Okul/ESP/RoboFriend/src/Pi/catkin_ws/build && $(MAKE) -f CMakeFiles/Makefile2 robofriend/CMakeFiles/robofriend_geneus.dir/rule
+.PHONY : robofriend/CMakeFiles/robofriend_geneus.dir/rule
 
 # Convenience name for target.
-roscpp_generate_messages_py: robofriend/CMakeFiles/roscpp_generate_messages_py.dir/rule
+robofriend_geneus: robofriend/CMakeFiles/robofriend_geneus.dir/rule
 
-.PHONY : roscpp_generate_messages_py
+.PHONY : robofriend_geneus
 
 # fast build rule for target.
-roscpp_generate_messages_py/fast:
-	cd /home/muhammed/Okul/ESP/RoboFriend/src/Pi/catkin_ws/build && $(MAKE) -f robofriend/CMakeFiles/roscpp_generate_messages_py.dir/build.make robofriend/CMakeFiles/roscpp_generate_messages_py.dir/build
-.PHONY : roscpp_generate_messages_py/fast
-
-# Convenience name for target.
-robofriend/CMakeFiles/rosgraph_msgs_generate_messages_cpp.dir/rule:
-	cd /home/muhammed/Okul/ESP/RoboFriend/src/Pi/catkin_ws/build && $(MAKE) -f CMakeFiles/Makefile2 robofriend/CMakeFiles/rosgraph_msgs_generate_messages_cpp.dir/rule
-.PHONY : robofriend/CMakeFiles/rosgraph_msgs_generate_messages_cpp.dir/rule
-
-# Convenience name for target.
-rosgraph_msgs_generate_messages_cpp: robofriend/CMakeFiles/rosgraph_msgs_generate_messages_cpp.dir/rule
-
-.PHONY : rosgraph_msgs_generate_messages_cpp
-
-# fast build rule for target.
-rosgraph_msgs_generate_messages_cpp/fast:
-	cd /home/muhammed/Okul/ESP/RoboFriend/src/Pi/catkin_ws/build && $(MAKE) -f robofriend/CMakeFiles/rosgraph_msgs_generate_messages_cpp.dir/build.make robofriend/CMakeFiles/rosgraph_msgs_generate_messages_cpp.dir/build
-.PHONY : rosgraph_msgs_generate_messages_cpp/fast
-
-# Convenience name for target.
-robofriend/CMakeFiles/rosgraph_msgs_generate_messages_lisp.dir/rule:
-	cd /home/muhammed/Okul/ESP/RoboFriend/src/Pi/catkin_ws/build && $(MAKE) -f CMakeFiles/Makefile2 robofriend/CMakeFiles/rosgraph_msgs_generate_messages_lisp.dir/rule
-.PHONY : robofriend/CMakeFiles/rosgraph_msgs_generate_messages_lisp.dir/rule
-
-# Convenience name for target.
-rosgraph_msgs_generate_messages_lisp: robofriend/CMakeFiles/rosgraph_msgs_generate_messages_lisp.dir/rule
-
-.PHONY : rosgraph_msgs_generate_messages_lisp
-
-# fast build rule for target.
-rosgraph_msgs_generate_messages_lisp/fast:
-	cd /home/muhammed/Okul/ESP/RoboFriend/src/Pi/catkin_ws/build && $(MAKE) -f robofriend/CMakeFiles/rosgraph_msgs_generate_messages_lisp.dir/build.make robofriend/CMakeFiles/rosgraph_msgs_generate_messages_lisp.dir/build
-.PHONY : rosgraph_msgs_generate_messages_lisp/fast
-
-# Convenience name for target.
-robofriend/CMakeFiles/std_msgs_generate_messages_py.dir/rule:
-	cd /home/muhammed/Okul/ESP/RoboFriend/src/Pi/catkin_ws/build && $(MAKE) -f CMakeFiles/Makefile2 robofriend/CMakeFiles/std_msgs_generate_messages_py.dir/rule
-.PHONY : robofriend/CMakeFiles/std_msgs_generate_messages_py.dir/rule
-
-# Convenience name for target.
-std_msgs_generate_messages_py: robofriend/CMakeFiles/std_msgs_generate_messages_py.dir/rule
-
-.PHONY : std_msgs_generate_messages_py
-
-# fast build rule for target.
-std_msgs_generate_messages_py/fast:
-	cd /home/muhammed/Okul/ESP/RoboFriend/src/Pi/catkin_ws/build && $(MAKE) -f robofriend/CMakeFiles/std_msgs_generate_messages_py.dir/build.make robofriend/CMakeFiles/std_msgs_generate_messages_py.dir/build
-.PHONY : std_msgs_generate_messages_py/fast
-
-# Convenience name for target.
-robofriend/CMakeFiles/rosgraph_msgs_generate_messages_py.dir/rule:
-	cd /home/muhammed/Okul/ESP/RoboFriend/src/Pi/catkin_ws/build && $(MAKE) -f CMakeFiles/Makefile2 robofriend/CMakeFiles/rosgraph_msgs_generate_messages_py.dir/rule
-.PHONY : robofriend/CMakeFiles/rosgraph_msgs_generate_messages_py.dir/rule
-
-# Convenience name for target.
-rosgraph_msgs_generate_messages_py: robofriend/CMakeFiles/rosgraph_msgs_generate_messages_py.dir/rule
-
-.PHONY : rosgraph_msgs_generate_messages_py
-
-# fast build rule for target.
-rosgraph_msgs_generate_messages_py/fast:
-	cd /home/muhammed/Okul/ESP/RoboFriend/src/Pi/catkin_ws/build && $(MAKE) -f robofriend/CMakeFiles/rosgraph_msgs_generate_messages_py.dir/build.make robofriend/CMakeFiles/rosgraph_msgs_generate_messages_py.dir/build
-.PHONY : rosgraph_msgs_generate_messages_py/fast
+robofriend_geneus/fast:
+	cd /home/muhammed/Okul/ESP/RoboFriend/src/Pi/catkin_ws/build && $(MAKE) -f robofriend/CMakeFiles/robofriend_geneus.dir/build.make robofriend/CMakeFiles/robofriend_geneus.dir/build
+.PHONY : robofriend_geneus/fast
 
 # Help Target
 help:
@@ -397,27 +577,39 @@ help:
 	@echo "... clean"
 	@echo "... depend"
 	@echo "... install"
+	@echo "... rebuild_cache"
+	@echo "... edit_cache"
+	@echo "... test"
 	@echo "... install/local"
-	@echo "... list_install_components"
 	@echo "... install/strip"
-	@echo "... std_msgs_generate_messages_lisp"
-	@echo "... std_msgs_generate_messages_eus"
+	@echo "... robofriend_genpy"
+	@echo "... robofriend_generate_messages_py"
+	@echo "... std_msgs_generate_messages_py"
+	@echo "... roscpp_generate_messages_py"
+	@echo "... robofriend_generate_messages_nodejs"
+	@echo "... rosgraph_msgs_generate_messages_eus"
+	@echo "... rosgraph_msgs_generate_messages_nodejs"
+	@echo "... roscpp_generate_messages_cpp"
+	@echo "... rosgraph_msgs_generate_messages_cpp"
+	@echo "... std_msgs_generate_messages_cpp"
+	@echo "... robofriend_genlisp"
+	@echo "... rosgraph_msgs_generate_messages_py"
+	@echo "... rosgraph_msgs_generate_messages_lisp"
+	@echo "... roscpp_generate_messages_nodejs"
 	@echo "... std_msgs_generate_messages_nodejs"
 	@echo "... roscpp_generate_messages_lisp"
-	@echo "... test"
-	@echo "... roscpp_generate_messages_nodejs"
+	@echo "... std_msgs_generate_messages_eus"
+	@echo "... robofriend_gennodejs"
+	@echo "... std_msgs_generate_messages_lisp"
+	@echo "... robofriend_generate_messages_lisp"
+	@echo "... _robofriend_generate_messages_check_deps_Coordinates"
 	@echo "... roscpp_generate_messages_eus"
-	@echo "... std_msgs_generate_messages_cpp"
-	@echo "... roscpp_generate_messages_cpp"
-	@echo "... rebuild_cache"
-	@echo "... rosgraph_msgs_generate_messages_nodejs"
-	@echo "... edit_cache"
-	@echo "... rosgraph_msgs_generate_messages_eus"
-	@echo "... roscpp_generate_messages_py"
-	@echo "... rosgraph_msgs_generate_messages_cpp"
-	@echo "... rosgraph_msgs_generate_messages_lisp"
-	@echo "... std_msgs_generate_messages_py"
-	@echo "... rosgraph_msgs_generate_messages_py"
+	@echo "... robofriend_generate_messages_cpp"
+	@echo "... robofriend_generate_messages"
+	@echo "... robofriend_gencpp"
+	@echo "... robofriend_generate_messages_eus"
+	@echo "... list_install_components"
+	@echo "... robofriend_geneus"
 .PHONY : help
 
 
