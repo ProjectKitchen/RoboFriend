@@ -20,6 +20,7 @@ def node_stop():
     runFlag = False
 
 def node_start():
+    print("[INFO] ROS Cam Node started!\n")
     coordinates = 0
 
     pub = rospy.Publisher('camera_coordinates_topc', Coordinates)
@@ -45,6 +46,7 @@ def node_start():
 
 def face_recog(queue):
     global runFlag
+    print("[INFO] Thread for face_recog started!\n")
     coordinates = []
 
     path = os.path.dirname(os.path.realpath(__file__))
