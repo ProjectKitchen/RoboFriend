@@ -59,6 +59,7 @@ def main():
 	keyboardModule.start()
 	faceModule.drawFace()
 	facedetectionModule.listener()
+	time.sleep(3) # to ensure that ros master has already started
 	ros_cam_node.start()
 	print("init done! register signal handlers...")
 
