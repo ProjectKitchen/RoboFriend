@@ -7,4 +7,4 @@
 # new environment variables
 
 # modified environment variables
-export PWD="/home/muhammed/Okul/ESP/RoboFriend/src/Pi/catkin_ws/build"
+export PWD="/home/pi/project/RoboFriend/src/Pi/catkin_ws/build"

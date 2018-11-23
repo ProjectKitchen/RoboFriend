@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
   "CMakeFiles/robofriend_generate_messages_cpp"
-  "/home/muhammed/Okul/ESP/RoboFriend/src/Pi/catkin_ws/devel/include/robofriend/Coordinates.h"
+  "/home/pi/project/RoboFriend/src/Pi/catkin_ws/devel/include/robofriend/Coordinates.h"
 )
 
 # Per-language clean rules from dependency scanning.

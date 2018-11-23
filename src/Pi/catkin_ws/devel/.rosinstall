@@ -1,2 +1,2 @@
 - setup-file:
-    local-name: /home/muhammed/Okul/ESP/RoboFriend/src/Pi/catkin_ws/devel/setup.sh
+    local-name: /home/pi/project/RoboFriend/src/Pi/catkin_ws/devel/setup.sh

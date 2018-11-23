@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
   "CMakeFiles/robofriend_generate_messages_lisp"
-  "/home/muhammed/Okul/ESP/RoboFriend/src/Pi/catkin_ws/devel/share/common-lisp/ros/robofriend/msg/Coordinates.lisp"
+  "/home/pi/project/RoboFriend/src/Pi/catkin_ws/devel/share/common-lisp/ros/robofriend/msg/Coordinates.lisp"
 )
 
 # Per-language clean rules from dependency scanning.
