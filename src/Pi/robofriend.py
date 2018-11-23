@@ -21,6 +21,7 @@ import ioWarriorModule as ioWarriorModule
 import speechModule as speechModule
 import facedetectionModule as facedetectionModule
 import systemModule as systemModule
+import ros_cam_node as ros_cam_node
 
 
 # globals
@@ -40,7 +41,7 @@ def stop():
 	ioWarriorModule.stop()
 	speechModule.stop()
 	faceModule.close()
-	ros_cam_node.stop()
+	ros_cam_node.node_stop()
 	runFlag = False
 	print("*** graceful shutdown completed! ***")
 
@@ -59,8 +60,8 @@ def main():
 	keyboardModule.start()
 	faceModule.drawFace()
 	facedetectionModule.listener()
-	time.sleep(3) # to ensure that ros master has already started
-	ros_cam_node.start()
+	#time.sleep(10) # to ensure that ros master has already started
+	ros_cam_node.node_start()
 	print("init done! register signal handlers...")
 
 	# setting up signal handlers for shutdown

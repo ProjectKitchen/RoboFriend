@@ -1,6 +1,8 @@
-import robofriend.msg import Coordinates
+from robofriend.msg import Coordinates
+#from robofriend.msg import Coordinates
 from imutils.video import VideoStream
 from imutils.video import FPS
+import face_recognition
 import argparse
 import imutils
 import pickle
@@ -11,7 +13,7 @@ import time
 import os
 import rospy
 import threading
-import Queue
+import queue
 
 # globals
 runFlag = True
@@ -23,16 +25,16 @@ def node_start():
     print("[INFO] ROS Cam Node started!\n")
     coordinates = 0
 
-    pub = rospy.Publisher('camera_coordinates_topc', Coordinates)
-    rospy.init('Cam_node', anonymous = True)
+    pub = rospy.Publisher('camera_coordinates_topc', Coordinates, queue_size = 10)
+    rospy.init_node('Cam_node', anonymous = True)
 
     # create a queueu to coomunicate with the face_recog thread
-    therad_queue = Queue.Queue()
+    thread_queue = queue.Queue()
     msg = Coordinates()
 
     # include message queue
     face_recog_thread = threading.Thread(
-        target = face_recog
+        target = face_recog,
         args = (thread_queue, )
     )
 
@@ -102,7 +104,7 @@ def face_recog(queue):
         else:
             frame = vs.read()
 
-        Flip camera vertically
+        #Flip camera vertically
         #frame = cv2.flip(frame, -1)
         frame = imutils.resize(frame, width=320, height=240)
 
@@ -139,7 +141,7 @@ def face_recog(queue):
                 # encodings
                 matches = face_recognition.compare_faces(data["encodings"],
                     encoding)
-                    name = "Unknown"
+                name = "Unknown"
 
                 # check to see if we have found a match
                 if True in matches:
@@ -170,7 +172,7 @@ def face_recog(queue):
                     (0, 255, 0), 2)
                 y = top - 15 if top - 15 > 15 else top + 15
                 cv2.putText(frame, name, (left, y), cv2.FONT_HERSHEY_SIMPLEX,
-                    0.75, (0, 255, 0), 2)None
+                    0.75, (0, 255, 0), 2)
 
             coordinates = list(boxes[0]).copy()
             coordinates.append(name)
