@@ -28,11 +28,11 @@ def node_start():
     pub = rospy.Publisher('camera_coordinates_topc', Coordinates, queue_size = 10)
     rospy.init_node('Cam_node', anonymous = True)
 
-    # create a queueu to coomunicate with the face_recog thread
+    # queueu to coomunicate with the face_recog thread
     thread_queue = queue.Queue()
     msg = Coordinates()
 
-    # include message queue
+    # create thread which handles the face recognition
     face_recog_thread = threading.Thread(
         target = face_recog,
         args = (thread_queue, )
