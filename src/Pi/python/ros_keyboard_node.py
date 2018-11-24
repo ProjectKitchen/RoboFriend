@@ -24,21 +24,21 @@ def node_start():
     pub = rospy.Publisher('keyboard_topic', String, queue_size = 10)
     rospy.init('Keyboard_node', anonymous = True)
 
-    # queue to ensure a communication between keyboard thread and publisher
+    # queue to ensure a communication system between keyboard thread and publisher
     thread_queue = queue.Queue()
 
-    # thread which handles the keyboard inputs
+    # thread to handle the keyboard inputs
     keyboard_thread = threading.Thread(
         target = handle_keyboard,
         args = (thread_queue, )
     )
 
-    # start the keyboard threaded
+    # start keyboard thread
     keyboard_thread.start()
 
     while runFlag:
         received_message = thread_queue.get()
-        print("[INFO] Received message: {}".format(received_message))
+        print("[INFO] Transmitted data from keyboard node: {}".format(received_message))
         pub.publisher(received_message)
 
 def handle_keyboard(queue):
