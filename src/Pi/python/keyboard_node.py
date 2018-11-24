@@ -50,7 +50,7 @@ def handle_keyboard(queue):
     lastSay = None
     command = ""
     tmp_command = ""
-    speech_own_message = "speech;own;"
+    speech_own_message = "speech;custom;"
 
     while runFlag:
         try:
@@ -75,7 +75,7 @@ def handle_keyboard(queue):
                         pygame.quit()
                         sys.exit()
                     elif speechBuffer:
-                        tmp_command = "speech;own;" + speechBuffer
+                        tmp_command = speech_own_message + speechBuffer
                         command = message_merge(tmp_command)        # Message 5
                         #speechModule.speak(speechBuffer)
                         lastSay = speechBuffer
