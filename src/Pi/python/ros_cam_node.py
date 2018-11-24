@@ -19,9 +19,12 @@ import queue
 runFlag = True
 
 def node_stop():
+    global runFlag
     runFlag = False
 
 def node_start():
+    global runFlag
+
     print("[INFO] ROS Cam Node started!\n")
     coordinates = 0
 
@@ -48,6 +51,7 @@ def node_start():
 
 def face_recog(queue):
     global runFlag
+    
     print("[INFO] Thread for face_recog started!\n")
     coordinates = []
 
