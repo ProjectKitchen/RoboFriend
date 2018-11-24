@@ -62,8 +62,8 @@ def face_recog(queue):
     # path of the encodings and the haarcascade file
     #encodings_path = "/home/pi/catkin_workspace/src/facedetection_coordinates/scripts/encodings.pickle"
     #haarcascade_path = "/home/pi/catkin_workspace/src/facedetection_coordinates/scripts/haarcascade_frontalface_default.xml"
-    encodings_path = path + "/encodings.pickle"
-    haarcascade_path = path + "/haarcascade_frontalface_default.xml"
+    encodings_path = path + "/facedetetcion_files/encodings.pickle"
+    haarcascade_path = path + "/facedetetcion_files/haarcascade_frontalface_default.xml"
 
 
     #detector = cv2.CascadeClassifier("harcascade_frontalface_default.xml")
