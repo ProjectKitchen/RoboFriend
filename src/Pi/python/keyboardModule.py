@@ -4,6 +4,7 @@ import sys
 import threading
 import re
 import traceback
+import time
 
 # own modules
 import teensyCommunicator

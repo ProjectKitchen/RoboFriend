@@ -99,7 +99,7 @@ def sendSerial(commandString, readResponse=False):
     global send_lock, ser
     response = None
     send_lock.acquire()
-    print("sending serial command: " + str(commandString))
+    #print("sending serial command: " + str(commandString))
     try:
         ser.write(str.encode(commandString) + "\r".encode('ascii'))
         if readResponse:

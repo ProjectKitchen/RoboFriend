@@ -2,12 +2,13 @@
 import rospy
 import teensyCommunicator
 import ioWarriorModule
-from facedetection_coordinates.msg import Coordinates
+from robofriend.msg import Coordinates
 
 # TODO: according to the known face let the ears light in different colors
 # TODO: test with a dummy talker until second Robofriend is operational
 
 def callback (data):
+    print("[INFO] Facedetection Listener received callback!")
     rospy.loginfo("y_top: " + str(data.y_top))
     rospy.loginfo("right: " + str(data.right))
     rospy.loginfo("bottom: " + str(data.bottom))
@@ -21,10 +22,11 @@ def callback (data):
     identify_face(coordin)
 
 def listener():
-    rospy.init_node('listener', anonymous=True)
-    rospy.Subscriber("face_cordinates_topic", Coordinates, callback)
+    print("[INFO] Starting Facedetection Listener!")
+#    rospy.init_node('listener', anonymous=True)
+    rospy.Subscriber("camera_coordinates_topic", Coordinates, callback)
+    print("[INFO] Facedetection Listener started!")
 
-    rospy.spin()
 
 def identify_face(coordinates):
     if (coordinates["name"] != "Unknown"):

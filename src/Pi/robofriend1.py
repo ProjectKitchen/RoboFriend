@@ -5,6 +5,8 @@ import signal
 import time
 import sys
 import os
+import rospy
+
 
 path = str(os.getcwd()) + "/python"
 sys.path.append(path)
@@ -19,6 +21,7 @@ import keyboardModule as keyboardModule
 import teensyCommunicator as teensyCommunicator
 import ioWarriorModule as ioWarriorModule
 import speechModule as speechModule
+import ros_cam_node as ros_cam_node
 import facedetectionModule as facedetectionModule
 import systemModule as systemModule
 
@@ -40,7 +43,7 @@ def stop():
 	ioWarriorModule.stop()
 	speechModule.stop()
 	faceModule.close()
-	ros_cam_node.stop()
+	ros_cam_node.node_stop()
 	runFlag = False
 	print("*** graceful shutdown completed! ***")
 
@@ -50,23 +53,35 @@ def handler_stop_signals(signum, frame):
 def main():
 	global runFlag
 
-	# starting modules
+	print("RoboFriend Main Script Ready...")
+	print("Starting RosMaster!")
 	systemModule.roscore_start()
+	print("Initialising RosPy!")
+	rospy.init_node('Robofriend_node', anonymous = True)
+	print("Done ... starting RFID!")
 	rfidModule.start()
+	print("Done ... starting Webserver!")
 	webserverModule.start()
+	print("Done ... starting StatusModule!")
 	statusModule.start()
+	print("Done ... starting Gamecommunicator")
 	gameCommunicator.start()
+	print("Done ... starting KeyboardModule")
 	keyboardModule.start()
+	print("Done ... starting FaceModue")
 	faceModule.drawFace()
+	print("Done ... starting RosCamNode")
+	ros_cam_node.node_start()
+	print("Done ... starting FacedetectListener")
 	facedetectionModule.listener()
-	ros_cam_node.start()
 	print("init done! register signal handlers...")
 
 	# setting up signal handlers for shutdown
 	signal.signal(signal.SIGINT, handler_stop_signals)
 	signal.signal(signal.SIGTERM, handler_stop_signals)
-	#print("*** startup completed! ***")
+	print("*** startup completed! ***")
 
+	rospy.spin()
 	while runFlag: time.sleep(0.5) # keep program running until stopped
 
 if __name__ == '__main__':
