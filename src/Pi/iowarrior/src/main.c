@@ -104,23 +104,32 @@ int main(int argc, char** argv)
 
         if ((argc == 2) || (argc==5))
         {
+            int ret,retries = 10;
             //init I2C
             byte data[IOWKIT_SPECIAL_REPORT_SIZE];
 
             data[0]     = 0x01; //report id 1 => I2C Mode
             data[1]     = 0x01; //Enable
             data[2]     = 0x00; //Flags
-            data[3]     = 0x00; //Timeout
+            data[3]     = 0x20; //Timeout
 
-            int ret = IowKitWrite(G_iowHandle, IOW_PIPE_SPECIAL_MODE, data, IOWKIT_SPECIAL_REPORT_SIZE);
+            do {
+				printf("IoWarrior: i2c init... ");
+				ret = IowKitWrite(G_iowHandle, IOW_PIPE_SPECIAL_MODE, data, IOWKIT_SPECIAL_REPORT_SIZE);
 
-            if(ret == 0)
-            {
-                printf("IoWarrior: i2c init failed \n");
-                IowKitCloseDevice(iowHandle);
-                return(EXIT_FAILURE);
-            }
+				if(ret == 0) {
+					printf(" failed... retry \n");
+					retries--;
+				}
+			} while ((ret==0) && (retries>0));
 
+			if(ret == 0) {
+				printf("IoWarrior: i2c init failed... giving up ... \n");
+					IowKitCloseDevice(iowHandle);
+					return(EXIT_FAILURE);
+			}
+
+			printf(" success! \n");
             servoPos = strtoul(argv[argc-1],NULL,10);
             //printf("IoWarrior: Setting Servo Position: %d\n", servoPos);
             SetServo(1,servoPos);

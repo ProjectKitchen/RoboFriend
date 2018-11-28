@@ -19,7 +19,7 @@ def restrictRange(value, minValue, maxValue):
     return value if minValue <= value <= maxValue else (minValue if value < minValue else maxValue)
 
 def getBatPercent(batVoltage):
-    print ("BATTVOLTAGE: {}".format(batVoltage))
+    #print ("BATTVOLTAGE: {}".format(batVoltage))
     batVoltageRounded = round(batVoltage, 2)
     mapping = constants.getBatPercentMapping()
     percent = 100

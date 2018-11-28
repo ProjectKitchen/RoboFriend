@@ -1,5 +1,4 @@
 from robofriend.msg import Coordinates
-#from robofriend.msg import Coordinates
 from imutils.video import VideoStream
 from imutils.video import FPS
 import face_recognition
@@ -13,46 +12,41 @@ import time
 import os
 import rospy
 import threading
-import queue
+
 
 # globals
 runFlag = True
 
 def node_stop():
-    global runFlag
     runFlag = False
 
 def node_start():
-    global runFlag
-
-    print("[INFO] ROS Cam Node started!\n")
+    print("[INFO] Ros Cam Node start!")
     coordinates = 0
 
-    pub = rospy.Publisher('camera_coordinates_topc', Coordinates, queue_size = 10)
-    rospy.init_node('Cam_node', anonymous = True)
+    pub = rospy.Publisher('camera_coordinates_topic', Coordinates, queue_size = 20)
+#    rospy.init_node('Cam_node', anonymous = True)
 
-    # queueu to coomunicate with the face_recog thread
-    thread_queue = queue.Queue()
+    # create a queueu to coomunicate with the face_recog thread
+#    thread_queue = queue.Queue()
     msg = Coordinates()
 
-    # create thread which handles the face recognition
+    # include message queue
     face_recog_thread = threading.Thread(
         target = face_recog,
-        args = (thread_queue, )
+        args = (pub, msg, )
     )
 
     # start the face_recog thread
     face_recog_thread.start()
 
-    while runFlag:
-        msg.y_top, msg.right, msg.bottom, msg.x_left, msg.face_name = thread_queue.get()
-        print("[INFO] Send Data: {}".format(msg))
-        pub.publish(msg)
+#    while runFlag:
+#        msg.y_top, msg.right, msg.bottom, msg.x_left, msg.face_name = thread_queue.get()
+#        print("[INFO] Send Data: {}".format(msg))
+        
 
-def face_recog(queue):
+def face_recog(pub, msg):
     global runFlag
-    
-    print("[INFO] Thread for face_recog started!\n")
     coordinates = []
 
     path = os.path.dirname(os.path.realpath(__file__))
@@ -66,8 +60,8 @@ def face_recog(queue):
     # path of the encodings and the haarcascade file
     #encodings_path = "/home/pi/catkin_workspace/src/facedetection_coordinates/scripts/encodings.pickle"
     #haarcascade_path = "/home/pi/catkin_workspace/src/facedetection_coordinates/scripts/haarcascade_frontalface_default.xml"
-    encodings_path = path + "/facedetetcion_files/encodings.pickle"
-    haarcascade_path = path + "/facedetetcion_files/haarcascade_frontalface_default.xml"
+    encodings_path = path + "/encodings.pickle"
+    haarcascade_path = path + "/haarcascade_frontalface_default.xml"
 
 
     #detector = cv2.CascadeClassifier("harcascade_frontalface_default.xml")
@@ -181,7 +175,9 @@ def face_recog(queue):
             coordinates = list(boxes[0]).copy()
             coordinates.append(name)
             print("[INFO] Coordinates in Submodule: {}".format(coordinates))
-            queue.put(coordinates)
+            msg.y_top, msg.right, msg.bottom, msg.x_left, msg.face_name = coordinates
+            pub.publish(msg)
+#            queue.put()
 
         # display the image to our screen
         cv2.imshow("Frame", frame)
