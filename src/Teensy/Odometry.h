@@ -28,6 +28,8 @@ public:
   void clearEncoderValues();
   int32_t getRightEncoderValue();
   int32_t getLeftEncoderValue();
+  int16_t getRightEncoderTime();
+  int16_t getLeftEncoderTime();
 };
 
 #endif // ODOMETRY_H

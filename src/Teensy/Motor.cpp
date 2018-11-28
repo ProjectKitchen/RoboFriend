@@ -4,6 +4,30 @@
 #include "Motor.h"
 #include "Sensor.h"
 #include "support.h"
+#include "PID_v1.h"
+#include "Odometry.h"
+
+
+// #define USE_PID_CONTROL
+
+
+//tuning parameters for PID motor control  - TBD !
+double KpLeft=1.0,  KiLeft=0.05,  KdLeft=0;
+double KpRight=1.0, KiRight=0.05, KdRight=0;
+
+
+//variables for PID motor control
+double SetpointLeft,  InputLeft,  OutputLeft;
+double SetpointRight, InputRight, OutputRight;
+
+
+// PID controllers
+PID leftMotorPID(&InputLeft, &OutputLeft, &SetpointLeft, KpLeft, KiLeft, KdLeft, DIRECT);
+PID rightMotorPID(&InputRight, &OutputRight, &SetpointRight, KpRight, KiRight, KdRight, DIRECT);
+
+
+// for getting the odometry data
+extern Odometry odo;
 
 
 #define HANDLE_OBSTACLES 0       // currently disables because sensor values are not valid in Robofriend V2 !
@@ -85,8 +109,65 @@ void Motor::init() {
     intendedLeftSpeed=leftSpeed=0;
     intendedRightSpeed=rightSpeed=0;
     intendedDuration=0;
+
+    // activate the PID controllers
+    leftMotorPID.SetMode(AUTOMATIC);
+    rightMotorPID.SetMode(AUTOMATIC);
+
 }
 
+
+#ifdef USE_PID_CONTROL
+
+void Motor::updateMotors()
+{
+  static int cnt=0;
+  uint8_t actLeftPWM, actRightPWM;
+  char str[60];
+
+  // update left motor
+  if (odo.getLeftEncoderTime() < 1000) 
+     InputLeft =  3500.0/(double)odo.getLeftEncoderTime();
+  else InputLeft = 0;
+  
+  SetpointLeft = (double)intendedLeftSpeed;
+  
+  leftMotorPID.Compute();
+  actLeftPWM=(uint8_t) OutputLeft;
+
+  if (actLeftPWM<5) { actLeftPWM=0; Timer3.pwm(PIN_MT_LE_PWM,0); digitalWrite(PIN_MT_LE_FWD, LOW);  }
+  else {
+    digitalWrite(PIN_MT_LE_FWD, HIGH);
+    Timer3.pwm(PIN_MT_LE_PWM, map(actLeftPWM,0,255,LEFT_MOTOR_MINPWM,LEFT_MOTOR_MAXPWM));
+  }
+
+
+  // update right motor
+  if (odo.getRightEncoderTime() < 1000) 
+     InputRight =  3500.0/(double)odo.getRightEncoderTime();
+  else InputRight = 0;
+  
+  SetpointRight = (double)intendedRightSpeed;
+  
+  rightMotorPID.Compute();
+  actRightPWM=(uint8_t) OutputRight;
+
+  if (actRightPWM<5) {  actRightPWM=0; Timer3.pwm(PIN_MT_RI_PWM,0); digitalWrite(PIN_MT_RI_FWD, LOW);  }
+  else {
+    digitalWrite(PIN_MT_RI_FWD, HIGH);
+    Timer3.pwm(PIN_MT_RI_PWM, map(actRightPWM,0,255,RIGHT_MOTOR_MINPWM,RIGHT_MOTOR_MAXPWM));
+  }
+
+
+  if ((++cnt)%50 == 0) {
+    sprintf(str,"SPL=%04d IL=%04d lPWM=%03d   ",intendedLeftSpeed, (int)InputLeft, (int)actLeftPWM);
+    Serial.print(str);
+    sprintf(str,"SPR=%04d IR=%04d rPWM=%03d",intendedRightSpeed, (int)InputRight, (int)actRightPWM);
+    Serial.println(str);
+  }
+}
+
+#else
 
 void Motor::updateMotors()
 {
@@ -135,6 +216,8 @@ void Motor::updateMotors()
       Serial.printf("Speed: %d/%d\n",rightSpeed,leftSpeed);
   }
 }
+
+#endif
 
 
 void Motor::stop()
