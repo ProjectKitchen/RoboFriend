@@ -13,6 +13,8 @@
 
 #include "support.h"
 
+#define MOTOR_STOPPED 1000   // odometry timing code for stopped motor
+
 void getStateRightMotor(void);
 void getStateLeftMotor(void);
 
@@ -28,8 +30,11 @@ public:
   void clearEncoderValues();
   int32_t getRightEncoderValue();
   int32_t getLeftEncoderValue();
-  int16_t getRightEncoderTime();
-  int16_t getLeftEncoderTime();
+  uint16_t getRightEncoderTime();
+  uint16_t getLeftEncoderTime();
+  int8_t getRightDirection();
+  int8_t getLeftDirection();
+
 };
 
 #endif // ODOMETRY_H

@@ -53,5 +53,5 @@ void loop()
     }
     #endif
 
-    while (micros()-timestamp < 5000);
+    while (micros()-timestamp < 1000);
 }

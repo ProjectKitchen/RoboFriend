@@ -8,12 +8,21 @@
 #include "Odometry.h"
 
 
-// #define USE_PID_CONTROL
+#define ROBOFRIEND_VERSION2      // version 1 and version 2 use different motor compensation settings
+
+#define USE_PID_CONTROL 0        // 1 for PID, 0 for linear
+#define HANDLE_OBSTACLES 0       // currently disabled because sensor values are not valid in Robofriend V2 !
+
+#define PRINT_MOTORSPEED_MESSAGES 0  // print every nth interation (0=disable)
+#define PRINT_SENSOR_MESSAGES     0
 
 
 //tuning parameters for PID motor control  - TBD !
-double KpLeft=1.0,  KiLeft=0.05,  KdLeft=0;
-double KpRight=1.0, KiRight=0.05, KdRight=0;
+//double KpLeft=1.0,  KiLeft=0.05,  KdLeft=0;
+//double KpRight=1.0, KiRight=0.05, KdRight=0;
+
+double KpLeft=0.5,  KiLeft=0.09,  KdLeft=0.02;
+double KpRight=0.5, KiRight=0.09, KdRight=0.02;
 
 
 //variables for PID motor control
@@ -30,12 +39,9 @@ PID rightMotorPID(&InputRight, &OutputRight, &SetpointRight, KpRight, KiRight, K
 extern Odometry odo;
 
 
-#define HANDLE_OBSTACLES 0       // currently disables because sensor values are not valid in Robofriend V2 !
-#define ROBOFRIEND_VERSION2      // version 1 and version 2 use different motor compensation settings
-
 #ifdef ROBOFRIEND_VERSION2
-  int LEFT_MOTOR_MINPWM =20;
-  int RIGHT_MOTOR_MINPWM = 20;
+  int LEFT_MOTOR_MINPWM = 1;
+  int RIGHT_MOTOR_MINPWM = 1;
   int RIGHT_MOTOR_MAXPWM = 1500; // actually a big difference for the right motor! - a motor speed control loop is mandatory !
   int LEFT_MOTOR_MAXPWM = 512;
 #else
@@ -117,61 +123,33 @@ void Motor::init() {
 }
 
 
-#ifdef USE_PID_CONTROL
-
-void Motor::updateMotors()
+void Motor::performPIDControl()
 {
-  static int cnt=0;
-  uint8_t actLeftPWM, actRightPWM;
-  char str[60];
-
-  // update left motor
-  if (odo.getLeftEncoderTime() < 1000) 
-     InputLeft =  3500.0/(double)odo.getLeftEncoderTime();
-  else InputLeft = 0;
-  
   SetpointLeft = (double)intendedLeftSpeed;
-  
   leftMotorPID.Compute();
-  actLeftPWM=(uint8_t) OutputLeft;
-
-  if (actLeftPWM<5) { actLeftPWM=0; Timer3.pwm(PIN_MT_LE_PWM,0); digitalWrite(PIN_MT_LE_FWD, LOW);  }
-  else {
-    digitalWrite(PIN_MT_LE_FWD, HIGH);
-    Timer3.pwm(PIN_MT_LE_PWM, map(actLeftPWM,0,255,LEFT_MOTOR_MINPWM,LEFT_MOTOR_MAXPWM));
-  }
+  leftSpeed= (int)OutputLeft;
+  if ((intendedLeftSpeed>=0) && (leftSpeed<0)) leftSpeed=0;
+  if ((intendedLeftSpeed<0) && (leftSpeed>0)) leftSpeed=0;
 
 
-  // update right motor
-  if (odo.getRightEncoderTime() < 1000) 
-     InputRight =  3500.0/(double)odo.getRightEncoderTime();
-  else InputRight = 0;
-  
   SetpointRight = (double)intendedRightSpeed;
-  
   rightMotorPID.Compute();
-  actRightPWM=(uint8_t) OutputRight;
+  rightSpeed= (int)OutputRight;
+  if ((intendedRightSpeed>=0) && (rightSpeed<0)) rightSpeed=0;
+  if ((intendedRightSpeed<0) && (rightSpeed>0)) rightSpeed=0;
 
-  if (actRightPWM<5) {  actRightPWM=0; Timer3.pwm(PIN_MT_RI_PWM,0); digitalWrite(PIN_MT_RI_FWD, LOW);  }
-  else {
-    digitalWrite(PIN_MT_RI_FWD, HIGH);
-    Timer3.pwm(PIN_MT_RI_PWM, map(actRightPWM,0,255,RIGHT_MOTOR_MINPWM,RIGHT_MOTOR_MAXPWM));
-  }
-
-
-  if ((++cnt)%50 == 0) {
-    sprintf(str,"SPL=%04d IL=%04d lPWM=%03d   ",intendedLeftSpeed, (int)InputLeft, (int)actLeftPWM);
-    Serial.print(str);
-    sprintf(str,"SPR=%04d IR=%04d rPWM=%03d",intendedRightSpeed, (int)InputRight, (int)actRightPWM);
-    Serial.println(str);
+  if (intendedDuration>0) {
+      intendedDuration--;
+      if (!intendedDuration) {
+        intendedLeftSpeed=0;
+        intendedRightSpeed=0;
+    }
   }
 }
 
-#else
-
-void Motor::updateMotors()
+void Motor::performLinearControl()
 {
-  bool leftSpeedReached=false,rightSpeedReached=false;
+   bool leftSpeedReached=false,rightSpeedReached=false;
     
   if (intendedLeftSpeed >= leftSpeed+ACCEL_STEP) leftSpeed += ACCEL_STEP;
   else if (intendedLeftSpeed <= leftSpeed-ACCEL_STEP) leftSpeed -= ACCEL_STEP;
@@ -188,36 +166,66 @@ void Motor::updateMotors()
         intendedRightSpeed=0;
     }
   }
+}
 
+
+
+
+void Motor::updateMotors()
+{
+  static int cnt=0;
+  char str[60];
+
+  cnt++;
+  if ((USE_PID_CONTROL==0) && (cnt%5)) return;  // PID control runs 1KHz, linear control 200Hz
+
+  // get left motor encoder timing
+  if (odo.getLeftEncoderTime() < MOTOR_STOPPED) 
+     InputLeft =  10000.0/(double)odo.getLeftEncoderTime()*odo.getLeftDirection();
+  else InputLeft = 0;
+
+  // get right motor encoder timing
+  if (odo.getRightEncoderTime() < MOTOR_STOPPED) 
+     InputRight =  10000.0/(double)odo.getRightEncoderTime()*odo.getRightDirection();
+  else InputRight = 0;
+
+  
+  if (USE_PID_CONTROL) performPIDControl();
+  else performLinearControl();
+  
   if (HANDLE_OBSTACLES) handleObstacles();
   
-  if (leftSpeed == 0) { 
-    digitalWrite(PIN_MT_LE_FWD, LOW); 
-    digitalWrite(PIN_MT_LE_BCK, LOW); 
+  if (leftSpeed > MOVE_THRESHOLD)  { 
+    digitalWrite(PIN_MT_LE_BCK, LOW); digitalWrite(PIN_MT_LE_FWD, HIGH); 
+    Timer3.pwm(PIN_MT_LE_PWM, map(leftSpeed,0,255,LEFT_MOTOR_MINPWM,LEFT_MOTOR_MAXPWM));
   }
-  else if (leftSpeed > MOVE_THRESHOLD)  { digitalWrite(PIN_MT_LE_BCK, LOW); digitalWrite(PIN_MT_LE_FWD, HIGH); }
-  else if (leftSpeed < -MOVE_THRESHOLD) { digitalWrite(PIN_MT_LE_FWD, LOW); digitalWrite(PIN_MT_LE_BCK, HIGH); }
-  
-  if (rightSpeed == 0) { digitalWrite(PIN_MT_RI_FWD, LOW); digitalWrite(PIN_MT_RI_FWD, LOW); }
-  else if (rightSpeed > MOVE_THRESHOLD)  { digitalWrite(PIN_MT_RI_BCK, LOW); digitalWrite(PIN_MT_RI_FWD, HIGH); }
-  else if (rightSpeed < -MOVE_THRESHOLD) { digitalWrite(PIN_MT_RI_FWD, LOW); digitalWrite(PIN_MT_RI_BCK, HIGH); }
-
-  if (rightSpeed) {
-    Timer3.pwm(PIN_MT_RI_PWM, map((rightSpeed<0) ? -rightSpeed : rightSpeed,0,255,LEFT_MOTOR_MINPWM,RIGHT_MOTOR_MAXPWM));   // right motor slighty slower: compensate PWMs!
+  else if (leftSpeed < -MOVE_THRESHOLD) { 
+    digitalWrite(PIN_MT_LE_FWD, LOW); digitalWrite(PIN_MT_LE_BCK, HIGH); 
+    Timer3.pwm(PIN_MT_LE_PWM, map(-leftSpeed,0,255,LEFT_MOTOR_MINPWM,LEFT_MOTOR_MAXPWM));    
   }
-  else Timer3.pwm(PIN_MT_RI_PWM,0);
-  
-  if (leftSpeed)
-     Timer3.pwm(PIN_MT_LE_PWM, map((leftSpeed<0) ? -leftSpeed : leftSpeed,0,255,LEFT_MOTOR_MINPWM,LEFT_MOTOR_MAXPWM));
-  else Timer3.pwm(PIN_MT_LE_PWM,0);
+  else { digitalWrite(PIN_MT_LE_FWD, LOW);  digitalWrite(PIN_MT_LE_BCK, LOW); Timer3.pwm(PIN_MT_LE_PWM,0);}
 
+  if (rightSpeed > MOVE_THRESHOLD)  { 
+    digitalWrite(PIN_MT_RI_BCK, LOW); digitalWrite(PIN_MT_RI_FWD, HIGH); 
+    Timer3.pwm(PIN_MT_RI_PWM, map(rightSpeed,0,255,LEFT_MOTOR_MINPWM,RIGHT_MOTOR_MAXPWM));
+  }
+  else if (rightSpeed < -MOVE_THRESHOLD) { 
+    digitalWrite(PIN_MT_RI_FWD, LOW); digitalWrite(PIN_MT_RI_BCK, HIGH); 
+    Timer3.pwm(PIN_MT_RI_PWM, map(-rightSpeed,0,255,LEFT_MOTOR_MINPWM,RIGHT_MOTOR_MAXPWM));    
+  }
+  else { digitalWrite(PIN_MT_RI_FWD, LOW); digitalWrite(PIN_MT_RI_FWD, LOW); Timer3.pwm(PIN_MT_RI_PWM,0);}
+  
   if (PRINT_MOTORSPEED_MESSAGES) {
-    if (((loopcounter % 3) == 0) && (leftSpeed || rightSpeed))
-      Serial.printf("Speed: %d/%d\n",rightSpeed,leftSpeed);
+
+    if (((cnt)%PRINT_MOTORSPEED_MESSAGES == 0) && (leftSpeed || rightSpeed)) {
+      sprintf(str,"SPL=%04d IL=%04d lPWM=%03d   ",intendedLeftSpeed, (int)InputLeft, (int)leftSpeed);
+      Serial.print(str);
+      sprintf(str,"SPR=%04d IR=%04d rPWM=%03d\r\n",intendedRightSpeed, (int)InputRight, (int)rightSpeed);
+      Serial.println(str);
+    }
   }
 }
 
-#endif
 
 
 void Motor::stop()
@@ -239,7 +247,10 @@ void Motor::drive(int left, int right, int duration) {
    Serial.printf("Drive right=%04d, left=%04d, duration=%04d\n",left,right,duration);
    intendedRightSpeed=right;
    intendedLeftSpeed=left;
-   intendedDuration=duration;
+  
+   if (USE_PID_CONTROL==0)
+      intendedDuration=duration;
+   else intendedDuration=duration*5;
 }
 
 int Motor::handleObstacles() {

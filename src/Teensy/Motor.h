@@ -1,9 +1,6 @@
 #ifndef MOTOR_H_
 #define MOTOR_H_
 
-#define PRINT_MOTORSPEED_MESSAGES 0
-#define PRINT_SENSOR_MESSAGES     0
-
 #define STEPLENGTH      50
 #define STEPLENGTH_TURN 20
 #define ACCEL_STEP      2
@@ -24,6 +21,10 @@ public:
 
 protected:
 
+  void performPIDControl();
+  void performLinearControl();
+  void setMotorSpeedGoals(int left, int right);
+  
   int intendedRightSpeed;
   int intendedLeftSpeed;
   int intendedDuration;

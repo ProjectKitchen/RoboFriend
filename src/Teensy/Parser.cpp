@@ -20,7 +20,7 @@ void drive()
   } 
   arg = SCmd.next(); 
   if (arg != NULL)  {
-    duration=atoi(arg)/10;
+    duration=atoi(arg);
   } 
   Motors.drive(left,right,duration);
 }
