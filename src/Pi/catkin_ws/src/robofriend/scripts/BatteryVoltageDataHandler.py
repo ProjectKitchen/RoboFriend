@@ -16,7 +16,3 @@ class BatteryVoltageDataHandler():
     @voltage.setter
     def voltage(self, value):
         self._voltage = value
-
-    @voltage.deleter
-    def voltage(self):
-        del self._voltage

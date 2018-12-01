@@ -26,10 +26,6 @@ class CameraDataHandler():
     def top(self, value):
         self._top = value
 
-    @top.deleter
-    def top(self):
-        del self._top
-
     # right
     @property
     def right(self):
@@ -38,10 +34,6 @@ class CameraDataHandler():
     @right.setter
     def right(self, value):
         self._right = value
-
-    @right.deleter
-    def right(self):
-        del self._right
 
     # bottom
     @property
@@ -52,10 +44,6 @@ class CameraDataHandler():
     def bottom(self, value):
         self._bottom = value
 
-    @bottom.deleter
-    def bottom(self):
-        del self._bottom
-
     # left
     @property
     def left(self):
@@ -65,10 +53,6 @@ class CameraDataHandler():
     def left(self, value):
         self._left = value
 
-    @left.deleter
-    def left(self):
-        del self._left
-
     # name
     @property
     def name(self):
@@ -77,8 +61,4 @@ class CameraDataHandler():
     @name.setter
     def name(self, value):
         self._name = value
-
-    @name.deleter
-    def name(self):
-        del self._name
 

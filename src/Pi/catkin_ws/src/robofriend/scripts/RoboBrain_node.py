@@ -4,7 +4,7 @@ import rospy
 from std_msgs.msg import String
 from std_msgs.msg import Float64
 from robofriend.msg import CamData
-from robofriend.msg import OdoData
+from turtlesim.msg import Pose
 
 import RoboStates
 import BatteryVoltageDataHandler
@@ -60,7 +60,7 @@ def listener():
     rospy.init_node('robobrain', anonymous = True)
 
     rospy.Subscriber(topics['T_VOLT_DATA'], Float64, voltage_data_cb)
-    rospy.Subscriber(topics['T_ODOM_DATA'], OdoData, odometry_data_cb)
+    rospy.Subscriber(topics['T_ODOM_DATA'], Pose, odometry_data_cb)
     rospy.Subscriber(topics['T_IR_DATA'],   String, infrared_data_cb)
     rospy.Subscriber(topics['T_CAM_DATA'],  CamData, camera_data_cb)
     rospy.Subscriber(topics['T_KEYB_DATA'], String, keyboard_data_cb)

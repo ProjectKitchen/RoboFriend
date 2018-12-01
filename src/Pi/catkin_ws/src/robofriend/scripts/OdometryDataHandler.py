@@ -1,3 +1,5 @@
+# can use this params to check whether we hit a wall or an obstacle i.e.
+
 import rospy
 
 class OdometryDataHandler():
@@ -5,13 +7,24 @@ class OdometryDataHandler():
     def __init__(self):
         self._x = 0
         self._y = 0
-        self._z = 0
+        self._theta = 0
+        self._linear_velocity = 0
+        self._angular_velocity = 0
 
     def processData(self, data):
     	self._x = data.x
         self._y = data.y
-        self._z = data.z
-        rospy.loginfo('{%s} DATA: %s %s %s', self.__class__.__name__, self._x, self._y, self._z)                                    
+        self._theta = data.theta
+        self._linear_velocity = data.linear_velocity
+        self._angular_velocity = data.angular_velocity
+        rospy.loginfo('{%s} DATA: %f %f %f %s %s', 
+        				self.__class__.__name__, 
+        				self._x, 
+        				self._y, 
+        				self._theta,
+        				self._linear_velocity,
+        				self._angular_velocity
+        				)                                    
 
     # x
     @property
@@ -22,10 +35,6 @@ class OdometryDataHandler():
     def x(self, value):
         self._x = value
 
-    @x.deleter
-    def x(self):
-        del self._x
-
     # y
     @property
     def y(self):
@@ -35,19 +44,29 @@ class OdometryDataHandler():
     def y(self, value):
         self._y = value
 
-    @y.deleter
-    def y(self):
-        del self._y
-
-    # z
+    # theta
     @property
-    def z(self):
-        return self._z
+    def theta(self):
+        return self._theta
 
-    @z.setter
-    def z(self, value):
-        self._z = value
+    @theta.setter
+    def theta(self, value):
+        self._theta = value
 
-    @z.deleter
-    def z(self):
-        del self._z
+    # linear_velocity
+    @property
+    def linear_velocity(self):
+        return self._linear_velocity
+
+    @linear_velocity.setter
+    def linear_velocity(self, value):
+        self._linear_velocity = value
+
+    # angular_velocity
+    @property
+    def angular_velocity(self):
+        return self._angular_velocity
+
+    @angular_velocity.setter
+    def angular_velocity(self, value):
+        self._angular_velocity = value

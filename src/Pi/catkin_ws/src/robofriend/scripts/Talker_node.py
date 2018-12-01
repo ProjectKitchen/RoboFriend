@@ -40,13 +40,13 @@ import rospy
 from std_msgs.msg import String
 from std_msgs.msg import Float64
 from robofriend.msg import CamData
-from robofriend.msg import OdoData
+from turtlesim.msg import Pose
 
-def talker():
+def Talker():
     # battery voltage
     pub_v = rospy.Publisher('T_VOLT_DATA', Float64, queue_size = 10)
     # odometry data
-    pub_o = rospy.Publisher('T_ODOM_DATA', OdoData, queue_size = 10)
+    pub_o = rospy.Publisher('T_ODOM_DATA', Pose, queue_size = 10)
     # infrared data
     pub_i = rospy.Publisher('T_IR_DATA', String, queue_size = 10)
     # camera data
@@ -59,10 +59,12 @@ def talker():
     rospy.init_node('talker', anonymous = True)
     rate = rospy.Rate(1) # 1hz
 
-    odata = OdoData()
+    odata = Pose()
     odata.x = 0.1
     odata.y = 0.2
-    odata.z = 0.3
+    odata.theta = 0.3
+    odata.linear_velocity = 2 # up down
+    odata.angular_velocity = 0 # left right
 
     cdata = CamData()
     cdata.top = 10
@@ -98,6 +100,6 @@ def talker():
 
 if __name__ == '__main__':
     try:
-        talker()
+        Talker()
     except rospy.ROSInterruptException:
         pass
