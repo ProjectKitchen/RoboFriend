@@ -45,19 +45,19 @@ def rfid_data_cb(data):
     rf.processData(data)
 
 def listener():
-    # test 1 voltage
-    pub_1 = rospy.Publisher('T_TEST_1_DATA', Float64, queue_size = 10)
-    # test 2 data
-    pub_2 = rospy.Publisher('T_TEST_2_DATA', String, queue_size = 10)
-    # pathplanner data
-    pub_p = rospy.Publisher('T_PATH_DATA', String, queue_size = 10)
-
     # In ROS, nodes are uniquely named. If two nodes with the same
     # name are launched, the previous one is kicked off. The
     # anonymous=True flag means that rospy will choose a unique
     # name for our 'RoboBrain' node so that multiple listeners can
     # run simultaneously.
     rospy.init_node('robobrain', anonymous = True)
+
+    # test 1 voltage
+    pub_1 = rospy.Publisher('T_TEST_1_DATA', Float64, queue_size = 10)
+    # test 2 data
+    pub_2 = rospy.Publisher('T_TEST_2_DATA', String, queue_size = 10)
+    # pathplanner data
+    pub_p = rospy.Publisher('T_PATH_DATA', String, queue_size = 10)
 
     rospy.Subscriber(topics['T_VOLT_DATA'], Float64, voltage_data_cb)
     rospy.Subscriber(topics['T_ODOM_DATA'], Pose, odometry_data_cb)

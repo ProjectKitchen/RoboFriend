@@ -52,6 +52,7 @@ add_message_files(
    FILES
    CamData.msg
    OdoData.msg
+   LandmarkDistance.msg
  )
 
 ## Generate services in the 'srv' folder
