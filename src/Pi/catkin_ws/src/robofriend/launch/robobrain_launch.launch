@@ -1,0 +1,5 @@
+<launch>
+	<node pkg="robofriend" type="RoboBrain.py" name="robobrain" output="screen">
+
+	</node>
+</launch>
