@@ -1,0 +1,5 @@
+<launch>
+	<node pkg="robofriend" type="PathPlanner.py" name="pathplanner" output="screen">
+
+	</node>
+</launch>

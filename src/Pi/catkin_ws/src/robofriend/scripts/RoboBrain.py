@@ -49,8 +49,8 @@ def listener():
     pub_1 = rospy.Publisher('T_TEST_1_DATA', Float64, queue_size = 10)
     # test 2 data
     pub_2 = rospy.Publisher('T_TEST_2_DATA', String, queue_size = 10)
-    # test 3 data
-    pub_3 = rospy.Publisher('T_TEST_3_DATA', String, queue_size = 10)
+    # pathplanner data
+    pub_p = rospy.Publisher('T_PATH_DATA', String, queue_size = 10)
 
     # In ROS, nodes are uniquely named. If two nodes with the same
     # name are launched, the previous one is kicked off. The
@@ -80,9 +80,9 @@ def listener():
         rospy.loginfo(hello_str)
         pub_2.publish(hello_str)
 
-        hello_str = "hello test 3"
+        hello_str = "hello path planner"
         rospy.loginfo(hello_str)
-        pub_3.publish(hello_str)
+        pub_p.publish(hello_str)
 
         rospy.loginfo("========================")
 
