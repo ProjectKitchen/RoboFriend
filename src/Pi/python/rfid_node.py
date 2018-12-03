@@ -1,7 +1,7 @@
 import serial
 import threading
 import gameCommunicator
-from std_msgs import String
+from std_msgs.msgs import String
 
 # global variables
 runFlag = True
@@ -17,7 +17,7 @@ def node_start():
 
     print("[INFO] ROS RFID Node started!\n")
 
-    pub = rospy.Publisher('rfid_topic', String, queue_size = 10)
+    pub = rospy.Publisher('T_RFID_DATA', String, queue_size = 10)
     #rospy.init('rfid_node', anonymous = True)
 
     # queue to ensure a communication system between rfid thread and publisher
