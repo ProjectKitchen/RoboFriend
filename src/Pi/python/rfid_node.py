@@ -18,10 +18,10 @@ def node_start():
     print("[INFO] ROS RFID Node started!\n")
 
     pub = rospy.Publisher('rfid_topic', String, queue_size = 10)
-    rospy.init('rfid_node', anonymous = True)
+    #rospy.init('rfid_node', anonymous = True)
 
     # queue to ensure a communication system between rfid thread and publisher
-    thread_queue = queue.Queue()
+    #thread_queue = queue.Queue()
 
     try:
         serial_rfid = serial.Serial("/dev/ttyUSB0", 9600)
@@ -30,25 +30,25 @@ def node_start():
         # thread to handle the rfid date
         rfid_thread = threading.Thread(
             target = serial_rfid_read,
-            args = (serial_rfid, thread_queue, )
+            args = (serial_rfid, pub,  )
         )
 
         # start rfid thread
         rfid_thread.start()
 
-        while runFlag:
-            received_messsage = thread_queue.get()
-            transmit_message = message_merge(received_message)
-            print("[INFO] Transmitted data from rfid node: {}".format(transmit_message))
-            game.Communicator(transmit_message))
-            pub.publish(transmit_message)
+        # while runFlag:
+        #     received_messsage = thread_queue.get()
+        #     transmit_message = message_merge(received_message)
+        #     print("[INFO] Transmitted data from rfid node: {}".format(transmit_message))
+        #     game.Communicator(transmit_message))
+        #     pub.publish(transmit_message)
     except:
         print("[INFO] Serial for RFID could not be opened!!!")
 
         if runFlag == False:
             serial_rfid.close()
 
-def serial_rfid_read(serial, queue):
+def serial_rfid_read(serial, pub):
     global runFlag
 
     data = ""
@@ -64,8 +64,9 @@ def serial_rfid_read(serial, queue):
             readRFIDnumber = data
 
             if readRFIDnumber != "empty":
-                print("[INFO] Serial rfid received: {}".format(readRFIDnumber))
-                queue.put(readRFIDnumber)
+                print("[INFO] Published RFID message: {}".format(readRFIDnumber))
+                #queue.put(readRFIDnumber)
+                pub.publish(readRFIDnumber)
                 readRFIDnumber = "empty"
     finally:
         serial.close()
