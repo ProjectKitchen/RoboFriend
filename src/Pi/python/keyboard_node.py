@@ -15,33 +15,40 @@ import soundModule
 import speechModule
 import systemModule
 
+# import message
+from robofriend.msg import KeyboardData
+
 # globals
 runFlag = True
+
+#TODO: messages umändern auf KeyboardData
 
 def node_start():
     print("[INFO] ROS Keyboard Node started!\n")
 
-    pub = rospy.Publisher('keyboard_topic', String, queue_size = 10)
-    rospy.init('Keyboard_node', anonymous = True)
+    pub = rospy.Publisher('T_KEYB_DATA', KeyboardData, queue_size = 10)
+    #rospy.init('Keyboard_node', anonymous = True)
 
     # queue to ensure a communication system between keyboard thread and publisher
-    thread_queue = queue.Queue()
+    # thread_queue = queue.Queue()
+
+    msg = KeyboardData()
 
     # thread to handle the keyboard inputs
     keyboard_thread = threading.Thread(
         target = handle_keyboard,
-        args = (thread_queue, )
+        args = (pub, msg, )
     )
 
     # start keyboard thread
     keyboard_thread.start()
 
-    while runFlag:
-        received_message = thread_queue.get()
-        print("[INFO] Transmitted data from keyboard node: {}".format(received_message))
-        pub.publisher(received_message)
+    # while runFlag:
+    #     received_message = thread_queue.get()
+    #     print("[INFO] Transmitted data from keyboard node: {}".format(received_message))
+    #     pub.publisher(received_message)
 
-def handle_keyboard(queue):
+def handle_keyboard(pub, msg):
     global runFlag
 
     speechBuffer = ""
@@ -167,7 +174,8 @@ def handle_keyboard(queue):
                 elif re.match('^[a-zA-Z ]$', event.unicode):
                     speechBuffer += event.unicode
                     print('speech buffer is now: ' + str(speechBuffer))
-            queue_transmit(queue, send_message)
+            # queue_transmit(queue, send_message)
+            pub.publisher(send_message)
             command = ""
             tmp_command = ""
         except Exception as e:
