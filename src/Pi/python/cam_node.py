@@ -1,4 +1,4 @@
-from robofriend.msg import Coordinates
+from robofriend.msg import CamData
 from imutils.video import VideoStream
 from imutils.video import FPS
 import face_recognition
@@ -24,12 +24,12 @@ def node_start():
     print("[INFO] Ros Cam Node start!")
     coordinates = 0
 
-    pub = rospy.Publisher('camera_coordinates_topic', Coordinates, queue_size = 20)
+    pub = rospy.Publisher('T_CAM_DATA', CamData, queue_size = 20)
 #    rospy.init_node('Cam_node', anonymous = True)
 
     # create a queueu to coomunicate with the face_recog thread
 #    thread_queue = queue.Queue()
-    msg = Coordinates()
+    msg = CamData()
 
     # include message queue
     face_recog_thread = threading.Thread(
@@ -43,7 +43,7 @@ def node_start():
 #    while runFlag:
 #        msg.y_top, msg.right, msg.bottom, msg.x_left, msg.face_name = thread_queue.get()
 #        print("[INFO] Send Data: {}".format(msg))
-        
+
 
 def face_recog(pub, msg):
     global runFlag
