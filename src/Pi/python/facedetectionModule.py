@@ -3,16 +3,17 @@ import rospy
 import teensyCommunicator
 import ioWarriorModule
 from robofriend.msg import CamData
+from std_msgs.msg import String
 
 # TODO: according to the known face let the ears light in different colors
 # TODO: test with a dummy talker until second Robofriend is operational
 
 def callback (data):
     print("[INFO] Facedetection Listener received callback!")
-    rospy.loginfo("y_top: " + str(data.top))
+    rospy.loginfo("top: " + str(data.top))
     rospy.loginfo("right: " + str(data.right))
     rospy.loginfo("bottom: " + str(data.bottom))
-    rospy.loginfo("x_left: " + str(data.left))
+    rospy.loginfo("left: " + str(data.left))
     rospy.loginfo("name: " + str(data.name))
 
     coordin = {"y" : data.top, "x_w" : data.right, "y_h" : data.bottom, "x" : data.left, "name" : data.name}
@@ -20,11 +21,15 @@ def callback (data):
     centre_face(coordin)
     resize_face(coordin)
     identify_face(coordin)
+    
+def rfid_data_cb(data):
+    print("[INFO] Received rfid date: {}".format(data))
 
 def listener():
     print("[INFO] Starting Facedetection Listener!")
 #    rospy.init_node('listener', anonymous=True)
     rospy.Subscriber("T_CAM_DATA", CamData, callback)
+    rospy.Subscriber("T_RFID_DATA", String, rfid_data_cb)
     print("[INFO] Facedetection Listener started!")
 
 
