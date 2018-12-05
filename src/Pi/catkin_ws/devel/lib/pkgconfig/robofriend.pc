@@ -1,8 +1,0 @@
-prefix=/home/pi/project/RoboFriend/src/Pi/catkin_ws/devel
-
-Name: robofriend
-Description: Description of robofriend
-Version: 0.0.0
-Cflags: -I/home/pi/project/RoboFriend/src/Pi/catkin_ws/devel/include
-Libs: -L/home/pi/project/RoboFriend/src/Pi/catkin_ws/devel/lib 
-Requires: roscpp rospy std_msgs message_runtime
