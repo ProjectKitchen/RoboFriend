@@ -14,6 +14,7 @@ def serialRFIDread():
     try:
         while runFlag:
             daten = serRFID.read(16)
+            daten = str(daten)
             daten = daten.replace("\x02", "" )
             daten = daten.replace("\x03", "" )
             daten = daten.replace("\x0a", "" )
