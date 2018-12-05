@@ -22,6 +22,7 @@ import teensyCommunicator as teensyCommunicator
 import ioWarriorModule as ioWarriorModule
 import speechModule as speechModule
 import cam_node as cam_node
+import rfid_node as rfid_node
 import facedetectionModule as facedetectionModule
 import systemModule as systemModule
 
@@ -59,7 +60,8 @@ def main():
 	print("Initialising RosPy!")
 	rospy.init_node('Robofriend_node', anonymous = True)
 	print("Done ... starting RFID!")
-	rfidModule.start()
+	#rfidModule.start()
+	rfid_node.node_start()
 	print("Done ... starting Webserver!")
 	webserverModule.start()
 	print("Done ... starting StatusModule!")
