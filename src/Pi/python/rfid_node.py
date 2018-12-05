@@ -1,7 +1,8 @@
 import serial
 import threading
 import gameCommunicator
-from std_msgs.msgs import String
+from std_msgs.msg import String
+import rospy
 
 # global variables
 runFlag = True
@@ -18,10 +19,6 @@ def node_start():
     print("[INFO] ROS RFID Node started!\n")
 
     pub = rospy.Publisher('T_RFID_DATA', String, queue_size = 10)
-    #rospy.init('rfid_node', anonymous = True)
-
-    # queue to ensure a communication system between rfid thread and publisher
-    #thread_queue = queue.Queue()
 
     try:
         serial_rfid = serial.Serial("/dev/ttyUSB0", 9600)
@@ -35,13 +32,6 @@ def node_start():
 
         # start rfid thread
         rfid_thread.start()
-
-        # while runFlag:
-        #     received_messsage = thread_queue.get()
-        #     transmit_message = message_merge(received_message)
-        #     print("[INFO] Transmitted data from rfid node: {}".format(transmit_message))
-        #     game.Communicator(transmit_message))
-        #     pub.publish(transmit_message)
     except:
         print("[INFO] Serial for RFID could not be opened!!!")
 
@@ -57,6 +47,7 @@ def serial_rfid_read(serial, pub):
     try:
         while runFlag:
             data = serial.read(16)
+            data = str(data)
             data = data.replace("\x02", "" )
             data = data.replace("\x03", "" )
             data = data.replace("\x0a", "" )
