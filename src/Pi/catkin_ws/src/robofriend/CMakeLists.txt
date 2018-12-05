@@ -53,6 +53,7 @@ add_message_files(
    CamData.msg
    OdoData.msg
    LandmarkDistance.msg
+   KeyboardData.msg
  )
 
 ## Generate services in the 'srv' folder
