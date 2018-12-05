@@ -175,7 +175,7 @@ def face_recog(pub, msg):
             coordinates = list(boxes[0]).copy()
             coordinates.append(name)
             print("[INFO] Coordinates in Submodule: {}".format(coordinates))
-            msg.y_top, msg.right, msg.bottom, msg.x_left, msg.face_name = coordinates
+            msg.top, msg.right, msg.bottom, msg.left, msg.name = coordinates
             pub.publish(msg)
 #            queue.put()
 
