@@ -1,4 +1,6 @@
-from ros_robofriend.msg import CamData
+#!/usr/bin/env python3
+
+from ros_robofriend.msg import Coordinates
 from imutils.video import VideoStream
 from imutils.video import FPS
 import face_recognition
@@ -12,41 +14,50 @@ import time
 import os
 import rospy
 import threading
-
+import queue
 
 # globals
 runFlag = True
 
 def node_stop():
-    runFlag = False
+   global runFlag
+   runFlag = False
 
 def node_start():
-    print("[INFO] Ros Cam Node start!")
+    global runFlag
+    print("[INFO] ROS Cam Node started!\n")
     coordinates = 0
 
-    pub = rospy.Publisher('T_CAM_DATA', CamData, queue_size = 20)
-#    rospy.init_node('Cam_node', anonymous = True)
+    pub = rospy.Publisher('camera_coordinates_topc', Coordinates, queue_size = 10)
+    rospy.init_node('Cam_node', anonymous = True)
 
     # create a queueu to coomunicate with the face_recog thread
-#    thread_queue = queue.Queue()
-    msg = CamData()
+    thread_queue = queue.Queue()
+    msg = Coordinates()
 
     # include message queue
     face_recog_thread = threading.Thread(
         target = face_recog,
-        args = (pub, msg, )
+        args = (thread_queue, )
     )
 
     # start the face_recog thread
     face_recog_thread.start()
 
-#    while runFlag:
-#        msg.y_top, msg.right, msg.bottom, msg.x_left, msg.face_name = thread_queue.get()
-#        print("[INFO] Send Data: {}".format(msg))
+    
+    while runFlag:
+        try:
+            msg.y_top, msg.right, msg.bottom, msg.x_left, msg.face_name = thread_queue.get()
+            print("[INFO] Send Data: {}".format(msg))
+            pub.publish(msg)
+        except KeyboardInterrupt:
+            print("Within Exception")
+            node_stop()
+            #runFlag = False
 
-
-def face_recog(pub, msg):
+def face_recog(queue):
     global runFlag
+    print("[INFO] Thread for face_recog started!\n")
     coordinates = []
 
     path = os.path.dirname(os.path.realpath(__file__))
@@ -175,9 +186,7 @@ def face_recog(pub, msg):
             coordinates = list(boxes[0]).copy()
             coordinates.append(name)
             print("[INFO] Coordinates in Submodule: {}".format(coordinates))
-            msg.top, msg.right, msg.bottom, msg.left, msg.name = coordinates
-            pub.publish(msg)
-#            queue.put()
+            queue.put(coordinates)
 
         # display the image to our screen
         cv2.imshow("Frame", frame)
@@ -193,3 +202,6 @@ def face_recog(pub, msg):
     # do a bit of cleanup
     cv2.destroyAllWindows()
     cv2.destroyAllWindows()
+    
+if __name__ == '__main__':
+    node_start()

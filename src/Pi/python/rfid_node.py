@@ -14,8 +14,6 @@ def node_stop():
 def node_start():
     global runFlag
 
-    received_message = ""
-
     print("[INFO] ROS RFID Node started!\n")
 
     pub = rospy.Publisher('T_RFID_DATA', String, queue_size = 10)
@@ -46,12 +44,13 @@ def serial_rfid_read(serial, pub):
 
     try:
         while runFlag:
-            data = serial.read(16)
-            data = str(data)
-            data = data.replace("\x02", "" )
-            data = data.replace("\x03", "" )
-            data = data.replace("\x0a", "" )
-            data = data.replace("\x0d", "" )
+            data = str(serial.read(16))
+            data = data.strip("b'")
+            data = data.replace("\\x02", "").replace("\\x03", "").replace("\\x0a", "").replace("\\x0d", "").replace("\\r\\n", "")
+            #data = data.replace("\x02", "" )
+            #data = data.replace("\x03", "" )
+            #data = data.replace("\x0a", "" )
+            #data = data.replace("\x0d", "" )
             readRFIDnumber = data
 
             if readRFIDnumber != "empty":
@@ -61,6 +60,3 @@ def serial_rfid_read(serial, pub):
                 readRFIDnumber = "empty"
     finally:
         serial.close()
-
-def message_merge(command):
-    return "rfid;" + command

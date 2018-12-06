@@ -13,18 +13,21 @@ def serialRFIDread():
     global serRFID, readRFIDnumber, runFlag
     try:
         while runFlag:
-            daten = serRFID.read(16)
-            daten = str(daten)
-            daten = daten.replace("\x02", "" )
-            daten = daten.replace("\x03", "" )
-            daten = daten.replace("\x0a", "" )
-            daten = daten.replace("\x0d", "" )
+            data = str(serRFID.read(16))
+            #print(type(data))
+            print("[INFO] First serial RFID Data: {}".format(data))
+            data = data.strip("b'")
+            data = data.replace("\\x02", "").replace("\\x03", "").replace("\\x0a", "").replace("\\x0d", "").replace("\\r\\n", "")
+            #daten = daten.replace("\x02", "" )
+            #daten = daten.replace("\x03", "" )
+            #daten = daten.replace("\x0a", "" )
+            #daten = daten.replace("\x0d", "" )
             #lock
-            readRFIDnumber=daten
+            readRFIDnumber = data
             #release
             if readRFIDnumber!="empty": #if rfid not locked: if rfid != empty, lock. --- release
                 print('***Serial RFID received:')
-                print(readRFIDnumber)
+                print("[INFO] Send RFID Data: {}".format(readRFIDnumber))
                 gameCommunicator.sendtogui("rfid;"+str(readRFIDnumber))
                 readRFIDnumber="empty"
     finally:
