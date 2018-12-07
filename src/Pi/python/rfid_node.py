@@ -34,8 +34,7 @@ def node_start():
          
         # start rfid thread
         rfid_thread.start()
-    except Exception as e:
-        print(e)
+    except:
         print("[INFO] Serial for RFID could not be opened!!!")
 
         if runFlag == False:
