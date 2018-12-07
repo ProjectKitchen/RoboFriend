@@ -25,10 +25,7 @@ def node_start():
     coordinates = 0
 
     pub = rospy.Publisher('T_CAM_DATA', CamData, queue_size = 20)
-#    rospy.init_node('Cam_node', anonymous = True)
 
-    # create a queueu to coomunicate with the face_recog thread
-#    thread_queue = queue.Queue()
     msg = CamData()
 
     # include message queue
@@ -36,14 +33,12 @@ def node_start():
         target = face_recog,
         args = (pub, msg, )
     )
+    
+    # set thread as a daemon
+    face_recog_thread.daemon = True
 
     # start the face_recog thread
     face_recog_thread.start()
-
-#    while runFlag:
-#        msg.y_top, msg.right, msg.bottom, msg.x_left, msg.face_name = thread_queue.get()
-#        print("[INFO] Send Data: {}".format(msg))
-
 
 def face_recog(pub, msg):
     global runFlag
@@ -58,8 +53,6 @@ def face_recog(pub, msg):
     print("[INFO] loading encodings + face detector...")
 
     # path of the encodings and the haarcascade file
-    #encodings_path = "/home/pi/catkin_workspace/src/facedetection_coordinates/scripts/encodings.pickle"
-    #haarcascade_path = "/home/pi/catkin_workspace/src/facedetection_coordinates/scripts/haarcascade_frontalface_default.xml"
     encodings_path = path + "/encodings.pickle"
     haarcascade_path = path + "/haarcascade_frontalface_default.xml"
 
@@ -124,11 +117,6 @@ def face_recog(pub, msg):
         # print("[INFO] Boxes: {}".format(boxes))
 
         if boxes != []:
-            #print("[INFO] Event set")
-            #coordinates = list(boxes[0]).copy()
-            #event_coordinates.set()
-            #print("[INFO] Coordinates in Submodule: {}".format(coordinates))
-
             # compute the facial embeddings for each face bounding box
             encodings = face_recognition.face_encodings(rgb, boxes)
             names = []
@@ -177,10 +165,9 @@ def face_recog(pub, msg):
             print("[INFO] Coordinates in Submodule: {}".format(coordinates))
             msg.top, msg.right, msg.bottom, msg.left, msg.name = coordinates
             pub.publish(msg)
-#            queue.put()
 
         # display the image to our screen
-        cv2.imshow("Frame", frame)
+        #v2.imshow("Frame", frame)
         #key = cv2.waitKey(1) & 0xFF
 
         # if the `q` key was pressed, break from the loop
@@ -191,5 +178,5 @@ def face_recog(pub, msg):
 
     print("[INFO] END FACE RECOGNITION THREAD")
     # do a bit of cleanup
-    cv2.destroyAllWindows()
-    cv2.destroyAllWindows()
+    #cv2.destroyAllWindows()
+    #cv2.destroyAllWindows()

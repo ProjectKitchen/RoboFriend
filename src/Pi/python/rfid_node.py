@@ -10,6 +10,7 @@ runFlag = True
 def node_stop():
     global runFlag
     runFlag = False
+    print("[INFO] Stopping rfid node!")
 
 def node_start():
     global runFlag
@@ -28,9 +29,13 @@ def node_start():
             args = (serial_rfid, pub,  )
         )
 
+        # set thread as a daemon
+        rfid_thread.daemon = True 
+         
         # start rfid thread
         rfid_thread.start()
-    except:
+    except Exception as e:
+        print(e)
         print("[INFO] Serial for RFID could not be opened!!!")
 
         if runFlag == False:
@@ -47,16 +52,14 @@ def serial_rfid_read(serial, pub):
             data = str(serial.read(16))
             data = data.strip("b'")
             data = data.replace("\\x02", "").replace("\\x03", "").replace("\\x0a", "").replace("\\x0d", "").replace("\\r\\n", "")
-            #data = data.replace("\x02", "" )
-            #data = data.replace("\x03", "" )
-            #data = data.replace("\x0a", "" )
-            #data = data.replace("\x0d", "" )
+            
             readRFIDnumber = data
 
             if readRFIDnumber != "empty":
                 print("[INFO] Published RFID message: {}".format(readRFIDnumber))
-                #queue.put(readRFIDnumber)
                 pub.publish(readRFIDnumber)
                 readRFIDnumber = "empty"
+                
+        print("[INFO] END SERIAL RFID THREAD")
     finally:
         serial.close()
