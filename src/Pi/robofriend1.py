@@ -21,10 +21,10 @@ import keyboardModule as keyboardModule
 import teensyCommunicator as teensyCommunicator
 import ioWarriorModule as ioWarriorModule
 import speechModule as speechModule
-#import cam_node as cam_node
+import cam_node as cam_node
 import rfid_node as rfid_node
 #import rfidModule as rfidModule
-#import facedetectionModule as facedetectionModule
+import facedetectionModule as facedetectionModule
 import systemModule as systemModule
 
 
@@ -45,7 +45,7 @@ def stop():
 	ioWarriorModule.stop()
 	speechModule.stop()
 	faceModule.close()
-	#cam_node.node_stop()
+	cam_node.node_stop()
 	rfid_node.node_stop()
 	runFlag = False
 	print("*** graceful shutdown completed! ***")
@@ -75,9 +75,9 @@ def main():
 	print("Done ... starting FaceModue")
 	faceModule.drawFace()
 	print("Done ... starting RosCamNode")
-	#cam_node.node_start()
+	cam_node.node_start()
 	print("Done ... starting FacedetectListener")
-	#facedetectionModule.listener()
+	facedetectionModule.listener()
 	print("init done! register signal handlers...")
 
 	# setting up signal handlers for shutdown
@@ -85,8 +85,9 @@ def main():
 	signal.signal(signal.SIGTERM, handler_stop_signals)
 	print("*** startup completed! ***")
 
-	rospy.spin()
+	#rospy.spin()
 	while runFlag: time.sleep(0.5) # keep program running until stopped
+	print("[INFO] Main script terminated!!!")
 
 if __name__ == '__main__':
 	main()
