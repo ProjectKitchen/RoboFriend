@@ -32,7 +32,7 @@ These game applications are also written in python and are usually launched on a
 
 ## Requirements
 
-To get the existing *Python 2.7.x* code compatible for *Python 3.x* following packages should be installed:
+To get the existing *Python 2.7.x* code compatible for *Python 3.x* following packages must be installed:
 *  mjpg-streamer: [MJPEG-Streamer Install & Setup](https://github.com/cncjs/cncjs/wiki/Setup-Guide:-Raspberry-Pi-%7C-MJPEG-Streamer-Install-&-Setup-&-FFMpeg-Recording)
 * speech engine:
   * pip install pyttsx3
@@ -63,7 +63,12 @@ To get the existing *Python 2.7.x* code compatible for *Python 3.x* following pa
 * *additional information:*
     * in case of a frozen screen at the installation part: **"sudo ./src/catkin/bin/catkin_make_isolated --install -DCMAKE_BUILD_TYPE=Release --install-space /opt/ros/kinetic -j2"**
          try **"-j1"** instead of **"-j2"**
-    * add the ROS workspace to your .bashrc file through the following command: *echo "source ~/catkin_ws/devel/setup.bash" >> ~/.bashrc*
+    * add the ROS workspace to your .bashrc file through the following command: *echo "source /home/pi/project/RoboFriend/src/Pi/catkin_ws/devel/setup.bash" >> ~/.bashrc*
+    * after pulling the RoboFriend repository on your Raspberry Pi, change into the catkin_ws folder within the RoboFriend directory and execute following commands:
+        * catkin_make
+        * catkin_make_install
+    * to enable the executing of the main RoboFriend script during startup, add the          following commands into /etc/rc.local file: *mjpg_streamer -o "output_http.so -w ./www" -i "input_raspicam.so -x 320 -y 240 -quality 30 --fps 15" &
+su pi -c "export DISPLAY=:0; source /opt/ros/kinetic/setup.bash; source /home/pi/catkin_workspace/devel/setup.bash; source /home/pi/project/RoboFriend/src/Pi/catkin_ws/devel/setup.bash; cd /home/pi/project/RoboFriend/src/Pi/; python3 robofriend.py"*
 
 ## StartUp
 
