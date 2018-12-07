@@ -2,7 +2,7 @@
 import rospy
 import teensyCommunicator
 import ioWarriorModule
-from robofriend.msg import CamData
+from ros_robofriend.msg import CamData
 from std_msgs.msg import String
 
 # TODO: according to the known face let the ears light in different colors
@@ -23,7 +23,7 @@ def callback (data):
     identify_face(coordin)
     
 def rfid_data_cb(data):
-    print("[INFO] Received rfid date: {}".format(data))
+    print("[INFO] Received rfid date: {}".format(data.data))
 
 def listener():
     print("[INFO] Starting Facedetection Listener!")

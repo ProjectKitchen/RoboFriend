@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from robofriend.msg import Coordinates
+from ros_robofriend.msg import Coordinates
 from imutils.video import VideoStream
 from imutils.video import FPS
 import face_recognition

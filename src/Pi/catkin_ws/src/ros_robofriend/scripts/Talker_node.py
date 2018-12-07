@@ -39,7 +39,7 @@
 import rospy
 from std_msgs.msg import String
 from std_msgs.msg import Float64
-from robofriend.msg import CamData
+from ros_robofriend.msg import CamData
 from turtlesim.msg import Pose
 
 def Talker():

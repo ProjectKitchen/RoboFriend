@@ -3,7 +3,7 @@
 import rospy
 import math
 from std_msgs.msg import String
-from robofriend.msg import LandmarkDistance
+from ros_robofriend.msg import LandmarkDistance
 from turtlesim.msg import Pose
 
 def distance(x1, y1, x2, y2):

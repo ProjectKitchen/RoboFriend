@@ -23,6 +23,7 @@ import ioWarriorModule as ioWarriorModule
 import speechModule as speechModule
 import cam_node as cam_node
 import rfid_node as rfid_node
+#import rfidModule as rfidModule
 import facedetectionModule as facedetectionModule
 import systemModule as systemModule
 
@@ -35,7 +36,7 @@ def stop():
 
 	print("*** shutting down ... ***")
 	systemModule.roscore_terminate()
-	rfidModule.stop()
+	#rfidModule.stop()
 	webserverModule.stop()
 	statusModule.stop()
 	gameCommunicator.stop()
@@ -45,6 +46,7 @@ def stop():
 	speechModule.stop()
 	faceModule.close()
 	cam_node.node_stop()
+	rfid_node.node_stop()
 	runFlag = False
 	print("*** graceful shutdown completed! ***")
 
@@ -83,8 +85,9 @@ def main():
 	signal.signal(signal.SIGTERM, handler_stop_signals)
 	print("*** startup completed! ***")
 
-	rospy.spin()
+	#rospy.spin()
 	while runFlag: time.sleep(0.5) # keep program running until stopped
+	print("[INFO] Main script terminated!!!")
 
 if __name__ == '__main__':
 	main()

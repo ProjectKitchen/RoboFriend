@@ -10,11 +10,10 @@ runFlag = True
 def node_stop():
     global runFlag
     runFlag = False
+    print("[INFO] Stopping rfid node!")
 
 def node_start():
     global runFlag
-
-    received_message = ""
 
     print("[INFO] ROS RFID Node started!\n")
 
@@ -30,6 +29,9 @@ def node_start():
             args = (serial_rfid, pub,  )
         )
 
+        # set thread as a daemon
+        rfid_thread.daemon = True 
+         
         # start rfid thread
         rfid_thread.start()
     except:
@@ -46,21 +48,16 @@ def serial_rfid_read(serial, pub):
 
     try:
         while runFlag:
-            data = serial.read(16)
-            data = str(data)
-            data = data.replace("\x02", "" )
-            data = data.replace("\x03", "" )
-            data = data.replace("\x0a", "" )
-            data = data.replace("\x0d", "" )
+            data = str(serial.read(16))
+            data = data.strip("b'")
+            data = data.replace("\\x02", "").replace("\\x03", "").replace("\\x0a", "").replace("\\x0d", "").replace("\\r\\n", "")
+            
             readRFIDnumber = data
 
             if readRFIDnumber != "empty":
                 print("[INFO] Published RFID message: {}".format(readRFIDnumber))
-                #queue.put(readRFIDnumber)
                 pub.publish(readRFIDnumber)
-                readRFIDnumber = "empty"
+                readRFIDnumber = "empty"      
+        print("[INFO] END SERIAL RFID THREAD")
     finally:
         serial.close()
-
-def message_merge(command):
-    return "rfid;" + command
