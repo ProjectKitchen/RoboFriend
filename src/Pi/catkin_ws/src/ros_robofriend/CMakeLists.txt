@@ -54,11 +54,7 @@ add_message_files(
    OdoData.msg
    LandmarkDistance.msg
    KeyboardData.msg
-<<<<<<< HEAD:src/Pi/catkin_ws/src/robofriend/CMakeLists.txt
- )
-=======
 )
->>>>>>> 03c8bcc50eaba6d62ef25c99991472d68a3ca3b4:src/Pi/catkin_ws/src/ros_robofriend/CMakeLists.txt
 
 ## Generate services in the 'srv' folder
 # add_service_files(
