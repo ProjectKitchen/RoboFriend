@@ -67,8 +67,9 @@ To get the existing *Python 2.7.x* code compatible for *Python 3.x* following pa
     * after pulling the RoboFriend repository on your Raspberry Pi, change into the catkin_ws folder within the RoboFriend directory and execute following commands:
         * catkin_make
         * catkin_make_install
-    * to enable the executing of the main RoboFriend script during startup, add the          following commands into /etc/rc.local file: *mjpg_streamer -o "output_http.so -w ./www" -i "input_raspicam.so -x 320 -y 240 -quality 30 --fps 15" &
-su pi -c "export DISPLAY=:0; source /opt/ros/kinetic/setup.bash; source /home/pi/catkin_workspace/devel/setup.bash; source /home/pi/project/RoboFriend/src/Pi/catkin_ws/devel/setup.bash; cd /home/pi/project/RoboFriend/src/Pi/; python3 robofriend.py"*
+    * to enable the executing of the main RoboFriend script during startup, add the          following commands into /etc/rc.local file:
+    *mjpg_streamer -o "output_http.so -w ./www" -i "input_raspicam.so -x 320 -y 240 -quality 30 --fps 15" &
+     su pi -c "export DISPLAY=:0; source /opt/ros/kinetic/setup.bash; source /home/pi/catkin_workspace/devel/setup.bash; source /home/pi/project/RoboFriend/src/Pi/catkin_ws/devel/setup.bash; cd /home/pi/project/RoboFriend/src/Pi/; python3 robofriend.py"*
 
 ## StartUp
 
