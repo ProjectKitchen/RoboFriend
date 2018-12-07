@@ -18,7 +18,9 @@ import threading
 runFlag = True
 
 def node_stop():
+    global runFlag
     runFlag = False
+    print("[INFO] Stopping cam node!")
 
 def node_start():
     print("[INFO] Ros Cam Node start!")

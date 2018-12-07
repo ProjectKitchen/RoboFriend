@@ -58,8 +58,7 @@ def serial_rfid_read(serial, pub):
             if readRFIDnumber != "empty":
                 print("[INFO] Published RFID message: {}".format(readRFIDnumber))
                 pub.publish(readRFIDnumber)
-                readRFIDnumber = "empty"
-                
+                readRFIDnumber = "empty"      
         print("[INFO] END SERIAL RFID THREAD")
     finally:
         serial.close()
