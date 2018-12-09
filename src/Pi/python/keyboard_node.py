@@ -6,7 +6,6 @@ import re
 import traceback
 import queue
 import rospy
-from std_msgs import String
 
 # own modules
 import teensyCommunicator
@@ -15,180 +14,151 @@ import soundModule
 import speechModule
 import systemModule
 
-# import message
-from robofriend.msg import KeyboardData
+# import ros message
+from ros_robofriend.msg import KeyboardData
 
 # globals
 runFlag = True
 
-#TODO: messages umändern auf KeyboardData
+class Keyboard_Publisher():
+    def __init__(self, pub, msg):
+        self._pub = pub
+        self._msg = msg
+
+    def message_publish(self, message):
+        self._msg.command = message ['command']
+        self._msg.action = message ['action']
+        self._msg.action_opt = message ['action_opt']
+        print("[INFO] Published Keyboard Message: {}".format(self._msg))
+        self._pub.publish(self._msg)
+
+def node_stop():
+    global runFlag
+    print("[INFO] Stopping keboard node!")
+    runFlag = False
 
 def node_start():
     print("[INFO] ROS Keyboard Node started!\n")
-
+rfidModule
     pub = rospy.Publisher('T_KEYB_DATA', KeyboardData, queue_size = 10)
-    #rospy.init('Keyboard_node', anonymous = True)
-
-    # queue to ensure a communication system between keyboard thread and publisher
-    # thread_queue = queue.Queue()
 
     msg = KeyboardData()
+
+    keyboard = Keyboard_Publisher(pub, msg)
 
     # thread to handle the keyboard inputs
     keyboard_thread = threading.Thread(
         target = handle_keyboard,
-        args = (pub, msg, )
+        args = (keyboard, )
     )
+
+    #start thread as daemon
+    keyboard_thread.daemon = True
 
     # start keyboard thread
     keyboard_thread.start()
 
-    # while runFlag:
-    #     received_message = thread_queue.get()
-    #     print("[INFO] Transmitted data from keyboard node: {}".format(received_message))
-    #     pub.publisher(received_message)
-
-def handle_keyboard(pub, msg):
+def handle_keyboard(keyboard):
     global runFlag
 
     speechBuffer = ""
-    shutdownKeyword = "exit"
-    quitKeyword = "quit"
+    shutdownKeyword = "exit"        # system shutdown
+    quitKeyword = "quit"            # process shutdown
     lastSay = None
-    command = ""
-    tmp_command = ""
-    speech_own_message = "speech;custom;"
+    publish_message = {}
 
     while runFlag:
         try:
             event = pygame.event.wait()
             if event.type == pygame.QUIT:
-                command = message_merge("shutdown")             # Message 1
-                #pygame.quit()
-                #sys.exit()
+                publish_message = message_dict_merge(quitKeyword)
             if event.type == pygame.KEYUP and event.key in [pygame.K_DOWN, pygame.K_LEFT, pygame.K_RIGHT, pygame.K_UP]:
                 print('move stop via keyboard')
-                comamnd = message_merge("move;stop")             # Message 2
-                #teensyCommunicator.stopMovement()
+                publish_message = message_dict_merge('move', 'stop')
             if event.type == pygame.KEYDOWN:
                 print('***** Key press recognized: ')
 
-                if event.key == pygame.K_RETURN:
-                    if speechBuffer == shutdownKeyword:
-                        command = message_merge("shutdown")     # same as Message 1
-                        #systemModule.shutdown()
-                    if speechBuffer == quitKeyword:
-                        command = message_merge("quit")         # Message 4
-                        pygame.quit()
-                        sys.exit()
-                    elif speechBuffer:
-                        tmp_command = speech_own_message + speechBuffer
-                        command = message_merge(tmp_command)        # Message 5
-                        #speechModule.speak(speechBuffer)
+                if event.key == pygame.K_RETURN:            # enter buton
+                    if speechBuffer == shutdownKeyword:     # system shutdown
+                        print("[INFO] Within Shutdwodn Keyword!!")
+                        publish_message = message_dict_merge(shutdownKeyword)
+                    elif speechBuffer == quitKeyword:       # process shutdown
+                        publish_message = message_dict_merge(quitKeyword)
+                    elif speechBuffer:                      # when speechbuffer is not empty
+                        publish_message = message_dict_merge('speech', 'custom', speechBuffer)
                         lastSay = speechBuffer
                     speechBuffer = ''
-                elif event.key == pygame.K_ESCAPE:
+                elif event.key == pygame.K_ESCAPE:          # esc button
                     print('clearing speech buffer...')
                     speechBuffer = ''
                 elif event.key == pygame.K_BACKSPACE:
                     if lastSay:
-                        tmp_command = "sppech;own;" + lastSay
-                        command = message_merge(tmp_command)
-                        #speechModule.speak(lastSay)                # same as Message 5
+                        publish_message = message_dict_merge('speech', 'custom', lastSay)
 
                 # ------------ move ---------------
                 elif event.key == pygame.K_DOWN:
                     print('move back via keyboard')
-                    command = message_merge("move;backword;loop")    # Message 6
-                    #teensyCommunicator.moveBackLoop()
+                    publish_message = message_dict_merge('move', 'backword', 'loop')
                 elif event.key == pygame.K_LEFT:
                     print("move left via keyboard")
-                    command = message_merge("move;left;loop")        # Message 7
-                    #teensyCommunicator.moveLeftLoop()
+                    publish_message = message_dict_merge('move', 'left', 'loop')
                 elif event.key == pygame.K_RIGHT:
-                    print('move right via keyboard
-                    command = message_merge("move;right;loop")       # Message 8
-                    #teensyCommunicator.moveRightLoop()
+                    print('move right via keyboard')
+                    publish_message = message_dict_merge('move', 'right', 'loop')
                 elif event.key == pygame.K_UP:
                     print("move forward via keyboard")
-                    command = message_merge("move;forward;loop")     # Message 9
-                    #teensyCommunicator.moveForwardLoop()
+                    publish_message = message_dict_merge('move', 'forward', 'loop')
 
                 # ------------ face ---------------
                 elif event.unicode == ',':
                     print('smile increase via keyboard')
-                    command = message_merge("face;smile;increase")   # Message 10
-                    #faceModule.increaseSmile()
+                    publish_message = message_dict_merge('face', 'smile', 'increase')
                 elif event.unicode == '.':
                     print('smile decrease via keyboard')
-                    command = message_merge("face;smile;increase")   # Message 11
-                    #faceModule.decreaseSmile()
+                    publish_message = message_dict_merge('face', 'smile', 'decrease')
 
                 # ------------ sounds ---------------
                 elif event.unicode == '-':
-                    command = message_merge("sound;random")         # Message 12
-                    #soundModule.playRandom()
+                    publish_message = message_dict_merge('sound', 'random')
                 elif event.unicode == '#':
-                    command = message_merge("sound;last")           # Message 13
-                    #soundModule.playLastRandom()
+                    publish_message = message_dict_merge('sound', 'last')
 
                 # ------------ speech ---------------
                 elif event.unicode == '1':
-                    tmp_command = speech_own_message + "Hallo, wie gehts?"
-                    command = message_merge(tmp_command)            # Message 14
-                    #speechModule.speak('Hallo, wie gehts?')
+                    publish_message = message_dict_merge('speech', 'custom', 'Hallo wie gehts?')
                 elif event.unicode == '2':
-                    tmp_command = speech_own_message + "Danke, mir geht es gut"
-                    command = message_merge(tmp_command)            # Message 15
-                    #speechModule.speak('Danke, mir geht es gut.')
+                    publish_message = message_dict_merge('speech', 'custom', 'Danke, mir geht es gut')
                 elif event.unicode == '3':
-                    tmp_command = speech_own_message + "Willst du etwas zum knabbern?"
-                    command = message_merge(tmp_command)           # Message 16
-                    #speechModule.speak('Willst du etwas zum knabbern?')
+                    publish_message = message_dict_merge('speech', 'custom', 'Willst du etwas zum knabbern?')
                 elif event.unicode == '4':
-                    tmp_command = speech_own_message + "Bitte, gerne"
-                    command = message_merge(tmp_command)          # Message 17
-                    #speechModule.speak('Bitte, gerne.')
+                    publish_message = message_dict_merge('speech', 'custom', 'Bitte, gerne')
                 elif event.unicode == '5':
-                    tmp_command = speech_own_message + "Wie heisst du?"
-                    command = message_merge(tmp_command)          # Message 18
-                    #speechModule.speak('Wie heisst du?')
+                    publish_message = message_dict_merge('speech', 'custom', 'Wie heisst du?')
                 elif event.unicode == '6':
-                    tmp_command = speech_own_message + "Ich heisse Robofreund"
-                    command = message_merge(tmp_command)          # Message 19
-                    #speechModule.speak('Ich heisse Robofreund.')
+                    publish_message = message_dict_merge('speech', 'custom', 'Ich heisse Robofreund')
                 elif event.unicode == '7':
-                    tmp_command = speech_own_message + "Mir ist langweilig"
-                    command = message_merge(tmp_command)          # Message 20
-                    #speechModule.speak('Mir ist langweilig')
+                    publish_message = message_dict_merge('speech', 'custom', 'Mir ist langweilig')
                 elif event.unicode == '8':
-                    tmp_command = speech_own_message + "Heute ist ein schoner Tag"
-                    command = message_merge(tmp_command)          # Message 21
-                    #speechModule.speak('Heute ist ein schoener Tag.')
+                    publish_message = message_dict_merge('speech', 'custom', 'Heute ist ein schoener Tag')
                 elif event.unicode == '9':
-                    command = message_merge("speech;random")     # Message 22
-                    #speechModule.speakRandom()
+                    publish_message = message_dict_merge('speech', 'random')
                 elif event.unicode == '0':
-                    command = message_merge("speech;bullshit")   # Message 23
-                    #speechModule.speakBullshit()
+                    publish_message = message_dict_merge('speech', 'bullshit')
                 elif re.match('^[a-zA-Z ]$', event.unicode):
-                    speechBuffer += event.unicode
-                    print('speech buffer is now: ' + str(speechBuffer))
-            # queue_transmit(queue, send_message)
-            pub.publisher(send_message)
-            command = ""
-            tmp_command = ""
+                    speechBuffer += event.unicode                       # concatenate letter
+                    print("[INFO] Speech buffer is now: {}".format(speechBuffer))
+
+            if bool(publish_message) == True:       # cheks if dictionary is empty or not
+                keyboard.message_publish(publish_message)
+                publish_message.clear()
+            else:
+                pass
         except Exception as e:
-            print('keyboard exception: ' + str(e))
+            print("keyboard exception: {}".format(e))
             print(traceback.format_exc())
 
-def node_stop():
-    global runFlag
-    print("[INFO] stopping keboard node!")
-    runFlag = False
-
-def message_merge(command):
-    return "keyboard;" + command
-
-def queue_transmit(queue, message):
-    queue.put(message)
+def message_dict_merge(command, action = None, action_opt = None):
+    message = {'command' : command, \
+               'action' : action, \
+               'action_opt' : action_opt}
+    return message
