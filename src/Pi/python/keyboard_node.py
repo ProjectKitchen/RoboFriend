@@ -157,7 +157,7 @@ def handle_keyboard(keyboard):
             print("keyboard exception: {}".format(e))
             print(traceback.format_exc())
 
-def message_dict_merge(command, action = None, action_opt = None):
+def message_dict_merge(command, action = "", action_opt = ""):
     message = {'command' : command, \
                'action' : action, \
                'action_opt' : action_opt}
