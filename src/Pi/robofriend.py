@@ -13,19 +13,19 @@ sys.path.append(path)
 
 # own modules
 import faceModule as faceModule
-import rfidModule as rfidModule
+# import rfidModule as rfidModule
 import webserverModule as webserverModule
 import statusModule as statusModule
 import gameCommunicator as gameCommunicator
-import keyboardModule as keyboardModule
+# import keyboardModule as keyboardModule
 import teensyCommunicator as teensyCommunicator
 import ioWarriorModule as ioWarriorModule
 import speechModule as speechModule
-import cam_node as cam_node
-import rfid_node as rfid_node
-#import rfidModule as rfidModule
-import facedetectionModule as facedetectionModule
 import systemModule as systemModule
+#import cam_node as cam_node
+import rfid_node as rfid_node
+import keyboard_node as keyboard_node
+#import facedetectionModule as facedetectionModule
 
 
 # globals
@@ -40,13 +40,14 @@ def stop():
 	webserverModule.stop()
 	statusModule.stop()
 	gameCommunicator.stop()
-	keyboardModule.stop()
+	# keyboardModule.stop()
 	teensyCommunicator.stop()
 	ioWarriorModule.stop()
 	speechModule.stop()
 	faceModule.close()
-	cam_node.node_stop()
-	rfid_node.node_stop()
+	#cam_node.node_stop()
+	#rfid_node.node_stop()
+	keyboard_node.node_stop()
 	runFlag = False
 	print("*** graceful shutdown completed! ***")
 
@@ -71,13 +72,14 @@ def main():
 	print("Done ... starting Gamecommunicator")
 	gameCommunicator.start()
 	print("Done ... starting KeyboardModule")
-	keyboardModule.start()
+	keyboard_node.node_start()
+	# keyboardModule.start()
 	print("Done ... starting FaceModue")
 	faceModule.drawFace()
 	print("Done ... starting RosCamNode")
-	cam_node.node_start()
+	#cam_node.node_start()
 	print("Done ... starting FacedetectListener")
-	facedetectionModule.listener()
+	#facedetectionModule.listener()
 	print("init done! register signal handlers...")
 
 	# setting up signal handlers for shutdown
