@@ -39,7 +39,7 @@ def node_stop():
 
 def node_start():
     print("[INFO] ROS Keyboard Node started!\n")
-rfidModule
+
     pub = rospy.Publisher('T_KEYB_DATA', KeyboardData, queue_size = 10)
 
     msg = KeyboardData()
