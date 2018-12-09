@@ -35,5 +35,6 @@ class KeyboardDataHandler():
     def action_opt(self):
         return self._action_opt
 
+    @action_opt.setter
     def action_opt(self, value):
         self._action_opt = value
