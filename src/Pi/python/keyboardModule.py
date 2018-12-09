@@ -105,7 +105,7 @@ def handleKeyboard():
                     speechModule.speakBullshit()
                 elif re.match('^[a-zA-Z ]$', event.unicode):
                     speechBuffer += event.unicode
-                    print('speech buffer is now: ' + str(speechBuffer))
+                    print("[INFO] Speechbuffer now: {}".format(speechBuffer))
         except Exception as e:
             print('keyboard exception: ' + str(e))
             print(traceback.format_exc())
