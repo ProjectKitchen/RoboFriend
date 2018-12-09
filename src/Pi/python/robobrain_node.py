@@ -8,7 +8,7 @@ from std_msgs.msg import String
 
 # import modules
 import KeyboardDataHandler
-#import FacedetectionHandler
+import FacedetectionDataHandler
 
 # global variables
 robo_state = 0
@@ -22,6 +22,7 @@ topics = {'T_VOLT_DATA': 'T_VOLT_DATA', \
 
 def node_stop():
     global runFlag
+
     runFlag = False
     print("[INFO] Stopping robobrain node!")
 
@@ -42,22 +43,21 @@ def node_start():
 
 
 def keyboard_data_cb(data, args):
-    args.processData(data)
+    args.process_data(data)
 
-def facedetection_data_cb(facedetection, data):
-    facedetection.processData(data)
+def facedetection_data_cb(data, args):
+    args.process_data(data)
 
 def RobobrainHandler():
     global runFlag
 
     keyboard = KeyboardDataHandler.KeyboardDataHandler()
-    #facedetection = FacedetectionHandler.FacedetectionHandler()
+    facedetection = FacedetectionDataHandler.FacedetectionDataHandler()
 
     rospy.Subscriber(topics['T_KEYB_DATA'], KeyboardData, keyboard_data_cb, keyboard)
-    #rospy.Subscriber(topics['T_CAM_DATA'], CamData, facedetection_data_cb(facedetection))
+    rospy.Subscriber(topics['T_CAM_DATA'], CamData, facedetection_data_cb, facedetection)
 
     while runFlag:
-        pass
-    #     if keyboard.command != None:
-    #         print("[INFO] Keyboard Received data: {} {} {}".format(keyboard.command, keyboard.action, keyboard.action_opt))
-    #         keyboard.command = None
+        # if keyboard.command != None:
+        #     print("[INFO] Keyboard Received data: {} {} {}".format(keyboard.command, keyboard.action, keyboard.action_opt))
+        #     keyboard.command = None
