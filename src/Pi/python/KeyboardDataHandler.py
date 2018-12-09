@@ -6,11 +6,11 @@ class KeyboardDataHandler():
         self._action = None
         self._action_opt = None
 
-    def processData(self, data):
+    def process_data(self, data):
         self._command = data.command
         self._action = data.action
         self._action_opt = data.action_opt
-        print("[INFO] {}: Received message: {} {} {}".format(self.__class__.__name__, self._command, self._action, self._action_opt))
+        print("[INFO] Class: {} ... Received message: {} {} {}".format(self.__class__.__name__, self._command, self._action, self._action_opt))
 
     # command
     @property
