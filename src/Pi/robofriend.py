@@ -14,18 +14,19 @@ sys.path.append(path)
 # own modules
 import faceModule as faceModule
 # import rfidModule as rfidModule
+import rfid_node as rfid_node
 import webserverModule as webserverModule
 import statusModule as statusModule
 import gameCommunicator as gameCommunicator
-# import keyboardModule as keyboardModule
+import keyboardModule as keyboardModule
+import keyboard_node as keyboard_node
 import teensyCommunicator as teensyCommunicator
 import ioWarriorModule as ioWarriorModule
 import speechModule as speechModule
-import systemModule as systemModule
 #import cam_node as cam_node
-import rfid_node as rfid_node
-import keyboard_node as keyboard_node
 #import facedetectionModule as facedetectionModule
+import robobrain_node as robobrain_node
+import systemModule as systemModule
 
 
 # globals
@@ -37,17 +38,18 @@ def stop():
 	print("*** shutting down ... ***")
 	systemModule.roscore_terminate()
 	#rfidModule.stop()
+	rfid_node.node_stop()
 	webserverModule.stop()
 	statusModule.stop()
 	gameCommunicator.stop()
 	# keyboardModule.stop()
+	keyboard_node.node_stop()
 	teensyCommunicator.stop()
 	ioWarriorModule.stop()
 	speechModule.stop()
 	faceModule.close()
 	#cam_node.node_stop()
-	#rfid_node.node_stop()
-	keyboard_node.node_stop()
+	robobrain_node.node_stop()
 	runFlag = False
 	print("*** graceful shutdown completed! ***")
 
@@ -62,9 +64,11 @@ def main():
 	systemModule.roscore_start()
 	print("Initialising RosPy!")
 	rospy.init_node('Robofriend_node', anonymous = True)
+	print("Done ... starting Robobrain node")
+	robobrain_node.node_start()
 	print("Done ... starting RFID!")
 	#rfidModule.start()
-	rfid_node.node_start()
+	#rfid_node.node_start()
 	print("Done ... starting Webserver!")
 	webserverModule.start()
 	print("Done ... starting StatusModule!")
@@ -72,8 +76,8 @@ def main():
 	print("Done ... starting Gamecommunicator")
 	gameCommunicator.start()
 	print("Done ... starting KeyboardModule")
-	keyboard_node.node_start()
 	# keyboardModule.start()
+	keyboard_node.node_start()
 	print("Done ... starting FaceModue")
 	faceModule.drawFace()
 	print("Done ... starting RosCamNode")
