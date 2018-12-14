@@ -29,8 +29,8 @@ class Keyboard_Publisher():
         self._msg.command = message ['command']
         self._msg.action = message ['action']
         self._msg.action_opt = message ['action_opt']
-        print("[INFO] Published Keyboard Message: {}".format(self._msg))
         self._pub.publish(self._msg)
+        print("[INFO] Published Keyboard Message: {}".format(self._msg))
 
 def node_stop():
     global runFlag
