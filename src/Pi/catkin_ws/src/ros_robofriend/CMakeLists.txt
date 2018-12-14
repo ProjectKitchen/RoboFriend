@@ -54,6 +54,7 @@ add_message_files(
    OdoData.msg
    LandmarkDistance.msg
    KeyboardData.msg
+   SpeechData.msg
 )
 
 ## Generate services in the 'srv' folder
