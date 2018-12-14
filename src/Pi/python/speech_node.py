@@ -3,45 +3,48 @@ import random
 import time
 import threading
 import statusModule
+import SpeechDataHandler
+import rospy
 
-# global variables
-lastSpeakTimestamp = time.time()
-lastSpeakWord = None
-wordRate = 140
-speechEngne =
-runFlag = True
-
-
-speech_mode = {
-    "custom"    : custom_speech,
-    "random"    : random_speech,
-    "bullshit"  : bullshit_speech
-}
-
-def callback(data):
-    node = None
-    mode = None
-    message = None
-
-    rospy.loginfo("[INFO] Received message: {}".format(data))
-
-    try:
-        node, mode, message = data.split(";")
-    except ValueError:
-        node, mode = data.split(";")
-
-    speech_mode[mode](message)
+# import ros message_publish
+from ros_robofriend.msg import SpeechData
 
 def node_start():
-    rospy.init_node("speech_node", anonymous = True)
-    rospy.Subscriber("speech_node_topic", String, callback) #TODO: Define topic name in brain node
+    print("[INFO] ROS Speech Node started!\n")
 
+    # thread to handle incoming messages
+    speech_thread = threading.Thread(
+        target = handle_speech
+    )
 
-def custom_speech(speech_content):
-    pass
+    # start thread as daemon
+    speech_thread.daemon = True
 
-def random_speech():
-    pass
+    # start speech thread
+    speech_thread.start()
 
-def bullshit_speech():
-    pass
+def handle_speech():
+
+    lastSpeakTimestamp = time.time()
+    lastSpeakWord = None
+    wordRate = 140                  # words per minute
+    volumeRate = 1.0
+    language = 'german'
+
+    speech_engine_dict = {
+        "language" : language, \
+        "word_rate" : wordRate, \
+        "volume_rate" : volumeRate
+    }
+
+    speech_engine = InitSpeechEngine(speech_engine_dict)
+
+    speech = SpeechDataHandler.SpeechDataHandler(speech_engine, speech_engine_dict['language'])
+    rospy.Subscriber("T_SPEECH_DATA", SpeechData, speech.process_data)
+
+def InitSpeechEngine(speech_engine_dict):
+    speechEngine = pyttsx3.init(debug=True)
+    speechEngine.setProperty('rate', speech_engine_dict['word_rate'])
+    speechEngine.setProperty('volume', speech_engine_dict['volume_rate'])
+    speechEngine.setProperty('voice', speech_engine_dict['language'])
+    return speechEngine

@@ -7,6 +7,7 @@ from ros_robofriend.msg import KeyboardData
 from std_msgs.msg import String
 
 # import modules
+import RobobrainPublisherHandler
 import KeyboardDataHandler
 import FacedetectionDataHandler
 
@@ -18,7 +19,8 @@ topics = {'T_VOLT_DATA': 'T_VOLT_DATA', \
           'T_IR_DATA': 'T_IR_DATA', \
           'T_CAM_DATA': 'T_CAM_DATA', \
           'T_KEYB_DATA': 'T_KEYB_DATA', \
-          'T_RFID_DATA': 'T_RFID_DATA' }
+          'T_RFID_DATA': 'T_RFID_DATA', \
+          'T_SPEECH_DATA' : 'T_SPEECH_DATA' }       ### Actuators ###
 
 def node_stop():
     global runFlag
@@ -53,11 +55,10 @@ def RobobrainHandler():
 
     keyboard = KeyboardDataHandler.KeyboardDataHandler()
     facedetection = FacedetectionDataHandler.FacedetectionDataHandler()
-
     rospy.Subscriber(topics['T_KEYB_DATA'], KeyboardData, keyboard_data_cb, keyboard)
     rospy.Subscriber(topics['T_CAM_DATA'], CamData, facedetection_data_cb, facedetection)
 
+    publish_handler = RobobrainPublisherHandler.RobobrainPublisherHandler()
+
     while runFlag:
-        # if keyboard.command != None:
-        #     print("[INFO] Keyboard Received data: {} {} {}".format(keyboard.command, keyboard.action, keyboard.action_opt))
-        #     keyboard.command = None
+        pass
