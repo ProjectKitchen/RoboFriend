@@ -22,7 +22,8 @@ import keyboardModule as keyboardModule
 import keyboard_node as keyboard_node
 import teensyCommunicator as teensyCommunicator
 import ioWarriorModule as ioWarriorModule
-import speechModule as speechModule
+# import speechModule as speechModule
+import speech_node as speech_node
 #import cam_node as cam_node
 #import facedetectionModule as facedetectionModule
 import robobrain_node as robobrain_node
@@ -46,7 +47,7 @@ def stop():
 	keyboard_node.node_stop()
 	teensyCommunicator.stop()
 	ioWarriorModule.stop()
-	speechModule.stop()
+	# speechModule.stop()
 	faceModule.close()
 	#cam_node.node_stop()
 	robobrain_node.node_stop()
@@ -84,6 +85,8 @@ def main():
 	#cam_node.node_start()
 	print("Done ... starting FacedetectListener")
 	#facedetectionModule.listener()
+	print("Done ... start Speech Node")
+	speech_node.node_start()
 	print("init done! register signal handlers...")
 
 	# setting up signal handlers for shutdown
