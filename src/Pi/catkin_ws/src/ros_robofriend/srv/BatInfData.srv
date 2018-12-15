@@ -1,0 +1,9 @@
+# Request from Client (battery_infrared_node) 
+bool request
+---
+#Response from Server (teensy node)
+uint64 bat
+uint64 inf_left
+uint64 inf_middle
+uint64 inf_right
+
