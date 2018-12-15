@@ -28,7 +28,8 @@ import speech_node as speech_node
 #import facedetectionModule as facedetectionModule
 import robobrain_node as robobrain_node
 import systemModule as systemModule
-
+import teensy_node as teensy_node
+import bat_inf_node as bat_inf_node
 
 # globals
 runFlag = True
@@ -51,6 +52,7 @@ def stop():
 	faceModule.close()
 	#cam_node.node_stop()
 	robobrain_node.node_stop()
+	bat_inf_node.node_stop()
 	runFlag = False
 	print("*** graceful shutdown completed! ***")
 
@@ -87,6 +89,10 @@ def main():
 	#facedetectionModule.listener()
 	print("Done ... start Speech Node")
 	speech_node.node_start()
+	print("Done ... start Teensy Node")
+	teensy_node.node_start()
+	print("Done ... start Battery/Infrared Node")
+	bat_inf_node.node_start()
 	print("init done! register signal handlers...")
 
 	# setting up signal handlers for shutdown
