@@ -30,7 +30,7 @@ class Keyboard_Publisher():
         self._msg.action = message ['action']
         self._msg.action_opt = message ['action_opt']
         self._pub.publish(self._msg)
-        print("[INFO] Published Keyboard Message: {}".format(self._msg))
+        print("[INFO] Published Keyboard Message: {}\n".format(self._msg))
 
 def node_stop():
     global runFlag
@@ -74,7 +74,7 @@ def handle_keyboard(keyboard):
                 publish_message = message_dict_merge(quitKeyword)
             if event.type == pygame.KEYUP and event.key in [pygame.K_DOWN, pygame.K_LEFT, pygame.K_RIGHT, pygame.K_UP]:
                 print('move stop via keyboard')
-                publish_message = message_dict_merge('move', 'stop')
+                publish_message = message_dict_merge('move', action_opt = 'stop')
             if event.type == pygame.KEYDOWN:
                 print('***** Key press recognized: ')
 
@@ -98,7 +98,7 @@ def handle_keyboard(keyboard):
                 # ------------ move ---------------
                 elif event.key == pygame.K_DOWN:
                     print('move back via keyboard')
-                    publish_message = message_dict_merge('move', 'backword', 'loop')
+                    publish_message = message_dict_merge('move', 'backward', 'loop')
                 elif event.key == pygame.K_LEFT:
                     print("move left via keyboard")
                     publish_message = message_dict_merge('move', 'left', 'loop')
