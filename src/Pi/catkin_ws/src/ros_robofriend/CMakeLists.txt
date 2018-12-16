@@ -55,6 +55,7 @@ add_message_files(
    LandmarkDistance.msg
    KeyboardData.msg
    SpeechData.msg
+   TeensyMotorData.msg
 )
 
 ## Generate services in the 'srv' folder
