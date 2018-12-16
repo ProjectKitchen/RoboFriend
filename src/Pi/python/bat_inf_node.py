@@ -35,5 +35,5 @@ def handle_batinf():
     bat_inf = BatteryInfraredDataHandler.BatteryInfraredDataHandler()
 
     while runFlag:
-        bat_inf.request_sensor_values()
-        time.sleep(5)
+        #bat_inf.request_sensor_values()
+        time.sleep(20)

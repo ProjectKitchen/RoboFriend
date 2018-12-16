@@ -10,7 +10,7 @@ class KeyboardDataHandler():
         self._command = data.command
         self._action = data.action
         self._action_opt = data.action_opt
-        print("[INFO] Class: {} ... Received message: {} {} {}".format(self.__class__.__name__, self._command, self._action, self._action_opt))
+        print("[INFO] Class: {} ... Received message from keyboard-node: {}\n".format(self.__class__.__name__, data))
 
     # command
     @property

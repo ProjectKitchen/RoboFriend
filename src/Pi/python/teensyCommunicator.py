@@ -24,7 +24,7 @@ def close():
     global ser
     ser.close()
 
-def move(left, right, duration):
+def move(left, right, duration):        # from webserver
     stopMovement()
     sendSerial("D " + str(left) + " " + str(right) + " " + str(duration))
 
@@ -85,7 +85,7 @@ def stopMovement():
     statusModule.setNonIdle()
     sendSerial("D")
 
-def shakeHeadForNo():
+def shakeHeadForNo():               # ????????
     sendSerial("D 50 -50 10")
     sleep(0.5)
     sendSerial("D -50 50 10")
