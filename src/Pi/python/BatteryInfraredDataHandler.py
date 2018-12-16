@@ -12,9 +12,9 @@ class BatteryInfraredDataHandler():
         self._inf_right = None
 
     def request_sensor_values(self):
-
         service_resp = None
         rospy.wait_for_service('S_BAT_INF_DATA')
+
         try:
             request = rospy.ServiceProxy('S_BAT_INF_DATA', BatInfData)
             # bat, inf_left, inf_middle, inf_right = request(True)
@@ -23,7 +23,7 @@ class BatteryInfraredDataHandler():
 Infrared middle: {}, Infrared right: {}"
                     .format(__class__.__name__, service_resp.bat, service_resp.inf_left,
                     service_resp.inf_middle, service_resp.inf_right))
-                    
+
             self.bat = service_resp.bat
             self.inf_left = service_resp.inf_left
             self.inf_midde = service_resp.inf_middle
