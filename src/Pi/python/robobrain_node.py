@@ -57,8 +57,14 @@ def RobobrainHandler():
     facedetection = FacedetectionDataHandler.FacedetectionDataHandler()
     rospy.Subscriber(topics['T_KEYB_DATA'], KeyboardData, keyboard_data_cb, keyboard)
     rospy.Subscriber(topics['T_CAM_DATA'], CamData, facedetection_data_cb, facedetection)
+    #TODO: Subscriber from Battery/Infrared Node has to be implemneted!!
 
     publish_handler = RobobrainPublisherHandler.RobobrainPublisherHandler()
 
     while runFlag:
-        pass
+        if keyboard.command == "move":
+            publish_handler.teensy_motor_message_publish(keyboard.action, keyboard.action_opt)
+            keyboard.command = None
+        elif keyboard.command == "speech":
+            publish_handler.speech_message_publish(keyboard.action, keyboard.action_opt)
+            keyboard.command = None
