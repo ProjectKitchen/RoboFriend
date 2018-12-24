@@ -21,8 +21,8 @@ runFlag = True
 
 def speak(text, disablesIdle = True):
     global speechEngine, lastSpeakWord
-    if disablesIdle:
-        statusModule.setNonIdle()
+    #if disablesIdle:
+    #    statusModule.setNonIdle()
     print("speaking: {}".format(text))
     lastSpeakWord = text
     text = text.lower()

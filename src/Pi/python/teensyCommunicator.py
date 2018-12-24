@@ -95,6 +95,7 @@ def getRawStatus():
     #print('***Faking Teensy Values !! ***')
     #return ("Sensors,0500,0200,0100,0300\n")
 
+## teensy node
 def sendSerial(commandString, readResponse=False):
     global send_lock, ser
     response = None
