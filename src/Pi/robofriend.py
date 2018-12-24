@@ -27,7 +27,7 @@ import ioWarriorModule as ioWarriorModule
 #import facedetectionModule as facedetectionModule
 import systemModule as systemModule
 
-#ROS modules
+# import ROS modules
 #from ROS_Node.FacedetectionNode import *
 from ROS_Node.KeyboardNode import *
 from ROS_Node.MotorNode import *
@@ -36,8 +36,6 @@ from ROS_Node.SpeechNode import *
 from ROS_Node.TeensyNode import *
 from ROS_Node.BatteryInfraredNode import *
 from ROS_Node.RobobrainNode import *
-# from ROS_Node.RobobrainNode import *
-
 
 # globals
 runFlag = True
