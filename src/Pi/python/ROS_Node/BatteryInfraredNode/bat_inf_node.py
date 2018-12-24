@@ -1,10 +1,13 @@
 import rospy
 import threading
 import time
-import BatteryInfraredDataHandler
+#import ROS_Node.BatteryInfraredNode.BatteryInfraredDataHandler
 
 #import ros service
 from ros_robofriend.srv import BatInfData
+
+# import ros modules
+from ROS_Node.BatteryInfraredNode.BatteryInfraredDataHandler import *
 
 # global variables
 runFlag = True
@@ -32,7 +35,7 @@ def handle_batinf():
 
     #TODO: Publisher for Central node is needed
 
-    bat_inf = BatteryInfraredDataHandler.BatteryInfraredDataHandler()
+    bat_inf = BatteryInfraredDataHandler()
 
     while runFlag:
         #bat_inf.request_sensor_values()

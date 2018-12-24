@@ -1,15 +1,16 @@
 import rospy
 import threading
 
-# import ros messages
+# import ROS messages
 from ros_robofriend.msg import CamData
 from ros_robofriend.msg import KeyboardData
 from std_msgs.msg import String
 
-# import modules
-import RobobrainPublisherHandler
-import KeyboardDataHandler
-import FacedetectionDataHandler
+# import ROS modules
+from ROS_Node.RobobrainNode.RobobrainStateHandler import *
+from ROS_Node.RobobrainNode.RobobrainKeyboardDataHandler import *
+from ROS_Node.RobobrainNode.RobobrainFacedetectionDataHandler import *
+from ROS_Node.RobobrainNode.RobobrainPublisherHandler import *
 
 # global variables
 robo_state = 0
@@ -20,7 +21,15 @@ topics = {'T_VOLT_DATA': 'T_VOLT_DATA', \
           'T_CAM_DATA': 'T_CAM_DATA', \
           'T_KEYB_DATA': 'T_KEYB_DATA', \
           'T_RFID_DATA': 'T_RFID_DATA', \
-          'T_SPEECH_DATA' : 'T_SPEECH_DATA' }       ### Actuators ###
+          'T_SPEECH_DATA' : 'T_SPEECH_DATA', \
+          'T_TEENSY_MOTOR_DATA' : 'T_TEENSY_MOTOR_DATA' }
+
+roboState = {
+    'IDLE' : 1, \
+    'FIND_CHARGING_STATION' : 2, \
+    'AUTONOM' : 3, \
+    'MANUAL' : 4
+}
 
 def node_stop():
     global runFlag
@@ -53,18 +62,23 @@ def facedetection_data_cb(data, args):
 def RobobrainHandler():
     global runFlag
 
-    keyboard = KeyboardDataHandler.KeyboardDataHandler()
-    facedetection = FacedetectionDataHandler.FacedetectionDataHandler()
+    publish_handler = RobobrainPublisherHandler(topics)
+    robostate = RobobrainStateHandler(roboState['IDLE'])
+
+    keyboard = RobobrainKeyboardDataHandler()
+    facedetection = RobobrainFacedetectionDataHandler()
     rospy.Subscriber(topics['T_KEYB_DATA'], KeyboardData, keyboard_data_cb, keyboard)
     rospy.Subscriber(topics['T_CAM_DATA'], CamData, facedetection_data_cb, facedetection)
     #TODO: Subscriber from Battery/Infrared Node has to be implemneted!!
 
-    publish_handler = RobobrainPublisherHandler.RobobrainPublisherHandler()
 
     while runFlag:
-        if keyboard.command == "move":
-            publish_handler.teensy_motor_message_publish(keyboard.action, keyboard.action_opt)
-            keyboard.command = None
-        elif keyboard.command == "speech":
-            publish_handler.speech_message_publish(keyboard.action, keyboard.action_opt)
-            keyboard.command = None
+        # if robostate.state = robostate["IDLE"]
+        #
+        # if keyboard.command == "move":
+        #     publish_handler.teensy_motor_message_publish(keyboard.action, keyboard.action_opt)
+        #     keyboard.command = None
+        # elif keyboard.command == "speech":
+        #     publish_handler.speech_message_publish(keyboard.action, keyboard.action_opt)
+        #     keyboard.command = None
+        pass

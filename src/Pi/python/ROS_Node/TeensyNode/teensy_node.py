@@ -1,5 +1,5 @@
 import rospy
-import TeensyDataHandler
+#import TeensyDataHandler
 import threading
 
 # import ros service
@@ -7,6 +7,9 @@ from ros_robofriend.srv import BatInfData
 
 # import ros messages
 from ros_robofriend.msg import TeensyMotorData
+
+# import ros modules
+from ROS_Node.TeensyNode.TeensyDataHandler import *
 
 def node_start():
     print("[INFO] ROS Teensy Communicator Node started")
@@ -18,7 +21,8 @@ def node_start():
         print("[INFO] Serial for Teensy could not opened!")
         serial = None
 
-    teensy = TeensyDataHandler.TeensyDataHandler(serial)
+    #teensy = TeensyDataHandler.TeensyDataHandler(serial)
+    teensy = TeensyDataHandler(serial)
 
     # declare service
     serv = rospy.Service('S_BAT_INF_DATA', BatInfData, teensy.service_handler)

@@ -1,5 +1,5 @@
 
-class KeyboardDataHandler():
+class RobobrainKeyboardDataHandler():
 
     def __init__(self):
         self._command = None

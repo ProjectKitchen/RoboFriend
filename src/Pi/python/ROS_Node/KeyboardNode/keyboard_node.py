@@ -7,13 +7,6 @@ import traceback
 import queue
 import rospy
 
-# own modules
-import teensyCommunicator
-import faceModule
-import soundModule
-import speechModule
-import systemModule
-
 # import ros message
 from ros_robofriend.msg import KeyboardData
 

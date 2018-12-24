@@ -1,5 +1,5 @@
 
-class FacedetectionDataHandler():
+class RobobrainFacedetectionDataHandler():
 
     def __init__(self):
         self._top = 0

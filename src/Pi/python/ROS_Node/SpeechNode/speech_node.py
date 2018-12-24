@@ -2,12 +2,14 @@ import pyttsx3
 import random
 import time
 import threading
-import statusModule
-import SpeechDataHandler
+import ROS_Node.SpeechNode.SpeechDataHandler
 import rospy
 
 # import ros message_publish
 from ros_robofriend.msg import SpeechData
+
+# import ros modules
+from ROS_Node.SpeechNode.SpeechDataHandler import *
 
 def node_start():
     print("[INFO] ROS Speech Node started!\n")
@@ -38,8 +40,7 @@ def handle_speech():
     }
 
     speech_engine = InitSpeechEngine(speech_engine_dict)
-
-    speech = SpeechDataHandler.SpeechDataHandler(speech_engine, speech_engine_dict['language'])
+    speech = SpeechDataHandler(speech_engine, speech_engine_dict['language'])
     rospy.Subscriber("T_SPEECH_DATA", SpeechData, speech.process_data)
 
 def InitSpeechEngine(speech_engine_dict):
