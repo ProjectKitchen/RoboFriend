@@ -11,25 +11,33 @@ import rospy
 path = str(os.getcwd()) + "/python"
 sys.path.append(path)
 
+
+
+
 # own modules
 import faceModule as faceModule
-# import rfidModule as rfidModule
-import rfid_node as rfid_node
 import webserverModule as webserverModule
 import statusModule as statusModule
 import gameCommunicator as gameCommunicator
 import keyboardModule as keyboardModule
-import keyboard_node as keyboard_node
 import teensyCommunicator as teensyCommunicator
 import ioWarriorModule as ioWarriorModule
 # import speechModule as speechModule
-import speech_node as speech_node
 #import cam_node as cam_node
 #import facedetectionModule as facedetectionModule
-import robobrain_node as robobrain_node
 import systemModule as systemModule
-import teensy_node as teensy_node
-import bat_inf_node as bat_inf_node
+
+#ROS modules
+#from ROS_Node.FacedetectionNode import *
+from ROS_Node.KeyboardNode import *
+from ROS_Node.MotorNode import *
+from ROS_Node.RFIDNode import *
+from ROS_Node.SpeechNode import *
+from ROS_Node.TeensyNode import *
+from ROS_Node.BatteryInfraredNode import *
+from ROS_Node.RobobrainNode import *
+# from ROS_Node.RobobrainNode import *
+
 
 # globals
 runFlag = True
@@ -71,7 +79,7 @@ def main():
 	robobrain_node.node_start()
 	print("Done ... starting RFID!")
 	#rfidModule.start()
-	#rfid_node.node_start()
+	rfid_node.node_start()
 	print("Done ... starting Webserver!")
 	webserverModule.start()
 	print("Done ... starting StatusModule!")
@@ -83,8 +91,8 @@ def main():
 	keyboard_node.node_start()
 	print("Done ... starting FaceModue")
 	faceModule.drawFace()
-	print("Done ... starting RosCamNode")
-	#cam_node.node_start()
+	print("Done ... starting RosFacedetectionNode")
+	#facedetection_node.node_start()
 	print("Done ... starting FacedetectListener")
 	#facedetectionModule.listener()
 	print("Done ... start Speech Node")
