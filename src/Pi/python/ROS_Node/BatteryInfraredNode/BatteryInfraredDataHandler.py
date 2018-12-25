@@ -57,8 +57,8 @@ class BatteryInfraredDataHandler():
             service_resp = request(True)
             # print("[INFO] {} - Sensor values received: Battery: {}, Infrared left: {},\
             #         Infrared middle: {}, Infrared right: {}"
-                   .format(__class__.__name__, service_resp.bat, service_resp.inf_left,
-                   service_resp.inf_middle, service_resp.inf_right))
+            #       .format(__class__.__name__, service_resp.bat, service_resp.inf_left,
+            #       service_resp.inf_middle, service_resp.inf_right))
         except rospy.ServiceException:
             print("[INFO] {} - Service call failed!".format(__class__.__name__))
 
@@ -81,19 +81,6 @@ class BatteryInfraredDataHandler():
         if self._status_cnt >= self._battery_average:
             self.__publish_message(self._sensor_val)
 
-
-        # if self._status_cnt >= self._battery_average and self._sensor_val["battery"] < 12.0:
-        #     batwWasLow = True
-        #     print("[INFO] {} - Battery at low level, recharge!")
-        #     self._pub.publish("")
-        #     #TODO: publish message that battery is at low level
-        # elif self._status_cnt >= self._battery_average and self._sensor_val["battery"] < 11.8:
-        #     print("[INFO] {} - Battery reached lowesr level, going shutdown!")
-        #     #TODO: publish message shutdown ==> look keyoard node_stop
-        # elif batwWasLow == True and self._sensor_val["battery"] > 12.15:
-        #     batwWasLow = False
-        #     print("[INFO] Robofriend is recharged!")
-
     def __update_battery_voltage(self, new_bat, actual_bat, battery_average):
         if actual_bat == None:
             actual_bat = 1000
@@ -103,12 +90,13 @@ class BatteryInfraredDataHandler():
         return (newMean + (new_bat / battery_average))
 
     def __publish_message(self, sensor_val):
-        self._msg.bat_val = round(sensor_val["battery"], 3)
-        self._msg.inf_left = round(sensor_val["inf_left"], 3)
-        self._msg.inf_middle = round(sensor_val["inf_middle"], 3)
-        self._msg.inf_right = round(sensor_val["inf_right"], 3)
-        #print("[INFO] {} - Published sensor values to robobrain node: {}\n".format(__class__.__name__, self._msg))
+        self._msg.bat_val = sensor_val["battery"]
+        self._msg.bat_percent = sensor_val["bat_percent"]
+        self._msg.inf_left = sensor_val["inf_left"]
+        self._msg.inf_middle = sensor_val["inf_middle"]
+        self._msg.inf_right = sensor_val["inf_right"]
         self._pub.publish(self._msg)
+        #print("[INFO] {} - Published sensor values to robobrain node: {}\n".format(__class__.__name__, self._msg))
 
     # battery
     @property
