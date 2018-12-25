@@ -1,4 +1,5 @@
-uint16 bat_val
-uint16 inf_left
-uint16 inf_middle
-uint16 inf_right
+float32 bat_val
+float32 bat_percent
+float32 inf_left
+float32 inf_middle
+float32 inf_right
