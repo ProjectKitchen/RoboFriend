@@ -33,10 +33,8 @@ def node_start():
 
 def handle_batinf():
 
-    #TODO: Publisher for Central node is needed
-
     bat_inf = BatteryInfraredDataHandler()
 
     while runFlag:
-        #bat_inf.request_sensor_values()
-        time.sleep(20)
+        bat_inf.request_sensor_values()
+        time.sleep(1)

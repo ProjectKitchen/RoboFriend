@@ -40,7 +40,7 @@ class TeensyDataHandler():
         inf_middle = None
         inf_right = None
 
-        print("\n[INFO] {} - Request received: {}".format(self.__class__.__name__, request.request))
+        #print("\n[INFO] {} - Request received: {}".format(self.__class__.__name__, request.request))
 
         #resp_message = self.send_serial("R", True)
 
@@ -49,10 +49,10 @@ class TeensyDataHandler():
         resp_message = "Sensors,0500,0200,0100,0300\n"
         ######################################
 
-        print("[INFO] Sensor values from teensy: {}".format(resp_message))
+        #print("[INFO] Sensor values from teensy: {}".format(resp_message))
         sensor, bat, inf_left, inf_middle, inf_right = resp_message.split(',')
-        print("[INFO] {} - Response Service: Sensor: {}, Battery: {}, Infrared left: {}, Infrared middle: {}, Infrared right: {}"
-                .format(__class__.__name__, sensor, bat, inf_left, inf_middle, inf_right))
+        # print("[INFO] {} - Response Service: Sensor: {}, Battery: {}, Infrared left: {}, Infrared middle: {}, Infrared right: {}"
+        #         .format(__class__.__name__, sensor, bat, inf_left, inf_middle, inf_right))
         return BatInfDataResponse(int(bat), int(inf_left), int(inf_middle), int(inf_right))
 
     def motor_process_data(self, data):
