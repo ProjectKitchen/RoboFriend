@@ -24,11 +24,11 @@ import teensyCommunicator as teensyCommunicator
 import ioWarriorModule as ioWarriorModule
 # import speechModule as speechModule
 #import cam_node as cam_node
-import facedetectionModule as facedetectionModule
+#import facedetectionModule as facedetectionModule
 import systemModule as systemModule
 
 # import ROS modules
-from ROS_Node.FacedetectionNode import *
+#from ROS_Node.FacedetectionNode import *
 from ROS_Node.KeyboardNode import *
 #from ROS_Node.MotorNode import *
 from ROS_Node.RFIDNode import *
@@ -81,7 +81,7 @@ def main():
 	print("Done ... starting Webserver!")
 	webserverModule.start()
 	print("Done ... starting StatusModule!")
-	statusModule.start()
+	#statusModule.start()
 	print("Done ... starting Gamecommunicator")
 	gameCommunicator.start()
 	print("Done ... starting KeyboardModule")
@@ -90,9 +90,9 @@ def main():
 	print("Done ... starting FaceModue")
 	faceModule.drawFace()
 	print("Done ... starting RosFacedetectionNode")
-	facedetection_node.node_start()
+	#facedetection_node.node_start()
 	print("Done ... starting FacedetectListener")
-	facedetectionModule.listener()
+	#facedetectionModule.listener()
 	print("Done ... start Speech Node")
 	speech_node.node_start()
 	print("Done ... start Teensy Node")
