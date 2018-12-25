@@ -56,6 +56,7 @@ add_message_files(
    KeyboardData.msg
    SpeechData.msg
    TeensyMotorData.msg
+   BatInfMsgData.msg
 )
 
 ## Generate services in the 'srv' folder
