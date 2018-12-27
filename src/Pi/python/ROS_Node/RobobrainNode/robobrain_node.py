@@ -59,17 +59,17 @@ def battery_infrared_data_cb(data, args):
 def RobobrainHandler():
     global runFlag
 
-    publish_handler = RobobrainPublisherHandler(topics)
-    robostate = RobobrainStateHandler()         # sets actual state to IDLE and starts thread
-    robostate.start_thread()
+    event = threading.Event()
 
-    keyboard = RobobrainKeyboardDataHandler()
+    robostate = RobobrainStateHandler(event)         # sets actual state to IDLE and starts thread
+    keyboard = RobobrainKeyboardDataHandler(event, robostate)
     facedetection = RobobrainFacedetectionDataHandler()
     battery_infrared = RobobrainBatteryInfraredDataHandler()
     rospy.Subscriber(topics['T_KEYB_DATA'], KeyboardData, keyboard_data_cb, keyboard)
     rospy.Subscriber(topics['T_CAM_DATA'], CamData, facedetection_data_cb, facedetection)
     rospy.Subscriber(topics['T_BAT_INF_DATA'], BatInfMsgData, battery_infrared_data_cb, battery_infrared)
 
+    publish_handler = RobobrainPublisherHandler(topics)
     while runFlag:
         # if robostate.state = robostate["IDLE"]
         #
