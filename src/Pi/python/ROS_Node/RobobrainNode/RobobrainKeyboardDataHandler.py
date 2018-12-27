@@ -2,39 +2,39 @@
 class RobobrainKeyboardDataHandler():
 
     def __init__(self):
-        self._command = None
-        self._action = None
-        self._action_opt = None
+        self.__quit = None
+        self.__up_down = None
+        self.__pressed_key = None
 
     def process_data(self, data):
-        self._command = data.command
-        self._action = data.action
-        self._action_opt = data.action_opt
+        self.__quit = data.quit
+        self.__up_down = data.up_down
+        self.__pressed_key = data.pressed_key
         print("[INFO] Class: {} ... Received message from keyboard-node: {}\n".format(self.__class__.__name__, data))
 
     # command
     @property
-    def command(self):
-        return self._command
+    def quit(self):
+        return self.__quit
 
-    @command.setter
-    def command(self, value):
-        self._command = value
+    @quit.setter
+    def quit(self, value):
+        self.__quit = value
 
-    #action
+    # up_down
     @property
-    def action(self):
-        return self._action
+    def up_down(self):
+        return self.__up_down
 
-    @action.setter
-    def action(self, value):
+    @up_down.setter
+    def up_down(self, value):
         self._action = value
 
     #action_opt
     @property
-    def action_opt(self):
-        return self._action_opt
+    def pressed_key(self):
+        return self.__pressed_key
 
-    @action_opt.setter
-    def action_opt(self, value):
-        self._action_opt = value
+    @pressed_key.setter
+    def pressed_key(self, value):
+        self.__pressed_key = value
