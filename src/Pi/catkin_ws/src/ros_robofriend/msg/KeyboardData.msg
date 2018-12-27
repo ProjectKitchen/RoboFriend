@@ -1,3 +1,3 @@
-string command
-string action
-string action_opt
+bool quit
+string up_down
+string pressed_key
