@@ -1,7 +1,8 @@
+from ROS_Node.RobobrainNode.RobobrainStateHandler import *
 
 class RobobrainBatteryInfraredDataHandler():
 
-    def __init__(self):
+    def __init__(self, robostate):
         self.__bat_value = None
         self.__bat_percent = None
         self.__inf_left = None
@@ -9,6 +10,7 @@ class RobobrainBatteryInfraredDataHandler():
         self.__inf_right = None
 
         self.__batWasLow = None
+        self.__robostate_obj = robostate
 
     def process_data(self, data):
         self.__bat_value = round(data.bat_val, 2)
@@ -23,16 +25,13 @@ class RobobrainBatteryInfraredDataHandler():
         self.__data_evaluate()
 
     def __data_evaluate(self):
-        if self.__bat_value < 12:
+        if self.__bat_value < 12 and self.__bat_value > 11.8:
             self.__batWasLow = True
-            print("[INFO] {} - Battery at low level, recharge!")
-
-            #TODO: activate pathfinder for recharging
-        if self.__bat_value < 11.8:
-            pass
-            #print("[INFO] {} - Battery reached critical level, going shutdown!")
-
-            #TODO: shutdown systemModule
+            print("[INFO] {} - Battery at low level change state to FIND_CHARGING_STATION!".format(__class__.__name__))
+            self.__robostate_obj.state = RobobrainStateHandler.robostate["FIND_CHARGING_STATION"]
+        elif self.__bat_value < 11.8:
+            print("[INFO] {} - Battery reached critical level, going shutdown!".format(__class__.__name__))
+            self.__robostate_obj.state = RobobrainStateHandler.robostate["SHUTDOWN"]
         if self.__batWasLow == True and self.__bat_value > 12.15:
             batwWasLow = False
             #print("[INFO] Robofriend is recharged!")
