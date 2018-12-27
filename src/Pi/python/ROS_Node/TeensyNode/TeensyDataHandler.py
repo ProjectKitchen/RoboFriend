@@ -46,7 +46,7 @@ class TeensyDataHandler():
 
         ######################################
         # TODO: for test purposes fakink teensy values
-        resp_message = "Sensors,0100,0200,0100,0300\n"
+        resp_message = "Sensors,0500,0200,0100,0300\n"
         ######################################
 
         #print("[INFO] Sensor values from teensy: {}".format(resp_message))

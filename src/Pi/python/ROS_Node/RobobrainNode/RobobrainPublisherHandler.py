@@ -5,7 +5,7 @@ from ros_robofriend.msg import SpeechData
 from ros_robofriend.msg import TeensyMotorData
 
 class RobobrainPublisherHandler():
-    
+
     def __init__(self, topics):
         self._topics = topics
         self._speech_pub = rospy.Publisher(topics['T_SPEECH_DATA'], SpeechData, queue_size = 10)

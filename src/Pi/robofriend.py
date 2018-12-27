@@ -22,7 +22,7 @@ import gameCommunicator as gameCommunicator
 import keyboardModule as keyboardModule
 import teensyCommunicator as teensyCommunicator
 import ioWarriorModule as ioWarriorModule
-# import speechModule as speechModule
+#import speechModule as speechModule
 #import cam_node as cam_node
 #import facedetectionModule as facedetectionModule
 import systemModule as systemModule
@@ -48,7 +48,7 @@ def stop():
 	#rfidModule.stop()
 	rfid_node.node_stop()
 	webserverModule.stop()
-	statusModule.stop()
+	#statusModule.stop()
 	gameCommunicator.stop()
 	# keyboardModule.stop()
 	keyboard_node.node_stop()
@@ -85,7 +85,7 @@ def main():
 	print("Done ... starting Gamecommunicator")
 	gameCommunicator.start()
 	print("Done ... starting KeyboardModule")
-	# keyboardModule.start()
+	#keyboardModule.start()
 	keyboard_node.node_start()
 	print("Done ... starting FaceModue")
 	faceModule.drawFace()
@@ -104,7 +104,7 @@ def main():
 	# setting up signal handlers for shutdown
 	signal.signal(signal.SIGINT, handler_stop_signals)
 	signal.signal(signal.SIGTERM, handler_stop_signals)
-	print("*** startup completed! ***")
+	print("*** startup completed! ***\n\n")
 
 	#rospy.spin()
 	while runFlag: time.sleep(0.5) # keep program running until stopped
