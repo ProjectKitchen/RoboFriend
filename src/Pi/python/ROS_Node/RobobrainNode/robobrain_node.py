@@ -25,13 +25,6 @@ topics = {'T_ODOM_DATA': 'T_ODOM_DATA', \
           'T_SPEECH_DATA' : 'T_SPEECH_DATA', \
           'T_TEENSY_MOTOR_DATA' : 'T_TEENSY_MOTOR_DATA'}
 
-roboState = {
-    'IDLE' : 1, \
-    'FIND_CHARGING_STATION' : 2, \
-    'AUTONOM' : 3, \
-    'MANUAL' : 4
-}
-
 def node_stop():
     global runFlag
 
@@ -67,7 +60,8 @@ def RobobrainHandler():
     global runFlag
 
     publish_handler = RobobrainPublisherHandler(topics)
-    robostate = RobobrainStateHandler(roboState['IDLE'])
+    robostate = RobobrainStateHandler()         # sets actual state to IDLE and starts thread
+    robostate.start_thread()
 
     keyboard = RobobrainKeyboardDataHandler()
     facedetection = RobobrainFacedetectionDataHandler()
