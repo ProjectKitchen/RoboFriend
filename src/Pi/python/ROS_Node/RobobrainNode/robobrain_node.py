@@ -23,7 +23,7 @@ topics = {'T_ODOM_DATA': 'T_ODOM_DATA', \
           'T_KEYB_DATA': 'T_KEYB_DATA', \
           'T_RFID_DATA': 'T_RFID_DATA', \
           'T_SPEECH_DATA' : 'T_SPEECH_DATA', \
-          'T_TEENSY_MOTOR_DATA' : 'T_TEENSY_MOTOR_DATA' }
+          'T_TEENSY_MOTOR_DATA' : 'T_TEENSY_MOTOR_DATA'}
 
 roboState = {
     'IDLE' : 1, \
@@ -75,9 +75,6 @@ def RobobrainHandler():
     rospy.Subscriber(topics['T_KEYB_DATA'], KeyboardData, keyboard_data_cb, keyboard)
     rospy.Subscriber(topics['T_CAM_DATA'], CamData, facedetection_data_cb, facedetection)
     rospy.Subscriber(topics['T_BAT_INF_DATA'], BatInfMsgData, battery_infrared_data_cb, battery_infrared)
-
-    #TODO: Subscriber from Battery/Infrared Node has to be implemneted!!
-
 
     while runFlag:
         # if robostate.state = robostate["IDLE"]
