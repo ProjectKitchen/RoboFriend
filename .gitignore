@@ -1,12 +1,11 @@
+# Log files
+/src/Pi/log.txt
+/src/Pi/log1.txt
 
-src/Pi/log.txt
-src/Pi/log1.txt
-
-src/Pi/catkin_ws/build
-src/Pi/catkin_ws/devel
-src/Pi/catkin_ws/install
-
-
+# Catkin ws
+/src/Pi/catkin_ws/build
+/src/Pi/catkin_ws/devel
+/src/Pi/catkin_ws/install
 
 # Object files
 *.o
@@ -24,6 +23,6 @@ src/Pi/catkin_ws/install
 *.plt
 *.raw
 
-# src
+# Python/src
 *.pyc
 *.iml

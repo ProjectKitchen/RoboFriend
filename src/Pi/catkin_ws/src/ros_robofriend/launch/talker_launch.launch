@@ -1,0 +1,5 @@
+<launch>
+	<node pkg="robofriend" type="Talker_node.py" name="robofriend_talker" output="screen">
+
+	</node>
+</launch>

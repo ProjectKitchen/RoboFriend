@@ -3,6 +3,7 @@
 import rospy
 import math
 from std_msgs.msg import String
+from geometry_msgs.msg import Twist
 from robofriend.msg import LandmarkDistance
 from turtlesim.msg import Pose
 
@@ -46,7 +47,8 @@ def main():
     # run simultaneously.
     rospy.init_node('pathplanner', anonymous=True)
 
-    pub_l = rospy.Publisher('closest_landmark', LandmarkDistance, queue_size = 10) # landmark data
+    pub_c = rospy.Publisher('cmd_vel', Twist, queue_size = 10)
+    pub_l = rospy.Publisher('/robofriend/closest_landmark', LandmarkDistance, queue_size = 10) # landmark data
     
     landmarks = []
     landmarks.append(("Cube", 1.31, 1.99));
@@ -59,7 +61,38 @@ def main():
     rospy.Subscriber("/turtle1/pose", Pose, monitor.path_data_cb)
 
     # spin() simply keeps python from exiting until this node is stopped
-    rospy.spin()
+    # rospy.spin()
+
+    msg = Twist()
+    l_x = 0.5
+    nrel = 0
+    a_z = 0.3
+    msg.linear.x = l_x
+    msg.linear.y = nrel
+    msg.linear.z = nrel
+    msg.angular.x = nrel
+    msg.angular.y = nrel
+    msg.angular.z = a_z
+
+    fwd = 1
+
+    rate = rospy.Rate(5) # 1hz
+    while not rospy.is_shutdown():
+
+        pub_c.publish(msg)
+
+        if fwd is 1:
+        	# msg.linear.x += 0.1
+        	# msg.angular.z += 0.1
+        	if msg.angular.z >= 1:
+        		fwd = 0
+        else:
+        	# msg.linear.x -= 0.1
+        	# msg.angular.z -= 0.1
+        	if msg.angular.z <= 0:
+        		fwd = 1
+
+        rate.sleep() # make sure the publish rate maintains at the needed frequency
 
 if __name__ == '__main__':
     main()

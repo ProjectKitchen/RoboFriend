@@ -42,18 +42,10 @@ def main():
     # name for our 'RoboBrain' node so that multiple listeners can
     # run simultaneously.
     rospy.init_node('robobrain', anonymous = True)
-    
-    pub_1 = rospy.Publisher('T_TEST_1_DATA', Float64, queue_size = 10) # test 1 voltage
-    pub_2 = rospy.Publisher('T_TEST_2_DATA', String, queue_size = 10) # test 2 data
-    pub_p = rospy.Publisher('T_PATH_DATA', String, queue_size = 10) # pathplanner data
-
-    topics = {'T_VOLT_DATA': 'T_VOLT_DATA', \
-              'T_ODOM_DATA': 'T_ODOM_DATA', \
-              'T_IR_DATA': 'T_IR_DATA', \
-              'T_CAM_DATA': 'T_CAM_DATA', \
-              'T_KEYB_DATA': 'T_KEYB_DATA', \
-              'T_RFID_DATA': 'T_RFID_DATA' }
-    
+	
+    # publish here
+	# pub = rospy.Publisher('topic_name', MsgType, queue_size = 10)
+	
     rb  = RoboBrain(RoboStates.INIT)
     bat = BatteryVoltageDataHandler.BatteryVoltageDataHandler()
     odo = OdometryDataHandler.OdometryDataHandler()
@@ -62,34 +54,23 @@ def main():
     key = KeyboardDataHandler.KeyboardDataHandler()
     rf  = RFIDDataHandler.RFIDDataHandler()
 
-    rospy.Subscriber(topics['T_VOLT_DATA'], Float64, bat.processData)
-    rospy.Subscriber(topics['T_ODOM_DATA'], Pose, odo.processData)
-    rospy.Subscriber(topics['T_IR_DATA'],   String, ir.processData)
-    rospy.Subscriber(topics['T_CAM_DATA'],  CamData, cam.processData)
-    rospy.Subscriber(topics['T_KEYB_DATA'], String, key.processData)
-    rospy.Subscriber(topics['T_RFID_DATA'], String, rf.processData)
+    rospy.Subscriber("/robofriend/volt_data", Float64, bat.processData)
+    rospy.Subscriber("/robofriend/odom_data", Pose, odo.processData)
+    rospy.Subscriber("/robofriend/ir_data",   String, ir.processData)
+    rospy.Subscriber("/robofriend/cam_data",  CamData, cam.processData)
+    rospy.Subscriber("/robofriend/keyb_data", String, key.processData)
+    rospy.Subscriber("/robofriend/rfid_data", String, rf.processData)
 
     # spin() simply keeps python from exiting until this node is stopped
     # rospy.spin()
 
     rate = rospy.Rate(0.2) # 200mhz
     while not rospy.is_shutdown():
-        rospy.loginfo("======================== state: {}".format(rb.state))
-
+        rospy.loginfo("state: {}".format(rb.state))
         rospy.loginfo(bat.voltage)
-        pub_1.publish(bat.voltage)
+        # pub.publish(bat.voltage)
 
-        hello_str = "hello test 2"
-        rospy.loginfo(hello_str)
-        pub_2.publish(hello_str)
-
-        hello_str = "hello path planner"
-        rospy.loginfo(hello_str)
-        pub_p.publish(hello_str)
-
-        rospy.loginfo("========================")
-
-        rate.sleep()
+        rate.sleep() # make sure the publish rate maintains at the needed frequency
 
 if __name__ == '__main__':
     try:
