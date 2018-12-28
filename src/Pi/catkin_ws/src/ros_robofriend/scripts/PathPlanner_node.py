@@ -3,11 +3,10 @@
 import rospy
 import math
 from std_msgs.msg import String
-from ros_robofriend.msg import LandmarkDistance
+from robofriend.msg import LandmarkDistance
 from turtlesim.msg import Pose
 
 def distance(x1, y1, x2, y2):
-    # rospy.loginfo("distance: %f %f %f %f", x1, y1, x2, y2)
     xd = x1 - x2
     yd = y1 - y2
     return math.sqrt(xd*xd + yd*yd)
@@ -17,7 +16,7 @@ class LandmarkMonitor(object):
         self._pub = pub
         self._landmarks = landmarks
 
-    def path_data_c(self, data):
+    def path_data_cb(self, data):
         x = data.x
         y = data.y
 
@@ -37,7 +36,6 @@ class LandmarkMonitor(object):
 
         if closest_distance < 0.5:
             rospy.loginfo(rospy.get_caller_id() + " i\'m near the {}".format(closest_name))
-        # rospy.loginfo(rospy.get_caller_id() + " I heard %s", data.data)
     
 def main():
 
@@ -48,6 +46,8 @@ def main():
     # run simultaneously.
     rospy.init_node('pathplanner', anonymous=True)
 
+    pub_l = rospy.Publisher('closest_landmark', LandmarkDistance, queue_size = 10) # landmark data
+    
     landmarks = []
     landmarks.append(("Cube", 1.31, 1.99));
     landmarks.append(("Dumpster", 2.11, 2.42));
@@ -55,12 +55,8 @@ def main():
     landmarks.append(("Barrier", 4.59, 4.83));
     landmarks.append(("Bookshelf", 5.09, 5.53));
 
-    # landmark data
-    pub_l = rospy.Publisher('closest_landmark', LandmarkDistance, queue_size = 10)
     monitor = LandmarkMonitor(pub_l, landmarks)
-
-    # rospy.Subscriber("T_PATH_DATA", String, path_data_c)
-    rospy.Subscriber("/turtle1/pose", Pose, monitor.path_data_c)
+    rospy.Subscriber("/turtle1/pose", Pose, monitor.path_data_cb)
 
     # spin() simply keeps python from exiting until this node is stopped
     rospy.spin()
