@@ -45,7 +45,7 @@ class RobobrainStateHandler():
                     self.__state = RobobrainStateHandler.robostate["FACEDETECTION"]
             elif self.state == RobobrainStateHandler.robostate["FACEDETECTION"]:
                 print("[INFO] Within FACEDETECTION state")
-                sleep(5)
+                sleep(600)
                 #TODO: start facedetection process
 
     @property

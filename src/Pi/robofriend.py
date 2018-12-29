@@ -21,7 +21,7 @@ import statusModule as statusModule
 import gameCommunicator as gameCommunicator
 import keyboardModule as keyboardModule
 import teensyCommunicator as teensyCommunicator
-import ioWarriorModule as ioWarriorModule
+#import ioWarriorModule as ioWarriorModule
 #import speechModule as speechModule
 #import cam_node as cam_node
 #import facedetectionModule as facedetectionModule
@@ -36,6 +36,7 @@ from ROS_Node.SpeechNode import *
 from ROS_Node.TeensyNode import *
 from ROS_Node.BatteryInfraredNode import *
 from ROS_Node.RobobrainNode import *
+from ROS_Node.EearsLedNode import *
 
 # globals
 runFlag = True
@@ -99,6 +100,8 @@ def main():
 	teensy_node.node_start()
 	print("Done ... start Battery/Infrared Node")
 	bat_inf_node.node_start()
+	print("Done ... start Ears/Led Node")
+	ears_led_node.node_start()
 	print("init done! register signal handlers...")
 
 	# setting up signal handlers for shutdown

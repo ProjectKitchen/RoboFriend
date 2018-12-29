@@ -1,0 +1,2 @@
+class EarsLedDataHandler():
+    pass

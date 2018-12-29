@@ -19,8 +19,8 @@ class RobobrainKeyboardDataHandler():
         self.__input_handler(data)
 
     def __input_handler(self, data):
-        print("[INFO] Within keyboard input handler!")
-        print("[INFO] actual State: {}".format(self.__robostate_obj.state))
+        #print("[INFO] Within keyboard input handler!")
+        #print("[INFO] actual State: {}".format(self.__robostate_obj.state))
         if self.__robostate_obj.state == RobobrainStateHandler.robostate["IDLE"]:
             self.__event.set()
             print("[INFO] Event set!")

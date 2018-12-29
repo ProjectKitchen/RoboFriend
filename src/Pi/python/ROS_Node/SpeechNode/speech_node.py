@@ -2,10 +2,9 @@ import pyttsx3
 import random
 import time
 import threading
-import ROS_Node.SpeechNode.SpeechDataHandler
 import rospy
 
-# import ros message_publish
+# import ros message
 from ros_robofriend.msg import SpeechData
 
 # import ros modules
@@ -27,7 +26,6 @@ def node_start():
 
 def handle_speech():
 
-    lastSpeakTimestamp = time.time()
     lastSpeakWord = None
     wordRate = 140                  # words per minute
     volumeRate = 1.0
