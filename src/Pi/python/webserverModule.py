@@ -216,6 +216,9 @@ def webserver():
     app.run(debug=webserverDebug, host=webserverHost, port=webserverPort)
 
 def start():
+
+    #TODO: initialize ros topic, ...
+
     print("starting webserverModule...")
     WebserverThread = threading.Thread(target=webserver)
     WebserverThread.daemon = True
