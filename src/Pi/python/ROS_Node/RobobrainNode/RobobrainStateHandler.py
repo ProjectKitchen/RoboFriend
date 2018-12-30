@@ -19,11 +19,11 @@ class RobobrainStateHandler():
         self.__event = event
 
     def __start_thread(self):
-        thread = Thread(target = self.__state_hander_thread)
+        thread = Thread(target = self.__state_handler_thread)
         thread.daemon = True
         thread.start()
 
-    def __state_hander_thread(self):
+    def __state_handler_thread(self):
         print("{} - Thread to handle the states started!".format(__class__.__name__))
         while True:
             if self.state == RobobrainStateHandler.robostate["SHUTDOWN"]:
