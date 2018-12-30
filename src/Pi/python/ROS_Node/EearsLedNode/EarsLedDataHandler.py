@@ -36,7 +36,7 @@ class EarsLedDataHandler():
             if self.__check_number_elements(self.__rgb):
                 self.__set_ear_color(self.__rgb[0], self.__rgb[1], self.__rgb[2])
             else:
-                print("[INFO] To few elemenst!")
+                pass
         else:
             if self.__is_thread_running() == True:
                 self.__stop_thread()
@@ -47,7 +47,7 @@ class EarsLedDataHandler():
                 if self.__check_number_elements(self.__rgb):
                     self.__set_ear_color(self.__rgb[0], self.__rgb[1], self.__rgb[2])
                 else:
-                    print("[INFO] To few elemenst!")
+                    pass
 
     def __random_thread(self):
         while True:
@@ -71,7 +71,6 @@ class EarsLedDataHandler():
         return self.__thread_event.is_set()
 
     def __get_new_random_color(self, old_color):
-        print("[INFO] getNewRandomColor- old_color: {} \nfactor: {}".format(old_color, self.__factor))
         newColor = old_color + random.uniform(0, 1) * self.__factor
         if newColor > 15:
             newColor = 15
@@ -79,7 +78,6 @@ class EarsLedDataHandler():
         elif newColor < 0:
             newColor = 0
             self.__factor *= -1
-        print("[INFO] getNewRandomColor- NewColor: {} \nfactor: {}".format(newColor, self.__factor))
         return newColor
 
     def __set_ear_color_series(self):
@@ -93,7 +91,8 @@ class EarsLedDataHandler():
                         time.sleep(self.__repeat_num[1]/1000.0)
                         elements_cnt.clear()
         else:
-            print("Wrongggg!!!")
+            pass
+            
     def __set_ear_color(self, red, green, blue):
         self.__red = red
         self.__green = green
