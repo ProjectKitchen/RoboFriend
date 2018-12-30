@@ -23,7 +23,8 @@ topics = {'T_ODOM_DATA': 'T_ODOM_DATA', \
           'T_KEYB_DATA': 'T_KEYB_DATA', \
           'T_RFID_DATA': 'T_RFID_DATA', \
           'T_SPEECH_DATA' : 'T_SPEECH_DATA', \
-          'T_TEENSY_MOTOR_DATA' : 'T_TEENSY_MOTOR_DATA'}
+          'T_TEENSY_MOTOR_DATA' : 'T_TEENSY_MOTOR_DATA', \
+          'T_EARS_LED_DATA' : 'T_EARS_LED_DATA'}
 
 def node_stop():
     global runFlag
@@ -61,7 +62,8 @@ def RobobrainHandler():
 
     event = threading.Event()
 
-    robostate = RobobrainStateHandler(event)         # sets actual state to IDLE and starts thread
+    publish_handler = RobobrainPublisherHandler(topics)
+    robostate = RobobrainStateHandler(event)         # sets actual state to IDLE and starts thread, TODO: include publisher handler as argument!
     keyboard = RobobrainKeyboardDataHandler(event, robostate)
     facedetection = RobobrainFacedetectionDataHandler()
     battery_infrared = RobobrainBatteryInfraredDataHandler(robostate)
@@ -69,7 +71,6 @@ def RobobrainHandler():
     rospy.Subscriber(topics['T_CAM_DATA'], CamData, facedetection_data_cb, facedetection)
     rospy.Subscriber(topics['T_BAT_INF_DATA'], BatInfMsgData, battery_infrared_data_cb, battery_infrared)
 
-    publish_handler = RobobrainPublisherHandler(topics)
     while runFlag:
         # if robostate.state = robostate["IDLE"]
         #
