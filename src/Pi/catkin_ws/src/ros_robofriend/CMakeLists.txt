@@ -58,6 +58,7 @@ add_message_files(
    TeensyMotorData.msg
    BatInfMsgData.msg
    EarsLedData.msg
+   IOWarriorData.msg
 )
 
 ## Generate services in the 'srv' folder
