@@ -2,6 +2,10 @@
 import random
 import threading
 import time
+import rospy
+
+# import ros message
+from ros_robofriend.msg import IOWarriorData
 
 class EarsLedDataHandler():
 
@@ -21,6 +25,9 @@ class EarsLedDataHandler():
         )
         self.__thread.daemon = True
         self.__thread.start()
+
+        self.__iowarrior_pub =  rospy.Publisher('T_IOWARRIOR_DATA', IOWarriorData, queue_size = 10)
+        self.__iowarrior_msg = IOWarriorData()
 
     def process_data(self, data):
         self.__random = data.random
@@ -57,7 +64,7 @@ class EarsLedDataHandler():
             self.__green = self.__get_new_random_color(self.__green)
             self.__blue = self.__get_new_random_color(self.__blue)
             self.__send_to_iowarrior(self.__red, self.__green, self.__blue)
-            time.sleep(self.__refreshIntervalsMS / 1000) 
+            time.sleep(self.__refreshIntervalsMS / 1000)
 
     def __start_thread(self):
         print("[INFO] Set event to start random thread!")
@@ -106,4 +113,6 @@ class EarsLedDataHandler():
             return True
 
     def __send_to_iowarrior(self, red, green, blue):
-        print("[INFO] {} - Publish message to IOWarrior Node: {} {} {}".format(self.__class__.__name__, red, green, blue))
+        self.__iowarrior_msg.rgb = [red, green, blue]
+        self.__iowarrior_pub.publish(self.__iowarrior_msg)
+        print("[INFO] {} - Publish message to IOWarrior Node: {}".format(self.__class__.__name__, self.__iowarrior_msg))
