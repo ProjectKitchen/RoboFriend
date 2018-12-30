@@ -25,7 +25,7 @@ screenshotTimestamp = None
 idleTimestamp = time.time()
 idleThresholdSeconds = 90
 runFlag = True
-batCoversionConstant =  0.04783948
+# batCoversionConstant =  0.04783948
 batMovingAverageN = 30
 statusCount = 0
 batWasLow = False
@@ -104,15 +104,18 @@ def updateFromRawStatus(rawStatus):
     global currentStatus, keyBat, keyBatPercent, keyIrL, keyIrM, keyIrR, batCoversionConstant, batMovingAverageN
 
     batVolt = getBatteryVoltage()
-    if batVolt == None:
-        batVolt=1000
+    # if batVolt == None:
+    #    batVolt = 1000
+    # see schematic 
+    r1 = 7210
+    r2 = 2780
     irSensorLeft = -1
     irSensorMiddle = -1
     irSensorRight = -1
     try:
         statusArray = rawStatus.split(',')
         if (statusArray[0] == "Sensors"):
-            newbatVolt = int(statusArray[1]) * batCoversionConstant
+            newbatVolt =  (int(statusArray[1]) * (r1 + r2)) / r2 
             batVolt = getMovingAverage(newbatVolt, batVolt, batMovingAverageN)
             irSensorLeft = int(statusArray[2])
             irSensorMiddle = int(statusArray[3])
