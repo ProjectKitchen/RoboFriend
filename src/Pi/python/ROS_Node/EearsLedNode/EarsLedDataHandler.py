@@ -57,7 +57,7 @@ class EarsLedDataHandler():
             self.__green = self.__get_new_random_color(self.__green)
             self.__blue = self.__get_new_random_color(self.__blue)
             self.__send_to_iowarrior(self.__red, self.__green, self.__blue)
-            time.sleep(self.__refreshIntervalsMS / 100) ########
+            time.sleep(self.__refreshIntervalsMS / 1000) 
 
     def __start_thread(self):
         print("[INFO] Set event to start random thread!")
@@ -92,7 +92,7 @@ class EarsLedDataHandler():
                         elements_cnt.clear()
         else:
             pass
-            
+
     def __set_ear_color(self, red, green, blue):
         self.__red = red
         self.__green = green
