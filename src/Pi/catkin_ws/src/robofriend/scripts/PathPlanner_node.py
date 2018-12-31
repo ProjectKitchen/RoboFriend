@@ -8,6 +8,8 @@ from nav_msgs.msg import Odometry
 from robofriend.msg import LandmarkDistance
 from turtlesim.msg import Pose
 
+import NavigationOdometryDataHandler
+
 
 def distance(x1, y1, x2, y2):
     xd = x1 - x2
@@ -39,23 +41,6 @@ class LandmarkMonitor(object):
 
         if closest_distance < 0.5:
             rospy.loginfo(rospy.get_caller_id() + " i\'m near the {}".format(closest_name))
-
-class NavigationOdometry(object):
-    def __init__(self, pub):
-        self._pub = pub
-
-    def path_data_cb(self, data):
-        seq = data.header.seq
-        frame_id = data.child_frame_id
-        position_x = data.pose.pose.position.x
-        orientation_w = data.pose.pose.orientation.w
-        linear_x = data.twist.twist.linear.x 
-        angular_z = data.twist.twist.angular.z
-        
-        rospy.loginfo(rospy.get_caller_id() + " data: %d %s %f %f %f %f" 
-        	, seq , frame_id 
-        	, position_x , orientation_w
-        	, linear_x , angular_z)
     
 def main():
 
@@ -68,7 +53,6 @@ def main():
 
     pub_c = rospy.Publisher('cmd_vel', Twist, queue_size = 1)
     pub_l = rospy.Publisher('/robofriend/closest_landmark', LandmarkDistance, queue_size = 1) # landmark data
-    pub_o = rospy.Publisher('/robofriend/odom_output', Odometry, queue_size = 1) # odometry data
     
     landmarks = []
     landmarks.append(("Cube", 1.31, 1.99));
@@ -80,8 +64,8 @@ def main():
     monitor = LandmarkMonitor(pub_l, landmarks)
     rospy.Subscriber("/turtle1/pose", Pose, monitor.path_data_cb)
 
-    navodom = NavigationOdometry(pub_o)
-    rospy.Subscriber("/odom", Odometry, navodom.path_data_cb) 
+    navodom = NavigationOdometryDataHandler.NavigationOdometryDataHandler()
+    rospy.Subscriber("/odom", Odometry, navodom.processData) 
 
     # spin() simply keeps python from exiting until this node is stopped
     # rospy.spin()
