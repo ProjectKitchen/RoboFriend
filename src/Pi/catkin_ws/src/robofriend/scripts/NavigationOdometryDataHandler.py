@@ -25,43 +25,88 @@ class NavigationOdometryDataHandler():
         self._ang_z = data.twist.twist.angular.z
         self._twist_cov = data.twist.covariance
         
-        rospy.loginfo("{%s} DATA: %d %s %f %f %f %f",  
+        rospy.loginfo("{%s} DATA: %d %f %f %f %f",  
             self.__class__.__name__,
             self._seq,
-            self._frame_id,
             self._pos_x,
             self._ori_w,
             self._lin_x,
             self._ang_z
             )
 
-        # seq
         @property
         def seq(self):
             return self._seq
 
-        # frame_id
+        @property
+        def stamp(self):
+            return self._stamp
+
         @property
         def frame_id(self):
             return self._frame_id
 
-        # pos_x
+        @property
+        def child_frame_id(self):
+            return self._child_frame_id
+
         @property
         def pos_x(self):
             return self._pos_x
 
-        # ori_w
+        @property
+        def pos_y(self):
+            return self._pos_y
+
+        @property
+        def pos_z(self):
+            return self._pos_z
+
+        @property
+        def ori_x(self):
+            return self._ori_x
+
+        @property
+        def ori_y(self):
+            return self._ori_y
+
+        @property
+        def ori_z(self):
+            return self._ori_z
+
         @property
         def ori_w(self):
             return self._ori_w
 
-        # lin_x
+        @property
+        def pos_cov(self):
+            return self._pos_cov
+        
         @property
         def lin_x(self):
             return self._lin_x
 
-        # ang_z
+        @property
+        def lin_y(self):
+            return self._lin_y
+
+        @property
+        def lin_z(self):
+            return self._lin_z
+
+        @property
+        def ang_x(self):
+            return self._ang_x
+
+        @property
+        def ang_y(self):
+            return self._ang_y
+
         @property
         def ang_z(self):
             return self._ang_z
+
+        @property
+        def twist_cov(self):
+            return self._twist_cov
         

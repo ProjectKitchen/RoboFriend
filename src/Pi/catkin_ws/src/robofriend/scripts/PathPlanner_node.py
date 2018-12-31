@@ -10,7 +10,6 @@ from turtlesim.msg import Pose
 
 import NavigationOdometryDataHandler
 
-
 def distance(x1, y1, x2, y2):
     xd = x1 - x2
     yd = y1 - y2
@@ -42,7 +41,7 @@ class LandmarkMonitor(object):
         if closest_distance < 0.5:
             rospy.loginfo(rospy.get_caller_id() + " i\'m near the {}".format(closest_name))
     
-def main():
+def PathPlanner():
 
     # In ROS, nodes are uniquely named. If two nodes with the same
     # node are launched, the previous one is kicked off. The
@@ -95,4 +94,7 @@ def main():
         rate.sleep() # make sure the publish rate maintains at the needed frequency
 
 if __name__ == '__main__':
-    main()
+    try:
+    	PathPlanner()
+    except rospy.ROSInterruptException:
+    	pass
