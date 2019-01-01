@@ -38,6 +38,7 @@ from ROS_Node.BatteryInfraredNode import *
 from ROS_Node.RobobrainNode import *
 from ROS_Node.EearsLedNode import *
 from ROS_Node.ServoCamNode import *
+from ROS_Node.IOWarriorNode import *
 
 # globals
 runFlag = True
@@ -105,6 +106,8 @@ def main():
 	ears_led_node.node_start()
 	print("Done ... start Servo Camera Node")
 	servo_cam_node.node_start()
+	print("Done ... start IOWarrior Node")
+	iowarrior_node.node_start()
 	print("init done! register signal handlers...")
 
 	# setting up signal handlers for shutdown
