@@ -29,6 +29,8 @@ class EarsLedDataHandler():
         self.__iowarrior_pub =  rospy.Publisher('T_IOWARRIOR_DATA', IOWarriorData, queue_size = 10)
         self.__iowarrior_msg = IOWarriorData()
 
+        self.__send_to_iowarrior(self.__red, self.__green, self.__blue)
+
     def process_data(self, data):
         self.__random = data.random
         self.__repeat_num = list(data.repeat_num)
