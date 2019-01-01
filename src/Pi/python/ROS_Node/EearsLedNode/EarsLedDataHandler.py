@@ -29,8 +29,6 @@ class EarsLedDataHandler():
         self.__iowarrior_pub =  rospy.Publisher('T_IOWARRIOR_DATA', IOWarriorData, queue_size = 10)
         self.__iowarrior_msg = IOWarriorData()
 
-        self.__send_to_iowarrior(self.__red, self.__green, self.__blue)
-
     def process_data(self, data):
         self.__random = data.random
         self.__repeat_num = list(data.repeat_num)
@@ -116,5 +114,6 @@ class EarsLedDataHandler():
 
     def __send_to_iowarrior(self, red, green, blue):
         self.__iowarrior_msg.rgb = [red, green, blue]
+        self.__iowarrior_msg.cam_pos = 0
         self.__iowarrior_pub.publish(self.__iowarrior_msg)
         print("[INFO] {} - Publish message to IOWarrior Node: {}\n".format(self.__class__.__name__, self.__iowarrior_msg))
