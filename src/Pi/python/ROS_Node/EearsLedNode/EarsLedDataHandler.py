@@ -117,4 +117,4 @@ class EarsLedDataHandler():
     def __send_to_iowarrior(self, red, green, blue):
         self.__iowarrior_msg.rgb = [red, green, blue]
         self.__iowarrior_pub.publish(self.__iowarrior_msg)
-        print("[INFO] {} - Publish message to IOWarrior Node: {}".format(self.__class__.__name__, self.__iowarrior_msg))
+        print("[INFO] {} - Publish message to IOWarrior Node: {}\n".format(self.__class__.__name__, self.__iowarrior_msg))
