@@ -1,3 +1,8 @@
+# KiCad Lib
+*.bak
+*.bck
+*.dcm
+
 # Log files
 /src/Pi/log.txt
 /src/Pi/log1.txt
@@ -26,3 +31,6 @@
 # Python/src
 *.pyc
 *.iml
+
+# Misc
+*.desktop
