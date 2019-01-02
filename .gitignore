@@ -5,7 +5,6 @@
 
 # Log files
 /src/Pi/log.txt
-/src/Pi/log1.txt
 
 # Catkin ws
 /src/Pi/catkin_ws/build
