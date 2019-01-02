@@ -19,6 +19,14 @@ fi
 
 #su pi -c /home/pi/startrobo.sh
 mjpg_streamer -o "output_http.so -w ./www" -i "input_raspicam.so -x 320 -y 240 -quality 30 --fps 15" &
-su pi -c "export DISPLAY=:0; source /opt/ros/kinetic/setup.bash; source /home/pi/catkin_workspace/devel/setup.bash; source /home/pi/project/RoboFriend/src/Pi/catkin_ws/devel/setup.bash; cd /home/pi/project/RoboFriend/src/Pi/; python3 robofriend.py"
+su pi -c "export DISPLAY=:0; 
+source /opt/ros/kinetic/setup.bash; 
+source ~/catkin_ws/devel/setup.bash; 
+source ~/project/RoboFriend/src/Pi/catkin_ws/devel/setup.bash; 
+export ROS_MASTER_URI=http://localhost:11311;
+export ROS_HOSTNAME=localhost;
+export TURTLEBOT3_MODEL=waffle;
+cd ~/project/RoboFriend/src/Pi/; 
+python3 robofriend.py"
 
 exit 0
