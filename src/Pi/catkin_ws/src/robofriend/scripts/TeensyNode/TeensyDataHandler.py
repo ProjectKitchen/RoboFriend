@@ -55,6 +55,8 @@ class TeensyDataHandler():
         #         .format(__class__.__name__, sensor, bat, inf_left, inf_middle, inf_right))
         return BatInfDataResponse(int(bat), int(inf_left), int(inf_middle), int(inf_right))
 
+        #TODO: seperate Infrared and battery data
+
     def motor_process_data(self, data):
         self._direction = data.direction
         self._duration = data.duration

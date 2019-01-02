@@ -1,10 +1,12 @@
+#TODO. create Infrared Node with own message type
 import rospy
 
 # import ros services
 from ros_robofriend.srv import BatInfData
 
 # import ros message
-from ros_robofriend.msg import BatInfMsgData
+#TODO: Infrared message type
+from std_msgs.msg import Float64
 
 def getBatPercentMapping():
     return [[12.77,100], [12.76,99], [12.75,99], [12.74,99], [12.73,98], [12.72,98], [12.71,96], [12.7,95], [12.69,93],
@@ -39,21 +41,29 @@ class BatteryInfraredDataHandler():
             "inf_right" : None
         }
 
+        ## TODO:
+        self._bat_voltage = 0
+
         self._status_cnt = 0
         self._actual_bat = None
         self._prev_bat_val = None
         self._battery_average = 30
         self._battery_constant = 0.04783948
 
-        self._pub = rospy.Publisher("T_BAT_INF_DATA", BatInfMsgData, queue_size = 10)
-        self._msg = BatInfMsgData()
+        self._pub = rospy.Publisher("/robofriend/battery_data", Float64, queue_size = 2)
+        #TODO
+        #self._msg = BatInfMsgData()
 
     def request_sensor_values(self):
         service_resp = None
-        rospy.wait_for_service('S_BAT_INF_DATA')
+        rospy.wait_for_service('/robofriend/get_battery_data')
+
+        # TODO
+        #rospy.wait_for_service('/robofriend/get_infrared_data')
+
 
         try:
-            request = rospy.ServiceProxy('S_BAT_INF_DATA', BatInfData)
+            request = rospy.ServiceProxy('/robofriend/get_battery_data', FLoat64)
             service_resp = request(True)
             # print("[INFO] {} - Sensor values received: Battery: {}, Infrared left: {},\
             #         Infrared middle: {}, Infrared right: {}"
@@ -100,12 +110,12 @@ class BatteryInfraredDataHandler():
 
     # battery
     @property
-    def bat(self):
-        return self._bat
+    def bat_voltage(self):
+        return self._bat_voltage
 
-    @bat.setter
-    def bat(self, value):
-        self._bat = value
+    @bat_voltage.setter
+    def bat_voltage(self, value):
+        self._bat_voltage = value
 
     # infrared left
     @property
