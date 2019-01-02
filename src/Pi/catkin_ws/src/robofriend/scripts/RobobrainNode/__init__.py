@@ -1,1 +1,1 @@
-__all__ = ["robobrain_node", "RobobrainFacedetectionDataHandler", "RobobrainKeyboardDataHandler", "RobobrainPublisherHandler", "RobobrainStateHandler"]
+__all__ = ["RobobrainNode", "RobobrainFacedetectionDataHandler", "RobobrainKeyboardDataHandler", "RobobrainPublisherHandler", "RobobrainStateHandler"]

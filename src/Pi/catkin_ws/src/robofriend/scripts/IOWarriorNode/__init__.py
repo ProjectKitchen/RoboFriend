@@ -1,1 +1,1 @@
-__all__ = ["iowarrior_node", "IOWarriorDataHandler"]
+__all__ = ["IOWarriorNode", "IOWarriorDataHandler"]

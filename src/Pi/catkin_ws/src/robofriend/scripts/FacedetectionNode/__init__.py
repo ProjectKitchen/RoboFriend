@@ -1,1 +1,1 @@
-__all__ = ["facedetection_node"]
+__all__ = ["FaceDetectionNode"]

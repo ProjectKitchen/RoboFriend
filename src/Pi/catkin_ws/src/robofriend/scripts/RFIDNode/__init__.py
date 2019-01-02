@@ -1,1 +1,1 @@
-__all__ = ["rfid_node"]
+__all__ = ["RFIDNode"]

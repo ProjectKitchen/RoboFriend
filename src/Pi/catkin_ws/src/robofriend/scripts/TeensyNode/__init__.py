@@ -1,1 +1,1 @@
-__all__ = ["teensy_node", "TeensyDataHandler"]
+__all__ = ["TeensyNode", "TeensyDataHandler"]

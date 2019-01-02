@@ -1,1 +1,1 @@
-__all__ = ["servo_cam_node", "ServoCamDataHandler"]
+__all__ = ["ServoCamNode", "ServoCamDataHandler"]

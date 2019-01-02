@@ -1,1 +1,1 @@
-__all__ = ["SpeechDataHandler", "speech_node"]
+__all__ = ["SpeechDataHandler", "SpeechNode"]
