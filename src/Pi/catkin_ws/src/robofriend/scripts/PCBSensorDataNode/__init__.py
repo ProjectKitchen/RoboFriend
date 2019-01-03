@@ -1,2 +1,2 @@
-__all__ = ["PCBSensorData", "PCBSensorDataHandler"]
+__all__ = ["PCBSensorData"]
 
