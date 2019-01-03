@@ -1,77 +1,56 @@
+#!/usr/bin/env python
+
 import rospy
 import threading
 
 # import ROS messages
-from ros_robofriend.msg import CamData
-from ros_robofriend.msg import KeyboardData
-from ros_robofriend.msg import BatInfMsgData
+from enum import Enum
 from std_msgs.msg import String
+from std_msgs.msg import Float64
+from robofriend.msg import CamData
+from robofriend.msg import KeyboardData
+from robofriend.msg import BatInfMsgData
 
 # import ROS modules
-from ROS_Node.RobobrainNode.RobobrainStateHandler import *
-from ROS_Node.RobobrainNode.RobobrainKeyboardDataHandler import *
-from ROS_Node.RobobrainNode.RobobrainFacedetectionDataHandler import *
-from ROS_Node.RobobrainNode.RobobrainBatteryInfraredDataHandler import *
-from ROS_Node.RobobrainNode.RobobrainPublisherHandler import *
+from RobobrainNode.RobobrainStateHandler import *
+from RobobrainNode.RobobrainKeyboardDataHandler import *
+from RobobrainNode.RobobrainFacedetectionDataHandler import *
+from RobobrainNode.RobobrainBatteryInfraredDataHandler import *
+from RobobrainNode.RobobrainPublisherHandler import *
 
-# global variables
-robo_state = 0
-runFlag = True
-topics = {'T_ODOM_DATA': 'T_ODOM_DATA', \
-          'T_BAT_INF_DATA': 'T_BAT_INF_DATA', \
-          'T_CAM_DATA': 'T_CAM_DATA', \
-          'T_KEYB_DATA': 'T_KEYB_DATA', \
-          'T_RFID_DATA': 'T_RFID_DATA', \
-          'T_SPEECH_DATA' : 'T_SPEECH_DATA', \
-          'T_TEENSY_MOTOR_DATA' : 'T_TEENSY_MOTOR_DATA', \
-          'T_EARS_LED_DATA' : 'T_EARS_LED_DATA'}
+def stopNode():
+    rospy.signal_shutdown("Stopping Robobrain node!")
 
-def node_stop():
-    global runFlag
+def main():
+    rospy.loginfo("Starting Robobrain node!")
+    rospy.init_node('robofriend/robobrain', anonymous = True)
 
-    runFlag = False
-    print("[INFO] Stopping robobrain node!")
+    # publish here
+    # pub = rospy.Publisher('topic_name', MsgType, queue_size = 10)
 
-def node_start():
-    global runFlag
+    # TODO: do we need a event here?
+    robotstate  = RobobrainStateHandler()
+    bat = RobobrainBatteryVoltageDataHandler.RobobrainBatteryVoltageDataHandler()
+    # bat = RobobrainBatteryInfraredDataHandler(robostate)
+    # odo = RobobrainOdometryDataHandler.RobobrainOdometryDataHandler()
+    # ir  = RobobrainInfraredDataHandler.RobobrainInfraredDataHandler()
+    fd = RobobrainFacedetectionDataHandler.RobobrainFacedetectionDataHandler()
+    # fd = RobobrainFacedetectionDataHandler()
+    key = RobobrainKeyboardDataHandler.RobobrainKeyboardDataHandler()
+    # key = RobobrainKeyboardDataHandler()
 
-    print("[INFO] Robobrain node started!")
+    # TODO: this can be managed in an easier way :)
+    # publish_handler = RobobrainPublisherHandler(topics)
 
-    robobrain_thread = threading.Thread(
-        target = RobobrainHandler
-    )
+    rospy.Subscriber("/robofriend/volt_data", Float64, bat.processData)
+    rospy.Subscriber("/robofriend/odom_data", Pose, odo.processData)
+    rospy.Subscriber("/robofriend/ir_data",   String, ir.processData)
+    rospy.Subscriber("/robofriend/cam_data",  CamData, fd.processData)
+    rospy.Subscriber("/robofriend/keyb_data", KeyboardData, key.processData)
+    
+    rate = rospy.Rate(0.2) # 200mhz
 
-    # set thread as a daemon
-    robobrain_thread.daemon = True
-
-    # start Robobrain thread
-    robobrain_thread.start()
-
-
-def keyboard_data_cb(data, args):
-    args.process_data(data)
-
-def facedetection_data_cb(data, args):
-    args.process_data(data)
-
-def battery_infrared_data_cb(data, args):
-    args.process_data(data)
-
-def RobobrainHandler():
-    global runFlag
-
-    event = threading.Event()
-
-    publish_handler = RobobrainPublisherHandler(topics)
-    robostate = RobobrainStateHandler(event)         # sets actual state to IDLE and starts thread, TODO: include publisher handler as argument!
-    keyboard = RobobrainKeyboardDataHandler(event, robostate)
-    facedetection = RobobrainFacedetectionDataHandler()
-    battery_infrared = RobobrainBatteryInfraredDataHandler(robostate)
-    rospy.Subscriber(topics['T_KEYB_DATA'], KeyboardData, keyboard_data_cb, keyboard)
-    rospy.Subscriber(topics['T_CAM_DATA'], CamData, facedetection_data_cb, facedetection)
-    rospy.Subscriber(topics['T_BAT_INF_DATA'], BatInfMsgData, battery_infrared_data_cb, battery_infrared)
-
-    while runFlag:
+    while not rospy.is_shutdown():
         # if robostate.state = robostate["IDLE"]
         #
         # if keyboard.command == "move":
@@ -80,4 +59,15 @@ def RobobrainHandler():
         # elif keyboard.command == "speech":
         #     publish_handler.speech_message_publish(keyboard.action, keyboard.action_opt)
         #     keyboard.command = None
+
+        rospy.loginfo("state: {}".format(robostate.state))
+        # rospy.loginfo(bat.voltage)
+        # pub.publish(bat.voltage)
+
+        rate.sleep() # make sure the publish rate maintains at the needed frequency
+
+if __name__ == '__main__':
+    try:
+        main()
+    except rospy.ROSInterruptException:
         pass

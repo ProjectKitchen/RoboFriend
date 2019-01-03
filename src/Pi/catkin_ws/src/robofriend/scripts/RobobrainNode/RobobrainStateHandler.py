@@ -4,10 +4,13 @@ from time import sleep
 class RobobrainStateHandler():
 
     robostate = {
-        'IDLE' : 1, \
-        'FIND_CHARGING_STATION' : 2, \
-        'FACEDETECTION' : 3, \
-        'SHUTDOWN' : 4
+        'ADMIN' : 0, \
+        'FIND_CHARGING_STATION' : 1, \
+        'FACEDETECTION' : 2, \
+        'AUTONOM' : 3, \
+        'MANUAL' : 4, \
+        'IDLE' : 5
+        'SHUTDOWN' : 6, \
     }
 
     def __init__(self, event):
