@@ -33,6 +33,9 @@ def main():
 	print("Starting Roscore!")
 	roscore = Roscore()
 	roscore.run()
+
+	time.sleep(5)
+
 	print("Starting Robofriend Startup ...")
 	rosrobo = RosRobo()
 	rosrobo.run()
@@ -44,6 +47,9 @@ def main():
 	signal.signal(signal.SIGINT, handler_stop_signals)
 	signal.signal(signal.SIGTERM, handler_stop_signals)
 	print("*** startup completed! ***\n\n")
+
+	while not rospy.is_shutdown():
+		time.sleep(0.5)
 
 if __name__ == '__main__':
 	main()
