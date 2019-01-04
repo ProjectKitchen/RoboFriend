@@ -39,8 +39,7 @@ def main():
 	print("Starting Robofriend Startup ...")
 	rosrobo = RosRobo()
 	rosrobo.run()
-	
-	# TODO: do we need signal handlers?! 
+	 
 	print("Initialization done! Registering keyboard interrput signal handlers ...")
 
 	# setting up signal handlers for shutdown
