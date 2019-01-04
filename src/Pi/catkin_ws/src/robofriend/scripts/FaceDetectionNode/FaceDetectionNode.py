@@ -17,16 +17,14 @@ import threading
 # globals
 runFlag = True
 
-def node_stop():
-    global runFlag
-    runFlag = False
-    print("[INFO] Stopping cam node!")
+def shutdown():
+    rospy.signal_shutdown("Stopping Face Detection node!")
 
 def node_start():
     print("[INFO] Ros Cam Node start!")
     coordinates = 0
 
-    pub = rospy.Publisher('T_CAM_DATA', CamData, queue_size = 20)
+    pub = rospy.Publisher('/robofriend/cam_data', CamData, queue_size = 20)
 
     msg = CamData()
 
@@ -182,3 +180,32 @@ def face_recog(pub, msg):
     # do a bit of cleanup
     #cv2.destroyAllWindows()
     #cv2.destroyAllWindows()
+
+class FaceDetectionDataHandler(object):
+    def __init__(self, pub):
+        self._pub = pub
+
+    def publishMsg(self):
+        # TODO: do something cool here
+        pass
+
+def FaceDetection():
+    rospy.loginfo("Starting Face Detection node!")
+    rospy.init_node('robofriend/cam_data', anonymous = True)
+
+    pub = rospy.Publisher('/robofriend/cam_data', CamData, queue_size = 20)
+
+    dh = FaceDetectionDataHandler(pub)
+
+    rate = rospy.Rate(1) # 1hz
+
+    while not rospy.is_shutdown():
+        # TODO: implement methode
+        dh.publishMsg() 
+        rate.sleep() # make sure the publish rate maintains at the needed frequency
+
+if __name__ == '__main__':
+    try:
+        FaceDetection()
+    except rospy.ROSInterruptException:
+        pass
