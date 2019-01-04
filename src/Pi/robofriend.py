@@ -6,7 +6,6 @@ import time
 import sys
 import os
 import rospy
-import roslaunch
 
 path = str(os.getcwd()) + "/python"
 sys.path.append(path)

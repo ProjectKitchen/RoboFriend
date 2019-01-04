@@ -8,7 +8,7 @@ from robofriend.msg import CamData
 
 def Talker():
 
-    rospy.init_node('talker', anonymous = True)
+    rospy.init_node('robofriend_talker', anonymous = True)
     
     pub_v = rospy.Publisher('/robofriend/volt_data', Float64, queue_size = 10) # battery voltage
     pub_o = rospy.Publisher('/robofriend/odom_data', Pose, queue_size = 10) # odometry data

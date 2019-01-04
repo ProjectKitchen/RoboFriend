@@ -19,7 +19,7 @@ class PCBSensorDataHandler(object):
 
     def processSensorValues(self, args):
         self._status_cnt += 1
-        ŕospy.logdebug("Status Count: {}".format(self._status_cnt))
+        rospy.logdebug("Status Count: {}".format(self._status_cnt))
 
         self._actual_bat = self.__updateBatteryVoltage(
             args.bat_voltage, 
@@ -78,7 +78,7 @@ def shutdown():
 
 def SensorData():
     rospy.loginfo("Starting PCB Sensor Data Handler node!")
-    rospy.init_node('robofriend/pcb_sensor_data', anonymous = True)
+    rospy.init_node('robofriend_pcb_sensor_data', anonymous = True)
 
     pub = rospy.Publisher("/robofriend/pcb_sensor_data", PCBSensorData, queue_size = 2)
 
