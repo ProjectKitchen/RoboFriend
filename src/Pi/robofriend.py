@@ -34,7 +34,7 @@ def main():
 	roscore = Roscore()
 	roscore.run()
 
-	time.sleep(5)
+	time.sleep(2)
 
 	print("Starting Robofriend Startup ...")
 	rosrobo = RosRobo()

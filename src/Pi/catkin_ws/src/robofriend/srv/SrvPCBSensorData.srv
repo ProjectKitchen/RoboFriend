@@ -2,7 +2,7 @@
 bool request
 ---
 # Response from Server (teensy node)
-uint64 bat_voltage
-uint64 inf_left
-uint64 inf_middle
-uint64 inf_right
+float64 bat_voltage
+float64 inf_left
+float64 inf_middle
+float64 inf_right

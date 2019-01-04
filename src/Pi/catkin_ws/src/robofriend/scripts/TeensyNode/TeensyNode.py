@@ -1,31 +1,41 @@
+#!/usr/bin/env python
+
 import rospy
-#import TeensyDataHandler
-import threading
 
 # import ros service
-from ros_robofriend.srv import BatInfData
+from robofriend.srv import SrvPCBSensorData
 
 # import ros messages
 from ros_robofriend.msg import TeensyMotorData
 
 # import ros modules
-from ROS_Node.TeensyNode.TeensyDataHandler import *
+from TeensyDataHandler import *
 
-def node_start():
-    print("[INFO] ROS Teensy Communicator Node started")
+def Teensy():
+    rospy.init_node("robofriend_teensy_communicator")
+    rospy.loginfo("Starting Teensy Handler node!")
+
+    serial = None
 
     try:
-        teensy_serial = serial.Serial("/dev/ttyACM0", 9600, timeout = 1)
-        print("[INFO] Serial for Teensy opened!")
-    except:
-        print("[INFO] Serial for Teensy could not opened!")
-        serial = None
+        serial = serial.Serial("/dev/ttyACM0", 9600, timeout = 1)
+        rospy.loginfo("*** Serial for Teensy opened! ***")
+    except Exception as inst:
+        rospy.logwarn('*** Serial for Teensy could not opened! ***')
+        rospy.logwarn(type(inst))
+        rospy.logwarn(inst.args)
 
-    #teensy = TeensyDataHandler.TeensyDataHandler(serial)
-    teensy = TeensyDataHandler(serial)
+    dh = TeensyDataHandler(serial)
 
     # declare service
-    serv = rospy.Service('S_BAT_INF_DATA', BatInfData, teensy.service_handler)
+    serv = rospy.Service('/robofriend/get_pcb_sensor_data', SrvPCBSensorData, dh.service_handler)
 
     # declare Subscriber callback
-    rospy.Subscriber("T_TEENSY_MOTOR_DATA", TeensyMotorData, teensy.motor_process_data)
+    rospy.Subscriber("T_TEENSY_MOTOR_DATA", TeensyMotorData, dh.motor_process_data)
+    rospy.spin()
+
+if __name__ == '__main__':
+    try:
+        Teensy()
+    except rospy.ROSInterruptException:
+        pass

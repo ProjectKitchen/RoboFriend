@@ -2,7 +2,7 @@ import threading
 import rospy
 
 # import ros services
-from ros_robofriend.srv import BatInfData, BatInfDataResponse
+from robofriend.srv import *
 
 class TeensyDataHandler():
 
@@ -35,7 +35,7 @@ class TeensyDataHandler():
 
     def service_handler(self, request):
         sensor = None
-        bat = None
+        bat_voltage = None
         inf_left = None
         inf_middle = None
         inf_right = None
@@ -46,14 +46,19 @@ class TeensyDataHandler():
 
         ######################################
         # TODO: for test purposes fakink teensy values
-        resp_message = "Sensors,0500,0200,0100,0300\n"
+        resp_message = "Sensors,3.796,01.10,02.20,03.30\n"
         ######################################
 
         #print("[INFO] Sensor values from teensy: {}".format(resp_message))
-        sensor, bat, inf_left, inf_middle, inf_right = resp_message.split(',')
-        # print("[INFO] {} - Response Service: Sensor: {}, Battery: {}, Infrared left: {}, Infrared middle: {}, Infrared right: {}"
-        #         .format(__class__.__name__, sensor, bat, inf_left, inf_middle, inf_right))
-        return BatInfDataResponse(int(bat), int(inf_left), int(inf_middle), int(inf_right))
+        sensor, bat_voltage, inf_left, inf_middle, inf_right = resp_message.split(',')
+        #print("[INFO] {} - Response Service: Sensor: {}, Battery: {}, Infrared left: {}, Infrared middle: {}, Infrared right: {}"
+        #        .format(self.__class__.__name__, sensor, bat_voltage, inf_left, inf_middle, inf_right))
+        return SrvPCBSensorDataResponse(
+            float(bat_voltage), 
+            float(inf_left), 
+            float(inf_middle), 
+            float(inf_right)
+            )
 
         #TODO: seperate Infrared and battery data
 

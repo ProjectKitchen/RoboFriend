@@ -37,10 +37,10 @@ def Talker():
         hello_str = 3.14
         pub_v.publish(hello_str)
 
-        rospy.loginfo(odata)
+        # rospy.loginfo(odata)
         pub_o.publish(odata)
 
-        rospy.loginfo(cdata)
+        # rospy.loginfo(cdata)
         pub_c.publish(cdata)
 
         rate.sleep() # make sure the publish rate maintains at the needed frequency
