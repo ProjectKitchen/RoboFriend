@@ -1,4 +1,7 @@
 <launch>
+	<node pkg="robofriend" type="PCBSensorData.py" name="robofriend_pcb_sensor_data" output="screen">
+	</node>
+
 	<node pkg="robofriend" type="Talker_node.py" name="robofriend_talker" output="screen">
 	</node>
 	<node pkg="robofriend" type="RoboBrain_node.py" name="robofriend_robobrain" output="screen">

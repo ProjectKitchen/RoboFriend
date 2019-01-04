@@ -9,18 +9,16 @@ import signal
 import psutil
 import roslaunch
 
-
+# TODO: kann man anders lösen :)
+# ******************************
 # own modules
 import speechModule
-
-# globals
-# ... none
 
 def shutdown():
     speechModule.speakShutdown()
     time.sleep(3)
     os.system('sudo init 0')
-
+# ******************************
 
 def kill_child_processes(parent_pid, sig=signal.SIGTERM):
     try:
@@ -72,7 +70,7 @@ class RosRobo(object):
             roslaunch.configure_logging(uuid)
             launch = roslaunch.parent.ROSLaunchParent(
                 uuid,
-                ["catkin_ws/src/robofriend/launch/robofriend_startup.launch"]
+                ["../catkin_ws/src/robofriend/launch/robofriend_startup.launch"]
                 )
             launch.start()
         except Exception, OSError as e:
