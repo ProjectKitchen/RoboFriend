@@ -4,7 +4,7 @@ import rospy
 from std_msgs.msg import Int8
 
 # import ros modules
-from ROS_Node.ServoCamNode.ServoCamDataHandler import *
+from ServoCamNode.ServoCamDataHandler import *
 
 def node_start():
     print("[INFO] ROS Servo Camera Node started!\n")

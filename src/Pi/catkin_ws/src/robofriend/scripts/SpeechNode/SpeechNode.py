@@ -8,7 +8,7 @@ import rospy
 from ros_robofriend.msg import SpeechData
 
 # import ros modules
-from ROS_Node.SpeechNode.SpeechDataHandler import *
+from SpeechNode.SpeechDataHandler import *
 
 def node_start():
     print("[INFO] ROS Speech Node started!\n")

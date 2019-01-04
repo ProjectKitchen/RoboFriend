@@ -1,13 +1,12 @@
 import rospy
 import threading
 import time
-#import ROS_Node.BatteryInfraredNode.BatteryInfraredDataHandler
 
 #import ros service
 from ros_robofriend.srv import BatInfData
 
 # import ros modules
-from ROS_Node.BatteryInfraredNode.BatteryInfraredDataHandler import *
+from BatteryInfraredNode.BatteryInfraredDataHandler import *
 
 # global variables
 runFlag = True

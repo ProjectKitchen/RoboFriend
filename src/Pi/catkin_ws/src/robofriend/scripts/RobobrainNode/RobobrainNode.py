@@ -8,11 +8,11 @@ from ros_robofriend.msg import BatInfMsgData
 from std_msgs.msg import String
 
 # import ROS modules
-from ROS_Node.RobobrainNode.RobobrainStateHandler import *
-from ROS_Node.RobobrainNode.RobobrainKeyboardDataHandler import *
-from ROS_Node.RobobrainNode.RobobrainFacedetectionDataHandler import *
-from ROS_Node.RobobrainNode.RobobrainBatteryInfraredDataHandler import *
-from ROS_Node.RobobrainNode.RobobrainPublisherHandler import *
+from RobobrainNode.RobobrainStateHandler import *
+from RobobrainNode.RobobrainKeyboardDataHandler import *
+from RobobrainNode.RobobrainFacedetectionDataHandler import *
+from RobobrainNode.RobobrainBatteryInfraredDataHandler import *
+from RobobrainNode.RobobrainPublisherHandler import *
 
 # global variables
 robo_state = 0

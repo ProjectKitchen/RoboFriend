@@ -51,6 +51,7 @@ class BatteryInfraredDataHandler():
         self._battery_constant = 0.04783948
 
         self._pub = rospy.Publisher("/robofriend/battery_data", Float64, queue_size = 2)
+        
         #TODO
         #self._msg = BatInfMsgData()
 

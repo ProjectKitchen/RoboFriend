@@ -1,1 +1,1 @@
-__all__ = ["EarsLedDataNode", "EarsLedDataHandler"]
+__all__ = ["EarsLedNode", "EarsLedDataHandler"]

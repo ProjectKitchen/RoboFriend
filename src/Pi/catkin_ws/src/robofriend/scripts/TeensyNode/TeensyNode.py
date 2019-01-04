@@ -9,7 +9,7 @@ from ros_robofriend.srv import BatInfData
 from ros_robofriend.msg import TeensyMotorData
 
 # import ros modules
-from ROS_Node.TeensyNode.TeensyDataHandler import *
+from TeensyNode.TeensyDataHandler import *
 
 def node_start():
     print("[INFO] ROS Teensy Communicator Node started")

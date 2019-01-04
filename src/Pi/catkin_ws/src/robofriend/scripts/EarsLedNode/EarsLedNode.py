@@ -5,7 +5,7 @@ import rospy
 from ros_robofriend.msg import EarsLedData
 
 # import ros module
-from ROS_Node.EearsLedNode.EarsLedDataHandler import *
+from EarsLedNode.EarsLedDataHandler import *
 
 def node_start():
     print("[INFO] ROS Ears/Led Node started!\n")
