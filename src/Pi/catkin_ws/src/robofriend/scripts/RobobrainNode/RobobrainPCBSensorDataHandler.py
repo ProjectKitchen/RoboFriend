@@ -1,8 +1,8 @@
-from ROS_Node.RobobrainNode.RobobrainStateHandler import *
+from RobobrainStateHandler import *
 
-class RobobrainBatteryInfraredDataHandler():
+class RobobrainPCBSensorDataHandler():
 
-    def __init__(self, robostate):
+    def __init__(self):
         self.__bat_value = None
         self.__bat_percent = None
         self.__inf_left = None
@@ -10,10 +10,10 @@ class RobobrainBatteryInfraredDataHandler():
         self.__inf_right = None
 
         self.__batWasLow = None
-        self.__robostate_obj = robostate
+        # self.__robostate_obj = robostate
 
     def process_data(self, data):
-        self.__bat_value = round(data.bat_val, 2)
+        self.__bat_value = round(data.bat_voltage, 2)
         self.__bat_percent = data.bat_percent
         self.__inf_left = round(data.inf_left, 2)
         self.__inf_middle = round(data.inf_middle, 2)

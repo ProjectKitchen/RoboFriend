@@ -4,49 +4,48 @@ import rospy
 import threading
 
 # import ROS messages
-from enum import Enum
+# from enum import Enum
 from std_msgs.msg import String
 from std_msgs.msg import Float64
 from robofriend.msg import CamData
 from robofriend.msg import KeyboardData
-from robofriend.msg import BatInfMsgData
+from robofriend.msg import PCBSensorData
 
 # import ROS modules
-from RobobrainNode.RobobrainStateHandler import *
-from RobobrainNode.RobobrainKeyboardDataHandler import *
-from RobobrainNode.RobobrainFacedetectionDataHandler import *
-from RobobrainNode.RobobrainBatteryInfraredDataHandler import *
-from RobobrainNode.RobobrainPublisherHandler import *
+from RobobrainFacedetectionDataHandler import *
+from RobobrainKeyboardDataHandler import *
+from RobobrainPCBSensorDataHandler import *
+from RobobrainPublisherHandler import *
+from RobobrainStateHandler import *
 
 def stopNode():
     rospy.signal_shutdown("Stopping Robobrain node!")
 
 def main():
+    rospy.init_node('robofriend_robobrain', anonymous = True)
     rospy.loginfo("Starting Robobrain node!")
-    rospy.init_node('robofriend/robobrain', anonymous = True)
 
     # publish here
     # pub = rospy.Publisher('topic_name', MsgType, queue_size = 10)
 
     # TODO: do we need a event here?
-    robotstate  = RobobrainStateHandler()
-    bat = RobobrainBatteryVoltageDataHandler.RobobrainBatteryVoltageDataHandler()
+    robostate  = RobobrainStateHandler()
+    bat = RobobrainPCBSensorDataHandler()
     # bat = RobobrainBatteryInfraredDataHandler(robostate)
     # odo = RobobrainOdometryDataHandler.RobobrainOdometryDataHandler()
     # ir  = RobobrainInfraredDataHandler.RobobrainInfraredDataHandler()
-    fd = RobobrainFacedetectionDataHandler.RobobrainFacedetectionDataHandler()
-    # fd = RobobrainFacedetectionDataHandler()
-    key = RobobrainKeyboardDataHandler.RobobrainKeyboardDataHandler()
-    # key = RobobrainKeyboardDataHandler()
+    fd = RobobrainFacedetectionDataHandler()
+    key = RobobrainKeyboardDataHandler()
+
 
     # TODO: this can be managed in an easier way :)
     # publish_handler = RobobrainPublisherHandler(topics)
 
-    rospy.Subscriber("/robofriend/volt_data", Float64, bat.processData)
-    rospy.Subscriber("/robofriend/odom_data", Pose, odo.processData)
-    rospy.Subscriber("/robofriend/ir_data",   String, ir.processData)
-    rospy.Subscriber("/robofriend/cam_data",  CamData, fd.processData)
-    rospy.Subscriber("/robofriend/keyb_data", KeyboardData, key.processData)
+    rospy.Subscriber("/robofriend/pcb_sensor_data", PCBSensorData, bat.process_data)
+    # rospy.Subscriber("/robofriend/odom_data", Pose, odo.processData)
+    # rospy.Subscriber("/robofriend/ir_data",   String, ir.processData)
+    # rospy.Subscriber("/robofriend/cam_data",  CamData, fd.processData)
+    # rospy.Subscriber("/robofriend/keyb_data", KeyboardData, key.processData)
     
     rate = rospy.Rate(0.2) # 200mhz
 

@@ -1,15 +1,15 @@
-from ROS_Node.RobobrainNode.RobobrainStateHandler import *
+from RobobrainStateHandler import *
 
 
 class RobobrainKeyboardDataHandler():
 
-    def __init__(self, event, robostate):
+    def __init__(self):
         self.__quit = None
         self.__up_down = None
         self.__pressed_key = None
 
-        self.__event = event
-        self.__robostate_obj = robostate
+        # self.__event = event
+        # self.__robostate_obj = robostate
 
     def process_data(self, data):
         self.__quit = data.quit
