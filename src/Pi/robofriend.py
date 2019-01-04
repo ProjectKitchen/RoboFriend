@@ -6,13 +6,10 @@ import time
 import sys
 import os
 import rospy
-
+import roslaunch
 
 path = str(os.getcwd()) + "/python"
 sys.path.append(path)
-
-
-
 
 # own modules
 import faceModule as faceModule
@@ -25,7 +22,7 @@ import teensyCommunicator as teensyCommunicator
 #import speechModule as speechModule
 #import cam_node as cam_node
 #import facedetectionModule as facedetectionModule
-import systemModule as systemModule
+from systemModule import *
 
 # import ROS modules
 #from ROS_Node.FacedetectionNode import *
@@ -41,83 +38,36 @@ from ROS_Node.ServoCamNode import *
 from ROS_Node.IOWarriorNode import *
 
 # globals
-runFlag = True
+roscore = None
+rosrobo = None
 
 def stop():
-	global runFlag
+	global roscore
 
-	print("*** shutting down ... ***")
-	systemModule.roscore_terminate()
-	#rfidModule.stop()
-	rfid_node.node_stop()
-	webserverModule.stop()
-	#statusModule.stop()
-	gameCommunicator.stop()
-	# keyboardModule.stop()
-	keyboard_node.node_stop()
-	teensyCommunicator.stop()
-	ioWarriorModule.stop()
-	# speechModule.stop()
-	faceModule.close()
-	#cam_node.node_stop()
-	robobrain_node.node_stop()
-	bat_inf_node.node_stop()
-	runFlag = False
-	print("*** graceful shutdown completed! ***")
+	print("*** shutting down! ... ***\n\n")
+	roscore.terminated()
 
 def handler_stop_signals(signum, frame):
 	stop()
 
 def main():
-	global runFlag
+	global roscore, rosrobo
 
-	print("RoboFriend Main Script Ready...")
-	print("Starting RosMaster!")
-	systemModule.roscore_start()
-	print("Initialising RosPy!")
-	rospy.init_node('Robofriend_node', anonymous = True)
-	print("Done ... starting Robobrain node")
-	robobrain_node.node_start()
-	print("Done ... starting RFID!")
-	#rfidModule.start()
-	rfid_node.node_start()
-	print("Done ... starting Webserver!")
-	webserverModule.start()
-	print("Done ... starting StatusModule!")
-	#statusModule.start()
-	print("Done ... starting Gamecommunicator")
-	gameCommunicator.start()
-	print("Done ... starting KeyboardModule")
-	#keyboardModule.start()
-	keyboard_node.node_start()
-	print("Done ... starting FaceModue")
-	faceModule.drawFace()
-	print("Done ... starting RosFacedetectionNode")
-	#facedetection_node.node_start()
-	print("Done ... starting FacedetectListener")
-	#facedetectionModule.listener()
-	print("Done ... start Speech Node")
-	speech_node.node_start()
-	print("Done ... start Teensy Node")
-	teensy_node.node_start()
-	print("Done ... start Battery/Infrared Node")
-	bat_inf_node.node_start()
-	print("Done ... start Ears/Led Node")
-	ears_led_node.node_start()
-	print("Done ... start Servo Camera Node")
-	servo_cam_node.node_start()
-	print("Done ... start IOWarrior Node")
-	iowarrior_node.node_start()
-	print("init done! register signal handlers...")
+	print("RoboFriend Main Script Ready ...")
+	print("Starting Roscore!")
+	roscore = Roscore()
+	roscore.run()
+	print("Starting Robofriend Startup ...")
+	rosrobo = RosRobo()
+	rosrobo.run()
+	
+	# TODO: do we need signal handlers?! 
+	print("Initialization done! Registering keyboard interrput signal handlers ...")
 
 	# setting up signal handlers for shutdown
 	signal.signal(signal.SIGINT, handler_stop_signals)
 	signal.signal(signal.SIGTERM, handler_stop_signals)
 	print("*** startup completed! ***\n\n")
-
-	#rospy.spin()
-	while runFlag: time.sleep(0.5) # keep program running until stopped
-	print("[INFO] Main script terminated!!!")
 
 if __name__ == '__main__':
 	main()
