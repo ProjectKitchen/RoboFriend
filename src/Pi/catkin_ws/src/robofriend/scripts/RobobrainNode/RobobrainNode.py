@@ -65,7 +65,7 @@ def RobobrainHandler():
     publish_handler = RobobrainPublisherHandler(topics)
     robostate = RobobrainStateHandler(event)         # sets actual state to IDLE and starts thread, TODO: include publisher handler as argument!
     keyboard = RobobrainKeyboardDataHandler(event, robostate)
-    facedetection = RobobrainFacedetectionDataHandler()
+    facedetection = RobobrainFacedetectionDataHandler(robostate, publish_handler)
     battery_infrared = RobobrainBatteryInfraredDataHandler(robostate)
     rospy.Subscriber(topics['T_KEYB_DATA'], KeyboardData, keyboard_data_cb, keyboard)
     rospy.Subscriber(topics['T_CAM_DATA'], CamData, facedetection_data_cb, facedetection)
