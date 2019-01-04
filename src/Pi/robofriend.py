@@ -7,12 +7,10 @@ import sys
 import os
 import rospy
 
-
-path = str(os.getcwd()) + "/python"
-sys.path.append(path)
-
-
-
+path_catkin_ws = str(os.getcwd()) + "/catkin_ws/src/robofriend/scripts"
+path_module = str(os.getcwd()) + "/python"
+sys.path.append(path_catkin_ws)
+sys.path.append(path_module)
 
 # own modules
 import faceModule as faceModule
@@ -28,17 +26,17 @@ import teensyCommunicator as teensyCommunicator
 import systemModule as systemModule
 
 # import ROS modules
-#from ROS_Node.FacedetectionNode import *
-from ROS_Node.KeyboardNode import *
+#from FaceDetectionNode import *
+from KeyboardNode import *
 #from ROS_Node.MotorNode import *
-from ROS_Node.RFIDNode import *
-from ROS_Node.SpeechNode import *
-from ROS_Node.TeensyNode import *
-from ROS_Node.BatteryInfraredNode import *
-from ROS_Node.RobobrainNode import *
-from ROS_Node.EearsLedNode import *
-from ROS_Node.ServoCamNode import *
-from ROS_Node.IOWarriorNode import *
+from RFIDNode import *
+from SpeechNode import *
+from TeensyNode import *
+from BatteryInfraredNode import *
+from RobobrainNode import *
+from EarsLedNode import *
+from ServoCamNode import *
+from IOWarriorNode import *
 
 # globals
 runFlag = True
@@ -49,19 +47,19 @@ def stop():
 	print("*** shutting down ... ***")
 	systemModule.roscore_terminate()
 	#rfidModule.stop()
-	rfid_node.node_stop()
+	RFIDNode.node_stop()
 	webserverModule.stop()
 	#statusModule.stop()
 	gameCommunicator.stop()
 	# keyboardModule.stop()
-	keyboard_node.node_stop()
+	KeyboardNode.node_stop()
 	teensyCommunicator.stop()
 	ioWarriorModule.stop()
 	# speechModule.stop()
 	faceModule.close()
 	#cam_node.node_stop()
-	robobrain_node.node_stop()
-	bat_inf_node.node_stop()
+	RobobrainNode.node_stop()
+	BatteryInfraredNode.node_stop()
 	runFlag = False
 	print("*** graceful shutdown completed! ***")
 
@@ -77,10 +75,10 @@ def main():
 	print("Initialising RosPy!")
 	rospy.init_node('Robofriend_node', anonymous = True)
 	print("Done ... starting Robobrain node")
-	robobrain_node.node_start()
+	RobobrainNode.node_start()
 	print("Done ... starting RFID!")
 	#rfidModule.start()
-	rfid_node.node_start()
+	RFIDNode.node_start()
 	print("Done ... starting Webserver!")
 	webserverModule.start()
 	print("Done ... starting StatusModule!")
@@ -89,25 +87,25 @@ def main():
 	gameCommunicator.start()
 	print("Done ... starting KeyboardModule")
 	#keyboardModule.start()
-	keyboard_node.node_start()
+	KeyboardNode.node_start()
 	print("Done ... starting FaceModue")
 	faceModule.drawFace()
 	print("Done ... starting RosFacedetectionNode")
-	#facedetection_node.node_start()
+	#FaceDetectionNode.node_start()
 	print("Done ... starting FacedetectListener")
 	#facedetectionModule.listener()
 	print("Done ... start Speech Node")
-	speech_node.node_start()
+	SpeechNode.node_start()
 	print("Done ... start Teensy Node")
-	teensy_node.node_start()
+	TeensyNode.node_start()
 	print("Done ... start Battery/Infrared Node")
-	bat_inf_node.node_start()
+	BatteryInfraredNode.node_start()
 	print("Done ... start Ears/Led Node")
-	ears_led_node.node_start()
+	EarsLedNode.node_start()
 	print("Done ... start Servo Camera Node")
-	servo_cam_node.node_start()
+	ServoCamNode.node_start()
 	print("Done ... start IOWarrior Node")
-	iowarrior_node.node_start()
+	IOWarriorNode.node_start()
 	print("init done! register signal handlers...")
 
 	# setting up signal handlers for shutdown

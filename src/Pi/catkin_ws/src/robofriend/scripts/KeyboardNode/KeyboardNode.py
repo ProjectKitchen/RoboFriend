@@ -11,7 +11,7 @@ import rospy
 from ros_robofriend.msg import KeyboardData
 
 # own modules
-from ROS_Node.KeyboardNode.KeyboardDataHandler import *
+from KeyboardNode.KeyboardDataHandler import *
 
 # globals
 runFlag = True

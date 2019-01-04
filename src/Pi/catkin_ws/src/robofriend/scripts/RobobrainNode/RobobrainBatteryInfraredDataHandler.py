@@ -1,4 +1,4 @@
-from ROS_Node.RobobrainNode.RobobrainStateHandler import *
+from RobobrainNode.RobobrainStateHandler import *
 
 class RobobrainBatteryInfraredDataHandler():
 
