@@ -42,8 +42,7 @@ class PCBSensorDataHandler(object):
         bs_data = BatteryState()
         bs_data.voltage = self._battery_moving_average_val
         bs_data.percentage = self.__get_battery_percent(self._battery_moving_average_val)
-        bs_data.power_supply_status = 0
-        bs_data.power_supply_health = 1
+        bs_data.power_supply_status = self.__get_power_supply_status(bs_data.percentage)
         
         ir_data = IRSensorData()
         ir_data.inf_left = args.inf_left
@@ -77,6 +76,17 @@ class PCBSensorDataHandler(object):
             (batVoltageRounded - self._battery_discharge) / 
             (self._battery_over_volt - self._battery_discharge), 2)
         return percent
+
+    def __get_power_supply_status(self, val):
+        # http://docs.ros.org/jade/api/sensor_msgs/html/msg/BatteryState.html
+        if val <= 1.0 and val >= 0.81:
+            return 4 # full
+        elif val <= 0.80 and val >= 0.21:
+            return 3 # good
+        elif val <= 0.20 and val >= 0.06:
+            return 1 # charging / warning
+        else: # val <= 0.5
+            return 0 # shutdown
 
 def shutdown():
     rospy.signal_shutdown("Stopping PCB Sensor Data Handler node!")

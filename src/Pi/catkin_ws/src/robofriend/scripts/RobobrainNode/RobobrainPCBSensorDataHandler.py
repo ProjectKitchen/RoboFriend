@@ -7,7 +7,6 @@ class RobobrainPCBSensorDataHandler():
         self._voltage = 0
         self._percentage = 0
         self._power_supply_status = 0
-        self._power_supply_health = 0
         self._inf_left = 0
         self._inf_middle = 0
         self._inf_right = 0
@@ -17,17 +16,15 @@ class RobobrainPCBSensorDataHandler():
         # self._robostate_obj = robostate
 
     def process_bs_data(self, data):
-        rospy.loginfo("{%s} Volt: %.2fV Perc: %.2f%% Status: %d Health: %d", 
+        rospy.loginfo("{%s} Volt: %.2fV Perc: %.2f%% Status: %d", 
             self.__class__.__name__,
             self._voltage,
             self._percentage * 100,
-            self._power_supply_status, 
-            self._power_supply_health)
+            self._power_supply_status)
 
         self._voltage = round(data.voltage, 2)
         self._percentage = data.percentage
         self._power_supply_status = data.power_supply_status
-        self._power_supply_health = data.power_supply_health
 
         # TODO: evaluate somewhere else
         # self.__data_evaluate()

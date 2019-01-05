@@ -49,7 +49,10 @@ class TeensyDataHandler():
                 rospy.logwarn(type(inst))
                 rospy.logwarn(inst.args)
         else:
-            serial_resp = "Sensors,3.796,01.10,02.20,03.30\n"
+            # serial_resp = "Sensors,3.996,01.10,02.20,03.30\n" # full battery
+            # serial_resp = "Sensors,3.796,01.10,02.20,03.30\n" # good
+            # serial_resp = "Sensors,3.096,01.10,02.20,03.30\n" # charging
+            serial_resp = "Sensors,2.966,01.10,02.20,03.30\n" # shutdown
         
         rospy.logdebug("{%s} Sensor values from teensy: %s", serial_resp)
         sensor, bat_voltage, inf_left, inf_middle, inf_right = serial_resp.split(',')
@@ -60,7 +63,7 @@ class TeensyDataHandler():
                 inf_left, 
                 inf_middle, 
                 inf_right)
-        
+
         return SrvPCBSensorDataResponse(
             float(bat_voltage), 
             float(inf_left), 
