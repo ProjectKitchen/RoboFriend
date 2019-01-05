@@ -1,3 +1,3 @@
-string random
-uint16[] repeat_num
+string random           # sets randon either on or off
+uint16[] repeat_num     # 1.: amount of repetions, 2.: duration between repetions
 float64[] rgb_color
