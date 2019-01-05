@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import rospy
+import serial
 
 # import ros service
 from robofriend.srv import SrvPCBSensorData
@@ -19,17 +20,17 @@ def Teensy():
     rospy.init_node("robofriend_teensy_communicator")
     rospy.loginfo("Starting Teensy Handler node!")
 
-    serial = None
+    ser = None
 
     try:
-        serial = serial.Serial("/dev/ttyACM0", 9600, timeout = 1)
+        ser = serial.Serial("/dev/ttyACM0", 9600, timeout = 1)
         rospy.loginfo("*** Serial for Teensy opened! ***")
     except Exception as inst:
         rospy.logwarn('*** Serial for Teensy could not opened! ***')
         rospy.logwarn(type(inst))
         rospy.logwarn(inst.args)
 
-    dh = TeensyDataHandler(serial)
+    dh = TeensyDataHandler(ser)
 
     # declare service
     serv = rospy.Service('/robofriend/get_pcb_sensor_data', SrvPCBSensorData, dh.service_handler)
