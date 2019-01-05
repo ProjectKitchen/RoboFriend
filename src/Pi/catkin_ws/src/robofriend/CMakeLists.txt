@@ -58,6 +58,7 @@ add_message_files(
    TeensyMotorData.msg
    BatInfMsgData.msg
    EarsLedData.msg
+   ServoCamData.msg
    IOWarriorData.msg
 )
 
