@@ -15,7 +15,7 @@ class RobobrainStateHandler():
         self.__lock = Lock()
         self.__start_thread()
         self.__event = event
-        self.__idle_elapse_time = 90         # waits 90 sec to change state if no input from webserver and keyboard
+        self.__idle_elapse_time = 10         # waits 90 sec to change state if no input from webserver and keyboard
 
     def __start_thread(self):
         thread = Thread(target = self.__state_handler_thread)
@@ -44,7 +44,7 @@ class RobobrainStateHandler():
                     self.__state = RobobrainStateHandler.robostate["FACEDETECTION"]
             elif self.state == RobobrainStateHandler.robostate["FACEDETECTION"]:
                 print("[INFO] Within FACEDETECTION state")
-                sleep(600)
+                sleep(100)
                 #TODO: start facedetection process
 
     @property
