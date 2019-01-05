@@ -24,7 +24,8 @@ topics = {'T_ODOM_DATA': 'T_ODOM_DATA', \
           'T_RFID_DATA': 'T_RFID_DATA', \
           'T_SPEECH_DATA' : 'T_SPEECH_DATA', \
           'T_TEENSY_MOTOR_DATA' : 'T_TEENSY_MOTOR_DATA', \
-          'T_EARS_LED_DATA' : 'T_EARS_LED_DATA'}
+          'T_EARS_LED_DATA' : 'T_EARS_LED_DATA', \
+          'T_SERVO_CAM_DATA' : 'T_SERVO_CAM_DATA'}
 
 def node_stop():
     global runFlag
