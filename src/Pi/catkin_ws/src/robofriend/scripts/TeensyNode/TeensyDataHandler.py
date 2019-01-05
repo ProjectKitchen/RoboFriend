@@ -4,8 +4,6 @@ import rospy
 # import ros services
 from robofriend.srv import *
 
-DEBUG = 1
-
 class TeensyDataHandler():
 
     step_duration = 50
@@ -42,18 +40,26 @@ class TeensyDataHandler():
         inf_middle = None
         inf_right = None
 
-        if DEBUG:
-            resp_message = "Sensors,3.796,01.10,02.20,03.30\n"
+
+        if self._serial is not None:
+            try:
+                serial_resp = str(self._serial.readline())
+            except Exception as e:
+                rospy.logwarn('*** Read serial for Teensy failed! ***')
+                rospy.logwarn(type(inst))
+                rospy.logwarn(inst.args)
+        else:
+            serial_resp = "Sensors,3.796,01.10,02.20,03.30\n"
         
-            rospy.logdebug("{%s} Sensor values from teensy: %s", resp_message)
-            sensor, bat_voltage, inf_left, inf_middle, inf_right = resp_message.split(',')
-            rospy.logdebug("{%s} Response Service: Sensor: %s, Battery: %s, Infrared left: %s, Infrared middle: %s, Infrared right: %s",
-                    self.__class__.__name__, 
-                    sensor, 
-                    bat_voltage,
-                    inf_left, 
-                    inf_middle, 
-                    inf_right)
+        rospy.logdebug("{%s} Sensor values from teensy: %s", serial_resp)
+        sensor, bat_voltage, inf_left, inf_middle, inf_right = serial_resp.split(',')
+        rospy.logdebug("{%s} Response Service: Sensor: %s, Battery: %s, Infrared left: %s, Infrared middle: %s, Infrared right: %s",
+                self.__class__.__name__, 
+                sensor, 
+                bat_voltage,
+                inf_left, 
+                inf_middle, 
+                inf_right)
         
         return SrvPCBSensorDataResponse(
             float(bat_voltage), 
@@ -85,20 +91,16 @@ class TeensyDataHandler():
             else:
                 print("[INFO] Wrong duration")
 
-    def send_serial(self, serial_message, read_response = False):
-        response = None
+    def send_serial(self, serial_message):
         self.send_lock.acquire()
 
         print("[INFO] {} - Teensy Send Serial: {}".format(__class__.__name__, serial_message))
 
         try:
             self._serial.write(str.encode(serial_message) + '\r'.encode('ascii'))
-            if read_response:
-                response = str(self._serial.readline())
         except Exception as e:
-            print("[INFO] Serial write error")
-            #print(type(e))
-            #print(inst.args)
+            rospy.logwarn('*** Send serial for Teensy failed! ***')
+            rospy.logwarn(type(inst))
+            rospy.logwarn(inst.args)
 
         self.send_lock.release()
-        return response
