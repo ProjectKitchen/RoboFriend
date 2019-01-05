@@ -4,6 +4,8 @@ import rospy
 # import ros services
 from robofriend.srv import *
 
+DEBUG = 1
+
 class TeensyDataHandler():
 
     step_duration = 50
@@ -40,27 +42,25 @@ class TeensyDataHandler():
         inf_middle = None
         inf_right = None
 
-        #print("\n[INFO] {} - Request received: {}".format(self.__class__.__name__, request.request))
-
-        #resp_message = self.send_serial("R", True)
-
-        ######################################
-        # TODO: for test purposes fakink teensy values
-        resp_message = "Sensors,3.796,01.10,02.20,03.30\n"
-        ######################################
-
-        #print("[INFO] Sensor values from teensy: {}".format(resp_message))
-        sensor, bat_voltage, inf_left, inf_middle, inf_right = resp_message.split(',')
-        #print("[INFO] {} - Response Service: Sensor: {}, Battery: {}, Infrared left: {}, Infrared middle: {}, Infrared right: {}"
-        #        .format(self.__class__.__name__, sensor, bat_voltage, inf_left, inf_middle, inf_right))
+        if DEBUG:
+            resp_message = "Sensors,3.796,01.10,02.20,03.30\n"
+        
+            rospy.logdebug("{%s} Sensor values from teensy: %s", resp_message)
+            sensor, bat_voltage, inf_left, inf_middle, inf_right = resp_message.split(',')
+            rospy.logdebug("{%s} Response Service: Sensor: %s, Battery: %s, Infrared left: %s, Infrared middle: %s, Infrared right: %s",
+                    self.__class__.__name__, 
+                    sensor, 
+                    bat_voltage,
+                    inf_left, 
+                    inf_middle, 
+                    inf_right)
+        
         return SrvPCBSensorDataResponse(
             float(bat_voltage), 
             float(inf_left), 
             float(inf_middle), 
             float(inf_right)
             )
-
-        #TODO: seperate Infrared and battery data
 
     def motor_process_data(self, data):
         self._direction = data.direction

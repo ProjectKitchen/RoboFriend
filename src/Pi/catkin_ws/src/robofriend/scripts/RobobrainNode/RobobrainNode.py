@@ -10,7 +10,7 @@ from std_msgs.msg import Float64
 from sensor_msgs.msg import BatteryState
 from robofriend.msg import CamData
 from robofriend.msg import KeyboardData
-from robofriend.msg import PCBSensorData
+from robofriend.msg import IRSensorData
 
 # import ROS modules
 from RobobrainFacedetectionDataHandler import *
@@ -42,7 +42,8 @@ def main():
     # TODO: this can be managed in an easier way :)
     # publish_handler = RobobrainPublisherHandler(topics)
 
-    rospy.Subscriber("/robofriend/pcb_sensor_data", BatteryState, bat.process_data)
+    rospy.Subscriber("/robofriend/battery_state", BatteryState, bat.process_bs_data)
+    rospy.Subscriber("/robofriend/infrared_data", IRSensorData, bat.process_ir_data)
     # rospy.Subscriber("/robofriend/odom_data", Pose, odo.processData)
     # rospy.Subscriber("/robofriend/ir_data",   String, ir.processData)
     # rospy.Subscriber("/robofriend/cam_data",  CamData, fd.processData)

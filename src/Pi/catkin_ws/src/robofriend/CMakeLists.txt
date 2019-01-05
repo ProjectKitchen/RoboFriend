@@ -56,7 +56,7 @@ add_message_files(
    KeyboardData.msg
    SpeechData.msg
    TeensyMotorData.msg
-   PCBSensorData.msg
+   IRSensorData.msg
    EarsLedData.msg
    IOWarriorData.msg
 )

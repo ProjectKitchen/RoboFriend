@@ -11,6 +11,10 @@ from ros_robofriend.msg import TeensyMotorData
 # import ros modules
 from TeensyDataHandler import *
 
+def shutdown():
+    rospy.signal_shutdown("Stopping Teensy Handler node!")
+
+
 def Teensy():
     rospy.init_node("robofriend_teensy_communicator")
     rospy.loginfo("Starting Teensy Handler node!")

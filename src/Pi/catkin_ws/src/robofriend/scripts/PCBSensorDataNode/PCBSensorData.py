@@ -6,10 +6,12 @@ from robofriend.srv import SrvPCBSensorData
 
 # import ros message
 from sensor_msgs.msg import BatteryState
+from robofriend.msg import IRSensorData
 
 class PCBSensorDataHandler(object):
-    def __init__(self, pub):
-        self._pub = pub
+    def __init__(self, pub1, pub2):
+        self._bs_pub = pub1
+        self._ir_pub = pub2
         # http://www.peacesoftware.de/einigewerte/spannungsteiler.html
         # Spannung U1: 14.7
         # Spannung U2: 4.096
@@ -37,22 +39,27 @@ class PCBSensorDataHandler(object):
             self._battery_moving_average)
 
         # http://docs.ros.org/api/sensor_msgs/html/msg/BatteryState.html
-        data = BatteryState()
-        data.voltage = self._battery_moving_average_val
-        data.percentage = self.__get_battery_percent(self._battery_moving_average_val)
-        data.power_supply_status = 0
-        data.power_supply_health = 1
-        # data.inf_left = args.inf_left
-        # data.inf_middle = args.inf_middle
-        # data.inf_right = args.inf_right
+        bs_data = BatteryState()
+        bs_data.voltage = self._battery_moving_average_val
+        bs_data.percentage = self.__get_battery_percent(self._battery_moving_average_val)
+        bs_data.power_supply_status = 0
+        bs_data.power_supply_health = 1
+        
+        ir_data = IRSensorData()
+        ir_data.inf_left = args.inf_left
+        ir_data.inf_middle = args.inf_middle
+        ir_data.inf_right = args.inf_right
 
-        rospy.logdebug("{%s} - Updated battery value: %f", 
-            self.__class__.__name__, 
-            data.voltage
-            )
+        rospy.logdebug("{%s} BatteryState Data:\n%s", 
+            self.__class__.__name__,
+            bs_data)
+        rospy.logdebug("{%s} IR Data:\n%s", 
+            self.__class__.__name__,
+            ir_data)
 
         # publish message to robobrain node
-        self._pub.publish(data)
+        self._bs_pub.publish(bs_data)
+        self._ir_pub.publish(ir_data)
 
     def __getMovingAverage(self, newValue, currentMean, n):
         if not currentMean:
@@ -78,9 +85,10 @@ def SensorData():
     rospy.init_node("robofriend_pcb_sensor_data")
     rospy.loginfo("Starting PCB Sensor Data Handler node!")
 
-    pub = rospy.Publisher("/robofriend/pcb_sensor_data", BatteryState, queue_size = 2)
+    bs_pub = rospy.Publisher("/robofriend/battery_state", BatteryState, queue_size = 2)
+    ir_pub = rospy.Publisher("/robofriend/infrared_data", IRSensorData, queue_size = 2)
 
-    dh = PCBSensorDataHandler(pub)
+    dh = PCBSensorDataHandler(bs_pub, ir_pub)
 
     rate = rospy.Rate(1) # 1hz
 
