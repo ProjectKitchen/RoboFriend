@@ -49,12 +49,12 @@ class TeensyDataHandler():
                 rospy.logwarn(type(inst))
                 rospy.logwarn(inst.args)
         else:
-            # serial_resp = "Sensors,3.996,01.10,02.20,03.30\n" # full battery
-            # serial_resp = "Sensors,3.796,01.10,02.20,03.30\n" # good
-            # serial_resp = "Sensors,3.096,01.10,02.20,03.30\n" # charging
-            serial_resp = "Sensors,2.966,01.10,02.20,03.30\n" # shutdown
+            # serial_resp = "Sensors,3.996,01.10,02.20,03.30" # full battery
+            # serial_resp = "Sensors,3.796,01.10,02.20,03.30" # good
+            # serial_resp = "Sensors,3.096,01.10,02.20,03.30" # charging
+            serial_resp = "Sensors,2.966,01.10,02.20,03.30" # shutdown
         
-        rospy.logdebug("{%s} Sensor values from teensy: %s", serial_resp)
+        rospy.logdebug("{%s} Sensor values from teensy: %s", self.__class__.__name__, serial_resp)
         sensor, bat_voltage, inf_left, inf_middle, inf_right = serial_resp.split(',')
         rospy.logdebug("{%s} Response Service: Sensor: %s, Battery: %s, Infrared left: %s, Infrared middle: %s, Infrared right: %s",
                 self.__class__.__name__, 

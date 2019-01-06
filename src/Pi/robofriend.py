@@ -1,11 +1,7 @@
 #!/usr/bin/env python
 
 # external modules
-import signal
-import time
-import sys
-import os
-import rospy
+import os, sys, time, rospy, signal
 
 path = str(os.getcwd()) + "/python"
 sys.path.append(path)

@@ -5,6 +5,9 @@ from turtlesim.msg import Pose
 from robofriend.msg import CamData
 from robofriend.msg import IRSensorData
 
+# import ros services
+from robofriend.srv import SrvRFIDData
+
 def Talker():
     rospy.init_node('robofriend_talker', anonymous = True)
     rospy.loginfo("Starting Talker node!")
@@ -38,6 +41,17 @@ def Talker():
         pub_o.publish(odata)
         # pub_i.publish(idata)
         pub_c.publish(cdata)
+
+        srv_resp = None
+        rospy.wait_for_service('/robofriend/get_rfid_data')
+
+        try:
+            request = rospy.ServiceProxy('/robofriend/get_rfid_data', SrvRFIDData)
+            srv_resp = request(True)
+        except rospy.ServiceException:
+            rospy.logwarn("Service call failed")
+
+        rospy.loginfo("Service recevied: %s", srv_resp)
 
         rate.sleep() # make sure the publish rate maintains at the needed frequency
 

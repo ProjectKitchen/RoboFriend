@@ -1,0 +1,5 @@
+# Request from Client (rfid_data_node) 
+bool request
+---
+# Response from Server (usb node)
+string rfid_number

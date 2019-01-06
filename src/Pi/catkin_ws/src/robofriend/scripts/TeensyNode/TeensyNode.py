@@ -17,7 +17,7 @@ def shutdown():
 
 
 def Teensy():
-    rospy.init_node("robofriend_teensy_communicator")
+    rospy.init_node("robofriend_teensy_communicator", log_level = rospy.INFO)
     rospy.loginfo("Starting Teensy Handler node!")
 
     ser = None

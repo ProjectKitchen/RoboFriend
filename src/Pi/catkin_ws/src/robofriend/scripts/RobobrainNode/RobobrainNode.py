@@ -25,7 +25,7 @@ def shutdown():
     rospy.signal_shutdown("Stopping Robobrain node!")
 
 def main():
-    rospy.init_node('robofriend_robobrain', anonymous = True)
+    rospy.init_node('robofriend_robobrain', anonymous = True, log_level = rospy.INFO)
     rospy.loginfo("Starting Robobrain node!")
 
     # publish here
@@ -66,7 +66,6 @@ def main():
         elif bat.power_supply_status == 0:
             rospy.loginfo("Battery Unknown")
 
-
         # if robostate.state = robostate["IDLE"]
         #
         # if keyboard.command == "move":
@@ -75,10 +74,6 @@ def main():
         # elif keyboard.command == "speech":
         #     publish_handler.speech_message_publish(keyboard.action, keyboard.action_opt)
         #     keyboard.command = None
-
-        # rospy.loginfo("state: {}".format(robostate.state))
-        # rospy.loginfo(bat.voltage)
-        # pub.publish(bat.voltage)
 
         rate.sleep() # make sure the publish rate maintains at the needed frequency
 

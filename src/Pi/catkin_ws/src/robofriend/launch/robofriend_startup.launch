@@ -11,6 +11,9 @@
 	<node pkg="robofriend" type="TeensyNode.py" name="robofriend_teensy_communicator" output="screen">
 	</node>
 
+	<node pkg="robofriend" type="RFIDNode.py" name="robofriend_ifid_handler" output="screen">
+	</node>
+
 	<node pkg="robofriend" type="RobobrainTalkerNode.py" name="robofriend_talker" output="screen">
 	</node>
 	

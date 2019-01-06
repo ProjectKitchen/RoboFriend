@@ -86,7 +86,7 @@ def shutdown():
     rospy.signal_shutdown("Stopping PCB Sensor Data Handler node!")
 
 def SensorData():
-    rospy.init_node("robofriend_pcb_sensor_data")
+    rospy.init_node("robofriend_pcb_sensor_data", log_level = rospy.INFO)
     rospy.loginfo("Starting PCB Sensor Data Handler node!")
 
     bs_pub = rospy.Publisher("/robofriend/battery_state", BatteryState, queue_size = 2)

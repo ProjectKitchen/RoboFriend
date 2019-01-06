@@ -65,6 +65,7 @@ add_message_files(
 add_service_files(
    FILES
    SrvPCBSensorData.srv
+   SrvRFIDData.srv
 )
 
 ## Generate actions in the 'action' folder

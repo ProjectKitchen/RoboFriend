@@ -7,6 +7,7 @@ import shlex
 import sys
 import signal
 import psutil
+# import rosgraph
 import roslaunch
 
 # TODO: kann man anders loesen 
@@ -25,12 +26,12 @@ def kill_child_processes(parent_pid, sig=signal.SIGTERM):
         parent = psutil.Process(parent_pid)
         # print(parent)
     except psutil.NoSuchProcess:
-        print("parent process not existing")
+        print("Parent process not existing")
         return
     children = parent.children(recursive=True)
     # print(children)
     for process in children:
-        # print("try to kill child: " + str(process))
+        # print("Try to kill child: " + str(process))
         process.send_signal(sig)
 
 class Roscore(object):
@@ -45,13 +46,14 @@ class Roscore(object):
         Roscore.__initialized = True
     def run(self):
         try:
+            # if rosgraph.is_master_online() == False:
             self.roscore_process = subprocess.Popen(['roscore'])
             self.roscore_pid = self.roscore_process.pid  # pid of the roscore process (which has child processes)
         except OSError as e:
-            sys.stderr.write('roscore could not be launched')
+            sys.stderr.write('Roscore could not be launched!')
             raise e
     def terminate(self):
-        # print("try to kill child pids of roscore pid: " + str(self.roscore_pid))
+        # print("Try to kill child pids of roscore pid: " + str(self.roscore_pid))
         kill_child_processes(self.roscore_pid)
         self.roscore_process.terminate()
         self.roscore_process.wait()  # important to prevent from zombie process
@@ -74,5 +76,5 @@ class RosRobo(object):
                 )
             launch.start()
         except OSError as e:
-            sys.stderr.write('rosrobo could not be launched')
+            sys.stderr.write('Rosrobo could not be launched!')
             raise e
