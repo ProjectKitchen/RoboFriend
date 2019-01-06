@@ -7,7 +7,7 @@ import serial
 from robofriend.srv import SrvPCBSensorData
 
 # import ros messages
-from ros_robofriend.msg import TeensyMotorData
+from robofriend.msg import TeensyMotorData
 
 # import ros modules
 from TeensyDataHandler import *

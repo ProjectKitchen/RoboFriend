@@ -5,10 +5,10 @@ import threading
 import rospy
 
 # import ros message
-from ros_robofriend.msg import SpeechData
+from robofriend.msg import SpeechData
 
 # import ros modules
-from ROS_Node.SpeechNode.SpeechDataHandler import *
+from SpeechDataHandler import *
 
 def node_start():
     print("[INFO] ROS Speech Node started!\n")

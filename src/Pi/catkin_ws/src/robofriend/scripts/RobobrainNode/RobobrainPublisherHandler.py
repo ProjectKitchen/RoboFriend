@@ -1,9 +1,9 @@
 import rospy
 
 #import ros message
-from ros_robofriend.msg import SpeechData
-from ros_robofriend.msg import TeensyMotorData
-from ros_robofriend.msg import EarsLedData
+from robofriend.msg import SpeechData
+from robofriend.msg import TeensyMotorData
+from robofriend.msg import EarsLedData
 
 class RobobrainPublisherHandler():
 

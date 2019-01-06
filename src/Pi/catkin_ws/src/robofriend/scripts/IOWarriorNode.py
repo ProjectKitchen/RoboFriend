@@ -6,9 +6,7 @@ import rospy
 from robofriend.msg import IOWarriorData
 
 def send_to_iowarrior(self, red = 0, green = 0, blue = 0, cam_pos = 0):
-    cmd = "sudo ./iowarrior/iow " + str(int(round(red))) 
-                            + ' ' + str(int(round(green))) 
-                            + ' ' + str(int(round(blue)))
+    cmd = "sudo ./iowarrior/iow " + str(int(round(red))) + ' ' + str(int(round(green))) + ' ' + str(int(round(blue)))
     if cam_pos:
         cmd = cmd + ' ' + str(cam_pos)
     rospy.logdebug("{%} - CMD for IOWarrior:  %s", self.__class__.__name__, cmd)
