@@ -21,7 +21,13 @@ def stop():
 	global roscore
 
 	print("*** shutting down! ... ***\n\n")
-	roscore.terminated()
+	try:
+		roscore.terminate()
+		rospy.signal_shutdown("Shutdown completed!")
+	except Exception as inst:
+	    rospy.logwarn('*** Roscore termination failed! ***')
+	    rospy.logwarn(type(inst))
+	    rospy.logwarn(inst.args)
 
 def handler_stop_signals(signum, frame):
 	stop()

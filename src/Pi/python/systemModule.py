@@ -23,14 +23,14 @@ import roslaunch
 def kill_child_processes(parent_pid, sig=signal.SIGTERM):
     try:
         parent = psutil.Process(parent_pid)
-        print(parent)
+        # print(parent)
     except psutil.NoSuchProcess:
         print("parent process not existing")
         return
     children = parent.children(recursive=True)
-    print(children)
+    # print(children)
     for process in children:
-        print("try to kill child: " + str(process))
+        # print("try to kill child: " + str(process))
         process.send_signal(sig)
 
 class Roscore(object):
@@ -51,7 +51,7 @@ class Roscore(object):
             sys.stderr.write('roscore could not be launched')
             raise e
     def terminate(self):
-        print("try to kill child pids of roscore pid: " + str(self.roscore_pid))
+        # print("try to kill child pids of roscore pid: " + str(self.roscore_pid))
         kill_child_processes(self.roscore_pid)
         self.roscore_process.terminate()
         self.roscore_process.wait()  # important to prevent from zombie process
