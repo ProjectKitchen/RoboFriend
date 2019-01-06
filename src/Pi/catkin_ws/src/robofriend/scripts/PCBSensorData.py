@@ -1,14 +1,13 @@
 #!/usr/bin/env python
 import rospy
+import constants
 
 # import ros services
 from robofriend.srv import SrvPCBSensorData
 
 # import ros message
-from sensor_msgs.msg import BatteryState
 from robofriend.msg import IRSensorData
-
-import constants
+from sensor_msgs.msg import BatteryState
 
 class PCBSensorDataHandler(object):
     def __init__(self, pub1, pub2):
@@ -24,7 +23,7 @@ class PCBSensorDataHandler(object):
             return
 
         self._recv_bat_val = (args.bat_voltage * (constants.VOLT_DIV_R1 + constants.VOLT_DIV_R2)) / constants.VOLT_DIV_R2
-        self._battery_moving_average_val = self.__getMovingAverage(
+        self._battery_moving_average_val = self._getMovingAverage(
             self._recv_bat_val, 
             self._battery_moving_average_val, 
             self._battery_moving_average)
@@ -32,8 +31,8 @@ class PCBSensorDataHandler(object):
         # http://docs.ros.org/api/sensor_msgs/html/msg/BatteryState.html
         bs_data = BatteryState()
         bs_data.voltage = self._battery_moving_average_val
-        bs_data.percentage = self.__get_battery_percent(self._battery_moving_average_val)
-        bs_data.power_supply_status = self.__get_power_supply_status(bs_data.percentage)
+        bs_data.percentage = self._get_battery_percent(self._battery_moving_average_val)
+        bs_data.power_supply_status = self._get_power_supply_status(bs_data.percentage)
         
         ir_data = IRSensorData()
         ir_data.inf_left = args.inf_left
@@ -51,14 +50,14 @@ class PCBSensorDataHandler(object):
         self._bs_pub.publish(bs_data)
         self._ir_pub.publish(ir_data)
 
-    def __getMovingAverage(self, newValue, currentMean, n):
+    def _getMovingAverage(self, newValue, currentMean, n):
         if not currentMean:
             return newValue
         newMean = currentMean - currentMean / n
         newMean = newMean + newValue / n
         return newMean
 
-    def __get_battery_percent(self, batVoltage):
+    def _get_battery_percent(self, batVoltage):
         batVoltageRounded = round(batVoltage, 2)
 
         # dont multiply by 100 cause sensor_msgs/BatteryState.percentage
@@ -68,7 +67,7 @@ class PCBSensorDataHandler(object):
             (constants.BAT_UPPER_THRESHOLD - constants.BAT_LOWWER_THREDSHOLD), 2)
         return percent
 
-    def __get_power_supply_status(self, val):
+    def _get_power_supply_status(self, val):
         # http://docs.ros.org/jade/api/sensor_msgs/html/msg/BatteryState.html
         if val > 1.0:
             return constants.BAT_OVERCHARGED

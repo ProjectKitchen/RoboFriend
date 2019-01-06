@@ -3,7 +3,7 @@ import os
 import rospy
 
 # import ros message
-from ros_robofriend.msg import IOWarriorData
+from robofriend.msg import IOWarriorData
 
 def send_to_iowarrior(self, red = 0, green = 0, blue = 0, cam_pos = 0):
     cmd = "sudo ./iowarrior/iow " + str(int(round(red))) 
