@@ -8,31 +8,22 @@ from robofriend.srv import SrvPCBSensorData
 from sensor_msgs.msg import BatteryState
 from robofriend.msg import IRSensorData
 
+import constants
+
 class PCBSensorDataHandler(object):
     def __init__(self, pub1, pub2):
         self._bs_pub = pub1
         self._ir_pub = pub2
-        # http://www.peacesoftware.de/einigewerte/spannungsteiler.html
-        # Spannung U1: 14.7
-        # Spannung U2: 4.096
-        # Rges: 10000
-        # Widerstandsreihe
-        # Parall/Serienschaltung zulassen
-        # Siehe also schematic 
-        self._r1 = 7210
-        self._r2 = 2780
 
         self._recv_bat_val = 0
         self._battery_moving_average = 30
         self._battery_moving_average_val = 0
-        self._battery_over_volt = 14.7
-        self._battery_discharge = 10.5
 
     def processSensorValues(self, args):
         if args is None:
             return
 
-        self._recv_bat_val = (args.bat_voltage * (self._r1 + self._r2)) / self._r2
+        self._recv_bat_val = (args.bat_voltage * (constants.VOLT_DIV_R1 + constants.VOLT_DIV_R2)) / constants.VOLT_DIV_R2
         self._battery_moving_average_val = self.__getMovingAverage(
             self._recv_bat_val, 
             self._battery_moving_average_val, 
@@ -69,28 +60,28 @@ class PCBSensorDataHandler(object):
 
     def __get_battery_percent(self, batVoltage):
         batVoltageRounded = round(batVoltage, 2)
+
         # dont multiply by 100 cause sensor_msgs/BatteryState.percentage
         # is the charge percentage on 0 to 1 range
-
         percent = round(
-            (batVoltageRounded - self._battery_discharge) / 
-            (self._battery_over_volt - self._battery_discharge), 2)
+            (batVoltageRounded - constants.BAT_LOWWER_THREDSHOLD) / 
+            (constants.BAT_UPPER_THRESHOLD - constants.BAT_LOWWER_THREDSHOLD), 2)
         return percent
 
     def __get_power_supply_status(self, val):
         # http://docs.ros.org/jade/api/sensor_msgs/html/msg/BatteryState.html
         if val > 1.0:
-            return 5 # overcharged
+            return constants.BAT_OVERCHARGED
         elif val <= 1.0 and val > 0.80:
-            return 4 # full
+            return constants.BAT_FULL
         elif val <= 0.80 and val > 0.20:
-            return 3 # good
+            return constants.BAT_GOOD
         elif val <= 0.20 and val > 0.05:
-            return 2 # charging / warning
+            return constants.BAT_WARNING
         elif val <= 0.5 and val > 0.0:
-            return 1 # shutdown
+            return constants.BAT_CRITICAL
         else:
-            return 0 # NaN
+            return constants.BAT_UNKOWN
 
 def shutdown():
     rospy.signal_shutdown("Stopping PCB Sensor Data Handler node!")

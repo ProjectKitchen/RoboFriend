@@ -19,7 +19,9 @@ from RobobrainPCBSensorDataHandler import *
 from RobobrainPublisherHandler import *
 from RobobrainStateHandler import *
 
-def stopNode():
+# TODO: import constants
+
+def shutdown():
     rospy.signal_shutdown("Stopping Robobrain node!")
 
 def main():
@@ -32,9 +34,8 @@ def main():
     # TODO: do we need a event here?
     robostate  = RobobrainStateHandler()
     bat = RobobrainPCBSensorDataHandler()
-    # bat = RobobrainBatteryInfraredDataHandler(robostate)
-    # odo = RobobrainOdometryDataHandler.RobobrainOdometryDataHandler()
-    # ir  = RobobrainInfraredDataHandler.RobobrainInfraredDataHandler()
+    # odo = RobobrainOdometryDataHandler()
+    # ir  = RobobrainInfraredDataHandler()
     fd = RobobrainFacedetectionDataHandler()
     key = RobobrainKeyboardDataHandler()
 
@@ -52,6 +53,20 @@ def main():
     rate = rospy.Rate(0.2) # 200mhz
 
     while not rospy.is_shutdown():
+        if bat.power_supply_status == 5:
+            rospy.loginfo("Battery overcharged")
+        elif bat.power_supply_status == 4:
+            rospy.loginfo("Battery full")
+        elif bat.power_supply_status == 3:
+            rospy.loginfo("Battery good")
+        elif bat.power_supply_status == 2:
+            rospy.loginfo("Battery warning")
+        elif bat.power_supply_status == 1:
+            rospy.loginfo("Battery critical")
+        elif bat.power_supply_status == 0:
+            rospy.loginfo("Battery Unknown")
+
+
         # if robostate.state = robostate["IDLE"]
         #
         # if keyboard.command == "move":
