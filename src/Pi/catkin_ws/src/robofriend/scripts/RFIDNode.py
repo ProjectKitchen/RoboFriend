@@ -39,7 +39,7 @@ def shutdown():
     rospy.signal_shutdown("Stopping RFID node!")
 
 def RFID():
-    rospy.init_node("robofriend_rfid_handler", log_level = rospy.INFO)
+    rospy.init_node("robofriend_rfid_handler", log_level = rospy.WARN)
     rospy.loginfo("Starting RFID Handler node!")
     
     ser = None

@@ -9,7 +9,7 @@ from robofriend.msg import IRSensorData
 from robofriend.srv import SrvRFIDData
 
 def Talker():
-    rospy.init_node('robofriend_talker', anonymous = True)
+    rospy.init_node('robofriend_talker', anonymous = True, log_level = rospy.WARN)
     rospy.loginfo("Starting Talker node!")
 
     pub_o = rospy.Publisher('/robofriend/odom_data', Pose, queue_size = 10) # odometry data

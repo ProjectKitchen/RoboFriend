@@ -14,6 +14,9 @@
 	<node pkg="robofriend" type="RFIDNode.py" name="robofriend_ifid_handler" output="screen">
 	</node>
 
+	<node pkg="robofriend" type="ServoCamNode.py" name="robofriend_servo_cam_handler" output="screen">
+	</node>
+
 	<node pkg="robofriend" type="RobobrainTalkerNode.py" name="robofriend_talker" output="screen">
 	</node>
 	

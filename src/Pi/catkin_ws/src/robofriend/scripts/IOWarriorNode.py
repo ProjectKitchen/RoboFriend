@@ -9,7 +9,7 @@ def send_to_iowarrior(self, red = 0, green = 0, blue = 0, cam_pos = 0):
     cmd = "sudo ./iowarrior/iow " + str(int(round(red))) + ' ' + str(int(round(green))) + ' ' + str(int(round(blue)))
     if cam_pos:
         cmd = cmd + ' ' + str(cam_pos)
-    rospy.logdebug("{%} - CMD for IOWarrior:  %s", self.__class__.__name__, cmd)
+    rospy.loginfo("CMD for IOWarrior:  %s", cmd)
     os.system(cmd)
 
 class IOWarriorDataHandler():
@@ -28,9 +28,10 @@ class IOWarriorDataHandler():
         	)
 
     def process_data(self, data):
-    	rospy.logdebug("{%} - Received Data: %s", 
+    	rospy.loginfo("{%s} - rgb: %s, position: %s", 
     		self.__class__.__name__,
-    		data)
+    		data.rgb,
+            data.cam_pos)
 
         if data.rgb:
             self._red, self._green, self._blue = data.rgb
@@ -43,7 +44,7 @@ def shutdown():
     rospy.signal_shutdown("Stopping IOWarrior Data Handler node!")
 
 def IOWarrior():
-	rospy.init_node("robofriend_io_warrior_data")
+	rospy.init_node("robofriend_io_warrior_data", log_level = rospy.INFO)
 	rospy.loginfo("Starting IOWarrior Data Handler node")
 
 	dh = IOWarriorDataHandler()

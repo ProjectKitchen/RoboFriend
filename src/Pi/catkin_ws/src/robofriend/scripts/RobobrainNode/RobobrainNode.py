@@ -25,7 +25,7 @@ def shutdown():
     rospy.signal_shutdown("Stopping Robobrain node!")
 
 def main():
-    rospy.init_node('robofriend_robobrain', anonymous = True, log_level = rospy.INFO)
+    rospy.init_node('robofriend_robobrain', anonymous = True, log_level = rospy.WARN)
     rospy.loginfo("Starting Robobrain node!")
 
     # publish here
