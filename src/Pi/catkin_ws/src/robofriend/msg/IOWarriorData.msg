@@ -1,2 +1,2 @@
-float32[] rgb
-int16 cam_pos
+float64[] rgb
+int64 cam_pos

@@ -1,8 +1,11 @@
 <launch>
+	<node pkg="robofriend" type="RobobrainNode.py" name="robofriend_robobrain" output="screen">
+	</node>
+
 	<node pkg="robofriend" type="PCBSensorData.py" name="robofriend_pcb_sensor_data" output="screen">
 	</node>
 
-	<node pkg="robofriend" type="RobobrainNode.py" name="robofriend_robobrain" output="screen">
+	<node pkg="robofriend" type="IOWarriorNode.py" name="robofriend_io_warrior_node" output="screen">
 	</node>
 
 	<node pkg="robofriend" type="TeensyNode.py" name="robofriend_teensy_communicator" output="screen">

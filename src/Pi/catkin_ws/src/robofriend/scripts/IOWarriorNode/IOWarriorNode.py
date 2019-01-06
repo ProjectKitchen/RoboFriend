@@ -1,13 +1,54 @@
+#!/usr/bin/env python
 import rospy
 
 # import ros message
 from ros_robofriend.msg import IOWarriorData
 
-# import ros modules
-from ROS_Node.IOWarriorNode.IOWarriorDataHandler import *
+class IOWarriorDataHandler():
 
-def node_start():
-    print("[INFO] ROS IOWarrior Node started!\n")
+    def __init__(self):
+        self._red = 0
+        self._green = 10
+        self._blue = 10
+        self._cam_pos = 140
 
-    iowarrior = IOWarriorDataHandler()
-    rospy.Subscriber('T_IOWARRIOR_DATA', IOWarriorData, iowarrior.process_data)
+        self._send_to_iowarrior(
+        	self._red, 
+        	self._green, 
+        	self._blue, 
+        	self._cam_pos
+        	)
+
+    def process_data(self, data):
+    	rospy.logdebug("{%} - Received Data: %s", 
+    		self.__class__.__name__,
+    		data)
+
+        if data.rgb:
+            self._red, self._green, self._blue = data.rgb
+        if data.cam_pos:
+            self._cam_pos = data.cam_pos
+
+        self._send_to_iowarrior(self._red, self._green, self._blue, self._cam_pos)
+
+    def send_to_iowarrior(self, red = 0, green = 0, blue = 0, cam_pos = 0):
+        cmd = "sudo ./iowarrior/iow " + str(int(round(red))) + ' ' + str(int(round(green))) + ' ' + str(int(round(blue)))
+        if cam_pos:
+            cmd = cmd + ' ' + str(cam_pos)
+        rospy.logdebug("{%} - CMD for IOWarrior:  %s", self.__class__.__name__, cmd)
+        os.system(cmd)
+
+def IOWarrior():
+	rospy.init_node("robofriend_io_warrior_data")
+	rospy.loginfo("Starting IO Warrior Data Handler node")
+
+	dh = IOWarriorDataHandler()
+	rospy.Subscriber("/robofriend/io_warrior_data", IOWarriorData, dh.process_data)
+
+	rospy.spin()
+
+if __name__ == '__main__':
+    try:
+        IOWarrior()
+    except rospy.ROSInterruptException:
+        pass
