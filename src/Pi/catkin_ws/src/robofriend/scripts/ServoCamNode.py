@@ -13,6 +13,7 @@ class ServoCamDataHandler(object):
         self._cam_pos = 140
 
     def process_data(self, data):
+        # TOOD: process rgb data
         self._diff = data.data
         rospy.logdebug("{%s} - Received Data: %s", self.__class__.__name__, data.data)
         self._diff_calc()
@@ -21,14 +22,14 @@ class ServoCamDataHandler(object):
     	var = self._cam_pos + self._diff
         if 10 <= var <= 150:
             self._cam_pos += self._diff
-            self._send_to_iowarrior(self._cam_pos)
+            self._send_to_iowarrior(pos = self._cam_pos)
         else:
             rospy.logwarn("{%s} - Position for the camera too high/low: %d", self.__class__.__name__, var)
 
-    def _send_to_iowarrior(self, cam_position):
+    def _send_to_iowarrior(self, r = 255, g = 255, b = 255, pos = 0):
         msg = IOWarriorData()
-        msg.rgb = []
-        msg.cam_pos = cam_position
+        msg.rgb = [r, g, b]
+        msg.cam_pos = pos
         self._pub.publish(msg)
         rospy.logdebug("{%s} - Publish message to IOWarrior node: %s", self.__class__.__name__, msg)
 
@@ -43,6 +44,7 @@ def ServoCam():
 
     dh = ServoCamDataHandler(pub)
     
+    # TODO: subscribe to rgb data 
     rospy.Subscriber("/robofriend/servo_cam_data", Int8, dh.process_data)
 
     rospy.spin()
