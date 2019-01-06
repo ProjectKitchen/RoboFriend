@@ -79,14 +79,18 @@ class PCBSensorDataHandler(object):
 
     def __get_power_supply_status(self, val):
         # http://docs.ros.org/jade/api/sensor_msgs/html/msg/BatteryState.html
-        if val <= 1.0 and val >= 0.81:
+        if val > 1.0:
+            return 5 # overcharged
+        elif val <= 1.0 and val > 0.80:
             return 4 # full
-        elif val <= 0.80 and val >= 0.21:
+        elif val <= 0.80 and val > 0.20:
             return 3 # good
-        elif val <= 0.20 and val >= 0.06:
-            return 1 # charging / warning
-        else: # val <= 0.5
-            return 0 # shutdown
+        elif val <= 0.20 and val > 0.05:
+            return 2 # charging / warning
+        elif val <= 0.5 and val > 0.0:
+            return 1 # shutdown
+        else:
+            return 0 # NaN
 
 def shutdown():
     rospy.signal_shutdown("Stopping PCB Sensor Data Handler node!")

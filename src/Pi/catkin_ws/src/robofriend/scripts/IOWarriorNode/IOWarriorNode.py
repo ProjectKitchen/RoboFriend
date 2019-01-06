@@ -1,8 +1,16 @@
 #!/usr/bin/env python
+import os
 import rospy
 
 # import ros message
 from ros_robofriend.msg import IOWarriorData
+
+def send_to_iowarrior(self, red = 0, green = 0, blue = 0, cam_pos = 0):
+    cmd = "sudo ./iowarrior/iow " + str(int(round(red))) + ' ' + str(int(round(green))) + ' ' + str(int(round(blue)))
+    if cam_pos:
+        cmd = cmd + ' ' + str(cam_pos)
+    rospy.logdebug("{%} - CMD for IOWarrior:  %s", self.__class__.__name__, cmd)
+    os.system(cmd)
 
 class IOWarriorDataHandler():
 
@@ -12,7 +20,7 @@ class IOWarriorDataHandler():
         self._blue = 10
         self._cam_pos = 140
 
-        self._send_to_iowarrior(
+        send_to_iowarrior(
         	self._red, 
         	self._green, 
         	self._blue, 
@@ -29,18 +37,14 @@ class IOWarriorDataHandler():
         if data.cam_pos:
             self._cam_pos = data.cam_pos
 
-        self._send_to_iowarrior(self._red, self._green, self._blue, self._cam_pos)
+        send_to_iowarrior(self._red, self._green, self._blue, self._cam_pos)
 
-    def send_to_iowarrior(self, red = 0, green = 0, blue = 0, cam_pos = 0):
-        cmd = "sudo ./iowarrior/iow " + str(int(round(red))) + ' ' + str(int(round(green))) + ' ' + str(int(round(blue)))
-        if cam_pos:
-            cmd = cmd + ' ' + str(cam_pos)
-        rospy.logdebug("{%} - CMD for IOWarrior:  %s", self.__class__.__name__, cmd)
-        os.system(cmd)
+def shutdown():
+    rospy.signal_shutdown("Stopping IOWarrior Data Handler node!")
 
 def IOWarrior():
 	rospy.init_node("robofriend_io_warrior_data")
-	rospy.loginfo("Starting IO Warrior Data Handler node")
+	rospy.loginfo("Starting IOWarrior Data Handler node")
 
 	dh = IOWarriorDataHandler()
 	rospy.Subscriber("/robofriend/io_warrior_data", IOWarriorData, dh.process_data)
