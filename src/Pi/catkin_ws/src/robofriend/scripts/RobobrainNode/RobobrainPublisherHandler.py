@@ -3,7 +3,7 @@ import rospy
 #import ros message
 from robofriend.msg import SpeechData
 from robofriend.msg import TeensyMotorData
-from robofriend.msg import EarsLedData
+from robofriend.msg import LedEarsData
 
 class RobobrainPublisherHandler():
 
@@ -11,10 +11,10 @@ class RobobrainPublisherHandler():
         self._topics = topics
         self._speech_pub = rospy.Publisher(topics['T_SPEECH_DATA'], SpeechData, queue_size = 10)
         self._teensy_motor_pub = rospy.Publisher(topics['T_TEENSY_MOTOR_DATA'], TeensyMotorData, queue_size = 10)
-        self._ears_led_pub = rospy.Publisher(topics['T_EARS_LED_DATA'], EarsLedData, queue_size = 10)
+        self._ears_led_pub = rospy.Publisher(topics['T_EARS_LED_DATA'], LedEarsData, queue_size = 10)
         self._speech_msg = SpeechData()
         self._teensy_motor_msg = TeensyMotorData()
-        self._ears_led_msg = EarsLedData()
+        self._ears_led_msg = LedEarsData()
 
     def speech_message_publish(self, mode, text = None):
         self._speech_msg.mode = mode

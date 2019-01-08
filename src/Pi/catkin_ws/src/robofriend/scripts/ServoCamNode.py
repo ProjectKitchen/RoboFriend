@@ -3,32 +3,31 @@
 import rospy
 
 # import ros message
-from std_msgs.msg import Int8
-from robofriend.msg import IOWarriorData
+from std_msgs.msg import Int8 # subscription
+from robofriend.msg import IOWarriorData # publisher
 
 class ServoCamDataHandler(object):
     def __init__(self, pub):
         self._pub = pub
         self._diff = 0
-        self._cam_pos = 140
+        self._pos = 140
 
     def process_data(self, data):
-        # TOOD: process rgb data
         self._diff = data.data
         rospy.logdebug("{%s} - Received Data: %s", self.__class__.__name__, data.data)
         self._diff_calc()
 
     def _diff_calc(self):
-    	var = self._cam_pos + self._diff
+    	var = self._pos + self._diff
         if 10 <= var <= 150:
-            self._cam_pos += self._diff
-            self._publish_to_iowarrior(pos = self._cam_pos)
+            self._pos += self._diff
+            self._publish_to_iowarrior(self._pos)
         else:
             rospy.logwarn("{%s} - Position for the camera too high/low: %d", self.__class__.__name__, var)
 
-    def _send_to_iowarrior(self, r = 255, g = 255, b = 255, pos = 0):
+    def _publish_to_iowarrior(self, pos = 0):
         msg = IOWarriorData()
-        msg.rgb = [r, g, b]
+        # msg.rgb = []
         msg.cam_pos = pos
         self._pub.publish(msg)
         rospy.logdebug("{%s} - Publish message to IOWarrior node: %s", self.__class__.__name__, msg)

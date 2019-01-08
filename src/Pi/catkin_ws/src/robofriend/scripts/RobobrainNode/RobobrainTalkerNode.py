@@ -9,11 +9,11 @@ from robofriend.msg import IRSensorData
 from robofriend.srv import SrvRFIDData
 
 def Talker():
-    rospy.init_node('robofriend_talker', anonymous = True, log_level = rospy.WARN)
+    rospy.init_node('robofriend_talker', anonymous = True, log_level = rospy.INFO)
     rospy.loginfo("Starting Talker node!")
 
-    pub_o = rospy.Publisher('/robofriend/odom_data', Pose, queue_size = 10) # odometry data
-    pub_i = rospy.Publisher('/robofriend/infrared_data', IRSensorData, queue_size = 10) # infrared data
+    # pub_o = rospy.Publisher('/robofriend/odom_data', Pose, queue_size = 10) # odometry data
+    # pub_i = rospy.Publisher('/robofriend/infrared_data', IRSensorData, queue_size = 10) # infrared data
     pub_c = rospy.Publisher('/robofriend/cam_data', CamData, queue_size = 10) # camera data
 
     odata = Pose()
@@ -38,7 +38,7 @@ def Talker():
     rate = rospy.Rate(1) # 1hz
     
     while not rospy.is_shutdown():
-        pub_o.publish(odata)
+        # pub_o.publish(odata)
         # pub_i.publish(idata)
         pub_c.publish(cdata)
 
@@ -51,7 +51,7 @@ def Talker():
         except rospy.ServiceException:
             rospy.logwarn("Service call failed")
 
-        rospy.loginfo("Service recevied: %s", srv_resp)
+        rospy.loginfo("{RobobrainTalkerNode} Service recevied: %s", srv_resp)
 
         rate.sleep() # make sure the publish rate maintains at the needed frequency
 

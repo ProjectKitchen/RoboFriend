@@ -5,7 +5,7 @@ import time
 import rospy
 
 # import ros message
-from ros_robofriend.msg import IOWarriorData
+from robofriend.msg import IOWarriorData
 
 class EarsLedDataHandler():
 

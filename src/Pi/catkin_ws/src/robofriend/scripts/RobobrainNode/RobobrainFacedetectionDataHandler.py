@@ -1,3 +1,4 @@
+import rospy
 
 class RobobrainFacedetectionDataHandler():
 
@@ -14,7 +15,13 @@ class RobobrainFacedetectionDataHandler():
         self._bottom = data.bottom
         self._left = data.left
         self._name = data.name
-        print("[INFO] Class: {} ... Received message: {} {} {} {}".format(self.__class__.__name__, self._top, self._right, self._bottom, self._left, self._name))
+        rospy.loginfo("{%s} name: %s, top: %d, right: %d, bottom: %d, left: %d", 
+            self.__class__.__name__,
+            self._name,
+            self._top, 
+            self._right, 
+            self._bottom, 
+            self._left)
 
     #top
     @property

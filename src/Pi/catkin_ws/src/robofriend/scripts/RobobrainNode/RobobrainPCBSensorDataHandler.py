@@ -12,7 +12,7 @@ class RobobrainPCBSensorDataHandler():
         self._inf_right = 0
 
     def process_bs_data(self, data):
-        rospy.loginfo("{%s} Volt: %.2fV Perc: %.2f%% Status: %d", 
+        rospy.loginfo("{%s} Battery Data Volt: %.2fV Perc: %.2f%% Status: %d", 
             self.__class__.__name__,
             self._voltage,
             self._percentage * 100,
@@ -23,7 +23,7 @@ class RobobrainPCBSensorDataHandler():
         self._power_supply_status = data.power_supply_status
     
     def process_ir_data(self, data):
-        rospy.loginfo("{%s} Left: %.2f Middle: %.2f Right: %.2f", 
+        rospy.loginfo("{%s} Infrared Data Left: %.2f Middle: %.2f Right: %.2f", 
             self.__class__.__name__,
             self._inf_left,
             self._inf_middle,

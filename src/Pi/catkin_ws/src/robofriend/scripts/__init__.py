@@ -1,1 +1,1 @@
-__all__ = ["constants", "IOWarriorNode", "PCBSensorData", "RFIDNode", "ServoCamNode"]
+__all__ = ["constants", "IOWarriorNode", "LedEarsNode", "PCBSensorData", "RFIDNode", "ServoCamNode"]

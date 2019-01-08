@@ -2,7 +2,8 @@
 import rospy
 
 # import ros message
-from robofriend.msg import LedEarsData
+from robofriend.msg import LedEarsData # subscription
+from robofriend.msg import IOWarriorData # publisher
 
 class LedEarsDataHandler():
 
@@ -37,7 +38,7 @@ def LedEars():
 
     dh = LedEarsDataHandler(pub)
 
-    rospy.Subscriber("/robofriend/led_ears_data", dh.process_data)
+    rospy.Subscriber("/robofriend/led_ears_data", LedEarsData, dh.process_data)
 
     rospy.spin()
 

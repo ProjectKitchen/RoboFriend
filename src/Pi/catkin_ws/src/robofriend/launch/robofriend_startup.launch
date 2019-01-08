@@ -17,6 +17,9 @@
 	<node pkg="robofriend" type="ServoCamNode.py" name="robofriend_servo_cam_handler" output="screen">
 	</node>
 
+	<node pkg="robofriend" type="LedEarsNode.py" name="robofriend_led_ears_handler" output="screen">
+	</node>	
+
 	<node pkg="robofriend" type="RobobrainTalkerNode.py" name="robofriend_talker" output="screen">
 	</node>
 	
