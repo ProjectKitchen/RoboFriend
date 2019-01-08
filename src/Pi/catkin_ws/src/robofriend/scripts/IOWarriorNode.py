@@ -9,7 +9,7 @@ def send_to_iowarrior(self, red = 0, green = 0, blue = 0, cam_pos = 0):
     cmd = "sudo ./iowarrior/iow " + str(int(round(red))) + ' ' + str(int(round(green))) + ' ' + str(int(round(blue)))
     if cam_pos:
         cmd = cmd + ' ' + str(cam_pos)
-    rospy.loginfo("CMD for IOWarrior:  %s", cmd)
+    rospy.logdebug("CMD for IOWarrior:  %s", cmd)
     os.system(cmd)
 
 class IOWarriorDataHandler():

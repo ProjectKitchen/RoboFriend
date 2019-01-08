@@ -31,42 +31,22 @@ class OdometryDataHandler():
     def x(self):
         return self._x
 
-    @x.setter
-    def x(self, value):
-        self._x = value
-
     # y
     @property
     def y(self):
         return self._y
-
-    @y.setter
-    def y(self, value):
-        self._y = value
 
     # theta
     @property
     def theta(self):
         return self._theta
 
-    @theta.setter
-    def theta(self, value):
-        self._theta = value
-
     # linear_velocity
     @property
     def linear_velocity(self):
         return self._linear_velocity
 
-    @linear_velocity.setter
-    def linear_velocity(self, value):
-        self._linear_velocity = value
-
     # angular_velocity
     @property
     def angular_velocity(self):
         return self._angular_velocity
-
-    @angular_velocity.setter
-    def angular_velocity(self, value):
-        self._angular_velocity = value

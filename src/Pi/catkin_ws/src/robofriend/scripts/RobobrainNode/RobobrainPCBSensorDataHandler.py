@@ -1,9 +1,15 @@
-import rospy
+import os, sys, rospy
+
+path = os.path.dirname(os.path.abspath(__file__)) + "/.."
+sys.path.append(path)
+import constants
+
+from RobobrainNode import *
 from RobobrainStateHandler import *
 
 class RobobrainPCBSensorDataHandler():
-
-    def __init__(self):
+    def __init__(self, rb):
+        self._robobrain = rb
         self._voltage = 0
         self._percentage = 0
         self._power_supply_status = 0
@@ -21,6 +27,8 @@ class RobobrainPCBSensorDataHandler():
         self._voltage = round(data.voltage, 2)
         self._percentage = data.percentage
         self._power_supply_status = data.power_supply_status
+
+        self._set_robo_state()
     
     def process_ir_data(self, data):
         rospy.loginfo("{%s} Infrared Data Left: %.2f Middle: %.2f Right: %.2f", 
@@ -33,6 +41,27 @@ class RobobrainPCBSensorDataHandler():
         self._inf_middle = data.inf_middle
         self._inf_right = data.inf_right
 
-    @property
-    def power_supply_status(self):
-        return self._power_supply_status
+    def _set_robo_state(self):
+        # if self._power_supply_status == constants.BAT_OVERCHARGED:
+        #     rospy.loginfo("{%s} Battery overcharged", self.__class__.__name__)
+        # elif self._power_supply_status == constants.BAT_FULL:
+        #     rospy.loginfo("{%s} Battery full", self.__class__.__name__)
+        # elif self._power_supply_status == constants.BAT_GOOD:
+        #     rospy.loginfo("{%s} Battery good", self.__class__.__name__)
+        # elif self._power_supply_status == constants.BAT_WARNING:
+        #     self._robobrain.state = constants.RF_CHARGE
+        #     rospy.loginfo("{%s} Battery warning", self.__class__.__name__)
+        # elif self._power_supply_status == constants.BAT_CRITICAL:
+        #     self._robobrain.state = constants.RF_SHUTDOWN
+        #     rospy.loginfo("{%s} Battery critical", self.__class__.__name__)
+        # elif self._power_supply_status == constants.BAT_UNKNOWN:
+        #     rospy.loginfo("{%s} Battery Unknown", self.__class__.__name__)
+
+        # rb = RoboBrain.getInstance()
+
+        if self._power_supply_status == constants.BAT_WARNING:
+            self._robobrain.setState(constants.RF_CHARGE)
+        elif self._power_supply_status == constants.BAT_CRITICAL:
+            self._robobrain.setState(constants.RF_SHUTDOWN)
+        else: 
+            self._robobrain.setState(constants.IDLE)

@@ -1,5 +1,9 @@
 #!/usr/bin/env python
-import rospy
+import os, sys, rospy
+
+path = os.path.dirname(os.path.abspath(__file__)) + "/.."
+sys.path.append(path)
+import constants
 
 # import ROS messages
 from sensor_msgs.msg import BatteryState
@@ -14,19 +18,39 @@ from RobobrainPCBSensorDataHandler import *
 from RobobrainPublisherHandler import *
 from RobobrainStateHandler import *
 
-# TODO: import constants
-
 class RoboBrain(object):
+    __state = None
+    __instance = None
+    
     def __init__(self, state):
-        self._state = state
+        """ Virtually private constructor """
+        if RoboBrain.__instance != None:
+            raise Exception("This should not happen: the class RoboBrain is a singleton")
+        else:
+            RoboBrain.__state = state
+            RoboBrain.__instance = self
 
-    @property
-    def state(self):
-        return self._state
+    @staticmethod
+    def createInstance(state):
+        """ Static access method. """
+        if RoboBrain.__instance == None:
+            RoboBrain(state)
+        return RoboBrain.__instance 
 
-    @state.setter
-    def state(self, value):
-        self._state = value
+    @staticmethod
+    def getInstance():
+        """ Static access method. """
+        if RoboBrain.__instance == None:
+            print("Make sure to call createInstance() before calling this methode")
+        return RoboBrain.__instance 
+
+    @staticmethod
+    def setState(value):
+        RoboBrain.__state = value
+
+    @staticmethod
+    def getState():
+        return RoboBrain.__state
 
 def shutdown():
     rospy.signal_shutdown("Stopping Robobrain node!")
@@ -46,7 +70,13 @@ def main():
 
     # TODO: do we need a event here?
     # robostate  = RobobrainStateHandler()
-    bat = RobobrainPCBSensorDataHandler()
+    try: 
+        RoboBrain.createInstance(constants.RF_IDLE)
+    except Exception as e:
+        rospy.logerror("Failed to create Robobrain instance: %s" % str(e))
+    rb = RoboBrain.getInstance()
+
+    bat = RobobrainPCBSensorDataHandler(rb)
     # odo = RobobrainOdometryDataHandler()
     # ir  = RobobrainInfraredDataHandler()
     fd = RobobrainFacedetectionDataHandler()
@@ -66,18 +96,7 @@ def main():
     rate = rospy.Rate(0.2) # 200mhz
 
     while not rospy.is_shutdown():
-        if bat.power_supply_status == 5:
-            rospy.loginfo("{RobobrainNode} Battery overcharged")
-        elif bat.power_supply_status == 4:
-            rospy.loginfo("{RobobrainNode} Battery full")
-        elif bat.power_supply_status == 3:
-            rospy.loginfo("{RobobrainNode} Battery good")
-        elif bat.power_supply_status == 2:
-            rospy.loginfo("{RobobrainNode} Battery warning")
-        elif bat.power_supply_status == 1:
-            rospy.loginfo("{RobobrainNode} Battery critical")
-        elif bat.power_supply_status == 0:
-            rospy.loginfo("{RobobrainNode} Battery Unknown")
+        rospy.loginfo("State: %d", rb.getState())
 
         # if robostate.state = robostate["IDLE"]
         #

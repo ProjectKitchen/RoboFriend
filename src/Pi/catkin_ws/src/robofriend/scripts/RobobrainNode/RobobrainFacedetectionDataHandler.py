@@ -28,42 +28,22 @@ class RobobrainFacedetectionDataHandler():
     def top(self):
         return self._top
 
-    @top.setter
-    def top(self, value):
-        self._top = value
-
     #right
     @property
     def right(self):
         return self._right
-
-    @right.setter
-    def right(self, value):
-        self._right = value
 
     #left
     @property
     def left(arg):
         return self._left
 
-    @left.setter
-    def left(self, value):
-        self._left = value
-
     #bottom
     @property
     def bottom(self):
         return self._bottom
 
-    @bottom.setter
-    def bottom(self, value):
-        self._bottom = value
-
     #name
     @property
     def name(self):
         return self._name
-
-    @name.setter
-    def name(self, value):
-        self._name = value
