@@ -21,11 +21,11 @@ class ServoCamDataHandler(object):
     	var = self._cam_pos + self._diff
         if 10 <= var <= 150:
             self._cam_pos += self._diff
-            self._send_to_iowarrior(self._cam_pos)
+            self._publish_to_iowarrior(self._cam_pos)
         else:
             rospy.logwarn("{%s} - Position for the camera too high/low: %d", self.__class__.__name__, var)
 
-    def _send_to_iowarrior(self, cam_position):
+    def _publish_to_iowarrior(self, cam_position):
         msg = IOWarriorData()
         msg.rgb = []
         msg.cam_pos = cam_position
@@ -43,7 +43,7 @@ def ServoCam():
 
     dh = ServoCamDataHandler(pub)
     
-    rospy.Subscriber("/robofriend/servo_cam_data", Int8, dh.process_data)
+    rospy.Subscriber("/robofriend/servo_cam_pos", Int8, dh.process_data)
 
     rospy.spin()
 

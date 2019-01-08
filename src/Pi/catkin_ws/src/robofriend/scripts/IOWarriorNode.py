@@ -44,8 +44,8 @@ def shutdown():
     rospy.signal_shutdown("Stopping IOWarrior Data Handler node!")
 
 def IOWarrior():
-	rospy.init_node("robofriend_io_warrior_data", log_level = rospy.INFO)
-	rospy.loginfo("Starting IOWarrior Data Handler node")
+	rospy.init_node("robofriend_io_warrior_handler", log_level = rospy.INFO)
+	rospy.loginfo("Starting IOWarrior Data Handler node!")
 
 	dh = IOWarriorDataHandler()
 	rospy.Subscriber("/robofriend/io_warrior_data", IOWarriorData, dh.process_data)
