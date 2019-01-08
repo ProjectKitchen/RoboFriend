@@ -73,7 +73,7 @@ def main():
     try: 
         RoboBrain.createInstance(constants.RF_IDLE)
     except Exception as e:
-        rospy.logerror("Failed to create Robobrain instance: %s" % str(e))
+        rospy.logerr("Failed to create Robobrain instance: %s" % str(e))
     rb = RoboBrain.getInstance()
 
     bat = RobobrainPCBSensorDataHandler(rb)

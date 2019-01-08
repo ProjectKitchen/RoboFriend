@@ -4,10 +4,10 @@ path = os.path.dirname(os.path.abspath(__file__)) + "/.."
 sys.path.append(path)
 import constants
 
-from RobobrainNode import *
+from RobobrainNode import RoboBrain
 from RobobrainStateHandler import *
 
-class RobobrainPCBSensorDataHandler():
+class RobobrainPCBSensorDataHandler(object):
     def __init__(self, rb):
         self._robobrain = rb
         self._voltage = 0
@@ -56,8 +56,6 @@ class RobobrainPCBSensorDataHandler():
         #     rospy.loginfo("{%s} Battery critical", self.__class__.__name__)
         # elif self._power_supply_status == constants.BAT_UNKNOWN:
         #     rospy.loginfo("{%s} Battery Unknown", self.__class__.__name__)
-
-        # rb = RoboBrain.getInstance()
 
         if self._power_supply_status == constants.BAT_WARNING:
             self._robobrain.setState(constants.RF_CHARGE)
