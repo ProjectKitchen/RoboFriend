@@ -5,10 +5,10 @@ class RobobrainStateHandler():
 
     robostate = {
         'ADMIN' : 0, \
-        'FIND_CHARGING_STATION' : 1, \
+        'CHARGE' : 1, \
         'FACEDETECTION' : 2, \
-        'AUTONOM' : 3, \
-        'MANUAL' : 4, \
+        'MANUAL' : 3, \
+        'AUTONOM' : 4, \
         'IDLE' : 5, \
         'SHUTDOWN' : 6
     }
@@ -33,8 +33,8 @@ class RobobrainStateHandler():
                 #TODO: Speech module publishen
                 sleep(5)
                 os.system("init 0")
-            elif self.state == RobobrainStateHandler.robostate["FIND_CHARGING_STATION"]:
-                print("[INFO] FIND_CHARGING_STATION state")
+            elif self.state == RobobrainStateHandler.robostate["CHARGE"]:
+                print("[INFO] CHARGE state")
                 sleep(5)
             # elif self.state == RobobrainStateHandler.robostate["IDLE"]:
                 # print("[INFO] Within IDLE state")
