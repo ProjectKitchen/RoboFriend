@@ -1,5 +1,6 @@
 import rospy
 import threading
+import queue
 
 # import ROS messages
 from ros_robofriend.msg import CamData
@@ -61,12 +62,14 @@ def battery_infrared_data_cb(data, args):
 def RobobrainHandler():
     global runFlag
 
-    event = threading.Event()
+    input_idle_event = threading.Event()
+    keyboard_queue = queue.Queue()
 
     publish_handler = RobobrainPublisherHandler(topics)
-    robostate = RobobrainStateHandler(event)         # sets actual state to IDLE and starts thread, TODO: include publisher handler as argument!
-    keyboard = RobobrainKeyboardDataHandler(event, robostate)
-    facedetection = RobobrainFacedetectionDataHandler(robostate, publish_handler)
+    robostate = RobobrainStateHandler(input_idle_event)         # sets actual state to IDLE and starts thread, TODO: include publisher handler as argument!
+
+    keyboard = RobobrainKeyboardDataHandler(input_idle_event, robostate, keyboard_queue)
+    facedetection = RobobrainFacedetectionDataHandler(robostate, publish_handler, keyboard_queue)
     battery_infrared = RobobrainBatteryInfraredDataHandler(robostate)
     rospy.Subscriber(topics['T_KEYB_DATA'], KeyboardData, keyboard_data_cb, keyboard)
     rospy.Subscriber(topics['T_CAM_DATA'], CamData, facedetection_data_cb, facedetection)
