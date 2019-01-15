@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import os, sys, rospy
+import threading
 
 path = os.path.dirname(os.path.abspath(__file__)) + "/.."
 sys.path.append(path)
@@ -18,39 +19,8 @@ from RobobrainPCBSensorDataHandler import *
 from RobobrainPublisherHandler import *
 from RobobrainStateHandler import *
 
-class RoboBrain(object):
-    __state = None
-    __instance = None
-    
-    def __init__(self, state):
-        """ Virtually private constructor """
-        if RoboBrain.__instance != None:
-            raise Exception("This should not happen: the class RoboBrain is a singleton")
-        else:
-            RoboBrain.__state = state
-            RoboBrain.__instance = self
-
-    @staticmethod
-    def createInstance(state):
-        """ Static access method. """
-        if RoboBrain.__instance == None:
-            RoboBrain(state)
-        return RoboBrain.__instance 
-
-    @staticmethod
-    def getInstance():
-        """ Static access method. """
-        if RoboBrain.__instance == None:
-            print("Make sure to call createInstance() before calling this methode")
-        return RoboBrain.__instance 
-
-    @staticmethod
-    def setState(value):
-        RoboBrain.__state = value
-
-    @staticmethod
-    def getState():
-        return RoboBrain.__state
+# global variables
+robostate = 0
 
 def shutdown():
     rospy.signal_shutdown("Stopping Robobrain node!")
@@ -68,22 +38,22 @@ def main():
     # publish here
     # pub = rospy.Publisher('topic_name', MsgType, queue_size = 10)
 
-    # TODO: do we need a event here?
-    # robostate  = RobobrainStateHandler()
-    try: 
-        RoboBrain.createInstance(constants.RF_IDLE)
+    event = None
+    statehandler = None
+    try:
+        event = threading.Event()
+        # sets actual state to IDLE and starts thread
+        statehandler = RobobrainStateHandler(event)
     except Exception as e:
         rospy.logerr("Failed to create Robobrain instance: %s" % str(e))
-    rb = RoboBrain.getInstance()
 
-    bat = RobobrainPCBSensorDataHandler(rb)
+    bat = RobobrainPCBSensorDataHandler(statehandler)
     # odo = RobobrainOdometryDataHandler()
     # ir  = RobobrainInfraredDataHandler()
     fd = RobobrainFacedetectionDataHandler()
     key = RobobrainKeyboardDataHandler()
 
-
-    # TODO: this can be managed in an easier way :)
+    # TODO: this can be managed in an easier way
     # publish_handler = RobobrainPublisherHandler(topics)
 
     rospy.Subscriber("/robofriend/battery_state", BatteryState, bat.process_bs_data)
@@ -96,7 +66,10 @@ def main():
     rate = rospy.Rate(0.2) # 200mhz
 
     while not rospy.is_shutdown():
-        rospy.loginfo("State: %d", rb.getState())
+        # rospy.loginfo("Statehandler %d", statehandler.state)
+        rospy.loginfo("{%s} Robostate: %s",
+            os.path.splitext(os.path.basename(os.path.abspath(__file__)))[0],
+            RobobrainStateHandler.robostate.keys()[RobobrainStateHandler.robostate.values().index(statehandler.state)])
 
         # if robostate.state = robostate["IDLE"]
         #

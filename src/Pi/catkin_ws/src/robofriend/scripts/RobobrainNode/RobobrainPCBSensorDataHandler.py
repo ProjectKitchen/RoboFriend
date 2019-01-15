@@ -4,12 +4,11 @@ path = os.path.dirname(os.path.abspath(__file__)) + "/.."
 sys.path.append(path)
 import constants
 
-from RobobrainNode import RoboBrain
 from RobobrainStateHandler import *
 
 class RobobrainPCBSensorDataHandler(object):
-    def __init__(self, rb):
-        self._robobrain = rb
+    def __init__(self, sh):
+        self._statehandler = sh
         self._voltage = 0
         self._percentage = 0
         self._power_supply_status = 0
@@ -49,7 +48,7 @@ class RobobrainPCBSensorDataHandler(object):
         # elif self._power_supply_status == constants.BAT_GOOD:
         #     rospy.loginfo("{%s} Battery good", self.__class__.__name__)
         # elif self._power_supply_status == constants.BAT_WARNING:
-        #     self._robobrain.state = constants.RF_CHARGE
+        #     self._statehandler.state = constants.RF_CHARGE
         #     rospy.loginfo("{%s} Battery warning", self.__class__.__name__)
         # elif self._power_supply_status == constants.BAT_CRITICAL:
         #     self._robobrain.state = constants.RF_SHUTDOWN
@@ -58,8 +57,8 @@ class RobobrainPCBSensorDataHandler(object):
         #     rospy.loginfo("{%s} Battery Unknown", self.__class__.__name__)
 
         if self._power_supply_status == constants.BAT_WARNING:
-            self._robobrain.setState(constants.RF_CHARGE)
+            self._statehandler.state = constants.RF_CHARGE
         elif self._power_supply_status == constants.BAT_CRITICAL:
-            self._robobrain.setState(constants.RF_SHUTDOWN)
+            self._statehandler.state = constants.RF_SHUTDOWN
         else: 
-            self._robobrain.setState(constants.IDLE)
+            self._statehandler.state = constants.RF_IDLE
