@@ -19,9 +19,6 @@ from RobobrainPCBSensorDataHandler import *
 from RobobrainPublisherHandler import *
 from RobobrainStateHandler import *
 
-# global variables
-robostate = 0
-
 def shutdown():
     rospy.signal_shutdown("Stopping Robobrain node!")
 
@@ -38,14 +35,9 @@ def main():
     # publish here
     # pub = rospy.Publisher('topic_name', MsgType, queue_size = 10)
 
-    event = None
-    statehandler = None
-    try:
-        event = threading.Event()
-        # sets actual state to IDLE and starts thread
-        statehandler = RobobrainStateHandler(event)
-    except Exception as e:
-        rospy.logerr("Failed to create Robobrain instance: %s" % str(e))
+    event = threading.Event()
+    # sets actual state to IDLE and starts thread
+    statehandler = RobobrainStateHandler(event)
 
     bat = RobobrainPCBSensorDataHandler(statehandler)
     # odo = RobobrainOdometryDataHandler()
@@ -66,7 +58,10 @@ def main():
     rate = rospy.Rate(0.2) # 200mhz
 
     while not rospy.is_shutdown():
-        # rospy.loginfo("Statehandler %d", statehandler.state)
+        # rospy.loginfo("{%s} Robostate: %d",
+        #     os.path.splitext(os.path.basename(os.path.abspath(__file__)))[0],
+        #     statehandler.state)
+        
         rospy.loginfo("{%s} Robostate: %s",
             os.path.splitext(os.path.basename(os.path.abspath(__file__)))[0],
             RobobrainStateHandler.robostate.keys()[RobobrainStateHandler.robostate.values().index(statehandler.state)])

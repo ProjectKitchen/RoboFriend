@@ -26,7 +26,7 @@ class RobobrainStateHandler():
         thread.start()
 
     def __state_handler_thread(self):
-        print("{} - Thread to handle the states started!".format(self.__class__.__name__))
+        # print("{} - Thread to handle the states started!".format(self.__class__.__name__))
         while True:
             # ************************* SHUTDOWN *************************
             if self.__state == RobobrainStateHandler.robostate["SHUTDOWN"]:
@@ -36,7 +36,7 @@ class RobobrainStateHandler():
                 # os.system("init 0")
             # *************************** IDLE *************************** '''
             elif self.__state == RobobrainStateHandler.robostate["IDLE"]:
-                print("[INFO] Within IDLE state")
+                # print("[INFO] Within IDLE state")
                 event_is_set = self.__event.wait(self.__idle_elapse_time)
                 if event_is_set == True:
                     print("Input from either keyboard or webserver therefore stay in IDLE state!")
