@@ -2,6 +2,11 @@ from RobobrainNode.RobobrainStateHandler import *
 from threading import *
 from time import *
 from queue import *
+import rospy
+
+# import ros service
+#from ros_robofriend.srv import FaceRecord
+#TODO: create service
 
 class RobobrainFacedetectionDataHandler():
 
@@ -22,11 +27,12 @@ class RobobrainFacedetectionDataHandler():
         self._elapse_time = 30
         self._search_new_face = Event()
 
+        rospy.wait_for_service('/robofriend/start_facerecord')
+
     def process_data(self, data):
         print("[INFO] {} - Received message: {} ".format(self.__class__.__name__, data))
         #if self._actual_state == self._facedetection_states["FACE_SEARCH"] and self.__is_facesearching_activated():
         if self.__is_facesearching_activated():
-            print("Activated")
             self._top = data.top
             self._right = data.right
             self._bottom = data.bottom
@@ -51,9 +57,21 @@ class RobobrainFacedetectionDataHandler():
                     print("Face detected! Further steps are activated!\n")
                     self._pub.speech_message_publish("custom", "Ich habe jemanden gefunden")
                     if face_grade != "unknown":
-                        self.__known_face(face_grade)
+                        self.__known_face_speech(face_grade)
+                        #TODO: Do something in case of a known face
                     elif face_grade == "unknown":
-                        self.__unknown_face()
+                        self.__unknown_face_speech()
+                        if self.__yes_no_keyboard_request() is True:
+                            print("[INFO] {} - Start recording Pictures!\n".format(self.__class__.__name__))
+                            self._pub.speech_message_publish("custom", "Ich starte mit der aufnahme von 10 Bildern!")
+                            self._pub.speech_message_publish("custom", "Bitte lachen")
+                            #TODO: Start recording pictures
+                            if self.__start_recording_faces() is True:
+                                print("[INFO] {} - Pictures are recorded!\n".format(self.__class__.__name__))
+
+                        else:
+                            print("[INFO] {} - Recording Pictures not allowed! Start searching new face\n".format(self.__class__.__name__))
+                            break
                 elif face_detectded is False:
                     # self.__stop_searching_new_face()
                     self._pub.speech_message_publish("custom", "Keine menschensseele hier!")
@@ -96,24 +114,19 @@ class RobobrainFacedetectionDataHandler():
     def __is_facesearching_activated(self):
         return self._search_new_face.is_set()
 
-    def __known_face(self, name):
+    def __known_face_speech(self, name):
         self._pub.ears_led_message_publish(rgb_color = [0, 15, 0]) # to flush the ears in green
         self._pub.speech_message_publish("custom", "Ich kenne dich!")
         self._pub.speech_message_publish("custom", "Du bist " + name)
 
-    def __unknown_face(self):
+    def __unknown_face_speech(self):
         self._pub.ears_led_message_publish(rgb_color = [15, 0, 0]) # to flush the ears in red
         self._pub.speech_message_publish("custom", "Ich kenne dich nicht!")
         self._pub.speech_message_publish("custom", "Ich darf mit fremden Leuten nicht reden")
         self._pub.speech_message_publish("custom", "Darf ich Bilder von dir aufnehmen?")
-        if self.__yes_no_request() == True:
-            print("[INFO] {} - Start recording Pictures!\n".format(self.__class__.__name__))
-            self._pub.speech_message_publish("custom", "Ich werde zehn Bilder aufnehmen!")
-            #TODO: Start recording pictures
-        else:
-            print("[INFO] {} - Recording Pictures not allowed!\n".format(self.__class__.__name__))
 
-    def __yes_no_request(self):
+    def __yes_no_keyboard_request(self):
+        #TODO: replace with voice detection
         print("[INFO] Waiting for yes or no!\n")
         retVal, keyboard_input = self.__evaluate_keyboard_inputs()
         print("[INFO] Entered Phrase: {}\n".format(keyboard_input))
@@ -148,3 +161,22 @@ class RobobrainFacedetectionDataHandler():
             print("[INFO] {} - Timeout occured within {} seconds!\n"
                 .format(self.__class__.__name__, self._elapse_time))
             return False, None
+
+        # send request to start recording faces and wait until all faces are recorded
+        def __start_recording_faces(self):
+            retVal = False
+            recording_response = None
+            # rospy.wait_for_service('/robofriend/get_record_status')
+            try:
+                self.__pub.ears_led_message_publish(random = "on")
+                request = rospy.ServiceProxy('/robofriend/start_facerecord', FaceRecord)
+                print("[INFO] {} - Sending request and Waiting for response!\n".format(__class__.__name__))
+                recording_response = request(True)
+                print("[INFO] {} - Recording new faces finished!\n".format(__class__.__name__))
+                retVal = True
+            except rospy.ServiceException:
+                print("[INFO] {} - Service call failed!".format(__class__.__name__))
+                retVal = False
+            finally:
+                self.__pub.ears_led_message_publish(random = "off")
+                return retVal
