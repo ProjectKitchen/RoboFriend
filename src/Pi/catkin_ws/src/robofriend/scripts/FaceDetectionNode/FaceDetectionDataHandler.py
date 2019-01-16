@@ -14,17 +14,21 @@ import os
 
 # import ros message
 from ros_robofriend.msg import CamData
+from ros_robofriend.srv import FaceRecordData, FaceRecordDataResponse
 
 class FaceDetectionDataHandler():
 
     def __init__(self):
+
+        # publisher for detected faces
         self.__robobrain_pub = rospy.Publisher('T_CAM_DATA', CamData, queue_size = 20)
         self.__msg = CamData()
         self.__coordinates = []
 
-        self.__face_record_event = threading.Event()
+        # declare service
+        serv = rospy.Service('/robofriend/facerecord', FaceRecordData, self.__service_handler)
 
-        print("--------- face recog is set?: {}".format(self.__face_record_event.is_set()))
+        self.__face_record_event = threading.Event()
 
         # initialize the MJPG Stream Url to capture the frame
         self.__url = "http://localhost:8080/?action=stream"
@@ -37,6 +41,22 @@ class FaceDetectionDataHandler():
 
         # create and start facerecognition thread
         self.__start_facedetect_thread()
+
+    def __service_handler(self, request):
+        self.__record_response = False
+        print("[INFO] {} - Request received: {}\n".format(self.__class__.__name__, request.start_record))
+
+        #TODO: start recording faces and set event to stop publishing face coordinates!!!
+        self.__start_face_record()
+
+        #######################################
+        #TODO: Start recording faces
+        time.sleep(10)
+        #######################################
+
+        print("[INFO] {} - Recording finished!\n".format(self.__class__.__name__))
+        self.__record_response = True
+        return FaceRecordDataResponse(self.__record_response) # response that recording has finished
 
     def __face_recog_init(self):
         print("[INFO] {} - Loadings encodings and face detetcted")
@@ -59,7 +79,7 @@ class FaceDetectionDataHandler():
 
         if vs.isOpened():
             print("[INFO] Pictures are captured via the mjpg-streamer")
-            self.__mjpg_stream = True
+            self._mjpg_stream = True
         else:
             print("[INFO] Pictures are captured directly by the pi-camera")
             vs = VideoStream(usePiCamera=True).start()
@@ -80,10 +100,9 @@ class FaceDetectionDataHandler():
     def __face_recognition(self):
         while True:
             if self.__is_face_record_running() is False:
-                print("[INFO] Within face recognition thread!!!\n")
                 # grab the frame from the threaded video stream and resize it
                 # to 500px (to speedup processing)
-                if self.__mjpg_stream == True:			# pictures are captured via the stream
+                if self._mjpg_stream == True:			# pictures are captured via the stream
                     vs = cv2.VideoCapture(urls)
                     stat, frame = vs.read()
                 else:
