@@ -44,15 +44,16 @@ class FaceDetectionDataHandler():
 
     def __service_handler(self, request):
         self.__record_response = False
-        print("[INFO] {} - Request received: {}\n".format(self.__class__.__name__, request.start_record))
+        print("[INFO] {} - Request received: Name: {}\n".format(self.__class__.__name__, request.name))
 
-        #TODO: start recording faces and set event to stop publishing face coordinates!!!
-        self.__start_face_record()
+        self.__set_event_face_record()
 
         #######################################
         #TODO: Start recording faces
-        time.sleep(10)
+        time.sleep(5)
         #######################################
+
+        self.__clear_event_face_record()
 
         print("[INFO] {} - Recording finished!\n".format(self.__class__.__name__))
         self.__record_response = True
@@ -181,10 +182,10 @@ class FaceDetectionDataHandler():
 
                 time.sleep(0.2)
 
-    def __start_face_record(self):
+    def __set_event_face_record(self):
         self.__face_record_event.set()
 
-    def __stop_face_record(self):
+    def __clear_event_face_record(self):
         self.__face_record_event.clear()
 
     def __is_face_record_running(self):
