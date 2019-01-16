@@ -22,7 +22,8 @@ class PCBSensorDataHandler(object):
         if args is None:
             return
 
-        self._recv_bat_val = (args.bat_voltage * (constants.VOLT_DIV_R1 + constants.VOLT_DIV_R2)) / constants.VOLT_DIV_R2
+        self._vbat_act = constants.ADC_INTERNAL_VREF / float(constants.ADC_RESOLUTION) * args.bat_voltage
+        self._recv_bat_val = (self._vbat_act * (constants.VOLT_DIV_R1 + constants.VOLT_DIV_R2)) / constants.VOLT_DIV_R2
         self._battery_moving_average_val = self._getMovingAverage(
             self._recv_bat_val, 
             self._battery_moving_average_val, 
