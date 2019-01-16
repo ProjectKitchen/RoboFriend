@@ -62,11 +62,7 @@ class RobobrainFacedetectionDataHandler():
                         self.__unknown_face_speech()
                         if self.__yes_no_keyboard_request() is True:
                             print("[INFO] {} - Start recording Pictures!\n".format(self.__class__.__name__))
-                            self._pub.speech_message_publish("custom", "Ich starte mit der aufnahme von 10 Bildern!")
-                            self._pub.speech_message_publish("custom", "Bitte lachen")
-
-                            #Start recording pictures
-                            if self.__start_recording_faces() is True:
+                            if self.__start_recording_faces() is True:    # start recording faces
                                 print("[INFO] {} - Pictures are recorded!\n".format(self.__class__.__name__))
 
                         else:
@@ -134,9 +130,9 @@ class RobobrainFacedetectionDataHandler():
             return None
         else:
             keyboard_input.lower()
-            if keyboard_input == "ja":
+            if keyboard_input == "ja" or keyboard_input == 'yes':
                 return True
-            elif keyboard_input == "nein":
+            elif keyboard_input == "nein" or keyboard_input == 'no':
                 return False
 
     def __evaluate_keyboard_inputs(self):
@@ -167,17 +163,25 @@ class RobobrainFacedetectionDataHandler():
         retVal = False
         recording_response = None
 
-        #rospy.wait_for_service('/robofriend/get_record_status')
-        try:
-            self._pub.ears_led_message_publish(random = "on")
-            request = rospy.ServiceProxy('/robofriend/facerecord', FaceRecordData)
-            print("[INFO] {} - Sending request and Waiting for response!\n".format(__class__.__name__))
-            recording_response = request(True)
-            print("[INFO] {} - Recording new faces finished!\n".format(__class__.__name__))
-            retVal = True
-        except rospy.ServiceException:
-            print("[INFO] {} - Service call failed!".format(__class__.__name__))
-            retVal = False
-        finally:
-            self._pub.ears_led_message_publish(random = "off")
-            return retVal
+        self._pub.speech_message_publish("custom", "Bitte Namen eintippen!")
+        retVal, name = self.__evaluate_keyboard_inputs()
+        if retVal == True:
+            speech_str = 'Danke ' + name
+            self._pub.speech_message_publish("custom", speech_str)
+            self._pub.speech_message_publish("custom", "Ich starte mit der aufnahme von 10 Bildern!")
+            self._pub.speech_message_publish("custom", "Bitte lachen")
+
+            try:
+                self._pub.ears_led_message_publish(random = "on")
+                request = rospy.ServiceProxy('/robofriend/facerecord', FaceRecordData)
+                print("[INFO] {} - Sending request and Waiting for response!\n".format(__class__.__name__))
+                recording_response = request(name)
+                print("[INFO] {} - Recording new faces finished!\n".format(__class__.__name__))
+                retVal = True
+                self._pub.speech_message_publish("custom", "Bin mit er aufnahme fertig")
+            except rospy.ServiceException:
+                print("[INFO] {} - Service call failed!".format(__class__.__name__))
+                retVal = False
+            finally:
+                self._pub.ears_led_message_publish(random = "off")
+                return retVal
