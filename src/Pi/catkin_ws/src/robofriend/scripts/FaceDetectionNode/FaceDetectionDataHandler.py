@@ -44,7 +44,10 @@ class FaceDetectionDataHandler():
 
     def __service_handler(self, request):
         self.__record_response = False
+        self.__received_name = ""
+
         print("[INFO] {} - Request received: Name: {}\n".format(self.__class__.__name__, request.name))
+        self.__received_name = request.name
 
         self.__set_event_face_record()
 
