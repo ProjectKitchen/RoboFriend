@@ -5,8 +5,7 @@ from queue import *
 import rospy
 
 # import ros service
-#from ros_robofriend.srv import FaceRecord
-#TODO: create service
+from ros_robofriend.srv import FaceRecordData
 
 class RobobrainFacedetectionDataHandler():
 
@@ -27,7 +26,7 @@ class RobobrainFacedetectionDataHandler():
         self._elapse_time = 30
         self._search_new_face = Event()
 
-        rospy.wait_for_service('/robofriend/start_facerecord')
+        rospy.wait_for_service('/robofriend/facerecord')
 
     def process_data(self, data):
         print("[INFO] {} - Received message: {} ".format(self.__class__.__name__, data))
@@ -65,7 +64,8 @@ class RobobrainFacedetectionDataHandler():
                             print("[INFO] {} - Start recording Pictures!\n".format(self.__class__.__name__))
                             self._pub.speech_message_publish("custom", "Ich starte mit der aufnahme von 10 Bildern!")
                             self._pub.speech_message_publish("custom", "Bitte lachen")
-                            #TODO: Start recording pictures
+
+                            #Start recording pictures
                             if self.__start_recording_faces() is True:
                                 print("[INFO] {} - Pictures are recorded!\n".format(self.__class__.__name__))
 
@@ -163,20 +163,21 @@ class RobobrainFacedetectionDataHandler():
             return False, None
 
         # send request to start recording faces and wait until all faces are recorded
-        def __start_recording_faces(self):
+    def __start_recording_faces(self):
+        retVal = False
+        recording_response = None
+
+        #rospy.wait_for_service('/robofriend/get_record_status')
+        try:
+            self._pub.ears_led_message_publish(random = "on")
+            request = rospy.ServiceProxy('/robofriend/facerecord', FaceRecordData)
+            print("[INFO] {} - Sending request and Waiting for response!\n".format(__class__.__name__))
+            recording_response = request(True)
+            print("[INFO] {} - Recording new faces finished!\n".format(__class__.__name__))
+            retVal = True
+        except rospy.ServiceException:
+            print("[INFO] {} - Service call failed!".format(__class__.__name__))
             retVal = False
-            recording_response = None
-            # rospy.wait_for_service('/robofriend/get_record_status')
-            try:
-                self.__pub.ears_led_message_publish(random = "on")
-                request = rospy.ServiceProxy('/robofriend/start_facerecord', FaceRecord)
-                print("[INFO] {} - Sending request and Waiting for response!\n".format(__class__.__name__))
-                recording_response = request(True)
-                print("[INFO] {} - Recording new faces finished!\n".format(__class__.__name__))
-                retVal = True
-            except rospy.ServiceException:
-                print("[INFO] {} - Service call failed!".format(__class__.__name__))
-                retVal = False
-            finally:
-                self.__pub.ears_led_message_publish(random = "off")
-                return retVal
+        finally:
+            self._pub.ears_led_message_publish(random = "off")
+            return retVal
