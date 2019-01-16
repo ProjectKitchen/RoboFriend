@@ -66,6 +66,7 @@ add_message_files(
 add_service_files(
    FILES
    BatInfData.srv
+   FaceRecordData.srv
 )
 
 ## Generate actions in the 'action' folder

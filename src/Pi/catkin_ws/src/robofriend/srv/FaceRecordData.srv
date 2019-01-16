@@ -1,0 +1,6 @@
+# Request from Client: RobobrainFaceDetection Node 
+bool start_record
+---
+#Response from Server: FaceDetection Node
+bool response
+
