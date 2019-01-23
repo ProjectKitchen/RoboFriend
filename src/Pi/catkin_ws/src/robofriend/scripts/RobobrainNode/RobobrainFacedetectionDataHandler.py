@@ -1,22 +1,22 @@
-from RobobrainNode.RobobrainStateHandler import *
+from RobobrainStateHandler import *
 from threading import *
 from time import *
 from queue import *
 import rospy
 
 # import ros service
-from ros_robofriend.srv import FaceRecordData
+from robofriend.srv import SrvFaceRecordData
 
 class RobobrainFacedetectionDataHandler():
 
-    def __init__(self, robostate, publisher_handler, queue):
+    def __init__(self, sh, queue, publisher_handler=None):
         self._top = 0
         self._right = 0
         self._bottom = 0
         self._left = 0
         self._name = None
 
-        self._robostate = robostate
+        self._statehandler = sh
         self._pub = publisher_handler
         self._keyboard_queue = queue
 
@@ -49,7 +49,7 @@ class RobobrainFacedetectionDataHandler():
 
     def __facedetection_handler_thread(self):
         while True:
-            while self._robostate.state == RobobrainStateHandler.robostate["FACEDETECTION"]:
+            while self._statehandler.state == RobobrainStateHandler.robostate["FACEDETECTION"]:
                 face_detectded, face_grade = self.__face_search()
                 self.__stop_searching_new_face()
                 if  face_detectded is True:
@@ -72,7 +72,7 @@ class RobobrainFacedetectionDataHandler():
                     # self.__stop_searching_new_face()
                     self._pub.speech_message_publish("custom", "Keine menschensseele hier!")
                     print("[INFO] No Face detected within {} seconds! Change State to IDLE State\n".format(self._elapse_time))
-                    self._robostate.state = RobobrainStateHandler.robostate["IDLE"]
+                    self._statehandler.state = RobobrainStateHandler.robostate["IDLE"]
                     break
             else:
                 sleep(1)

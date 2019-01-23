@@ -3,7 +3,7 @@ import rospy
 from threading import Lock
 
 # import ROS message
-from ros_robofriend.msg import KeyboardData
+from robofriend.msg import KeyboardData
 
 class KeyboardDataHandler():
     def __init__(self, pub, msg):

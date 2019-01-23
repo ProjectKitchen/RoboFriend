@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 
 # external modules
-import os, sys, time, rospy, signal
+import os, sys, time, signal
+import rospy
 
 module_path = str(os.getcwd()) + "/python"
 sys.path.append(module_path)
@@ -14,15 +15,15 @@ import webserverModule as webserverModule
 import statusModule as statusModule
 import gameCommunicator as gameCommunicator
 import keyboardModule as keyboardModule
-import teensyCommunicator as teensyCommunicator
+#import teensyCommunicator as teensyCommunicator
 #import ioWarriorModule as ioWarriorModule
 #import speechModule as speechModule
 #import cam_node as cam_node
 #import facedetectionModule as facedetectionModule
-import systemModule as systemModule
+from systemModule import *
 
 # import ROS modules
-from FaceDetectionNode import *
+#from FaceDetectionNode import *
 from KeyboardNode import *
 from SpeechNode import *
 from LedEarsNode import *
@@ -64,7 +65,7 @@ def main():
 	
 
 	
-
+	# TODO
 	print("Done ... starting Webserver!")
 	webserverModule.start()
 	print("Done ... starting Gamecommunicator")
@@ -74,11 +75,11 @@ def main():
 	print("Done ... starting FaceModue")
 	faceModule.drawFace()
 	print("Done ... starting RosFacedetectionNode")
-	FaceDetectionNode.node_start()
+	#FaceDetectionNode.node_start()
 	print("Done ... start Speech Node")
 	SpeechNode.node_start()
 	print("Done ... start Led Ears Node")
-	EarsLedNode.node_start()
+	LedEarsNode.node_start()
 	print("Done ... start Servo Camera Node")
 	ServoCamNode.node_start()
 	print("Done ... start IOWarrior Node")

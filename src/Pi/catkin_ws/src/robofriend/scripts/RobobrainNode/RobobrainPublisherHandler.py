@@ -18,19 +18,19 @@ class RobobrainPublisherHandler():
         self._topics = topics
         self._speech_pub = rospy.Publisher(topics['T_SPEECH_DATA'], SpeechData, queue_size = 10)
         self._teensy_motor_pub = rospy.Publisher(topics['T_TEENSY_MOTOR_DATA'], TeensyMotorData, queue_size = 10)
-<<<<<<< HEAD
+
         self._ears_led_pub = rospy.Publisher(topics['T_EARS_LED_DATA'], LedEarsData, queue_size = 10)
         self._speech_msg = SpeechData()
         self._teensy_motor_msg = TeensyMotorData()
         self._ears_led_msg = LedEarsData()
-=======
+
         self._ears_led_pub = rospy.Publisher(topics['T_EARS_LED_DATA'], EarsLedData, queue_size = 10)
         self._servo_cam_pub = rospy.Publisher(topics['T_SERVO_CAM_DATA'], ServoCamData, queue_size = 10)
         self._speech_msg = SpeechData()
         self._teensy_motor_msg = TeensyMotorData()
         self._ears_led_msg = EarsLedData()
         self._servo_cam_msg = ServoCamData()
->>>>>>> facedetection-development
+
 
     def speech_message_publish(self, mode, text = None):
         self._speech_msg.mode = mode

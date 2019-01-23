@@ -2,10 +2,11 @@
 	<node pkg="robofriend" type="RobobrainNode.py" name="robofriend_robobrain" output="screen">
 	</node>
 
+	<!-- to be implemented -->
 	<node pkg="robofriend" type="GameCommunicatorNode.py" name="robofriend_game_communicator" output="screen">
 	</node>
 
-	<node pkg="robofriend" type="RFIDNode.py" name="robofriend_ifid_handler" output="screen">
+	<node pkg="robofriend" type="RFIDNode.py" name="robofriend_rfid_handler" output="screen">
 	</node>
 
 	<node pkg="robofriend" type="PCBSensorData.py" name="robofriend_pcb_sensor_data" output="screen">

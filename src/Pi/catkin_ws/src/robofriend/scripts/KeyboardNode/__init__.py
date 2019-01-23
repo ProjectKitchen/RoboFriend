@@ -1,1 +1,1 @@
-__all__ = ["KeyboardNode"]
+__all__ = ["KeyboardNode", "KeyboardDataHandler"]

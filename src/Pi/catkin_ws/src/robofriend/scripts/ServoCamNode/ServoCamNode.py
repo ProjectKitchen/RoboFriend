@@ -1,7 +1,7 @@
 import rospy
 
 # import ros message
-from ros_robofriend.msg import ServoCamData
+from robofriend.msg import ServoCamData
 
 # import ros modules
 from ServoCamNode.ServoCamDataHandler import *

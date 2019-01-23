@@ -8,7 +8,7 @@ import queue
 import rospy
 
 # import ros message
-from ros_robofriend.msg import KeyboardData
+from robofriend.msg import KeyboardData
 
 # own modules
 from KeyboardNode.KeyboardDataHandler import *

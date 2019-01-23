@@ -4,7 +4,7 @@ import serial
 import rospy
 
 # import ros services
-from robofriend.srv import *
+from robofriend.srv import SrvRFIDData, SrvRFIDDataResponse
 
 class RFIDDataHandler(object):
     def __init__(self, serial):
@@ -39,7 +39,7 @@ def shutdown():
     rospy.signal_shutdown("Stopping RFID node!")
 
 def RFID():
-    rospy.init_node("robofriend_rfid_handler", log_level = rospy.WARN)
+    rospy.init_node("robofriend_rfid_handler", log_level = rospy.INFO)
     rospy.loginfo("Starting RFID Handler node!")
     
     ser = None

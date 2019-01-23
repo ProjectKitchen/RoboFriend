@@ -1,7 +1,7 @@
 import rospy
 
 # import ros message
-from ros_robofriend.msg import IOWarriorData
+from robofriend.msg import IOWarriorData
 
 # import ros modules
 from IOWarriorNode.IOWarriorDataHandler import *

@@ -2,7 +2,7 @@ import threading
 import rospy
 
 # import ros services
-from robofriend.srv import *
+from robofriend.srv import SrvPCBSensorDataResponse
 
 class TeensyDataHandler():
 

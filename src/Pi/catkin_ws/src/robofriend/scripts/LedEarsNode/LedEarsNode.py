@@ -2,10 +2,10 @@ import threading
 import rospy
 
 # import ros message
-from ros_robofriend.msg import EarsLedData
+from robofriend.msg import LedEarsData
 
 # import ros module
-from EarsLedNode.EarsLedDataHandler import *
+from LedEarsNode.LedEarsDataHandler import *
 
 def node_start():
     print("[INFO] ROS Ears/Led Node started!\n")
@@ -25,4 +25,4 @@ def handle_ears_led():
 
     print("[INFO] Thread for ears_led started !")
     ears_led = EarsLedDataHandler()
-    rospy.Subscriber('T_EARS_LED_DATA', EarsLedData, ears_led.process_data)
+    rospy.Subscriber('T_EARS_LED_DATA', LedEarsData, ears_led.process_data)

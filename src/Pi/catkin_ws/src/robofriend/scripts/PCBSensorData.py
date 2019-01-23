@@ -81,7 +81,7 @@ class PCBSensorDataHandler(object):
         elif val <= 0.5 and val > 0.0:
             return constants.BAT_CRITICAL
         else:
-            return constants.BAT_UNKOWN
+            return constants.BAT_UNKNOWN
 
 def shutdown():
     rospy.signal_shutdown("Stopping PCB Sensor Data Handler node!")

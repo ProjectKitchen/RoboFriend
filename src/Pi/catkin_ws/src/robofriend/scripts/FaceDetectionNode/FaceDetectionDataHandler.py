@@ -13,8 +13,8 @@ import time
 import os
 
 # import ros message
-from ros_robofriend.msg import CamData
-from ros_robofriend.srv import FaceRecordData, FaceRecordDataResponse
+from robofriend.msg import CamData
+from robofriend.srv import SrvFaceRecordData, SrvFaceRecordDataResponse
 
 class FaceDetectionDataHandler():
 
@@ -26,7 +26,7 @@ class FaceDetectionDataHandler():
         self.__coordinates = []
 
         # declare service
-        serv = rospy.Service('/robofriend/facerecord', FaceRecordData, self.__service_handler)
+        serv = rospy.Service('/robofriend/facerecord', SrvFaceRecordData, self.__service_handler)
 
         self.__face_record_event = threading.Event()
 

@@ -3,13 +3,13 @@ from RobobrainStateHandler import *
 
 class RobobrainKeyboardDataHandler():
 
-    def __init__(self, event, robostate, queue):
+    def __init__(self, sh, event, queue):
         self.__quit = None
         self.__up_down = None
         self.__pressed_key = None
 
         self.__event = event
-        self.__robostate_obj = robostate
+        self._statehandler = sh
         self.__queue = queue
 
     def process_data(self, data):
@@ -21,12 +21,12 @@ class RobobrainKeyboardDataHandler():
 
     def __input_handler(self, data):
         #print("[INFO] Within keyboard input handler!")
-        #print("[INFO] actual State: {}".format(self.__robostate_obj.state))
-        if self.__robostate_obj.state == RobobrainStateHandler.robostate["IDLE"]:
+        #print("[INFO] actual State: {}".format(self._statehandler.state))
+        if self._statehandler.state == RobobrainStateHandler.robostate["IDLE"]:
             self.__event.set()
             print("[INFO] Event set!")
             #TODO: Input processing according to the IDLE State
-        elif self.__robostate_obj.state == RobobrainStateHandler.robostate['FACEDETECTION']:
+        elif self._statehandler.state == RobobrainStateHandler.robostate['FACEDETECTION']:
             self.__queue.put(self.__pressed_key)
 
     # command

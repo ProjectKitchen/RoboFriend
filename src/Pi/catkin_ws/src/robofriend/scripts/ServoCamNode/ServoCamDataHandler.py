@@ -2,8 +2,8 @@
 import rospy
 
 # import ros message
-from ros_robofriend.msg import IOWarriorData
-from ros_robofriend.msg import ServoCamData
+from robofriend.msg import IOWarriorData
+from robofriend.msg import ServoCamData
 
 class ServoCamDataHandler():
 
