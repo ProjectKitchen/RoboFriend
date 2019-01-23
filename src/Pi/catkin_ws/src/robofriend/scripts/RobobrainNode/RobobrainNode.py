@@ -1,22 +1,18 @@
 #!/usr/bin/env python
 import os, sys, rospy
 import threading
-
-path = os.path.dirname(os.path.abspath(__file__)) + "/.."
-sys.path.append(path)
-import constants
+import queue
 
 # import ROS messages
 from sensor_msgs.msg import BatteryState
 from robofriend.msg import IRSensorData
 from robofriend.msg import CamData
-# from robofriend.msg import KeyboardData
+from robofriend.msg import KeyboardData
 
 # import ROS modules
 from RobobrainFacedetectionDataHandler import *
 from RobobrainKeyboardDataHandler import *
 from RobobrainPCBSensorDataHandler import *
-from RobobrainPublisherHandler import *
 from RobobrainStateHandler import *
 
 def shutdown():
@@ -39,11 +35,14 @@ def main():
     # sets actual state to IDLE and starts thread
     statehandler = RobobrainStateHandler(event)
 
+    keyboard_queue = queue.Queue()
+
+
     bat = RobobrainPCBSensorDataHandler(statehandler)
     # odo = RobobrainOdometryDataHandler()
     # ir  = RobobrainInfraredDataHandler()
-    fd = RobobrainFacedetectionDataHandler()
-    key = RobobrainKeyboardDataHandler()
+    keyboard = RobobrainKeyboardDataHandler(statehandler, event, keyboard_queue)
+    facedetection = RobobrainFacedetectionDataHandler(statehandler, keyboard_queue)
 
     # TODO: this can be managed in an easier way
     # publish_handler = RobobrainPublisherHandler(topics)

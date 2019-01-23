@@ -3,11 +3,31 @@
 # external modules
 import os, sys, time, rospy, signal
 
-path = str(os.getcwd()) + "/python"
-sys.path.append(path)
+module_path = str(os.getcwd()) + "/python"
+sys.path.append(module_path)
+catkin_path = str(os.getcwd()) + "/catkin_ws/src/robofriend/scripts"
+sys.path.append(catkin_path)
 
 # own modules
-from systemModule import *
+import faceModule as faceModule
+import webserverModule as webserverModule
+import statusModule as statusModule
+import gameCommunicator as gameCommunicator
+import keyboardModule as keyboardModule
+import teensyCommunicator as teensyCommunicator
+#import ioWarriorModule as ioWarriorModule
+#import speechModule as speechModule
+#import cam_node as cam_node
+#import facedetectionModule as facedetectionModule
+import systemModule as systemModule
+
+# import ROS modules
+from FaceDetectionNode import *
+from KeyboardNode import *
+from SpeechNode import *
+from LedEarsNode import *
+from ServoCamNode import *
+from IOWarriorNode import *
 
 # globals
 roscore = None
@@ -41,7 +61,32 @@ def main():
 	print("Starting Robofriend Startup ...")
 	rosrobo = RosRobo()
 	rosrobo.run()
-	 
+	
+
+	
+
+	print("Done ... starting Webserver!")
+	webserverModule.start()
+	print("Done ... starting Gamecommunicator")
+	gameCommunicator.start()
+	print("Done ... starting KeyboardModule")
+	KeyboardNode.node_start()
+	print("Done ... starting FaceModue")
+	faceModule.drawFace()
+	print("Done ... starting RosFacedetectionNode")
+	FaceDetectionNode.node_start()
+	print("Done ... start Speech Node")
+	SpeechNode.node_start()
+	print("Done ... start Led Ears Node")
+	EarsLedNode.node_start()
+	print("Done ... start Servo Camera Node")
+	ServoCamNode.node_start()
+	print("Done ... start IOWarrior Node")
+	IOWarriorNode.node_start()
+
+
+
+ 
 	print("Initialization done! Registering keyboard interrput signal handlers ...")
 
 	# setting up signal handlers for shutdown

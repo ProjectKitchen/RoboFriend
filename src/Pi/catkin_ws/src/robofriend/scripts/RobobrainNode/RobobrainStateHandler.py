@@ -53,7 +53,7 @@ class RobobrainStateHandler():
             # *********************** FACEDETECTION ********************** '''
             elif self.__state == RobobrainStateHandler.robostate["FACEDETECTION"]:
                 print("[INFO] Within FACEDETECTION state")
-                sleep(600)
+                sleep(100)
                 #TODO: start facedetection process
             # ************************** CHARGE ************************** '''
             elif self.__state == RobobrainStateHandler.robostate["CHARGE"]:

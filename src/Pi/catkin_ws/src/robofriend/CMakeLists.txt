@@ -58,6 +58,7 @@ add_message_files(
    TeensyMotorData.msg
    IRSensorData.msg
    LedEarsData.msg
+   ServoCamData.msg
    IOWarriorData.msg
 )
 
@@ -66,6 +67,7 @@ add_service_files(
    FILES
    SrvPCBSensorData.srv
    SrvRFIDData.srv
+   SrvFaceRecordData.srv
 )
 
 ## Generate actions in the 'action' folder
