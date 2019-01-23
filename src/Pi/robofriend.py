@@ -26,7 +26,7 @@ import teensyCommunicator as teensyCommunicator
 import systemModule as systemModule
 
 # import ROS modules
-# from FaceDetectionNode import *
+from FaceDetectionNode import *
 from KeyboardNode import *
 #from MotorNode import *
 from RFIDNode import *
@@ -91,7 +91,7 @@ def main():
 	print("Done ... starting FaceModue")
 	faceModule.drawFace()
 	print("Done ... starting RosFacedetectionNode")
-	#FaceDetectionNode.node_start()
+	FaceDetectionNode.node_start()
 	print("Done ... starting FacedetectListener")
 	#facedetectionModule.listener()
 	print("Done ... start Speech Node")

@@ -1,0 +1,87 @@
+IoWarrior: i2c init...  success! 
+initializing teensyCommunicator...
+***Serial for Teensy opened***
+initializing faceModule...
+initializing soundModule...
+initializing speechModule...
+speaking: i am robofriend
+initializing ioWarriorModule...
+starting cmd: sudo ./iowarrior/iow 0 10 10 140
+Robofriend start!
+[INFO] Roscore started
+starting rfidModule...
+***Serial for RFID could not be opened***
+starting webserverModule...
+starting statusModule...
+sending serial command: R
+starting gameCommunicator...
+starting keyboardModule...
+***** UDP SOCKET opened ******
+init done! register signal handlers...
+BATTVOLTAGE: 1000
+Battery= 100% (1000 Volt)
+IRSensors=-1/-1/-1
+sending serial command: R
+BATTVOLTAGE: 1000
+Battery= 100% (1000 Volt)
+IRSensors=-1/-1/-1
+sending serial command: R
+BATTVOLTAGE: 1000
+Battery= 100% (1000 Volt)
+IRSensors=-1/-1/-1
+sending serial command: R
+BATTVOLTAGE: 1000
+Battery= 100% (1000 Volt)
+IRSensors=-1/-1/-1
+***** Key press recognized: 
+move forward via keyboard
+sending serial command: D
+sending serial command: D 255 255 0
+move stop via keyboard
+sending serial command: D
+***** Key press recognized: 
+move forward via keyboard
+sending serial command: D
+sending serial command: D 255 255 0
+sending serial command: R
+BATTVOLTAGE: 1000
+Battery= 100% (1000 Volt)
+IRSensors=-1/-1/-1
+move stop via keyboard
+sending serial command: D
+sending serial command: R
+BATTVOLTAGE: 1000
+Battery= 100% (1000 Volt)
+IRSensors=-1/-1/-1
+sending serial command: R
+BATTVOLTAGE: 1000
+Battery= 100% (1000 Volt)
+IRSensors=-1/-1/-1
+***** Key press recognized: 
+speech buffer is now: q
+***** Key press recognized: 
+speech buffer is now: qu
+***** Key press recognized: 
+speech buffer is now: qui
+***** Key press recognized: 
+speech buffer is now: quit
+***** Key press recognized: 
+sending serial command: R
+BATTVOLTAGE: 1000
+Battery= 100% (1000 Volt)
+IRSensors=-1/-1/-1
+sending serial command: R
+BATTVOLTAGE: 1000
+Battery= 100% (1000 Volt)
+IRSensors=-1/-1/-1
+sending serial command: R
+BATTVOLTAGE: 1000
+Battery= 100% (1000 Volt)
+IRSensors=-1/-1/-1
+sending serial command: R
+BATTVOLTAGE: 1000
+Battery= 100% (1000 Volt)
+IRSensors=-1/-1/-1
+*** shutting down ... ***
+[INFO] Roscore terminated!
+stopping rfidModule...

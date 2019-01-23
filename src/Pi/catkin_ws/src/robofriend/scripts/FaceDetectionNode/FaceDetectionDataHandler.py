@@ -1,12 +1,12 @@
-#from imutils.video import VideoStream
-#from imutils.video import FPS
+from imutils.video import VideoStream
+from imutils.video import FPS
 import rospy
 import threading
 import os
-#import face_recognition
-#import imutils
-#import pickle
-#import cv2
+import face_recognition
+import imutils
+import pickle
+import cv2
 import urllib
 import numpy as np
 import time
@@ -79,7 +79,7 @@ class FaceDetectionDataHandler():
             #TODO: in case of an empty pickle file
 
         # selecting the source of  the stream (either PiCamera or stream)
-        vs = cv2.VideoCapture(urls)
+        vs = cv2.VideoCapture(self.__url)
 
         if vs.isOpened():
             print("[INFO] Pictures are captured via the mjpg-streamer")
@@ -102,12 +102,13 @@ class FaceDetectionDataHandler():
         thread.start()
 
     def __face_recognition(self):
+        print("[INFO] Start recording faces!!!!!!\n")
         while True:
             if self.__is_face_record_running() is False:
                 # grab the frame from the threaded video stream and resize it
                 # to 500px (to speedup processing)
                 if self._mjpg_stream == True:			# pictures are captured via the stream
-                    vs = cv2.VideoCapture(urls)
+                    vs = cv2.VideoCapture(self.__url)
                     stat, frame = vs.read()
                 else:
                     frame = vs.read()
