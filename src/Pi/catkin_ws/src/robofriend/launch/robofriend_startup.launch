@@ -2,25 +2,15 @@
 	<node pkg="robofriend" type="RobobrainNode.py" name="robofriend_robobrain" output="screen">
 	</node>
 
-	<node pkg="robofriend" type="PCBSensorData.py" name="robofriend_pcb_sensor_data" output="screen">
-	</node>
-
-	<node pkg="robofriend" type="IOWarriorNode.py" name="robofriend_io_warrior_node" output="screen">
-	</node>
-
-	<node pkg="robofriend" type="TeensyNode.py" name="robofriend_teensy_communicator" output="screen">
+	<node pkg="robofriend" type="GameCommunicatorNode.py" name="robofriend_game_communicator" output="screen">
 	</node>
 
 	<node pkg="robofriend" type="RFIDNode.py" name="robofriend_ifid_handler" output="screen">
 	</node>
 
-	<node pkg="robofriend" type="ServoCamNode.py" name="robofriend_servo_cam_handler" output="screen">
+	<node pkg="robofriend" type="PCBSensorData.py" name="robofriend_pcb_sensor_data" output="screen">
 	</node>
 
-	<node pkg="robofriend" type="LedEarsNode.py" name="robofriend_led_ears_handler" output="screen">
-	</node>	
-
-	<node pkg="robofriend" type="RobobrainTalkerNode.py" name="robofriend_talker" output="screen">
+	<node pkg="robofriend" type="TeensyNode.py" name="robofriend_teensy_communicator" output="screen">
 	</node>
-	
 </launch>
