@@ -71,7 +71,7 @@ class FaceDetectionDataHandler():
         encodings_path = path + '/encodings.pickle'
         haarcascade_path = path + '/haarcascade_frontalface_default.xml'
 
-        detector = cv2.CascadeClassifier(haarcascade_path)
+        self.__detector = cv2.CascadeClassifier(haarcascade_path)
         try:
             encodings = open(encodings_path, "rb").read()
         except FileNotFoundError:
@@ -102,7 +102,6 @@ class FaceDetectionDataHandler():
         thread.start()
 
     def __face_recognition(self):
-        print("[INFO] Start recording faces!!!!!!\n")
         while True:
             if self.__is_face_record_running() is False:
                 # grab the frame from the threaded video stream and resize it
@@ -123,7 +122,7 @@ class FaceDetectionDataHandler():
                 rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 
                 # detect faces in the grayscale frame
-                rects = detector.detectMultiScale(gray, scaleFactor=1.2,
+                rects = self.__detector.detectMultiScale(gray, scaleFactor=1.2,
                     minNeighbors=5, minSize=(20, 20),
                     flags=cv2.CASCADE_SCALE_IMAGE)
 
@@ -178,10 +177,10 @@ class FaceDetectionDataHandler():
                         cv2.putText(frame, name, (left, y), cv2.FONT_HERSHEY_SIMPLEX,
                             0.75, (0, 255, 0), 2)
 
-                    coordinates = list(boxes[0]).copy()
-                    coordinates.append(name)
-                    print("[INFO] Coordinates in Submodule: {}".format(coordinates))
-                    msg.top, msg.right, msg.bottom, msg.left, msg.name = coordinates
+                    self.__coordinates = list(boxes[0]).copy()
+                    self.__coordinates.append(name)
+                    print("[INFO] Coordinates in Submodule: {}".format(self.__coordinates))
+                    msg.top, msg.right, msg.bottom, msg.left, msg.name = self.__coordinates
                     pub.publish(msg)
 
                 time.sleep(0.2)
