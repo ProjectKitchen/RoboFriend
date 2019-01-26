@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <launch>
 	<!-- Global Arguments -->
-	<arg name="lidar" default="false"/>
-	<arg name="slam" default="true"/>
+	<arg name="lidar" default="true"/>
+	<arg name="slam" default="false"/>
 	
 	<!-- Arguments: LIDAR -->
 	<arg name="port" default="/dev/ttyUSB0" />
@@ -14,16 +14,16 @@
 	<!-- Drivers: LIDAR -->
   	<group if="$(arg lidar)"> 
 		<include file="$(find hls_lfcd_lds_driver)/launch/hlds_laser.launch" />
+		<!-- rviz -->
+		<node name="rviz" pkg="rviz" type="rviz" args="-d $(find hls_lfcd_lds_driver)/rviz/hlds_laser.rviz" />
 	</group>
 
 	<!-- Drivers: SLAM -->
 	<group if="$(arg slam)"> 
 	  	<include file="$(find turtlebot3_slam)/launch/turtlebot3_$(arg slam_methods).launch" />
+	  	<!-- rviz -->
+		<node name="rviz" pkg="rviz" type="rviz" required="true" args="-d $(find turtlebot3_slam)/rviz/turtlebot3_$(arg slam_methods).rviz" />
 	</group>
-
-	<!-- rviz -->
-	<!--node name="rviz" pkg="rviz" type="rviz" args="-d $(find hls_lfcd_lds_driver)/rviz/hlds_laser.rviz" / -->
-	<node name="rviz" pkg="rviz" type="rviz" required="true" args="-d $(find turtlebot3_slam)/rviz/turtlebot3_$(arg slam_methods).rviz" />
 
 	<node pkg="robofriend" type="RobobrainNode.py" name="robofriend_robobrain" output="screen">
 	</node>

@@ -45,7 +45,7 @@ def RFID():
     ser = None
 
     try:
-        ser = serial.Serial("/dev/ttyUSB0", 9600)
+        ser = serial.Serial("/dev/ttyUSB1", 9600)
         rospy.loginfo("*** Serial for RFID reader opened! ***")
 
     except Exception as inst:
