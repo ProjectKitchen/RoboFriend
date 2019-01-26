@@ -1,17 +1,29 @@
 <?xml version="1.0"?>
 <launch>
-	<arg name="port" default="/dev/ttyUSB1" />
-	<arg name="frame_id" default="laser" />
+	<!-- Global Arguments -->
+	<arg name="lidar" default="true"/>
+	<arg name="slam" default="false"/>
+	
+	<!-- Arguments: LIDAR -->
+	<arg name="port" default="/dev/ttyUSB0" />
+	<arg name="frame_id" default="laser" />	
+
+	<!-- Arguments: SLAM -->
+	<arg name="slam_methods" default="gmapping"/>
+
+	<!-- Drivers: LIDAR -->
+  	<group if="$(arg lidar)"> 
+		<include file="$(find hls_lfcd_lds_driver)/launch/hlds_laser.launch" />
+	</group>
+
+	<!-- Drivers: SLAM -->
+	<group if="$(arg slam)"> 
+	  	<include file="$(find turtlebot3_slam)/launch/turtlebot3_$(arg slam_methods).launch" />
+	</group>
 
 	<node pkg="robofriend" type="RobobrainNode.py" name="robofriend_robobrain" output="screen">
 	</node>
 
-  	<node pkg="hls_lfcd_lds_driver" type="hlds_laser_publisher" name="hlds_laser_publisher" output="screen">
-		<param name="port" value="$(arg port)"/>
-		<param name="frame_id" value="$(arg frame_id)"/>
-	</node>
-
-	<!-- to be implemented -->
 	<node pkg="robofriend" type="GameCommunicatorNode.py" name="robofriend_game_communicator" output="screen">
 	</node>
 
