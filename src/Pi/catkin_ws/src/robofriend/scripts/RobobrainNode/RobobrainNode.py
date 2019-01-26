@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 import os, sys, rospy
 import threading
-import queue
+# import queue
+
+from Queue import *
 
 # import ROS messages
 from sensor_msgs.msg import BatteryState
@@ -35,14 +37,15 @@ def main():
     # sets actual state to IDLE and starts thread
     statehandler = RobobrainStateHandler(event)
 
-    keyboard_queue = queue.Queue()
+    #keyboard_queue = queue.Queue()
+    keyboard_queue = Queue()
 
     bat = RobobrainPCBSensorDataHandler(statehandler)
     # odo = RobobrainOdometryDataHandler()
     # ir  = RobobrainInfraredDataHandler()
     keyboard = RobobrainKeyboardDataHandler(statehandler, event, keyboard_queue)
     # TODO: this is not working
-    # facedetection = RobobrainFacedetectionDataHandler(statehandler, keyboard_queue)
+    facedetection = RobobrainFacedetectionDataHandler(statehandler, keyboard_queue)
 
     # TODO: this can be managed in an easier way
     # publish_handler = RobobrainPublisherHandler(topics)
@@ -53,14 +56,14 @@ def main():
     # rospy.Subscriber("/robofriend/ir_data",   String, ir.process_data)
     # rospy.Subscriber("/robofriend/cam_data",  CamData, fd.process_data)
     # rospy.Subscriber("/robofriend/keyb_data", KeyboardData, key.process_data)
-    
+
     rate = rospy.Rate(0.2) # 200mhz
 
     while not rospy.is_shutdown():
         # rospy.loginfo("{%s} Robostate: %d",
         #     os.path.splitext(os.path.basename(os.path.abspath(__file__)))[0],
         #     statehandler.state)
-        
+
         rospy.loginfo("{%s} Robostate: %s",
             os.path.splitext(os.path.basename(os.path.abspath(__file__)))[0],
             RobobrainStateHandler.robostate.keys()[RobobrainStateHandler.robostate.values().index(statehandler.state)])
