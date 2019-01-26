@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <launch>
 	<!-- Global Arguments -->
-	<arg name="lidar" default="true"/>
-	<arg name="slam" default="false"/>
+	<arg name="lidar" default="false"/>
+	<arg name="slam" default="true"/>
 	
 	<!-- Arguments: LIDAR -->
 	<arg name="port" default="/dev/ttyUSB0" />
