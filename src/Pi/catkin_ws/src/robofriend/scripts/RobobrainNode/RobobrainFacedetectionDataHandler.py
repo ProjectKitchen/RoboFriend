@@ -1,7 +1,8 @@
 from RobobrainStateHandler import *
 from threading import *
 from time import *
-from queue import *
+#from queue import *
+from Queue import *
 import rospy
 
 # import ros service
@@ -27,7 +28,7 @@ class RobobrainFacedetectionDataHandler():
         # init publishers
         self._pub_speech = rospy.Publisher('T_SPEECH_DATA', SpeechData, queue_size = 10)
         self._pub_led_ears = rospy.Publisher('T_LED_EARS_DATA', LedEarsData, queue_size = 10)
-        self._pub_servo_cam = rospy.Pubisher('T_SERVO_CAM_DATA', ServoCamData, queue_size = 10)
+        self._pub_servo_cam = rospy.Publisher('T_SERVO_CAM_DATA', ServoCamData, queue_size = 10)
 
         self._msg_speech = SpeechData()
         self._msg_led_ears = LedEarsData()
@@ -37,7 +38,10 @@ class RobobrainFacedetectionDataHandler():
         self._elapse_time = 30
         self._search_new_face = Event()
 
-        rospy.wait_for_service('/robofriend/facerecord')
+        ##################################
+        # uncomment when Facedetection Node is running, otherwise service waits
+        #rospy.wait_for_service('/robofriend/facerecord')
+        ##################################
 
     def process_data(self, data):
         print("[INFO] {} - Received message: {} ".format(self.__class__.__name__, data))
