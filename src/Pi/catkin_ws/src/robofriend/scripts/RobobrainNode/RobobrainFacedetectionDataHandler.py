@@ -7,9 +7,14 @@ import rospy
 # import ros service
 from robofriend.srv import SrvFaceRecordData
 
+# import ros messages
+from robofriend.msg import SpeechData
+from robofriend.msg import LedEarsData
+from robofriend.msg import ServoCamData
+
 class RobobrainFacedetectionDataHandler():
 
-    def __init__(self, sh, queue, publisher_handler=None):
+    def __init__(self, sh, queue):
         self._top = 0
         self._right = 0
         self._bottom = 0
@@ -17,12 +22,18 @@ class RobobrainFacedetectionDataHandler():
         self._name = None
 
         self._statehandler = sh
-        self._pub = publisher_handler
         self._keyboard_queue = queue
 
-        self.__start_thread()
+        # init publishers
+        self._pub_speech = rospy.Publisher('T_SPEECH_DATA', SpeechData, queue_size = 10)
+        self._pub_led_ears = rospy.Publisher('T_LED_EARS_DATA', LedEarsData, queue_size = 10)
+        self._pub_servo_cam = rospy.Pubisher('T_SERVO_CAM_DATA', ServoCamData, queue_size = 10)
 
-        #self._actual_state = self._facedetection_states['IDLE']
+        self._msg_speech = SpeechData()
+        self._msg_led_ears = LedEarsData()
+        self._msg_servo_cam = ServoCamData()
+
+        self.__start_thread()
         self._elapse_time = 30
         self._search_new_face = Event()
 
@@ -54,7 +65,7 @@ class RobobrainFacedetectionDataHandler():
                 self.__stop_searching_new_face()
                 if  face_detectded is True:
                     print("Face detected! Further steps are activated!\n")
-                    self._pub.speech_message_publish("custom", "Ich habe jemanden gefunden")
+                    self.__publish_speech_message("custom", "Ich habe jemanden gefunden")
                     if face_grade != "unknown":
                         self.__known_face_speech(face_grade)
                         #TODO: Do something in case of a known face
@@ -70,7 +81,7 @@ class RobobrainFacedetectionDataHandler():
                             break
                 elif face_detectded is False:
                     # self.__stop_searching_new_face()
-                    self._pub.speech_message_publish("custom", "Keine menschensseele hier!")
+                    self.__publish_speech_message("custom", "Keine menschensseele hier!")
                     print("[INFO] No Face detected within {} seconds! Change State to IDLE State\n".format(self._elapse_time))
                     self._statehandler.state = RobobrainStateHandler.robostate["IDLE"]
                     break
@@ -78,12 +89,12 @@ class RobobrainFacedetectionDataHandler():
                 sleep(1)
 
     def __face_search(self):
-        self._pub.speech_message_publish("custom", "Ich schaue mich dann mal nach Menschen um!")
+        self.__publish_speech_message("custom", "Ich schaue mich dann mal nach Menschen um!")
         self.__start_searchig_new_face()
-        self._pub.servo_cam_message_publish("min")
+        self.__publish_servo_cam_message("min")
         start_time = self.__time_request()
         while self.__time_request() - start_time < self._elapse_time:
-            self._pub.servo_cam_message_publish(diff = 10)
+            self.__publish_servo_cam_message(diff = 10)
             if self._name is not None:
                 return True, self._name
             sleep(2)
@@ -111,15 +122,15 @@ class RobobrainFacedetectionDataHandler():
         return self._search_new_face.is_set()
 
     def __known_face_speech(self, name):
-        self._pub.ears_led_message_publish(rgb_color = [0, 15, 0]) # to flush the ears in green
-        self._pub.speech_message_publish("custom", "Ich kenne dich!")
-        self._pub.speech_message_publish("custom", "Du bist " + name)
+        self._publish_led_ears(rgb_color = [0, 15, 0]) # to flush the ears in green
+        self.__publish_speech_message("custom", "Ich kenne dich!")
+        self.__publish_speech_message("custom", "Du bist " + name)
 
     def __unknown_face_speech(self):
-        self._pub.ears_led_message_publish(rgb_color = [15, 0, 0]) # to flush the ears in red
-        self._pub.speech_message_publish("custom", "Ich kenne dich nicht!")
-        self._pub.speech_message_publish("custom", "Ich darf mit fremden Leuten nicht reden")
-        self._pub.speech_message_publish("custom", "Darf ich Bilder von dir aufnehmen?")
+        self.__publish_led_ears(rgb_color = [15, 0, 0]) # to flush the ears in red
+        self.__publish_speech_message("custom", "Ich kenne dich nicht!")
+        self.__publish_speech_message("custom", "Ich darf mit fremden Leuten nicht reden")
+        self.__publish_speech_message("custom", "Darf ich Bilder von dir aufnehmen?")
 
     def __yes_no_keyboard_request(self):
         #TODO: replace with voice detection
@@ -163,25 +174,44 @@ class RobobrainFacedetectionDataHandler():
         retVal = False
         recording_response = None
 
-        self._pub.speech_message_publish("custom", "Bitte Namen eintippen!")
+        self.__publish_speech_message("custom", "Bitte Namen eintippen!")
         retVal, name = self.__evaluate_keyboard_inputs()
         if retVal == True:
             speech_str = 'Danke ' + name
-            self._pub.speech_message_publish("custom", speech_str)
-            self._pub.speech_message_publish("custom", "Ich starte mit der aufnahme von 10 Bildern!")
-            self._pub.speech_message_publish("custom", "Bitte lachen")
+            self.__publish_speech_message("custom", speech_str)
+            self.__publish_speech_message("custom", "Ich starte mit der aufnahme von 10 Bildern!")
+            self.__publish_speech_message("custom", "Bitte lachen")
 
             try:
-                self._pub.ears_led_message_publish(random = "on")
+                self._publish_led_ears(random = "on")
                 request = rospy.ServiceProxy('/robofriend/facerecord', FaceRecordData)
                 print("[INFO] {} - Sending request and Waiting for response!\n".format(__class__.__name__))
                 recording_response = request(name)
                 print("[INFO] {} - Recording new faces finished!\n".format(__class__.__name__))
                 retVal = True
-                self._pub.speech_message_publish("custom", "Bin mit er aufnahme fertig")
+                self.__publish_speech_message("custom", "Bin mit er aufnahme fertig")
             except rospy.ServiceException:
                 print("[INFO] {} - Service call failed!".format(__class__.__name__))
                 retVal = False
             finally:
-                self._pub.ears_led_message_publish(random = "off")
+                self.__publish_led_ears(random = "off")
                 return retVal
+
+    def __publish_speech_message(self, mode, text = None):
+        self._msg_speech.mode = mode
+        self._msg_speech.text = text
+        self._pub_speech.publish(self._msg_speech)
+        print("[INFO] {} - Speech Published Data: {}\n".format(self.__class__.__name__, self._msg_speech))
+
+    def __publishled_ears_message(self, random = "", repeat_num = [0, 0], rgb_color = []):
+        self._msg_led_ears.random = random
+        self._msg_led_ears.repeat_num = repeat_num
+        self._msg_led_ears.rgb_color = rgb_color
+        self._pub_ears_led.publish(self._msg_led_ears)
+        print("[INFO] {} - Ears/Led Published Data: {}\n".format(self.__class__.__name__, self._msg_led_ears))
+
+    def __publish_servo_cam_message(self, max_min = "", diff = 0):
+        self._msg_servo_cam.max_min = max_min
+        self._msg_servo_cam.diff = diff
+        self._pub_servo_cam.publish(self._msg_servo_cam)
+        print("[INFO] {} - Servo Camera Published Data: {}\n".format(self.__class__.__name__, self._msg_servo_cam))
