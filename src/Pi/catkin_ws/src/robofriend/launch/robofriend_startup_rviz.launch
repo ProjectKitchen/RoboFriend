@@ -11,6 +11,8 @@
 		<param name="frame_id" value="$(arg frame_id)"/>
 	</node>
 
+	<node name="rviz" pkg="rviz" type="rviz" args="-d $(find hls_lfcd_lds_driver)/rviz/hlds_laser.rviz" />
+
 	<!-- to be implemented -->
 	<node pkg="robofriend" type="GameCommunicatorNode.py" name="robofriend_game_communicator" output="screen">
 	</node>
