@@ -83,6 +83,10 @@ class RobobrainFacedetectionDataHandler():
                             if self.__start_recording_faces() is True:    # start recording faces
                                 print("[INFO] {} - Pictures are recorded!\n".format(self.__class__.__name__))
                                 #TODO: Do something when recording new face is finished
+                            else:
+                                #TODO: When no name is entered!!
+                                print("[INFO] {} - No mane entered!\n".format(self.__class__.__name__))
+                                break
                         else:
                             print("[INFO] {} - Recording Pictures not allowed! Start searching new face\n".format(self.__class__.__name__))
                             break
@@ -193,7 +197,11 @@ class RobobrainFacedetectionDataHandler():
                 self._publish_led_ears(random = "on")
                 request = rospy.ServiceProxy('/robofriend/facerecord', FaceRecordData)
                 print("[INFO] {} - Sending request and Waiting for response!\n".format(__class__.__name__))
-                recording_response = request(name)
+
+
+                recording_response = request(name, # pic number)
+
+
                 print("[INFO] {} - Recording new faces finished!\n".format(__class__.__name__))
                 retVal = True
                 self.__publish_speech_message("custom", "Bin mit er aufnahme fertig")
@@ -203,6 +211,10 @@ class RobobrainFacedetectionDataHandler():
             finally:
                 self.__publish_led_ears(random = "off")
                 return retVal
+        elif retVal == False:
+            self.__publish_speech_message("custom", "Falschen Namen einegeben!")
+            return False
+
 
     def __publish_speech_message(self, mode, text = None):
         self._msg_speech.mode = mode
