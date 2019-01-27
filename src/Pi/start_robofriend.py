@@ -62,10 +62,11 @@ def main():
 	print("Starting Robofriend Startup ...")
 	rosrobo = RosRobo()
 	rosrobo.run()
-	
 
-	
+
+
 	# TODO
+	rospy.init_node('Robofriend_node', anonymous = True)
 	print("Done ... starting Webserver!")
 	webserverModule.start()
 	print("Done ... starting Gamecommunicator")
@@ -87,7 +88,7 @@ def main():
 
 
 
- 
+
 	print("Initialization done! Registering keyboard interrput signal handlers ...")
 
 	# setting up signal handlers for shutdown
