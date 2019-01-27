@@ -7,10 +7,12 @@ import rospy
 # import ros message
 from robofriend.msg import IOWarriorData
 
-class EarsLedDataHandler():
+class LedEarsDataHandler():
 
     def __init__(self):
-
+        self.__random = None
+        self.__repeat_num = None
+        self.__rgb = None
         self.__factor = 1
         self.__refreshIntervalsMS = 300
         self.__red = 0
@@ -28,7 +30,11 @@ class EarsLedDataHandler():
         self.__iowarrior_msg = IOWarriorData()
 
     def process_data(self, data):
-        
+        self.__random = data.random
+        self.__repeat_num = list(data.repeat_num)
+        self.__rgb = list(data.rgb_color)
+        print("[INFO] {} - Received Data: {} {} {}"
+            .format(self.__class__.__name__, self.__random, self.__repeat_num, self.__rgb))
 
         if self.__random == "on" and self.__is_thread_running() == False:
             self.__start_thread()
