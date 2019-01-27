@@ -45,6 +45,7 @@ class FaceDetectionDataHandler():
         self.__start_facedetect_thread()
 
     def __service_handler(self, request):
+
         self.__record_response = False
 
         print("[INFO] {} - Request received: Name: {} {}\n".
