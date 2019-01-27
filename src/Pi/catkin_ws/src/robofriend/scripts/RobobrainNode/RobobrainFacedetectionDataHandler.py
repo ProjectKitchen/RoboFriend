@@ -1,8 +1,11 @@
-from RobobrainStateHandler import *
+#from RobobrainStateHandler import *
+
+from RobobrainNode.RobobrainStateHandler import *
+
 from threading import *
 from time import *
-#from queue import *
-from Queue import *
+from queue import *
+#from Queue import *
 import rospy
 
 # import ros service
@@ -79,7 +82,7 @@ class RobobrainFacedetectionDataHandler():
                             print("[INFO] {} - Start recording Pictures!\n".format(self.__class__.__name__))
                             if self.__start_recording_faces() is True:    # start recording faces
                                 print("[INFO] {} - Pictures are recorded!\n".format(self.__class__.__name__))
-
+                                #TODO: Do something when recording new face is finished
                         else:
                             print("[INFO] {} - Recording Pictures not allowed! Start searching new face\n".format(self.__class__.__name__))
                             break
@@ -126,12 +129,12 @@ class RobobrainFacedetectionDataHandler():
         return self._search_new_face.is_set()
 
     def __known_face_speech(self, name):
-        self._publish_led_ears(rgb_color = [0, 15, 0]) # to flush the ears in green
+        self.__publish_led_ears_message(rgb_color = [0, 15, 0]) # to flush the ears in green
         self.__publish_speech_message("custom", "Ich kenne dich!")
         self.__publish_speech_message("custom", "Du bist " + name)
 
     def __unknown_face_speech(self):
-        self.__publish_led_ears(rgb_color = [15, 0, 0]) # to flush the ears in red
+        self.__publish_led_ears_message(rgb_color = [15, 0, 0]) # to flush the ears in red
         self.__publish_speech_message("custom", "Ich kenne dich nicht!")
         self.__publish_speech_message("custom", "Ich darf mit fremden Leuten nicht reden")
         self.__publish_speech_message("custom", "Darf ich Bilder von dir aufnehmen?")
@@ -207,11 +210,11 @@ class RobobrainFacedetectionDataHandler():
         self._pub_speech.publish(self._msg_speech)
         print("[INFO] {} - Speech Published Data: {}\n".format(self.__class__.__name__, self._msg_speech))
 
-    def __publishled_ears_message(self, random = "", repeat_num = [0, 0], rgb_color = []):
+    def __publish_led_ears_message(self, random = "", repeat_num = [0, 0], rgb_color = []):
         self._msg_led_ears.random = random
         self._msg_led_ears.repeat_num = repeat_num
         self._msg_led_ears.rgb_color = rgb_color
-        self._pub_ears_led.publish(self._msg_led_ears)
+        self._pub_led_ears.publish(self._msg_led_ears)
         print("[INFO] {} - Ears/Led Published Data: {}\n".format(self.__class__.__name__, self._msg_led_ears))
 
     def __publish_servo_cam_message(self, max_min = "", diff = 0):
