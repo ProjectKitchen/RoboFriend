@@ -50,7 +50,7 @@ To get the existing *Python 2.7.x* code compatible for *Python 3.x* following pa
 **Roboter Operating System (ROS):**
 
 * To install ROS on a Ubuntu platform, visit the [official ROS wiki](http://wiki.ros.org/ROS/Installation). There are two main releases at the current time:
-    * ROS Kinectic is available for Ubuntu Xenial (16.04 LTS) and Debian Jessie, among other platform options.
+    * ROS Kinetic is available for Ubuntu Xenial (16.04 LTS) and Debian Jessie, among other platform options.
     * ROS Melodic is avialable for Ubuntu Bionic (18.04 LTS) and Debian Stretch, among other platform options.
 
 * To install ROS on a Rasberry Pi 3 follow the following tutorial:
@@ -59,6 +59,15 @@ To get the existing *Python 2.7.x* code compatible for *Python 3.x* following pa
 * following ROS-packages should also be installed:
     * sudo apt-get install python-rospkg
     * (pip3 install rospkg --user)
+
+* ROS on a Rasberry Pi 3 without a GUI:
+    * Download the latest image from this [Website](https://downloads.ubiquityrobotics.com/pi.html) and read the notes.
+
+* LIDAR - 360 laser distance sensor lds-01:
+    * Installation: sudo apt-get install ros-kinetic-hls-lfcd-lds-driver
+    * Set permission for LDS-01 sudo chmod a+rw /dev/ttyUSBx
+    * Download the LDS-01's driver: git clone https://github.com/ROBOTIS-GIT/hls_lfcd_lds_driver.git (branch: melodic-devel)
+
 
 * *additional information:*
     * in case of a frozen screen at the installation part: **"sudo ./src/catkin/bin/catkin_make_isolated --install -DCMAKE_BUILD_TYPE=Release --install-space /opt/ros/kinetic -j2"**

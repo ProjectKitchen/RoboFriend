@@ -14,11 +14,15 @@
 	<!-- Drivers: LIDAR -->
   	<group if="$(arg lidar)"> 
 		<include file="$(find hls_lfcd_lds_driver)/launch/hlds_laser.launch" />
+		<!-- rviz -->
+		<node name="rviz" pkg="rviz" type="rviz" args="-d $(find hls_lfcd_lds_driver)/rviz/hlds_laser.rviz" />
 	</group>
 
 	<!-- Drivers: SLAM -->
 	<group if="$(arg slam)"> 
 	  	<include file="$(find turtlebot3_slam)/launch/turtlebot3_$(arg slam_methods).launch" />
+	  	<!-- rviz -->
+		<!--node name="rviz" pkg="rviz" type="rviz" required="true" args="-d $(find turtlebot3_slam)/rviz/turtlebot3_$(arg slam_methods).rviz" /-->
 	</group>
 
 	<node pkg="robofriend" type="RobobrainNode.py" name="robofriend_robobrain" output="screen">
