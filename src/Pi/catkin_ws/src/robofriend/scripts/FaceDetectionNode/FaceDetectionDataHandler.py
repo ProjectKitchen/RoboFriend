@@ -21,7 +21,7 @@ class FaceDetectionDataHandler():
     def __init__(self):
 
         # publisher for detected faces
-        self.__robobrain_pub = rospy.Publisher('T_CAM_DATA', CamData, queue_size = 20)
+        self.__robobrain_pub = rospy.Publisher('/robofriend/cam_data', CamData, queue_size = 20)
         self.__msg = CamData()
         self.__coordinates = []
 
@@ -31,6 +31,7 @@ class FaceDetectionDataHandler():
         self.__face_record_event = threading.Event()
 
         # initialize the MJPG Stream Url to capture the frame
+        self.__vs = None
         self.__url = "http://localhost:8080/?action=stream"
 
         # set mjpg stream flag to a default value
@@ -72,21 +73,21 @@ class FaceDetectionDataHandler():
         haarcascade_path = path + '/haarcascade_frontalface_default.xml'
 
         self.__detector = cv2.CascadeClassifier(haarcascade_path)
-        try:
-            encodings = open(encodings_path, "rb").read()
-        except FileNotFoundError:
-            print("[INFO] No pickle file found!\n")
-            #TODO: in case of an empty pickle file
+        self.__data = pickle.loads(open(encodings_path, "rb").read())
 
         # selecting the source of  the stream (either PiCamera or stream)
-        vs = cv2.VideoCapture(self.__url)
+        self.__vs = cv2.VideoCapture(self.__url)
 
-        if vs.isOpened():
+        if self.__vs.isOpened():
             print("[INFO] Pictures are captured via the mjpg-streamer")
-            self._mjpg_stream = True
+            self.__mjpg_stream = True
         else:
-            print("[INFO] Pictures are captured directly by the pi-camera")
-            vs = VideoStream(usePiCamera=True).start()
+            try:
+                self.__vs = VideoStream(usePiCamera = True).start()
+                print("[INFO] Pictures are captured directly by the pi-camera")
+            except ImportError:
+                print("[INFO] Pictures are captured from the webcam")
+                self.__vs = VideoStream(src = 0).start()
 
         time.sleep(2.0)
 
@@ -106,11 +107,11 @@ class FaceDetectionDataHandler():
             if self.__is_face_record_running() is False:
                 # grab the frame from the threaded video stream and resize it
                 # to 500px (to speedup processing)
-                if self._mjpg_stream == True:			# pictures are captured via the stream
-                    vs = cv2.VideoCapture(self.__url)
+                if self.__mjpg_stream == True:			# pictures are captured via the stream
+                    self.__vs = cv2.VideoCapture(self.__url)
                     stat, frame = vs.read()
                 else:
-                    frame = vs.read()
+                    frame = self.__vs.read()
 
                 #Flip camera vertically
                 #frame = cv2.flip(frame, -1)
@@ -142,7 +143,7 @@ class FaceDetectionDataHandler():
                     for encoding in encodings:
                         # attempt to match each face in the input image to our known
                         # encodings
-                        matches = face_recognition.compare_faces(data["encodings"],
+                        matches = face_recognition.compare_faces(self.__data["encodings"],
                             encoding)
                         name = "Unknown"
 
@@ -157,7 +158,7 @@ class FaceDetectionDataHandler():
                             # loop over the matched indexes and maintain a count for
                             # each recognized face face
                             for i in matchedIdxs:
-                                name = data["names"][i]
+                                name = self.__data["names"][i]
                                 counts[name] = counts.get(name, 0) + 1
 
                             # determine the recognized face with the largest number
@@ -179,9 +180,9 @@ class FaceDetectionDataHandler():
 
                     self.__coordinates = list(boxes[0]).copy()
                     self.__coordinates.append(name)
-                    print("[INFO] Coordinates in Submodule: {}".format(self.__coordinates))
-                    msg.top, msg.right, msg.bottom, msg.left, msg.name = self.__coordinates
-                    pub.publish(msg)
+                    #print("[INFO] Coordinates in Submodule: {}".format(self.__coordinates))
+                    self.__msg.top, self.__msg.right, self.__msg.bottom, self.__msg.left, self.__msg.name = self.__coordinates
+                    self.__robobrain_pub.publish(self.__msg)
 
                 time.sleep(0.2)
 
