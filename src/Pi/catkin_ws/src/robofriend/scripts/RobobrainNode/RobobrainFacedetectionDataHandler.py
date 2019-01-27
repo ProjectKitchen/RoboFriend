@@ -46,6 +46,20 @@ class RobobrainFacedetectionDataHandler():
         #rospy.wait_for_service('/robofriend/facerecord')
         ##################################
 
+        # amount of recorded pictures
+        self.__pic_record = 10
+
+        record_pic_speech = {1  : "Erstes", \
+                             2  : "Zweites", \
+                             3  : "Drittes", \
+                             4  : "Viertes", \
+                             5  : "Fuenftes", \
+                             6  : "Sechstes", \
+                             7  : "Siebentes", \
+                             8  : "Achtes", \
+                             9  : "Neuntes", \
+                             10 : "Zehnets"}
+
     def process_data(self, data):
         print("[INFO] {} - Received message: {} ".format(self.__class__.__name__, data))
         #if self._actual_state == self._facedetection_states["FACE_SEARCH"] and self.__is_facesearching_activated():
@@ -198,10 +212,15 @@ class RobobrainFacedetectionDataHandler():
                 request = rospy.ServiceProxy('/robofriend/facerecord', FaceRecordData)
                 print("[INFO] {} - Sending request and Waiting for response!\n".format(__class__.__name__))
 
-
-                recording_response = request(name, # pic number)
-
-
+                for cnt in range(1, self.__pic_record + 1):     # to start from 1 up to self.__pic_record
+                    recording_response = request(name, cnt)
+                    if recording_response is not name:
+                        name = recording_response               # in case when requested name already exists
+                    try:
+                        self.__publish_speech_message("custom", "{} Bild aufgenommen!".format(record_pic_speech[cnt]))
+                    except KeyError:
+                        self.__publish_speech_message("custom", "Weiteres Bild aufgenommen!")
+                    sleep(1)
                 print("[INFO] {} - Recording new faces finished!\n".format(__class__.__name__))
                 retVal = True
                 self.__publish_speech_message("custom", "Bin mit er aufnahme fertig")
