@@ -11,6 +11,7 @@ import urllib
 import numpy as np
 import time
 import os
+import random
 
 # import ros message
 from robofriend.msg import CamData
@@ -45,18 +46,14 @@ class FaceDetectionDataHandler():
 
     def __service_handler(self, request):
         self.__record_response = False
-        self.__received_name = ""
 
-        print("[INFO] {} - Request received: Name: {}\n".format(self.__class__.__name__, request.name))
+        print("[INFO] {} - Request received: Name: {} {}\n".
+            format(self.__class__.__name__, request.name, request.pic_num))
         self.__received_name = request.name
+        self.__received_pic_num = request.pic_num
 
         self.__set_event_face_record()
-
-        #######################################
-        #TODO: Start recording faces
-        time.sleep(5)
-        #######################################
-
+        self.__record_response = self.__record_picture(request)
         self.__clear_event_face_record()
 
         print("[INFO] {} - Recording finished!\n".format(self.__class__.__name__))
@@ -66,11 +63,11 @@ class FaceDetectionDataHandler():
     def __face_recog_init(self):
         print("[INFO] {} - Loadings encodings and face detetcted")
 
-        path = os.path.dirname(os.path.realpath(__file__))
+        self.__path = os.path.dirname(os.path.realpath(__file__))
 
         # location of haarcascade and encodings
-        encodings_path = path + '/encodings.pickle'
-        haarcascade_path = path + '/haarcascade_frontalface_default.xml'
+        self_encodings_path = self.__path + '/encodings.pickle'
+        haarcascade_path = self.__path + '/haarcascade_frontalface_default.xml'
 
         self.__detector = cv2.CascadeClassifier(haarcascade_path)
         self.__data = pickle.loads(open(encodings_path, "rb").read())
@@ -185,6 +182,33 @@ class FaceDetectionDataHandler():
                     self.__robobrain_pub.publish(self.__msg)
 
                 time.sleep(0.2)
+
+    def __record_picture(self, request):
+        ret_name = ""
+        name = request.name
+        num = request.pic_number
+
+        dataset_pah = self.__path + '/dataset'
+
+        if num == 1 and name not in os.listdir():   # no folder with this name exist
+            os.makedirs(name)
+            ret_name = name
+            dataset_pah += str(name)
+        elif num == 1 and name in os.listdir():    # folder with this name aready exist
+            rand = name + "_" + str(randint(1, 10000))
+            os.makedirs(rand)
+            ret_name = rand_name
+            dataset_pah += str(rand)
+        elif name in os.listdir() and num > 1:
+            dataset_pah += str(name)
+            ret_name = name
+
+        frame = self.__vs.read()
+        p = os.path.sep.join([dataset_pah, "{}.png".format(
+            str(num).zfill(5))])
+        cv2.imwrite(p, frame)
+        print("{} - Picture {} is taken!\n".format(__class__.__name__, num))
+        return name
 
     def __set_event_face_record(self):
         self.__face_record_event.set()
