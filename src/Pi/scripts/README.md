@@ -1,18 +1,52 @@
+## Installing ROS
+* There are different ways to set up ROS on your computing unit
+
+**Ubuntu Xenial (16.04 LTS):**
+* [Download](http://releases.ubuntu.com/16.04/ubuntu-16.04.5-desktop-amd64.iso) and install the desktop image for 64-bit PC (AMD64) computers
+* [Download](http://releases.ubuntu.com/16.04/ubuntu-16.04.5-desktop-i386.iso) and install the desktop image for 32-bit PC (i386) computers
+* to install ROS, run ./install_ros_kinetic.sh
+
+* Alternatively, to install ROS on a Ubuntu platform, visit the [official ROS wiki](http://wiki.ros.org/ROS/Installation). There are two main releases at the current time:
+    * ROS Kinetic is available for Ubuntu Xenial (16.04 LTS) and Debian Jessie, among other platform options.
+    * ROS Melodic is avialable for Ubuntu Bionic (18.04 LTS) and Debian Stretch, among other platform options.
+It is strongly recommended to use [ROS Kinetic](http://wiki.ros.org/kinetic/Installation/Ubuntu). 
+
+**Ubuntu Xenial (16.04 LTS) and ROS Kinetic installed for Raspberry Pi 3:**
+* Download the latest image from this [Website](https://downloads.ubiquityrobotics.com/pi.html) and read the notes.
+
+## Clone Git Project
+	$ mkdir ~/Git
+	$ git clone https://github.com/ProjectKitchen/RoboFriend.
+	$ ./autostart.sh
+	$ ./install_python.modules.sh
+	$ ./install_ros_pkg.sh
+
 ## Robofriend startup scripts
 
-these scipts start the videostream and the main python script automatically after system boot.
+**autostart.sh**
+* puts startrobo.desktop into the folder ~/.config/autostart
+* puts startrobo.sh into folder ~/
 
-put robofriend.desktop into folder /home/pi/.config/autostart
-put startrobo.sh into folder /home/pi
+**install_python_modules.sh**
+* install all necessary python packages
 
-to see commandline output (debug messages) during operation of main python script you could: 
+**install_ros_kinetic.sh**
+Install ROS Kinetic on remote PC
+
+**install_ros_pkg.sh**
+Install required ROS packages
+
+**startrobo.sh**
+Starts the videostream and the main python script after system boot.
+
+To see command line output (debug messages) during operation of the main python script you could: 
 * log into the rasperry pi from another computer (using e.g. putty or ssh)
 * sudo pkill python (to stop the currently running python scripts)
-* run ./startrobo.sh in folder /home/pi
+* run ./startrobo.sh placed in your home folder
 
-your user should have sudo rights to do that
-to use sudo without password add the following line to /etc/sudoers
+Your user should have sudo rights. To use sudo without password add the following line to /etc/sudoers
 pi ALL=(ALL) NOPASSWD: ALL
 
-(be aware that using sudo without password is not a recommended practise because it compromises security on your system)
+(Be aware that using sudo without password is not a recommended practise because it compromises security on your system)
+
 
