@@ -7,6 +7,7 @@ from time import *
 from queue import *
 #from Queue import *
 import rospy
+import traceback
 
 # import ros service
 from robofriend.srv import SrvFaceRecordData
@@ -29,6 +30,7 @@ class RobobrainFacedetectionDataHandler():
         self._keyboard_queue = queue
 
         # init publishers
+        # TODO: chance topics
         self._pub_speech = rospy.Publisher('T_SPEECH_DATA', SpeechData, queue_size = 10)
         self._pub_led_ears = rospy.Publisher('T_LED_EARS_DATA', LedEarsData, queue_size = 10)
         self._pub_servo_cam = rospy.Publisher('T_SERVO_CAM_DATA', ServoCamData, queue_size = 10)
@@ -49,16 +51,16 @@ class RobobrainFacedetectionDataHandler():
         # amount of recorded pictures
         self.__pic_record = 10
 
-        record_pic_speech = {1  : "Erstes", \
-                             2  : "Zweites", \
-                             3  : "Drittes", \
-                             4  : "Viertes", \
-                             5  : "Fuenftes", \
-                             6  : "Sechstes", \
-                             7  : "Siebentes", \
-                             8  : "Achtes", \
-                             9  : "Neuntes", \
-                             10 : "Zehnets"}
+        self.__record_pic_speech = {1  : "Erstes", \
+                                    2  : "Zweites", \
+                                    3  : "Drittes", \
+                                    4  : "Viertes", \
+                                    5  : "Funftes", \
+                                    6  : "Sechstes", \
+                                    7  : "Siebentes", \
+                                    8  : "Achtes", \
+                                    9  : "Neuntes", \
+                                    10 : "Zehnets"}
 
     def process_data(self, data):
         print("[INFO] {} - Received message: {} ".format(self.__class__.__name__, data))
@@ -99,9 +101,10 @@ class RobobrainFacedetectionDataHandler():
                                 #TODO: Do something when recording new face is finished
                             else:
                                 #TODO: When no name is entered!!
-                                print("[INFO] {} - No mane entered!\n".format(self.__class__.__name__))
+                                print("[INFO] {} - No name entered!\n".format(self.__class__.__name__))
                                 break
                         else:
+                            self.__publish_speech_message("custom", "Ich darf mit fremden Leuten nicht reden")
                             print("[INFO] {} - Recording Pictures not allowed! Start searching new face\n".format(self.__class__.__name__))
                             break
                 elif face_detectded is False:
@@ -154,7 +157,6 @@ class RobobrainFacedetectionDataHandler():
     def __unknown_face_speech(self):
         self.__publish_led_ears_message(rgb_color = [15, 0, 0]) # to flush the ears in red
         self.__publish_speech_message("custom", "Ich kenne dich nicht!")
-        self.__publish_speech_message("custom", "Ich darf mit fremden Leuten nicht reden")
         self.__publish_speech_message("custom", "Darf ich Bilder von dir aufnehmen?")
 
     def __yes_no_keyboard_request(self):
@@ -202,33 +204,37 @@ class RobobrainFacedetectionDataHandler():
         self.__publish_speech_message("custom", "Bitte Namen eintippen!")
         retVal, name = self.__evaluate_keyboard_inputs()
         if retVal == True:
-            speech_str = 'Danke ' + name
+            speech_str = 'Danke   ' + name
             self.__publish_speech_message("custom", speech_str)
             self.__publish_speech_message("custom", "Ich starte mit der aufnahme von 10 Bildern!")
             self.__publish_speech_message("custom", "Bitte lachen")
 
-            try:
-                self._publish_led_ears(random = "on")
-                request = rospy.ServiceProxy('/robofriend/facerecord', FaceRecordData)
-                print("[INFO] {} - Sending request and Waiting for response!\n".format(__class__.__name__))
+            request = rospy.ServiceProxy('/robofriend/facerecord', SrvFaceRecordData)
 
+            try:
+                self.__publish_led_ears_message(random = "on")
                 for cnt in range(1, self.__pic_record + 1):     # to start from 1 up to self.__pic_record
+                    print("[INFO] {} - Sending request and Waiting for response!\n".format(__class__.__name__))
                     recording_response = request(name, cnt)
-                    if recording_response is not name:
-                        name = recording_response               # in case when requested name already exists
+                    if recording_response.dir_name is not name:
+                        name = recording_response.dir_name               # in case when requested name already exists
                     try:
-                        self.__publish_speech_message("custom", "{} Bild aufgenommen!".format(record_pic_speech[cnt]))
+                        self.__publish_speech_message("custom", "{} Bild aufgenommen!".format(self.__record_pic_speech[cnt]))
                     except KeyError:
                         self.__publish_speech_message("custom", "Weiteres Bild aufgenommen!")
-                    sleep(1)
+                    except Exception:
+                        traceback.print_exc()
+                    sleep(3)
                 print("[INFO] {} - Recording new faces finished!\n".format(__class__.__name__))
                 retVal = True
                 self.__publish_speech_message("custom", "Bin mit er aufnahme fertig")
             except rospy.ServiceException:
                 print("[INFO] {} - Service call failed!".format(__class__.__name__))
                 retVal = False
+            except Exception :
+                traceback.print_exc()
             finally:
-                self.__publish_led_ears(random = "off")
+                self.__publish_led_ears_message(random = "off")
                 return retVal
         elif retVal == False:
             self.__publish_speech_message("custom", "Falschen Namen einegeben!")

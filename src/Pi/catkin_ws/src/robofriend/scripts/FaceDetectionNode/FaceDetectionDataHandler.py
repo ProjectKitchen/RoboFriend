@@ -46,7 +46,7 @@ class FaceDetectionDataHandler():
 
     def __service_handler(self, request):
 
-        self.__record_response = False
+        self.__record_response = ""
 
         print("[INFO] {} - Request received: Name: {} {}\n".
             format(self.__class__.__name__, request.name, request.pic_num))
@@ -58,8 +58,7 @@ class FaceDetectionDataHandler():
         self.__clear_event_face_record()
 
         print("[INFO] {} - Recording finished!\n".format(self.__class__.__name__))
-        self.__record_response = True
-        return FaceRecordDataResponse(self.__record_response) # response that recording has finished
+        return SrvFaceRecordDataResponse(self.__record_response) # response that recording has finished
 
     def __face_recog_init(self):
         print("[INFO] {} - Loadings encodings and face detetcted")
@@ -67,7 +66,7 @@ class FaceDetectionDataHandler():
         self.__path = os.path.dirname(os.path.realpath(__file__))
 
         # location of haarcascade and encodings
-        self_encodings_path = self.__path + '/encodings.pickle'
+        encodings_path = self.__path + '/encodings.pickle'
         haarcascade_path = self.__path + '/haarcascade_frontalface_default.xml'
 
         self.__detector = cv2.CascadeClassifier(haarcascade_path)
@@ -185,31 +184,39 @@ class FaceDetectionDataHandler():
                 time.sleep(0.2)
 
     def __record_picture(self, request):
+        p = ""
         ret_name = ""
         name = request.name
-        num = request.pic_number
+        num = request.pic_num
 
-        dataset_pah = self.__path + '/dataset'
+        dataset_path = self.__path + '/dataset'
 
-        if num == 1 and name not in os.listdir():   # no folder with this name exist
-            os.makedirs(name)
+        if num == 1 and name not in os.listdir(dataset_path):   # no folder with this name exist
             ret_name = name
-            dataset_pah += str(name)
-        elif num == 1 and name in os.listdir():    # folder with this name aready exist
-            rand = name + "_" + str(randint(1, 10000))
-            os.makedirs(rand)
+            dataset_path += "/" + str(name)
+            os.makedirs(dataset_path)
+            print("{} - New folder created: {}\n".format(__class__.__name__, dataset_path))
+        elif num == 1 and name in os.listdir(dataset_path):    # folder with this name aready exist
+            rand_name = name + "_" + str(random.randint(1, 10000))
+            dataset_path += "/" + str(rand_name)
+            os.makedirs(dataset_path)
             ret_name = rand_name
-            dataset_pah += str(rand)
-        elif name in os.listdir() and num > 1:
-            dataset_pah += str(name)
+            print("{} - Folder with same name but random ending created: {}\n"
+                .format(__class__.__name__, dataset_path))
+        elif  num > 1 and name in os.listdir(dataset_path):
+            dataset_path += "/" + str(name)
+            print("{} - Directory already exists: {}\n"
+                .format(__class__.__name__, dataset_path))
             ret_name = name
 
         frame = self.__vs.read()
-        p = os.path.sep.join([dataset_pah, "{}.png".format(
+        p = os.path.sep.join([dataset_path, "{}.png".format(
             str(num).zfill(5))])
-        cv2.imwrite(p, frame)
-        print("{} - Picture {} is taken!\n".format(__class__.__name__, num))
-        return name
+
+        write_status = cv2.imwrite(p, frame)
+        if write_status == True:
+            print("{} - Picture {} is taken!\n".format(__class__.__name__, num))
+        return ret_name
 
     def __set_event_face_record(self):
         self.__face_record_event.set()
