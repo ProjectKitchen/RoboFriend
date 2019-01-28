@@ -9,6 +9,7 @@
 * Alternatively, to install ROS on a Ubuntu platform, visit the [official ROS wiki](http://wiki.ros.org/ROS/Installation). There are two main releases at the current time:
     * ROS Kinetic is available for Ubuntu Xenial (16.04 LTS) and Debian Jessie, among other platform options.
     * ROS Melodic is avialable for Ubuntu Bionic (18.04 LTS) and Debian Stretch, among other platform options.
+
 It is strongly recommended to use [ROS Kinetic](http://wiki.ros.org/kinetic/Installation/Ubuntu). 
 
 **Ubuntu Xenial (16.04 LTS) and ROS Kinetic installed for Raspberry Pi 3:**
@@ -16,7 +17,7 @@ It is strongly recommended to use [ROS Kinetic](http://wiki.ros.org/kinetic/Inst
 
 ## Clone Git Project
 	$ mkdir ~/Git
-	$ git clone https://github.com/ProjectKitchen/RoboFriend.
+	$ git clone https://github.com/ProjectKitchen/RoboFriend
 	$ ./autostart.sh
 	$ ./install_python.modules.sh
 	$ ./install_ros_pkg.sh
@@ -28,18 +29,20 @@ It is strongly recommended to use [ROS Kinetic](http://wiki.ros.org/kinetic/Inst
 * puts startrobo.sh into folder ~/
 
 **install_python_modules.sh**
-* install all necessary python packages
+* installs all necessary python packages
 
 **install_ros_kinetic.sh**
-Install ROS Kinetic on remote PC
+* installs ROS Kinetic on remote PC
 
 **install_ros_pkg.sh**
-Install required ROS packages
+* installs required ROS packages
 
 **startrobo.sh**
-Starts the videostream and the main python script after system boot.
+* starts the videostream and the main python script after system boot.
 
-To see command line output (debug messages) during operation of the main python script you could: 
+## Debugging and other notes
+
+To see the command line output during the operation of the main python script: 
 * log into the rasperry pi from another computer (using e.g. putty or ssh)
 * sudo pkill python (to stop the currently running python scripts)
 * run ./startrobo.sh placed in your home folder
@@ -48,5 +51,3 @@ Your user should have sudo rights. To use sudo without password add the followin
 pi ALL=(ALL) NOPASSWD: ALL
 
 (Be aware that using sudo without password is not a recommended practise because it compromises security on your system)
-
-
