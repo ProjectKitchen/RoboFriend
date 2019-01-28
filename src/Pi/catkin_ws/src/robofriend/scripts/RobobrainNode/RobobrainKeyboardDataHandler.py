@@ -1,4 +1,5 @@
-from RobobrainStateHandler import *
+# from RobobrainStateHandler import *
+from RobobrainNode.RobobrainStateHandler import *
 
 
 class RobobrainKeyboardDataHandler():
@@ -28,30 +29,3 @@ class RobobrainKeyboardDataHandler():
             #TODO: Input processing according to the IDLE State
         elif self._statehandler.state == RobobrainStateHandler.robostate['FACEDETECTION']:
             self.__queue.put(self.__pressed_key)
-
-    # command
-    @property
-    def quit(self):
-        return self.__quit
-
-    @quit.setter
-    def quit(self, value):
-        self.__quit = value
-
-    # up_down
-    @property
-    def up_down(self):
-        return self.__up_down
-
-    @up_down.setter
-    def up_down(self, value):
-        self._action = value
-
-    #action_opt
-    @property
-    def pressed_key(self):
-        return self.__pressed_key
-
-    @pressed_key.setter
-    def pressed_key(self, value):
-        self.__pressed_key = value
