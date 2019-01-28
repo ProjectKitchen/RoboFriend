@@ -1,2 +1,2 @@
-cd /home/pi/RoboFriend/src/Pi
+cd ~/RoboFriend/src/Pi
 sudo ./start_robofriend.sh &
