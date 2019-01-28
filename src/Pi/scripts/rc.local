@@ -22,11 +22,11 @@ mjpg_streamer -o "output_http.so -w ./www" -i "input_raspicam.so -x 320 -y 240 -
 su pi -c "export DISPLAY=:0; 
 source /opt/ros/kinetic/setup.bash; 
 source ~/catkin_ws/devel/setup.bash; 
-source ~/project/RoboFriend/src/Pi/catkin_ws/devel/setup.bash; 
+source ~/Git/RoboFriend/src/Pi/catkin_ws/devel/setup.bash; 
 export ROS_MASTER_URI=http://localhost:11311;
 export ROS_HOSTNAME=localhost;
 export TURTLEBOT3_MODEL=waffle;
-cd ~/project/RoboFriend/src/Pi/; 
-python3 robofriend.py"
+cd ~/Git/RoboFriend/src/Pi/; 
+python3 start_robofriend.py"
 
 exit 0
