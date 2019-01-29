@@ -8,7 +8,7 @@ git clone https://github.com/ROBOTIS-GIT/turtlebot3.git
 git clone https://github.com/ROBOTIS-GIT/turtlebot3_msgs.git
 git clone https://github.com/ROBOTIS-GIT/turtlebot3_simulations.git
 git clone https://github.com/ROBOTIS-GIT/hls_lfcd_lds_driver.git
-cd ~/Git/RoboFriend/src/Pi/catkin_ws/src/hls_lfcd_lds_driver
-git checkout melodic-devel
+# cd ~/Git/RoboFriend/src/Pi/catkin_ws/src/hls_lfcd_lds_driver
+# git checkout kinetic-devel
 # clean and build the catkin workspace
 cd ~/Git/RoboFriend/src/Pi/catkin_ws/ && catkin_make clean && catkin_make && catkin_make install
