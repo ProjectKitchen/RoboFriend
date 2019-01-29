@@ -10,7 +10,7 @@ sudo pip3 install pyttsx3
 sudo pip3 install psutil
 sudo pip3 install defusedxml
 sudo pip3 install netifaces
+# face recognition module
+sudo pip3 install face_recognition
 sudo apt-get install espeak
 sudo apt-get install python3-yaml
-# TODO: is this an official package?
-pip install face_recognition

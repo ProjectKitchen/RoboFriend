@@ -6,7 +6,7 @@ sudo apt-get install ros-kinetic-joy ros-kinetic-teleop-twist-joy ros-kinetic-te
 cd ~/Git/RoboFriend/src/Pi/catkin_ws/src/
 git clone https://github.com/ROBOTIS-GIT/turtlebot3.git
 git clone https://github.com/ROBOTIS-GIT/turtlebot3_msgs.git
-git clone https://github.com/ROBOTIS-GIT/turtlebot3_simulations.git
+# git clone https://github.com/ROBOTIS-GIT/turtlebot3_simulations.git
 git clone https://github.com/ROBOTIS-GIT/hls_lfcd_lds_driver.git
 # cd ~/Git/RoboFriend/src/Pi/catkin_ws/src/hls_lfcd_lds_driver
 # git checkout kinetic-devel
