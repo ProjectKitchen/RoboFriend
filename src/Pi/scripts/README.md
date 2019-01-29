@@ -1,24 +1,31 @@
-## Installing ROS
-* There are different ways to set up ROS on your computing unit
+## Installing Ubuntu
 
 **Ubuntu Xenial (16.04 LTS):**
 * [Download](http://releases.ubuntu.com/16.04/ubuntu-16.04.5-desktop-amd64.iso) and install the desktop image for 64-bit PC (AMD64) computers
 * [Download](http://releases.ubuntu.com/16.04/ubuntu-16.04.5-desktop-i386.iso) and install the desktop image for 32-bit PC (i386) computers
-* to install ROS, run ./install_ros_kinetic.sh
-
-* Alternatively, to install ROS on a Ubuntu platform, visit the [official ROS wiki](http://wiki.ros.org/ROS/Installation). There are two main releases at the current time:
-    * ROS Kinetic is available for Ubuntu Xenial (16.04 LTS) and Debian Jessie, among other platform options.
-    * ROS Melodic is avialable for Ubuntu Bionic (18.04 LTS) and Debian Stretch, among other platform options.
-
-It is strongly recommended to use [ROS Kinetic](http://wiki.ros.org/kinetic/Installation/Ubuntu). 
 
 **Ubuntu Xenial (16.04 LTS) and ROS Kinetic installed for Raspberry Pi 3:**
 * Download the latest image from this [Website](https://downloads.ubiquityrobotics.com/pi.html) and read the notes.
 
-## Clone Git Project
-	$ mkdir ~/Git
+## Installing ROS
+* There are different ways to set up ROS on your computing unit
+
+* To manually install ROS on a Ubuntu platform, visit the [official ROS wiki](http://wiki.ros.org/ROS/Installation). There are two main releases at the current time:
+    * ROS Kinetic is available for Ubuntu Xenial (16.04 LTS) and Debian Jessie, among other platform options.
+    * ROS Melodic is avialable for Ubuntu Bionic (18.04 LTS) and Debian Stretch, among other platform options.
+
+It is strongly recommended to use [ROS Kinetic](http://wiki.ros.org/kinetic/Installation/Ubuntu). Follow the next heading for a simplified installation.
+
+## Setup project
+	$ mkdir ~/Git && cd ~/Git/
+	$ sudo apt-get update
+	$ sudo apt-get intsall git
 	$ git clone https://github.com/ProjectKitchen/RoboFriend
-	$ ./autostart.sh
+	$ cd ~/Git/Robofriend/
+	$ (checkout the needed branch)
+	$ cd ~/Git/Robofriend/src/Pi/scripts/
+	$ ./autostart.sh (only on Raspberry Pi)
+	$ ./install_ros_kinetic.sh
 	$ ./install_python.modules.sh
 	$ ./install_ros_pkg.sh
 
