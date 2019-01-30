@@ -1,5 +1,5 @@
 # from RobobrainStateHandler import *
-from RobobrainNode.RobobrainStateHandler import *
+from RobobrainStateHandler import *
 
 
 class RobobrainKeyboardDataHandler():
