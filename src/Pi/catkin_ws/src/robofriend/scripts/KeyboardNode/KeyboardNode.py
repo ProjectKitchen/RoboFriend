@@ -52,7 +52,7 @@ def handle_keyboard():
 
     publish_message = {}
 
-    pub = rospy.Publisher('T_KEYB_DATA', KeyboardData, queue_size = 10)
+    pub = rospy.Publisher('/robofriend/keyb_data', KeyboardData, queue_size = 10)
     msg = KeyboardData()
 
     keyboard = KeyboardDataHandler(pub, msg)

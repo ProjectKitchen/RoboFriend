@@ -39,7 +39,7 @@ def handle_speech():
 
     speech_engine = InitSpeechEngine(speech_engine_dict)
     speech = SpeechDataHandler(speech_engine, speech_engine_dict['language'])
-    rospy.Subscriber("T_SPEECH_DATA", SpeechData, speech.process_data)
+    rospy.Subscriber("/robofriend/speech_data", SpeechData, speech.process_data)
 
 def InitSpeechEngine(speech_engine_dict):
     speechEngine = pyttsx3.init(debug=True)

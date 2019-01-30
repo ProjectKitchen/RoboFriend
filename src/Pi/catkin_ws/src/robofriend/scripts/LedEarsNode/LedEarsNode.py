@@ -25,4 +25,4 @@ def handle_ears_led():
 
     print("[INFO] Thread for ears_led started !")
     led_ears = LedEarsDataHandler()
-    rospy.Subscriber('T_LED_EARS_DATA', LedEarsData, led_ears.process_data)
+    rospy.Subscriber('/robofriend/led_ears_data', LedEarsData, led_ears.process_data)
