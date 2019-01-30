@@ -47,12 +47,13 @@ def RFID():
 
     try:
         ser = serial.Serial(constants.SER_DEV_RFID, constants.SER_DEV_RFID_BD)
-        rospy.loginfo("*** Serial for RFID reader opened! ***")
+        rospy.loginfo("Serial for RFID reader opened!")
 
     except Exception as inst:
-        rospy.logwarn('*** Serial for RFID reader could not opened! ***')
-        rospy.logwarn(type(inst))
-        rospy.logwarn(inst.args)
+        rospy.logwarn('This is a controlled catch!')
+        rospy.logwarn('Serial for FRID reader could not opened!')
+        rospy.logwarn('Exception type: %s', type(inst))
+        rospy.logwarn('Exception argument: %s', inst.args[1])
 
     dh = RFIDDataHandler(ser)
 

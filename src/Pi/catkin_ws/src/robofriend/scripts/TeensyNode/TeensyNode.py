@@ -28,11 +28,12 @@ def Teensy():
 
     try:
         ser = serial.Serial(constants.SER_DEV_TEENSY, constants.SER_DEV_TEENSY_BD, timeout = 1)
-        rospy.loginfo("*** Serial for Teensy opened! ***")
+        rospy.loginfo("Serial for Teensy opened!")
     except Exception as inst:
-        rospy.logwarn('*** Serial for Teensy could not opened! ***')
-        rospy.logwarn(type(inst))
-        rospy.logwarn(inst.args)
+        rospy.logwarn('This is a controlled catch!')
+        rospy.logwarn('Serial for Teensy could not opened!')
+        rospy.logwarn('Exception type: %s', type(inst))
+        rospy.logwarn('Exception argument: %s', inst.args[1])
 
     dh = TeensyDataHandler(ser)
 
