@@ -1,4 +1,4 @@
-from FaceDetectionDataHandler import *
+from FaceDetectionNode.FaceDetectionDataHandler import *
 
 # globals
 runFlag = True

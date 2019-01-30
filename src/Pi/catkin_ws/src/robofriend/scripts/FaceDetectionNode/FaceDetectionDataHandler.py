@@ -132,7 +132,7 @@ class FaceDetectionDataHandler():
 
                 #Flip camera vertically
                 #frame = cv2.flip(frame, -1)
-                frame = imutils.resize(frame, width=320, height=240)
+                frame = resize(frame, width=320, height=240)
 
                 # convert the input frame from (1) BGR to grayscale (for face
                 # detection) and (2) from BGR to RGB (for face recognition)
@@ -246,18 +246,18 @@ class FaceDetectionDataHandler():
         image_paths = list(paths.list_images(dataset_path))
         for (i, image_path) in enumerate (image_paths):
             print("[INFO] processing image {}/{}".format(i + 1,
-        		len(imagePaths)))
+                len(imagePaths)))
             name = image_path.split(os.path.sep)[-2]
 
             image = cv2.imread(image_path)
-        	rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+            rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
             boxes = face_recognition.face_locations(rgb, model = "hog")
 
-        	encodings = face_recognition.face_encodings(rgb, boxes)
+            encodings = face_recognition.face_encodings(rgb, boxes)
 
             for encoding in encodings:
-        		knownEncodings.append(encoding)
-        		knownNames.append(name)
+                knownEncodings.append(encoding)
+                knownNames.append(name)
 
         data = {"encodings": knownEncodings, "names": knownNames}
         f = open("encodings.pickle", "wb+")
