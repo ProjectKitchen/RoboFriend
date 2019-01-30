@@ -110,13 +110,3 @@ class SpeechDataHandler():
             self._speech_engine.runAndWait()
         except:
             print("[INFO] Speech engine error!")
-
-    # mode
-    @property
-    def mode(self):
-        return self._mode
-
-    # texts
-    @property
-    def text(self):
-        return self._text
