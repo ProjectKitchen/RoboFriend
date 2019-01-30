@@ -11,6 +11,7 @@ import traceback
 
 # import ros service
 from robofriend.srv import SrvFaceRecordData
+from robofriend.srv import SrvFaceDatabaseData
 
 # import ros messages
 from robofriend.msg import SpeechData
@@ -31,9 +32,9 @@ class RobobrainFacedetectionDataHandler():
 
         # init publishers
         # TODO: chance topics
-        self._pub_speech = rospy.Publisher('T_SPEECH_DATA', SpeechData, queue_size = 10)
-        self._pub_led_ears = rospy.Publisher('T_LED_EARS_DATA', LedEarsData, queue_size = 10)
-        self._pub_servo_cam = rospy.Publisher('T_SERVO_CAM_DATA', ServoCamData, queue_size = 10)
+        self._pub_speech = rospy.Publisher('/robofriend/speech_data', SpeechData, queue_size = 10)
+        self._pub_led_ears = rospy.Publisher('/robofriend/led_ears_data', LedEarsData, queue_size = 10)
+        self._pub_servo_cam = rospy.Publisher('/robofriend/servo_cam_data', ServoCamData, queue_size = 10)
 
         self._msg_speech = SpeechData()
         self._msg_led_ears = LedEarsData()
@@ -97,8 +98,11 @@ class RobobrainFacedetectionDataHandler():
                         if self.__yes_no_keyboard_request() is True:
                             print("[INFO] {} - Start recording Pictures!\n".format(self.__class__.__name__))
                             if self.__start_recording_faces() is True:    # start recording faces
-                                print("[INFO] {} - Pictures are recorded!\n".format(self.__class__.__name__))
-                                #TODO: Do something when recording new face is finished
+                                print("[INFO] {} - Faces are recorded!\n".format(self.__class__.__name__))
+                                #TODO: start creating new database
+                                if self.__create_database() == True:
+                                    print("[INFO] {} - New Database created!\n".format(self.__class__.__name__))
+
                             else:
                                 #TODO: When no name is entered!!
                                 print("[INFO] {} - No name entered!\n".format(self.__class__.__name__))
@@ -157,7 +161,7 @@ class RobobrainFacedetectionDataHandler():
     def __unknown_face_speech(self):
         self.__publish_led_ears_message(rgb_color = [15, 0, 0]) # to flush the ears in red
         self.__publish_speech_message("custom", "Ich kenne dich nicht!")
-        self.__publish_speech_message("custom", "Darf ich Bilder von dir aufnehmen?")
+        self.__publish_speech_message("custom", "Ich mochte dich kennen lernen. Darf ich Bilder von dir aufnehmen?")
 
     def __yes_no_keyboard_request(self):
         #TODO: replace with voice detection
@@ -240,6 +244,28 @@ class RobobrainFacedetectionDataHandler():
             self.__publish_speech_message("custom", "Falschen Namen einegeben!")
             return False
 
+    def __create_database(self):
+        retVal = False
+
+        self.__publish_speech_message("custom", "Ich versuche dein Gesicht und dein Namen zu merken")
+        self.__publish_speech_message("custom", "Verzeich mir aber das kann lange dauern")
+        request = rospy.ServiceProxy('/robofriend/facedatabase', SrvFaceDatabaseData)
+        try:
+            self.__publish_led_ears_message(random = "on")
+            response = request(True)
+            if response.database == True:
+                print("[INFO] {} - Creating Database is finished!\n".format(__class__.__name__))
+                self.__publish_speech_message("custom", "Bin mit dem merken fertig!")
+                self.__publish_speech_message("custom", "Willkommen im meinem Freundeskreis")
+                retVal = True
+        except rospy.ServiceException:
+            print("[INFO] {} - Service call failed!\n".format(__class__.__name__))
+            retVal = False
+        except Exception :
+            traceback.print_exc()
+        finally:
+            self.__publish_led_ears_message(random = "off")
+            return retVal
 
     def __publish_speech_message(self, mode, text = None):
         self._msg_speech.mode = mode
