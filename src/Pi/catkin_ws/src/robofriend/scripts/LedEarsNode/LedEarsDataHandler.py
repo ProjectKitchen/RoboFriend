@@ -26,7 +26,7 @@ class LedEarsDataHandler():
         self.__thread.daemon = True
         self.__thread.start()
 
-        self.__iowarrior_pub =  rospy.Publisher('T_IOWARRIOR_DATA', IOWarriorData, queue_size = 10)
+        self.__iowarrior_pub =  rospy.Publisher('/robofriend/io_warrior_data', IOWarriorData, queue_size = 10)
         self.__iowarrior_msg = IOWarriorData()
 
     def process_data(self, data):
