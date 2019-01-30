@@ -1,10 +1,10 @@
 from imutils.video import VideoStream
 from imutils.video import FPS
+from imutils import *
 import rospy
 import threading
 import os
 import face_recognition
-import imutils
 import pickle
 import cv2
 import urllib
@@ -16,6 +16,8 @@ import random
 # import ros message
 from robofriend.msg import CamData
 from robofriend.srv import SrvFaceRecordData, SrvFaceRecordDataResponse
+from robofriend.srv import SrvFaceDatabaseData, SrvFaceDatabaseDataResponse
+
 
 class FaceDetectionDataHandler():
 
@@ -26,10 +28,13 @@ class FaceDetectionDataHandler():
         self.__msg = CamData()
         self.__coordinates = []
 
-        # declare service
-        serv = rospy.Service('/robofriend/facerecord', SrvFaceRecordData, self.__service_handler)
+        # declare face record service
+        serv = rospy.Service('/robofriend/facerecord', SrvFaceRecordData, self.__face_record_service_handler)
 
-        self.__face_record_event = threading.Event()
+        # declare creat database service
+        serv = rospy.Service('/robofriend/facedatabase', SrvFaceDatabaseData, self.__face_create_database_service_handler)
+
+        self.__face_recognition_event = threading.Event()
 
         # initialize the MJPG Stream Url to capture the frame
         self.__vs = None
@@ -44,21 +49,36 @@ class FaceDetectionDataHandler():
         # create and start facerecognition thread
         self.__start_facedetect_thread()
 
-    def __service_handler(self, request):
+    def __face_record_service_handler(self, request):
 
         self.__record_response = ""
 
-        print("[INFO] {} - Request received: Name: {} {}\n".
+        print("[INFO] {} - Face Record Request received: Name: {} {}\n".
             format(self.__class__.__name__, request.name, request.pic_num))
-        self.__received_name = request.name
-        self.__received_pic_num = request.pic_num
 
-        self.__set_event_face_record()
+        self.__set_event_block_face_recognition()
         self.__record_response = self.__record_picture(request)
-        self.__clear_event_face_record()
+        self.__clear_event_block_face_recognition()
 
         print("[INFO] {} - Recording finished!\n".format(self.__class__.__name__))
         return SrvFaceRecordDataResponse(self.__record_response) # response that recording has finished
+
+
+    def __face_create_database_service_handler(self, request):
+        print("[INFO] {} - Creating Database Request received: Name: {}\n".
+            format(self.__class__.__name__, request.create_database))
+
+        self.__set_event_block_face_recognition()
+
+
+        self.__create_database()
+        time.sleep(10)
+
+        self.__clear_event_block_face_recognition()
+
+        print("[INFO] {} - Creating Database finished!\n".format(self.__class__.__name__))
+        return SrvFaceDatabaseDataResponse(True) # response that recording has finished
+
 
     def __face_recog_init(self):
         print("[INFO] {} - Loadings encodings and face detetcted")
@@ -101,7 +121,7 @@ class FaceDetectionDataHandler():
 
     def __face_recognition(self):
         while True:
-            if self.__is_face_record_running() is False:
+            if self.____is_face_recognition_blocked() is False:
                 # grab the frame from the threaded video stream and resize it
                 # to 500px (to speedup processing)
                 if self.__mjpg_stream == True:			# pictures are captured via the stream
@@ -218,11 +238,40 @@ class FaceDetectionDataHandler():
             print("{} - Picture {} is taken!\n".format(__class__.__name__, num))
         return ret_name
 
-    def __set_event_face_record(self):
-        self.__face_record_event.set()
+    def __create_database(self):
+        dataset_path = self.__path + '/dataset'
+        knownEncodings = []
+        knownNames = []
 
-    def __clear_event_face_record(self):
-        self.__face_record_event.clear()
+        image_paths = list(paths.list_images(dataset_path))
+        for (i, image_path) in enumerate (image_paths):
+            print("[INFO] processing image {}/{}".format(i + 1,
+        		len(imagePaths)))
+            name = image_path.split(os.path.sep)[-2]
 
-    def __is_face_record_running(self):
-        return self.__face_record_event.is_set()
+            image = cv2.imread(image_path)
+        	rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+            boxes = face_recognition.face_locations(rgb, model = "hog")
+
+        	encodings = face_recognition.face_encodings(rgb, boxes)
+
+            for encoding in encodings:
+        		knownEncodings.append(encoding)
+        		knownNames.append(name)
+
+        data = {"encodings": knownEncodings, "names": knownNames}
+        f = open("encodings.pickle", "wb+")
+        f.write(pickle.dumps(data))
+        f.close()
+
+
+
+
+    def __set_event_block_face_recognition(self):
+        self.__face_recognition_event.set()
+
+    def __clear_event_block_face_recognition(self):
+        self.__face_recognition_event.clear()
+
+    def ____is_face_recognition_blocked(self):
+        return self.__face_recognition_event.is_set()
