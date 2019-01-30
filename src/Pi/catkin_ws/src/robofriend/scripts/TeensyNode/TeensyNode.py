@@ -1,7 +1,11 @@
 #!/usr/bin/env python
 
-import rospy
+import os, sys, rospy
 import serial
+
+path = os.path.dirname(os.path.abspath(__file__)) + "/.."
+sys.path.append(path)
+import constants
 
 # import ros service
 from robofriend.srv import SrvPCBSensorData
@@ -23,7 +27,7 @@ def Teensy():
     ser = None
 
     try:
-        ser = serial.Serial("/dev/ttyACM0", 9600, timeout = 1)
+        ser = serial.Serial(constants.SER_DEV_TEENSY, constants.SER_DEV_TEENSY_BD, timeout = 1)
         rospy.loginfo("*** Serial for Teensy opened! ***")
     except Exception as inst:
         rospy.logwarn('*** Serial for Teensy could not opened! ***')

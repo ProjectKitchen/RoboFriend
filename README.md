@@ -34,40 +34,17 @@ These game applications are also written in python and are usually launched on a
 
 To get the existing *Python 2.7.x* code compatible for *Python 3.x* following packages must be installed:
 *  mjpg-streamer: [MJPEG-Streamer Install & Setup](https://github.com/cncjs/cncjs/wiki/Setup-Guide:-Raspberry-Pi-%7C-MJPEG-Streamer-Install-&-Setup-&-FFMpeg-Recording)
-* speech engine:
-  * pip install pyttsx3
-  * pip3 install pyttsx3
-  * sudo apt-get update && sudo apt-get install espeak
-* pygame: python3 -m pip install -U pygame --user
-* serial: pip install pyserial --user
-* flask: pip install flask
-* yaml: pip3 install pyyaml --user
 
 **OpenCV 3:**
 * To install OpenCV 3 on a Raspberry Pi 3 follow the following tutorial (except the virtual environment part):
 [OpenCV 3 on Raspberry Pi 3](https://www.pyimagesearch.com/2017/09/04/raspbian-stretch-install-opencv-3-python-on-your-raspberry-pi/)
 
 **Roboter Operating System (ROS):**
-
-* To install ROS on a Ubuntu platform, visit the [official ROS wiki](http://wiki.ros.org/ROS/Installation). There are two main releases at the current time:
-    * ROS Kinetic is available for Ubuntu Xenial (16.04 LTS) and Debian Jessie, among other platform options.
-    * ROS Melodic is avialable for Ubuntu Bionic (18.04 LTS) and Debian Stretch, among other platform options.
-
 * To install ROS on a Rasberry Pi 3 follow the following tutorial:
 [ROS on Raspberry PI 3](https://www.intorobotics.com/how-to-install-ros-kinetic-on-raspberry-pi-3-running-raspbian-stretch-lite/)
 
-* following ROS-packages should also be installed:
-    * sudo apt-get install python-rospkg
-    * (pip3 install rospkg --user)
-
-* ROS on a Rasberry Pi 3 without a GUI:
-    * Download the latest image from this [Website](https://downloads.ubiquityrobotics.com/pi.html) and read the notes.
-
 * LIDAR - 360 laser distance sensor lds-01:
-    * Installation: sudo apt-get install ros-kinetic-hls-lfcd-lds-driver
     * Set permission for LDS-01 sudo chmod a+rw /dev/ttyUSBx
-    * Download the LDS-01's driver: git clone https://github.com/ROBOTIS-GIT/hls_lfcd_lds_driver.git (branch: melodic-devel)
-
 
 * *additional information:*
     * in case of a frozen screen at the installation part: **"sudo ./src/catkin/bin/catkin_make_isolated --install -DCMAKE_BUILD_TYPE=Release --install-space /opt/ros/kinetic -j2"**
