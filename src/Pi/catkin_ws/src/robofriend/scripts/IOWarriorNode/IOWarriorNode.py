@@ -10,4 +10,4 @@ def node_start():
     print("[INFO] ROS IOWarrior Node started!\n")
 
     iowarrior = IOWarriorDataHandler()
-    rospy.Subscriber('T_IOWARRIOR_DATA', IOWarriorData, iowarrior.process_data)
+    rospy.Subscriber('/robofriend/io_warrior_data', IOWarriorData, iowarrior.process_data)
