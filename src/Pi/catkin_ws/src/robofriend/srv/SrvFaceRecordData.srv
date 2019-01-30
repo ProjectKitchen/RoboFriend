@@ -1,6 +1,7 @@
 # Request from Client: RobobrainFaceDetection Node 
 string name
+uint16 pic_num 
 ---
 # Response from Server: FaceDetection Node
-bool response
+string dir_name
 
