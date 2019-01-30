@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 
-import serial
 import rospy
+import serial
+import constants
 
 # import ros services
 from robofriend.srv import SrvRFIDData, SrvRFIDDataResponse
@@ -45,7 +46,7 @@ def RFID():
     ser = None
 
     try:
-        ser = serial.Serial("/dev/ttyUSB3", 9600)
+        ser = serial.Serial(constants.SER_DEV_RFID, constants.SER_DEV_RFID_BD)
         rospy.loginfo("*** Serial for RFID reader opened! ***")
 
     except Exception as inst:

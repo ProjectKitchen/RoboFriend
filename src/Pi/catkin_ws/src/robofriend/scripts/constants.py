@@ -1,7 +1,16 @@
 # coding=utf-8
 
+# Serial Ports
+SER_DEV_LIDAR	= "/dev/ttyUSB0"
+SER_DEV_RFID	= "/dev/ttyUSB1"
+SER_DEV_TEENSY	= "/dev/ttyACM0"
+
+# Serial Baudrate
+SER_DEV_RFID_BD	= 9600
+SER_DEV_TEENSY_BD = 9600
+
 # Battery Level
-BAT_OVERCHARGED = 5
+BAT_OVERCHARGED	= 5
 BAT_FULL = 4
 BAT_GOOD = 3
 BAT_WARNING = 2
