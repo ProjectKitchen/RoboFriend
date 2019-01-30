@@ -54,8 +54,8 @@ def main():
     rospy.Subscriber("/robofriend/infrared_data", IRSensorData, bat.process_ir_data)
     # rospy.Subscriber("/robofriend/odom_data", Pose, odo.process_data)
     # rospy.Subscriber("/robofriend/ir_data",   String, ir.process_data)
-    # rospy.Subscriber("/robofriend/cam_data",  CamData, fd.process_data)
-    # rospy.Subscriber("/robofriend/keyb_data", KeyboardData, key.process_data)
+    rospy.Subscriber("/robofriend/cam_data",  CamData, facedetection.process_data)
+    rospy.Subscriber("/robofriend/keyb_data", KeyboardData, keyboard.process_data)
 
     rate = rospy.Rate(0.2) # 200mhz
 
