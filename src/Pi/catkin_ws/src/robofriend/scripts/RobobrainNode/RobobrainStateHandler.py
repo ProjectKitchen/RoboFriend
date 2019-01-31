@@ -17,7 +17,7 @@ class RobobrainStateHandler():
         self.__state = RobobrainStateHandler.robostate["IDLE"]
         self.__lock = Lock()
         self.__event = event
-        self.__idle_elapse_time = 50         # waits 90 sec to change state if no input from webserver and keyboard
+        self.__idle_elapse_time = 40         # waits 90 sec to change state if no input from webserver and keyboard
         self.__start_thread()
 
     def __start_thread(self):
@@ -29,37 +29,36 @@ class RobobrainStateHandler():
         # print("{} - Thread to handle the states started!".format(self.__class__.__name__))
         while True:
             # ************************* SHUTDOWN *************************
-            if self.__state == RobobrainStateHandler.robostate["SHUTDOWN"]:
+            if self.state == RobobrainStateHandler.robostate["SHUTDOWN"]:
                 print("[INFO] Within SHUTDOWN state")
                 # TODO: Speech module publishen
                 # sleep(5)
                 # os.system("init 0")
             # *************************** IDLE *************************** '''
-            elif self.__state == RobobrainStateHandler.robostate["IDLE"]:
-                # print("[INFO] Within IDLE state")
+            elif self.state == RobobrainStateHandler.robostate["IDLE"]:
+                print("[INFO] Within IDLE state")
                 event_is_set = self.__event.wait(self.__idle_elapse_time)
                 if event_is_set == True:
                     print("Input from either keyboard or webserver therefore stay in IDLE state!")
                     self.__event.clear()
                 else:
                     print("No input within {} sec therefore change state to FACEDETECTION state!".format(self.__idle_elapse_time))
-                    self.__state = RobobrainStateHandler.robostate["FACEDETECTION"]
+                    self.state = RobobrainStateHandler.robostate["FACEDETECTION"]
             # ************************* AUTONOM ************************** '''
-            elif self.__state == RobobrainStateHandler.robostate["AUTONOM"]:
-                print("[INFO] Within AUTONOM state")
+            elif self.state == RobobrainStateHandler.robostate["AUTONOM"]:
+                    print("[INFO] Within AUTONOM state")
             # ************************** MANUAL ************************** '''
-            elif self.__state == RobobrainStateHandler.robostate["MANUAL"]:
-                print("[INFO] Within MANUAL state")
+            elif self.state == RobobrainStateHandler.robostate["MANUAL"]:
+                    print("[INFO] Within MANUAL state")
             # *********************** FACEDETECTION ********************** '''
-            elif self.__state == RobobrainStateHandler.robostate["FACEDETECTION"]:
-                print("[INFO] Within FACEDETECTION state")
-                sleep(100)
-                #TODO: start facedetection process
+            elif self.state == RobobrainStateHandler.robostate["FACEDETECTION"]:
+                    print("[INFO] Within FACEDETECTION state")
+                    sleep(10)
             # ************************** CHARGE ************************** '''
-            elif self.__state == RobobrainStateHandler.robostate["CHARGE"]:
-                print("[INFO] CHARGE state")
+            elif self.state == RobobrainStateHandler.robostate["CHARGE"]:
+                    print("[INFO] CHARGE state")
             # ************************** ADMIN *************************** '''
-            elif self.__state == RobobrainStateHandler.robostate["ADMIN"]:
+            elif self.state == RobobrainStateHandler.robostate["ADMIN"]:
                 print("[INFO] ADMIN state")
             # ************************* UNKNOWN ************************** '''
             else:
