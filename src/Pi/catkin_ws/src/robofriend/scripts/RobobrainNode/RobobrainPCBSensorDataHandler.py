@@ -17,7 +17,7 @@ class RobobrainPCBSensorDataHandler(object):
         self._inf_right = 0
 
     def process_bs_data(self, data):
-        rospy.loginfo("{%s} Battery Data Volt: %.2fV Perc: %.2f%% Status: %d", 
+        rospy.loginfo("{%s} Battery Data Volt: %.2fV Perc: %.2f%% Status: %d",
             self.__class__.__name__,
             self._voltage,
             self._percentage * 100,
@@ -28,9 +28,9 @@ class RobobrainPCBSensorDataHandler(object):
         self._power_supply_status = data.power_supply_status
 
         self._set_robo_state()
-    
+
     def process_ir_data(self, data):
-        rospy.loginfo("{%s} Infrared Data Left: %.2f Middle: %.2f Right: %.2f", 
+        rospy.loginfo("{%s} Infrared Data Left: %.2f Middle: %.2f Right: %.2f",
             self.__class__.__name__,
             self._inf_left,
             self._inf_middle,
@@ -56,9 +56,11 @@ class RobobrainPCBSensorDataHandler(object):
         # elif self._power_supply_status == constants.BAT_UNKNOWN:
         #     rospy.loginfo("{%s} Battery Unknown", self.__class__.__name__)
 
+        #TODO: only change in state tarnsission
+
         if self._power_supply_status == constants.BAT_WARNING:
             self._statehandler.state = constants.RF_CHARGE
         elif self._power_supply_status == constants.BAT_CRITICAL:
             self._statehandler.state = constants.RF_SHUTDOWN
-        else: 
-            self._statehandler.state = constants.RF_IDLE
+        # else:
+        #     self._statehandler.state = constants.RF_IDLE
