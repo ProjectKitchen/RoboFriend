@@ -26,31 +26,14 @@ class RobobrainFacedetectionDataHandler():
         self._bottom = 0
         self._left = 0
         self._name = None
+        self._face_node_started = False
 
         self._statehandler = sh
         self._keyboard_queue = queue
 
-        # init publishers
-        # TODO: chance topics
-        self._pub_speech = rospy.Publisher('/robofriend/speech_data', SpeechData, queue_size = 10)
-        self._pub_led_ears = rospy.Publisher('/robofriend/led_ears_data', LedEarsData, queue_size = 10)
-        self._pub_servo_cam = rospy.Publisher('/robofriend/servo_cam_data', ServoCamData, queue_size = 10)
-
-        self._msg_speech = SpeechData()
-        self._msg_led_ears = LedEarsData()
-        self._msg_servo_cam = ServoCamData()
-
-        self.__start_thread()
-        self._elapse_time = 30
-        self._search_new_face = Event()
-
-        ##################################
-        # uncomment when Facedetection Node is running, otherwise service waits
-        #rospy.wait_for_service('/robofriend/facerecord')
-        ##################################
-
         # amount of recorded pictures
         self.__pic_record = 10
+        self._elapse_time = 30
 
         self.__record_pic_speech = {1  : "Erstes", \
                                     2  : "Zweites", \
@@ -63,9 +46,31 @@ class RobobrainFacedetectionDataHandler():
                                     9  : "Neuntes", \
                                     10 : "Zehnets"}
 
+        # init publishers
+        self._pub_speech = rospy.Publisher('/robofriend/speech_data', SpeechData, queue_size = 10)
+        self._pub_led_ears = rospy.Publisher('/robofriend/led_ears_data', LedEarsData, queue_size = 10)
+        self._pub_servo_cam = rospy.Publisher('/robofriend/servo_cam_data', ServoCamData, queue_size = 10)
+
+        self._msg_speech = SpeechData()
+        self._msg_led_ears = LedEarsData()
+        self._msg_servo_cam = ServoCamData()
+        self._search_new_face = Event()
+
+        try:
+            rospy.wait_for_service('/robofriend/facerecord', timeout = self._elapse_time)
+            rospy.wait_for_service('/robofriend/facedatabase', timeout = self._elapse_time)
+        except rospy.ROSException:
+            rospy.logwarn("{%s} - Facedetection-Node was not able to start therefore no facerecognition possible",
+                self.__class__.__name__)
+            self._face_node_started = False
+        else:
+            rospy.logdebug("{%s} - Facedection Node started!", self.__class__.__name__)
+            self._face_node_started = True
+
+        self.__start_thread()
+
     def process_data(self, data):
         print("[INFO] {} - Received message: {} ".format(self.__class__.__name__, data))
-        #if self._actual_state == self._facedetection_states["FACE_SEARCH"] and self.__is_facesearching_activated():
         if self.__is_facesearching_activated():
             self._top = data.top
             self._right = data.right
@@ -85,38 +90,42 @@ class RobobrainFacedetectionDataHandler():
     def __facedetection_handler_thread(self):
         while True:
             while self._statehandler.state == RobobrainStateHandler.robostate["FACEDETECTION"]:
-                face_detectded, face_grade = self.__face_search()
-                self.__stop_searching_new_face()
-                if  face_detectded is True:
-                    print("Face detected! Further steps are activated!\n")
-                    self.__publish_speech_message("custom", "Ich habe jemanden gefunden")
-                    if face_grade != "unknown":
-                        self.__known_face_speech(face_grade)
-                        #TODO: Do something in case of a known face
-                    elif face_grade == "unknown":
-                        self.__unknown_face_speech()
-                        if self.__yes_no_keyboard_request() is True:
-                            print("[INFO] {} - Start recording Pictures!\n".format(self.__class__.__name__))
-                            if self.__start_recording_faces() is True:    # start recording faces
-                                print("[INFO] {} - Faces are recorded!\n".format(self.__class__.__name__))
-                                #TODO: start creating new database
-                                if self.__create_database() == True:
-                                    print("[INFO] {} - New Database created!\n".format(self.__class__.__name__))
-
-                            else:
-                                #TODO: When no name is entered!!
-                                print("[INFO] {} - No name entered!\n".format(self.__class__.__name__))
-                                break
-                        else:
-                            self.__publish_speech_message("custom", "Ich darf mit fremden Leuten nicht reden")
-                            print("[INFO] {} - Recording Pictures not allowed! Start searching new face\n".format(self.__class__.__name__))
-                            break
-                elif face_detectded is False:
-                    # self.__stop_searching_new_face()
-                    self.__publish_speech_message("custom", "Keine menschensseele hier!")
-                    print("[INFO] No Face detected within {} seconds! Change State to IDLE State\n".format(self._elapse_time))
+                if self._face_node_started is False:
+                    rospy.logdebug("{%s} - Facedection Node not started therefore change to IDLE - State", self.__class__.__name__)
                     self._statehandler.state = RobobrainStateHandler.robostate["IDLE"]
-                    break
+                elif self._face_node_started is True:
+                    face_detectded, face_grade = self.__face_search()
+                    self.__stop_searching_new_face()
+                    if  face_detectded is True:
+                        print("Face detected! Further steps are activated!\n")
+                        self.__publish_speech_message("custom", "Ich habe jemanden gefunden")
+                        if face_grade != "unknown":
+                            self.__known_face_speech(face_grade)
+                            #TODO: Do something in case of a known face
+                        elif face_grade == "unknown":
+                            self.__unknown_face_speech()
+                            if self.__yes_no_keyboard_request() is True:
+                                print("[INFO] {} - Start recording Pictures!\n".format(self.__class__.__name__))
+                                if self.__start_recording_faces() is True:    # start recording faces
+                                    print("[INFO] {} - Faces are recorded!\n".format(self.__class__.__name__))
+                                    #TODO: start creating new database
+                                    if self.__create_database() == True:
+                                        print("[INFO] {} - New Database created!\n".format(self.__class__.__name__))
+
+                                else:
+                                    #TODO: When no name is entered!!
+                                    print("[INFO] {} - No name entered!\n".format(self.__class__.__name__))
+                                    break
+                            else:
+                                self.__publish_speech_message("custom", "Ich darf mit fremden Leuten nicht reden")
+                                print("[INFO] {} - Recording Pictures not allowed! Start searching new face\n".format(self.__class__.__name__))
+                                break
+                    elif face_detectded is False:
+                        # self.__stop_searching_new_face()
+                        self.__publish_speech_message("custom", "Keine menschensseele hier!")
+                        print("[INFO] No Face detected within {} seconds! Change State to IDLE State\n".format(self._elapse_time))
+                        self._statehandler.state = RobobrainStateHandler.robostate["IDLE"]
+                        break
             else:
                 sleep(1)
 
