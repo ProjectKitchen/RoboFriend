@@ -1,7 +1,8 @@
 # Request from Client: RobobrainFaceDetection Node 
+bool check_name
 string name
-uint16 pic_num 
 ---
 # Response from Server: FaceDetection Node
-string dir_name
+bool check_name_resp    # True: directory with name already exists / False: no directory with this name
+bool picture_taken
 
