@@ -33,6 +33,7 @@ class RobobrainFacedetectionDataHandler():
 
         # amount of recorded pictures
         self.__pic_record = 10
+
         self._elapse_time = 30
 
         self.__record_pic_speech = {1  : "Erstes", \
@@ -44,7 +45,7 @@ class RobobrainFacedetectionDataHandler():
                                     7  : "Siebentes", \
                                     8  : "Achtes", \
                                     9  : "Neuntes", \
-                                    10 : "Zehnets"}
+                                    10 : "Zehntes"}
 
         # init publishers
         self._pub_speech = rospy.Publisher('/robofriend/speech_data', SpeechData, queue_size = 10)
@@ -65,6 +66,9 @@ class RobobrainFacedetectionDataHandler():
             self._face_node_started = False
         else:
             rospy.logdebug("{%s} - Facedection Node started!", self.__class__.__name__)
+            self.__facerecord_request = rospy.ServiceProxy('/robofriend/facerecord', SrvFaceRecordData)
+            self.__facedatabase_request = rospy.ServiceProxy('/robofriend/facedatabase', SrvFaceDatabaseData)
+
             self._face_node_started = True
 
         self.__start_thread()
@@ -101,20 +105,23 @@ class RobobrainFacedetectionDataHandler():
                         self.__publish_speech_message("custom", "Ich habe jemanden gefunden")
                         if face_grade != "unknown":
                             self.__known_face_speech(face_grade)
-                            #TODO: Do something in case of a known face
+
+                            ##############################################
+                            #TODO: Ask if new pictures should be taken!!
+                            ##############################################
+
                         elif face_grade == "unknown":
                             self.__unknown_face_speech()
                             if self.__yes_no_keyboard_request() is True:
                                 rospy.logdebug("{%s} - Start recording Pictures!\n", self.__class__.__name__)
                                 if self.__start_recording_faces() is True:    # start recording faces
                                     rospy.logdebug("{%s} - Faces are recorded!\n", self.__class__.__name__)
-                                    #TODO: start creating new database
-                                    if self.__create_database() == True:
+
+                                    if self.__create_database() is True:    #TODO: stop when recording new faces
                                         rospy.logdebug("{%s} - New Database created!\n", self.__class__.__name__)
 
-                                else:
-                                    #TODO: When no name is entered!!
-                                    rospy.logdebug("{%s} - No name entered!\n", self.__class__.__name__)
+                                elif self.__start_recording_faces() is False:
+                                    rospy.logwarn("{%s} - Recording new faces failed!\n", self.__class__.__name__)
                                     break
                             else:
                                 self.__publish_speech_message("custom", "Ich darf mit fremden Leuten nicht reden")
@@ -174,11 +181,10 @@ class RobobrainFacedetectionDataHandler():
 
     def __yes_no_keyboard_request(self):
         #TODO: replace with voice detection
-        print("[INFO] Waiting for yes or no!\n")
+        rospy.logdebug("{%s} - Waiting for yes or no!\n", self.__class__.__name__)
         retVal, keyboard_input = self.__evaluate_keyboard_inputs()
-        print("[INFO] Entered Phrase: {}\n".format(keyboard_input))
         if retVal != True:
-            return None
+            return False
         else:
             keyboard_input.lower()
             if keyboard_input == "ja" or keyboard_input == 'yes':
@@ -194,74 +200,155 @@ class RobobrainFacedetectionDataHandler():
             while self.__time_request() - start_time < self._elapse_time:
                 keyboard_input = self._keyboard_queue.get(timeout = self._elapse_time)
                 if keyboard_input == "enter":
-                    print("[INFO] {} - Enter is pressed!\n")
+                    rospy.logdebug("{%s} - Enter is pressed!\n", self.__class__.__name__)
                     return True, retString
                 elif keyboard_input == "backspace":
                     retString = retString[:len(retString) - 1]
+                    rospy.loginfo("{%s} - String after backspace: {%s}",
+                        self.__class__.__name__, retString)
                 else:
                     retString += keyboard_input
-                    print(retString)
+                    rospy.loginfo("{%s} - String: {%s}",
+                        self.__class__.__name__, retString)
             else:
-                print("[INFO] {} - Loop stopped since enter button not pressed!")
+                rospy.logdebug("{%s} - Loop stopped since enter button not pressed!",
+                    self.__class__.__name__)
+                self.__publish_speech_message("custom", "Du hast nicht enter getippt!")
                 return False, None
         except Empty:
-            print("[INFO] {} - Timeout occured within {} seconds!\n"
-                .format(self.__class__.__name__, self._elapse_time))
+            rospy.logdebug("{%s} - Timeout occured within {%s} seconds!\n"
+                , self.__class__.__name__, self._elapse_time)
+            self.__publish_speech_message("custom", "Du warst mit der eingabe zu langsam")
             return False, None
 
         # send request to start recording faces and wait until all faces are recorded
     def __start_recording_faces(self):
         retVal = False
         recording_response = None
+        name_lastname = None
 
         self.__publish_speech_message("custom", "Bitte Namen eintippen!")
         retVal, name = self.__evaluate_keyboard_inputs()
-        if retVal == True:
-            speech_str = 'Danke   ' + name
-            self.__publish_speech_message("custom", speech_str)
-            self.__publish_speech_message("custom", "Ich starte mit der aufnahme von 10 Bildern!")
-            self.__publish_speech_message("custom", "Bitte lachen")
-
-            request = rospy.ServiceProxy('/robofriend/facerecord', SrvFaceRecordData)
-
-            try:
-                self.__publish_led_ears_message(random = "on")
-                for cnt in range(1, self.__pic_record + 1):     # to start from 1 up to self.__pic_record
-                    print("[INFO] {} - Sending request and Waiting for response!\n".format(__class__.__name__))
-                    recording_response = request(name, cnt)
-                    if recording_response.dir_name is not name:
-                        name = recording_response.dir_name               # in case when requested name already exists
-                    try:
-                        self.__publish_speech_message("custom", "{} Bild aufgenommen!".format(self.__record_pic_speech[cnt]))
-                    except KeyError:
-                        self.__publish_speech_message("custom", "Weiteres Bild aufgenommen!")
-                    except Exception:
-                        traceback.print_exc()
-                    sleep(3)
-                print("[INFO] {} - Recording new faces finished!\n".format(__class__.__name__))
-                retVal = True
-                self.__publish_speech_message("custom", "Bin mit er aufnahme fertig")
-            except rospy.ServiceException:
-                print("[INFO] {} - Service call failed!".format(__class__.__name__))
+        if retVal is True:
+            name = name.lower()
+            check_database = self.__check_name_database()
+            if check_database is None:
+                rospy.logwarn("{%s} - Error while checking name in database!",
+                    self.__class__.__name__)
                 retVal = False
-            except Exception :
-                traceback.print_exc()
-            finally:
-                self.__publish_led_ears_message(random = "off")
                 return retVal
-        elif retVal == False:
+
+             if check_database is False:
+                if self.__take_picture_new_face(name) is False:
+                    retVal = False
+                    return retVal
+                else:
+                    rospy.logdebug("{%s} - Recording new {%s} faces finished!",
+                        self.__class__.__name__, str(self.__pic_record))
+                    retVal = True
+                    return retVal
+            elif check_database is True:
+                self.__publish_speech_message("custom", "Ich kenne bereits eine Person mit diesem Namen!")
+                self.__publish_speech_message("custom", "Bitte gebe deinen Namen mit deinem Nachnamen ein!")
+
+                while name_lastname is None or name_lastname == name:
+                    retVal, name_lastname = self.__evaluate_keyboard_inputs()
+                    if name_lastname == name:
+                        self.__publish_speech_message("custom", "Bitte unterschiedlichen Namen eingeben!")
+                else:
+                    rospy.loginfo("{%s} - Different name entered!", self.__class__.__name__)
+                    self.__publish_speech_message("custom", "Hallo {}!".format(name_lastname))
+                    name_lastname = None
+                    if self.__take_picture_new_face(name) is False:
+                        retVal = False
+                        return retVal
+                    else:
+                        rospy.logdebug("{%s} - Recording new {%s} faces finished!",
+                            self.__class__.__name__, str(self.__pic_record))
+                        retVal = True
+                        return retVal
+        elif retVal is False:
+            rospy.logdebug("{%s} - No name entered", self.__class__.__name__)
             self.__publish_speech_message("custom", "Falschen Namen einegeben!")
-            return False
+            return retVal
+
+    def __take_picture_new_face(name):
+        retVal = False
+
+        self.__publish_speech_message("custom", "Hallo {}!".format(name))
+        self.__publish_speech_message("custom", "Ich starte mit der aufnahme von zehn Bildern!")
+        for cnt in range(1, self.__pic_record + 1):
+            if self.__take_pictures(name) is False:
+                retVal = False
+                return retVal
+            else:
+                 try:
+                    self.__publish_speech_message("custom", "{} Bild aufgenommen!".format(self.__record_pic_speech[cnt]))
+                 except KeyError:
+                     self.__publish_speech_message("custom", "Weiteres Bild aufgenommen!")
+                 except Exception:
+                     traceback.print_exc()
+                     raise
+            sleep(2)
+        rospy.logdebug("{%s} - Recording new faces finished!\n",
+            self.__class__.__name__)
+        retVal = True
+        self.__publish_speech_message("custom", "Bin mit er aufnahme fertig")
+        return retVal
+
+
+    def __take_pictures(name):
+        enter = None
+        retVal = False
+        rospy.loginfo("{%s} - Request for recording new picture!\n",
+            self.__class__.__name)
+
+        self.__publish_led_ears_message(rgb_color = [15, 0, 0]) # to flush the ears in red
+        self.__publish_speech_message("custom", "Enter tippen wenn das Foto aufgenommen werden soll")
+        while enter is not "":
+            retVal, enter = self.__evaluate_keyboard_inputs()
+            if retVal is False:
+                self.__publish_speech_message("custom", "Bitte enter eingeben")
+            elif enter is not "":
+                self.__publish_speech_message("custom", "Bitte nur enter eingeben")
+        else:
+            rospy.logdebug("{%s} - Sending request and waiting for response!\n",
+                self.__class__.__name__)
+            recording_response = self.__facerecord_request(check_name = False, name = name)
+            if recoring_response.picture_taken is True:
+                self.__publish_led_ears_message(rgb_color = [0, 15, 0])
+                self.__publish_speech_message("custom", "Foto aufgenommen")
+                rospy.logdebug("{%s} - New Picture reorded!", self.__class__.__name__)
+                retVal = True
+                return retVal
+            elif recording_response.picture_taken is False:
+                rospy.logerr("{%s} - Error while recording new picture",
+                    self.__class__.__name__)
+                retVal = False
+                return retVal
+
+    def __check_name_database(self, name):
+        retVal = None
+        try:
+            response = self.__facerecord_request(check_name = True, name = name)
+         except rospy.ServiceException:
+                rospy.logwarn("{%s} - Service call failed!", self.__class__.__name__)
+                retVal = None                       # return None in case of an error
+        if response.check_name_response is False:
+            rospy.logdebug("{%s} - No directory with that name!\n", self.__class__.__name__)
+            return False                             # return False if no directory with this name exists
+        elif response.name_response is True:
+            rospy.logdebug("{%s} - Directory with this name in database!\n", self.__class__.__name__)
+            return True                             # return True if a directory with this name already exists
 
     def __create_database(self):
         retVal = False
 
         self.__publish_speech_message("custom", "Ich versuche dein Gesicht und dein Namen zu merken")
         self.__publish_speech_message("custom", "Verzeich mir aber das kann lange dauern")
-        request = rospy.ServiceProxy('/robofriend/facedatabase', SrvFaceDatabaseData)
         try:
             self.__publish_led_ears_message(random = "on")
-            response = request(True)
+            response = self.__facedatabase_request(True)
             if response.database == True:
                 print("[INFO] {} - Creating Database is finished!\n".format(__class__.__name__))
                 self.__publish_speech_message("custom", "Bin mit dem merken fertig!")
