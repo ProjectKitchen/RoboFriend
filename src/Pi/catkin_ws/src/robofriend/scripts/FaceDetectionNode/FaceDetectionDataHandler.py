@@ -53,15 +53,15 @@ class FaceDetectionDataHandler():
 
         self.__record_response = ""
 
-        print("[INFO] {} - Face Record Request received: Name: {} {}\n".
-            format(self.__class__.__name__, request.name, request.pic_num))
-
-        self.__set_event_block_face_recognition()
-        self.__record_response = self.__record_picture(request)
-        self.__clear_event_block_face_recognition()
-
-        print("[INFO] {} - Recording finished!\n".format(self.__class__.__name__))
-        return SrvFaceRecordDataResponse(self.__record_response) # response that recording has finished
+        # print("[INFO] {} - Face Record Request received: Name: {} {}\n".
+        #     format(self.__class__.__name__, request.name, request.pic_num))
+        #
+        # self.__set_event_block_face_recognition()
+        # self.__record_response = self.__record_picture(request)
+        # self.__clear_event_block_face_recognition()
+        #
+        # print("[INFO] {} - Recording finished!\n".format(self.__class__.__name__))
+        # return SrvFaceRecordDataResponse(self.__record_response) # response that recording has finished
 
 
     def __face_create_database_service_handler(self, request):
