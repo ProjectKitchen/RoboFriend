@@ -105,10 +105,12 @@ class RobobrainFacedetectionDataHandler():
                         self.__publish_speech_message("custom", "Ich habe jemanden gefunden")
                         if face_grade != "unknown":
                             self.__known_face_speech(face_grade)
+                            if self.__take_picture_known_face(face_grade) is True:
+                                self.__create_database()
 
-                            ##############################################
-                            #TODO: Ask if new pictures should be taken!!
-                            ##############################################
+                            ##########################################################
+                            #TODO: Do mething in case of known face
+                            ##########################################################
 
                         elif face_grade == "unknown":
                             self.__unknown_face_speech()
@@ -117,11 +119,8 @@ class RobobrainFacedetectionDataHandler():
                                 if self.__start_recording_faces() is True:    # start recording faces
                                     rospy.loginfo("{%s} - Faces are recorded!\n", self.__class__.__name__)
 
+                                    self.__create_database()    #TODO: stop when recording new faces
 
-
-
-                                    if self.__create_database() is True:    #TODO: stop when recording new faces
-                                        rospy.logdebug("{%s} - New Database created!\n", self.__class__.__name__)
 
                                 elif self.__start_recording_faces() is False:
                                     rospy.logwarn("{%s} - Recording new faces failed!\n", self.__class__.__name__)
@@ -181,6 +180,29 @@ class RobobrainFacedetectionDataHandler():
         self.__publish_led_ears_message(rgb_color = [15, 0, 0]) # to flush the ears in red
         self.__publish_speech_message("custom", "Ich kenne dich nicht!")
         self.__publish_speech_message("custom", "Ich mochte dich kennen lernen. Darf ich Bilder von dir aufnehmen?")
+
+    def __take_picture_known_face(self, name):
+        runFlag = True
+        cnt = 0
+
+        self.__publish_speech_message("custom", "Magst du weitere Bilder aufnehmen?")
+        self.__publish_speech_message("custom", "Gebe ja oder nein ein?")
+        if self.__yes_no_keyboard_request() is True:
+            while runFlag is True:
+                if self.__take_pictures(name) is True:
+                    cnt += 1
+                    self.__publish_speech_message("custom", "Fur weiteres Bild ja eingeben oder nein um es zu stopen")
+                else:
+                    return False
+                runFlag = self.__yes_no_keyboard_request()
+            else:
+                rospy.loginfo("{%s} - %s new pictures are recorded!\n",
+                    self.__class__.__name__, str(cnt))
+                return True
+        else:
+            rospy.loginfo("{%s} - Person rejected to record new pictures!\n",
+                self.__class__.__name__)
+            return False
 
     def __yes_no_keyboard_request(self):
         #TODO: replace with voice detection
@@ -365,6 +387,8 @@ class RobobrainFacedetectionDataHandler():
             traceback.print_exc()
         finally:
             self.__publish_led_ears_message(random = "off")
+            if retVal is True:
+                rospy.logdebug("{%s} - New Database created!\n", self.__class__.__name__)
             return retVal
 
     def __publish_speech_message(self, mode, text = None):
