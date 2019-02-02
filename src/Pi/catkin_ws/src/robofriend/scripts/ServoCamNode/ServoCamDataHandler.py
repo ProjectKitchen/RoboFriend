@@ -18,8 +18,9 @@ class ServoCamDataHandler():
     def process_data(self, data):
         self.__max_min = data.max_min
         self.__diff = data.diff
-        print("[INFO] {} - Received Data: {}"
-                .format(self.__class__.__name__, data))
+        rospy.logdebug("{%s} - Received data: %s",
+            self.__class__.__name__, str(data))
+
         self.__diff_calc()
 
     def __diff_calc(self):
@@ -40,4 +41,5 @@ class ServoCamDataHandler():
         self.__iowarrior_msg.rgb = []
         self.__iowarrior_msg.cam_pos = cam_position
         self.__iowarrior_pub.publish(self.__iowarrior_msg)
-        print("[INFO] {} - Publish message to IOWarrior Node: {}\n".format(self.__class__.__name__, self.__iowarrior_msg))
+        rospy.logdebug("{%s} - Publish message to IOWarrior Node: {%s}",
+            self.__class__.__name__, str(self.__iowarrior_msg))

@@ -74,7 +74,8 @@ class RobobrainFacedetectionDataHandler():
         self.__start_thread()
 
     def process_data(self, data):
-        print("[INFO] {} - Received message: {} ".format(self.__class__.__name__, data))
+        rospy.logdebug("{%s} - Received message: {%s}",
+            self.__class__.__name__, str(data))
         if self.__is_facesearching_activated():
             self._top = data.top
             self._right = data.right
@@ -375,8 +376,8 @@ class RobobrainFacedetectionDataHandler():
         try:
             self.__publish_led_ears_message(random = "on")
             response = self.__facedatabase_request(True)
-            if response.database == True:
-                print("[INFO] {} - Creating Database is finished!\n".format(__class__.__name__))
+            if response.response == True:
+                print("[INFO] {} - Creating Database is finished!\n".format(self.__class__.__name__))
                 self.__publish_speech_message("custom", "Bin mit dem merken fertig!")
                 self.__publish_speech_message("custom", "Willkommen im meinem Freundeskreis")
                 retVal = True
@@ -395,17 +396,20 @@ class RobobrainFacedetectionDataHandler():
         self._msg_speech.mode = mode
         self._msg_speech.text = text
         self._pub_speech.publish(self._msg_speech)
-        print("[INFO] {} - Speech Published Data: {}\n".format(self.__class__.__name__, self._msg_speech))
+        rospy.logdebug("{%s} - Speech published data: {%s}",
+            self.__class__.__name__, str(self._msg_speech))
 
     def __publish_led_ears_message(self, random = "", repeat_num = [0, 0], rgb_color = []):
         self._msg_led_ears.random = random
         self._msg_led_ears.repeat_num = repeat_num
         self._msg_led_ears.rgb_color = rgb_color
         self._pub_led_ears.publish(self._msg_led_ears)
-        print("[INFO] {} - Ears/Led Published Data: {}\n".format(self.__class__.__name__, self._msg_led_ears))
+        rospy.logdebug("{%s} - Led Ears published data: {%s}",
+            self.__class__.__name__, str(self._msg_led_ears))
 
     def __publish_servo_cam_message(self, max_min = "", diff = 0):
         self._msg_servo_cam.max_min = max_min
         self._msg_servo_cam.diff = diff
         self._pub_servo_cam.publish(self._msg_servo_cam)
-        print("[INFO] {} - Servo Camera Published Data: {}\n".format(self.__class__.__name__, self._msg_servo_cam))
+        rospy.logdebug("{%s} -  Servo Camera published data: {%s}",
+            self.__class__.__name__, str(self._msg_servo_cam))
