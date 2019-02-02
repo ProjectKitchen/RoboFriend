@@ -264,7 +264,7 @@ class FaceDetectionDataHandler():
         image_paths = list(paths.list_images(dataset_path))
         for (i, image_path) in enumerate (image_paths):
             print("[INFO] processing image {}/{}".format(i + 1,
-                len(imagePaths)))
+                len(image_paths)))
             name = image_path.split(os.path.sep)[-2]
 
             image = cv2.imread(image_path)
