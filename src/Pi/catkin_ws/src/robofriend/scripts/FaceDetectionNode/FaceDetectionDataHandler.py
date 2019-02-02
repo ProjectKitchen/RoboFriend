@@ -278,9 +278,9 @@ class FaceDetectionDataHandler():
                 knownNames.append(name)
 
         data = {"encodings": knownEncodings, "names": knownNames}
-        f = open("encodings.pickle", "wb+")
-        f.write(pickle.dumps(data))
-        f.close()
+        with open(os.path.join(self.__path, "encodings.pickle"), "wb+") as file:
+            f.write(pickle.dumps(data))
+            #f.close()
 
     def __set_event_block_face_recognition(self):
         self.__face_recognition_event.set()
