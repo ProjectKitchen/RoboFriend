@@ -115,7 +115,10 @@ class RobobrainFacedetectionDataHandler():
                             if self.__yes_no_keyboard_request() is True:
                                 rospy.logdebug("{%s} - Start recording Pictures!\n", self.__class__.__name__)
                                 if self.__start_recording_faces() is True:    # start recording faces
-                                    rospy.logdebug("{%s} - Faces are recorded!\n", self.__class__.__name__)
+                                    rospy.loginfo("{%s} - Faces are recorded!\n", self.__class__.__name__)
+
+
+
 
                                     if self.__create_database() is True:    #TODO: stop when recording new faces
                                         rospy.logdebug("{%s} - New Database created!\n", self.__class__.__name__)
@@ -200,23 +203,25 @@ class RobobrainFacedetectionDataHandler():
             while self.__time_request() - start_time < self._elapse_time:
                 keyboard_input = self._keyboard_queue.get(timeout = self._elapse_time)
                 if keyboard_input == "enter":
-                    rospy.logdebug("{%s} - Enter is pressed!\n", self.__class__.__name__)
+                    rospy.loginfo("{%s} - Enter is pressed!\n", self.__class__.__name__)
                     return True, retString
                 elif keyboard_input == "backspace":
                     retString = retString[:len(retString) - 1]
-                    rospy.loginfo("{%s} - String after backspace: {%s}",
+                    rospy.loginfo("{%s} - String after backspace: {%s}\n",
                         self.__class__.__name__, retString)
+                elif keyboard_input == "space":
+                    retString += " "
                 else:
                     retString += keyboard_input
-                    rospy.loginfo("{%s} - String: {%s}",
+                    rospy.loginfo("{%s} - String: {%s}\n",
                         self.__class__.__name__, retString)
             else:
-                rospy.logdebug("{%s} - Loop stopped since enter button not pressed!",
+                rospy.loginfo("{%s} - Loop stopped since enter button not pressed!\n",
                     self.__class__.__name__)
                 self.__publish_speech_message("custom", "Du hast nicht enter getippt!")
                 return False, None
         except Empty:
-            rospy.logdebug("{%s} - Timeout occured within {%s} seconds!\n"
+            rospy.loginfo("{%s} - Timeout occured within {%s} seconds!\n"
                 , self.__class__.__name__, self._elapse_time)
             self.__publish_speech_message("custom", "Du warst mit der eingabe zu langsam")
             return False, None
@@ -231,14 +236,14 @@ class RobobrainFacedetectionDataHandler():
         retVal, name = self.__evaluate_keyboard_inputs()
         if retVal is True:
             name = name.lower()
-            check_database = self.__check_name_database()
-            if check_database is None:
+            check_database = self.__check_name_database(name)
+            if check_database is None:          # in case of an error
                 rospy.logwarn("{%s} - Error while checking name in database!",
                     self.__class__.__name__)
                 retVal = False
                 return retVal
 
-             if check_database is False:
+            if check_database is False:       # no directory available with this name => therefore create new directory
                 if self.__take_picture_new_face(name) is False:
                     retVal = False
                     return retVal
@@ -247,7 +252,7 @@ class RobobrainFacedetectionDataHandler():
                         self.__class__.__name__, str(self.__pic_record))
                     retVal = True
                     return retVal
-            elif check_database is True:
+            elif check_database is True:   # a directory with the entered name already exists
                 self.__publish_speech_message("custom", "Ich kenne bereits eine Person mit diesem Namen!")
                 self.__publish_speech_message("custom", "Bitte gebe deinen Namen mit deinem Nachnamen ein!")
 
@@ -257,9 +262,7 @@ class RobobrainFacedetectionDataHandler():
                         self.__publish_speech_message("custom", "Bitte unterschiedlichen Namen eingeben!")
                 else:
                     rospy.loginfo("{%s} - Different name entered!", self.__class__.__name__)
-                    self.__publish_speech_message("custom", "Hallo {}!".format(name_lastname))
-                    name_lastname = None
-                    if self.__take_picture_new_face(name) is False:
+                    if self.__take_picture_new_face(name_lastname) is False:
                         retVal = False
                         return retVal
                     else:
@@ -272,7 +275,7 @@ class RobobrainFacedetectionDataHandler():
             self.__publish_speech_message("custom", "Falschen Namen einegeben!")
             return retVal
 
-    def __take_picture_new_face(name):
+    def __take_picture_new_face(self, name):
         retVal = False
 
         self.__publish_speech_message("custom", "Hallo {}!".format(name))
@@ -297,28 +300,29 @@ class RobobrainFacedetectionDataHandler():
         return retVal
 
 
-    def __take_pictures(name):
+    def __take_pictures(self, name):
         enter = None
         retVal = False
         rospy.loginfo("{%s} - Request for recording new picture!\n",
-            self.__class__.__name)
+            self.__class__.__name__)
 
         self.__publish_led_ears_message(rgb_color = [15, 0, 0]) # to flush the ears in red
         self.__publish_speech_message("custom", "Enter tippen wenn das Foto aufgenommen werden soll")
         while enter is not "":
             retVal, enter = self.__evaluate_keyboard_inputs()
+            rospy.loginfo("{%s} - Entered Input: {%s}\n",
+                self.__class__.__name__, str(enter))
             if retVal is False:
                 self.__publish_speech_message("custom", "Bitte enter eingeben")
             elif enter is not "":
                 self.__publish_speech_message("custom", "Bitte nur enter eingeben")
         else:
-            rospy.logdebug("{%s} - Sending request and waiting for response!\n",
+            rospy.loginfo("{%s} - Sending request and waiting for response!\n",
                 self.__class__.__name__)
             recording_response = self.__facerecord_request(check_name = False, name = name)
-            if recoring_response.picture_taken is True:
+            if recording_response.picture_taken is True:
                 self.__publish_led_ears_message(rgb_color = [0, 15, 0])
-                self.__publish_speech_message("custom", "Foto aufgenommen")
-                rospy.logdebug("{%s} - New Picture reorded!", self.__class__.__name__)
+                rospy.loginfo("{%s} - New Picture reorded!", self.__class__.__name__)
                 retVal = True
                 return retVal
             elif recording_response.picture_taken is False:
@@ -331,14 +335,14 @@ class RobobrainFacedetectionDataHandler():
         retVal = None
         try:
             response = self.__facerecord_request(check_name = True, name = name)
-         except rospy.ServiceException:
+        except rospy.ServiceException:
                 rospy.logwarn("{%s} - Service call failed!", self.__class__.__name__)
                 retVal = None                       # return None in case of an error
-        if response.check_name_response is False:
-            rospy.logdebug("{%s} - No directory with that name!\n", self.__class__.__name__)
+        if response.check_name_resp is False:
+            rospy.loginfo("{%s} - No directory with that name!\n", self.__class__.__name__)
             return False                             # return False if no directory with this name exists
-        elif response.name_response is True:
-            rospy.logdebug("{%s} - Directory with this name in database!\n", self.__class__.__name__)
+        elif response.check_name_resp is True:
+            rospy.loginfo("{%s} - Directory with this name in database!\n", self.__class__.__name__)
             return True                             # return True if a directory with this name already exists
 
     def __create_database(self):
