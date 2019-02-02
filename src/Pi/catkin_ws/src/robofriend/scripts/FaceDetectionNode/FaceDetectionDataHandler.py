@@ -1,6 +1,6 @@
 from imutils.video import VideoStream
 from imutils.video import FPS
-from imutils import *
+from imutils import paths
 import rospy
 import threading
 import os
@@ -48,37 +48,6 @@ class FaceDetectionDataHandler():
 
         # create and start facerecognition thread
         self.__start_facedetect_thread()
-
-    def __face_record_service_handler(self, request):
-
-        self.__record_response = ""
-
-        # print("[INFO] {} - Face Record Request received: Name: {} {}\n".
-        #     format(self.__class__.__name__, request.name, request.pic_num))
-        #
-        # self.__set_event_block_face_recognition()
-        # self.__record_response = self.__record_picture(request)
-        # self.__clear_event_block_face_recognition()
-        #
-        # print("[INFO] {} - Recording finished!\n".format(self.__class__.__name__))
-        # return SrvFaceRecordDataResponse(self.__record_response) # response that recording has finished
-
-
-    def __face_create_database_service_handler(self, request):
-        print("[INFO] {} - Creating Database Request received: Name: {}\n".
-            format(self.__class__.__name__, request.create_database))
-
-        self.__set_event_block_face_recognition()
-
-
-        self.__create_database()
-        time.sleep(10)
-
-        self.__clear_event_block_face_recognition()
-
-        print("[INFO] {} - Creating Database finished!\n".format(self.__class__.__name__))
-        return SrvFaceDatabaseDataResponse(True) # response that recording has finished
-
 
     def __face_recog_init(self):
         print("[INFO] {} - Loadings encodings and face detetcted")
@@ -203,40 +172,88 @@ class FaceDetectionDataHandler():
 
                 time.sleep(0.2)
 
-    def __record_picture(self, request):
-        p = ""
-        ret_name = ""
-        name = request.name
-        num = request.pic_num
+    def __face_record_service_handler(self, request):
+        retVal = False
+        num = 0
 
-        dataset_path = self.__path + '/dataset'
+        rospy.loginfo("{%s} - Face record request received: {%s} {%s}\n",
+            self.__class__.__name__, str(request.check_name), str(request.name))
 
-        if num == 1 and name not in os.listdir(dataset_path):   # no folder with this name exist
-            ret_name = name
-            dataset_path += "/" + str(name)
-            os.makedirs(dataset_path)
-            print("{} - New folder created: {}\n".format(__class__.__name__, dataset_path))
-        elif num == 1 and name in os.listdir(dataset_path):    # folder with this name aready exist
-            rand_name = name + "_" + str(random.randint(1, 10000))
-            dataset_path += "/" + str(rand_name)
-            os.makedirs(dataset_path)
-            ret_name = rand_name
-            print("{} - Folder with same name but random ending created: {}\n"
-                .format(__class__.__name__, dataset_path))
-        elif  num > 1 and name in os.listdir(dataset_path):
-            dataset_path += "/" + str(name)
-            print("{} - Directory already exists: {}\n"
-                .format(__class__.__name__, dataset_path))
-            ret_name = name
+        if request.check_name is True:
+            check_name = self.__check_name_database(request.name)
+            if check_name is True:
+                return SrvFaceRecordDataResponse(check_name_resp = True, picture_taken = False)
+            elif check_name is False:
+                return SrvFaceRecordDataResponse(check_name_resp = False, picture_taken = False)
+        elif request.check_name is False:
+            rospy.loginfo("{%s} - Starting with recording of new faces\n",
+                self.__class__.__name__)
+            check_name = self.__check_name_database(request.name)
+            if check_name is True:
+                num = self.__count_images(request.name)
+            elif check_name is False:
+                num = self.__create_dir(request.name)
+
+            self.__set_event_block_face_recognition()
+            if self.__record_picture(request.name, num) is True:
+                retVal = True
+            else:
+                retVal = False
+            self.__clear_event_block_face_recognition()
+
+            return SrvFaceRecordDataResponse(check_name_resp = True, picture_taken = retVal)
+
+    def __check_name_database(self, name):
+        path = self.__path + "/dataset"
+        if name in os.listdir(path):
+            return True         # when directory with this name already exists
+        else:
+            return False        # when no directory with this name exists
+
+    def __count_images(self, name):
+        path = self.__path + "/dataset" + "/" + name
+        return len(list(paths.list_images(path)))
+
+    def __create_dir(self, name):
+        path = self.__path + "/dataset" + "/" + name
+        os.makedirs(path)
+        rospy.loginfo("{%s} - New directory with the name %s created",
+            self.__class__.__name__, name)
+        return 0
+
+    def __record_picture(self, name, num):
+        retVal = False
+        path = self.__path + "/dataset" + "/" + name
 
         frame = self.__vs.read()
-        p = os.path.sep.join([dataset_path, "{}.png".format(
+        p = os.path.sep.join([path, "{}.png".format(
             str(num).zfill(5))])
 
         write_status = cv2.imwrite(p, frame)
-        if write_status == True:
-            print("{} - Picture {} is taken!\n".format(__class__.__name__, num))
-        return ret_name
+        if write_status is True:
+            rospy.loginfo("{%s} - Picture %s is recorded\n",
+                self.__class__.__name__, num)
+            retVal = True
+        elif write_status is False:
+            rospy.logwerr("{%s} - Picture could not be recorded!\n",
+                self.__class__.__name__)
+            retVal = False
+        return retVal
+
+    def __face_create_database_service_handler(self, request):
+        print("[INFO] {} - Creating Database Request received: Name: {}\n".
+            format(self.__class__.__name__, request.create_database))
+
+        self.__set_event_block_face_recognition()
+
+
+        self.__create_database()
+        time.sleep(10)
+
+        self.__clear_event_block_face_recognition()
+
+        print("[INFO] {} - Creating Database finished!\n".format(self.__class__.__name__))
+        return SrvFaceDatabaseDataResponse(True) # response that recording has finished
 
     def __create_database(self):
         dataset_path = self.__path + '/dataset'
@@ -263,9 +280,6 @@ class FaceDetectionDataHandler():
         f = open("encodings.pickle", "wb+")
         f.write(pickle.dumps(data))
         f.close()
-
-
-
 
     def __set_event_block_face_recognition(self):
         self.__face_recognition_event.set()
