@@ -242,14 +242,14 @@ class FaceDetectionDataHandler():
         return retVal
 
     def __face_create_database_service_handler(self, request):
-        print("[INFO] {} - Creating Database Request received: Name: {}\n".
+        print("[INFO] {} - Creating Database Request received: {}\n".
             format(self.__class__.__name__, request.create_database))
 
         self.__set_event_block_face_recognition()
 
 
         self.__create_database()
-        time.sleep(10)
+        #time.sleep(10)
 
         self.__clear_event_block_face_recognition()
 
@@ -279,7 +279,7 @@ class FaceDetectionDataHandler():
 
         data = {"encodings": knownEncodings, "names": knownNames}
         with open(os.path.join(self.__path, "encodings.pickle"), "wb+") as file:
-            f.write(pickle.dumps(data))
+            file.write(pickle.dumps(data))
             #f.close()
 
     def __set_event_block_face_recognition(self):
