@@ -29,6 +29,7 @@ from SpeechNode import *
 from LedEarsNode import *
 from ServoCamNode import *
 from IOWarriorNode import *
+from VoiceDetectionNode import *
 
 # globals
 roscore = None
@@ -85,6 +86,8 @@ def main():
 	ServoCamNode.node_start()
 	print("Done ... start IOWarrior Node")
 	IOWarriorNode.node_start()
+	print("Done ... start Voice Detection Node")
+	VoiceDetectionNode.node_start()
 
 
 
