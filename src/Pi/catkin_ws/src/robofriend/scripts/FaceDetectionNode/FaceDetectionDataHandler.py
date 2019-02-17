@@ -32,7 +32,7 @@ class FaceDetectionDataHandler():
         # declare face record service
         serv = rospy.Service('/robofriend/facerecord', SrvFaceRecordData, self.__face_record_service_handler)
 
-        # declare creat database service
+        # declare database service
         serv = rospy.Service('/robofriend/facedatabase', SrvFaceDatabaseData, self.__face_create_database_service_handler)
 
         self.__face_recognition_event = threading.Event()
