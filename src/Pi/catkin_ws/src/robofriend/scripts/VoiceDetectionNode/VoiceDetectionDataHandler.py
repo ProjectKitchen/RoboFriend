@@ -1,17 +1,18 @@
 import paho.mqtt.client as mqtt
 import paho.mqtt.publish as publish
+import threading 
 import rospy
 import json
 
 # import ros messages and services
-#from robofriend.srv import SrvVoiceHotwordActivation, SrvVoiceHotwordActivationResponse
+from robofriend.srv import SrvVoiceHotwordActivationData, SrvVoiceHotwordActivationDataResponse
 
 class VoiceDetectionDataHandler():
 
     def __init__(self):
 
         # declare voice hotword detection service
-        #serv = rospy.Service('/robofriend/voicehotword', SrvVoiceHotwordActivation, self._voice_hotword_activation_service_handler)
+        serv = rospy.Service('/robofriend/voicehotword', SrvVoiceHotwordActivationData, self._voice_hotword_activation_service_handler)
 
         self._house_room = ['living_room', 'bedroom', 'kitchen']
         self._on_off = ['on', 'off']
@@ -19,7 +20,18 @@ class VoiceDetectionDataHandler():
         self._host = 'localhost'
         self._port = 1883
 
-        self._mqtt_client_init()
+        self._start_mqtt_thread()
+
+    def _start_mqtt_thread(self):
+        thread = threading.Thread(
+            target = self._mqtt_client_init
+        )
+
+        # set thread as a daemon
+        thread.daemon = True
+
+        # start thread
+        thread.start()
 
     def _mqtt_client_init(self):
         self._client = mqtt.Client()
@@ -70,10 +82,12 @@ class VoiceDetectionDataHandler():
         else:
             return False
 
-    # def _voice_hotword_activation_service_handler(self, request):
-    #     rospy.logdebug("{%s} - Voice hotword activation request received!\n",
-    #         self.__class__.__name__)
-    #     self._activate_hotword()
+    def _voice_hotword_activation_service_handler(self, request):
+        rospy.logdebug("{%s} - Voice hotword activation request received!\n",
+            self.__class__.__name__)
+        self._activate_hotword()
+        return SrvVoiceHotwordActivationDataResponse(True)
+
 
     def _activate_hotword(self):
         publish.single('hermes/hotword/default/detected', payload=json.dumps(
