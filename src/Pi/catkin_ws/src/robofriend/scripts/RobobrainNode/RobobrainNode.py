@@ -15,6 +15,7 @@ from robofriend.msg import KeyboardData
 from RobobrainFacedetectionDataHandler import *
 from RobobrainKeyboardDataHandler import *
 from RobobrainPCBSensorDataHandler import *
+from RobobrainVoicedetectionHandler import *
 from RobobrainStateHandler import *
 
 def shutdown():
@@ -37,15 +38,18 @@ def main():
     # sets actual state to IDLE and starts thread
     statehandler = RobobrainStateHandler(event)
 
-    #keyboard_queue = queue.Queue()
+    # keyboard queue to communicate from RobobrainKeyboard to RobobrainFaceDetection
     keyboard_queue = Queue()
+
+    # voice queue to coomunicate from RobobrainVoice to RobobrainFaceDetection
+    voice_queue = Queue()
 
     bat = RobobrainPCBSensorDataHandler(statehandler)
     # odo = RobobrainOdometryDataHandler()
     # ir  = RobobrainInfraredDataHandler()
     keyboard = RobobrainKeyboardDataHandler(statehandler, event, keyboard_queue)
-    # TODO: this is not working
-    facedetection = RobobrainFacedetectionDataHandler(statehandler, keyboard_queue)
+    voicedetection = RobobrainVoicedetectionHandler(statehandler, voice_queue)
+    facedetection = RobobrainFacedetectionDataHandler(statehandler, keyboard_queue, voice_queue)
 
     # TODO: this can be managed in an easier way
     # publish_handler = RobobrainPublisherHandler(topics)
@@ -56,6 +60,7 @@ def main():
     # rospy.Subscriber("/robofriend/ir_data",   String, ir.process_data)
     rospy.Subscriber("/robofriend/cam_data",  CamData, facedetection.process_data)
     rospy.Subscriber("/robofriend/keyb_data", KeyboardData, keyboard.process_data)
+    rospy.Subscriber("/robofriend/voice_data", VoiceData, voicedetection.process_data)
 
     rate = rospy.Rate(0.2) # 200mhz
 
