@@ -6,7 +6,7 @@ import threading
 from Queue import *
 
 # import ROS messages
-from sensor_msgs.msg import BatteryState
+#from sensor_msgs.msg import BatteryState
 from robofriend.msg import IRSensorData
 from robofriend.msg import CamData
 from robofriend.msg import KeyboardData
@@ -54,7 +54,7 @@ def main():
     # TODO: this can be managed in an easier way
     # publish_handler = RobobrainPublisherHandler(topics)
 
-    rospy.Subscriber("/robofriend/battery_state", BatteryState, bat.process_bs_data)
+    #rospy.Subscriber("/robofriend/battery_state", BatteryState, bat.process_bs_data)
     rospy.Subscriber("/robofriend/infrared_data", IRSensorData, bat.process_ir_data)
     # rospy.Subscriber("/robofriend/odom_data", Pose, odo.process_data)
     # rospy.Subscriber("/robofriend/ir_data",   String, ir.process_data)
