@@ -15,7 +15,7 @@ def main():
     print("[INFO] Ros FaceDetection Node started!\n!")
 
 #    rospy.init_node('FaceDetection_node', anonymous = True)
-    facedetect = FaceDetectionDataHandler()
+#    facedetect = FaceDetectionDataHandler()
 
 def node_start():
     print("[INFO] Ros FaceDetection Node started!\n!")
