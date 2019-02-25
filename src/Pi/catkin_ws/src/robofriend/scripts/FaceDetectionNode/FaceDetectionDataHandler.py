@@ -96,7 +96,7 @@ class FaceDetectionDataHandler():
                 # to 500px (to speedup processing)
                 if self.__mjpg_stream == True:			# pictures are captured via the stream
                     self.__vs = cv2.VideoCapture(self.__url)
-                    stat, frame = vs.read()
+                    stat, frame = self.__vs.read()
                 else:
                     print("Testttt")
                     frame = self.__vs.read()
