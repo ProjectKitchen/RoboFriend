@@ -15,7 +15,7 @@ from robofriend.msg import KeyboardData
 from RobobrainFacedetectionDataHandler import *
 from RobobrainKeyboardDataHandler import *
 from RobobrainPCBSensorDataHandler import *
-from RobobrainVoicedetectionHandler import *
+from RobobrainVoicedetectionDataHandler import *
 from RobobrainStateHandler import *
 
 def shutdown():
@@ -60,7 +60,7 @@ def main():
     # rospy.Subscriber("/robofriend/ir_data",   String, ir.process_data)
     rospy.Subscriber("/robofriend/cam_data",  CamData, facedetection.process_data)
     rospy.Subscriber("/robofriend/keyb_data", KeyboardData, keyboard.process_data)
-    rospy.Subscriber("/robofriend/voice_data", VoiceData, voicedetection.process_data)
+    #rospy.Subscriber("/robofriend/voice_data", VoiceData, voicedetection.process_data)
 
     rate = rospy.Rate(0.2) # 200mhz
 

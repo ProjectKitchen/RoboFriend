@@ -20,7 +20,7 @@ from robofriend.msg import ServoCamData
 
 class RobobrainFacedetectionDataHandler():
 
-    def __init__(self, sh, queue):
+    def __init__(self, sh, queue, vc_queue):
         self._top = 0
         self._right = 0
         self._bottom = 0
@@ -104,6 +104,8 @@ class RobobrainFacedetectionDataHandler():
                     if  face_detectded is True:
                         rospy.logdebug("{%s} - Face detected! Further steps are activated!\n", self.__class__.__name__)
                         self.__publish_speech_message("custom", "Ich habe jemanden gefunden")
+                        rospy.logwarn(face_grade)
+                        face_grade .lower()
                         if face_grade != "unknown":
                             self.__known_face_speech(face_grade)
                             if self.__take_picture_known_face(face_grade) is True:

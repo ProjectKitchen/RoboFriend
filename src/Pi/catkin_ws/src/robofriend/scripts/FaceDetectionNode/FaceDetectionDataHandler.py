@@ -98,6 +98,7 @@ class FaceDetectionDataHandler():
                     self.__vs = cv2.VideoCapture(self.__url)
                     stat, frame = vs.read()
                 else:
+                    print("Testttt")
                     frame = self.__vs.read()
 
                 #Flip camera vertically
@@ -132,7 +133,7 @@ class FaceDetectionDataHandler():
                         # encodings
                         matches = face_recognition.compare_faces(self.__data["encodings"],
                             encoding)
-                        name = "Unknown"
+                        name = "unknown"
 
                         # check to see if we have found a match
                         if True in matches:

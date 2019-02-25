@@ -76,7 +76,7 @@ def main():
 	KeyboardNode.node_start()
 	print("Done ... starting FaceModue")
 	faceModule.drawFace()
-	print("Done ... starting RosFacedetectionNode")
+	#print("Done ... starting RosFacedetectionNode")
 	FaceDetectionNode.node_start()
 	print("Done ... start Speech Node")
 	SpeechNode.node_start()
