@@ -4,7 +4,7 @@ path = os.path.dirname(os.path.abspath(__file__)) + "/.."
 sys.path.append(path)
 import constants
 
-from RobobrainStateHandler import *
+from RobobrainNode.RobobrainStateHandler import *
 
 class RobobrainPCBSensorDataHandler(object):
     def __init__(self, sh):

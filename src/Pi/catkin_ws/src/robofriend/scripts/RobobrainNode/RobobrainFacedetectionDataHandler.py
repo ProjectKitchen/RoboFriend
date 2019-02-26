@@ -1,14 +1,14 @@
 #from RobobrainStateHandler import *
 
-from RobobrainStateHandler import *
+from RobobrainNode.RobobrainStateHandler import *
 
 from threading import *
 from time import *
 #from queue import *
-from Queue import *
+from queue import *
 import rospy
 import traceback
-import urllib2
+from urllib.request import urlopen
 
 # import ros service
 from robofriend.srv import SrvFaceRecordData
@@ -60,6 +60,8 @@ class RobobrainFacedetectionDataHandler():
         self._msg_servo_cam = ServoCamData()
         self._search_new_face = Event()
 
+        self._voice_hotword = rospy.ServiceProxy('/robofriend/voicehotword', SrvVoiceHotwordActivationData)
+
         try:
             rospy.wait_for_service('/robofriend/facerecord', timeout = self._elapse_time)
             rospy.wait_for_service('/robofriend/facedatabase', timeout = self._elapse_time)
@@ -71,7 +73,7 @@ class RobobrainFacedetectionDataHandler():
             rospy.logdebug("{%s} - Facedection Node started!", self.__class__.__name__)
             self.__facerecord_request = rospy.ServiceProxy('/robofriend/facerecord', SrvFaceRecordData)
             self.__facedatabase_request = rospy.ServiceProxy('/robofriend/facedatabase', SrvFaceDatabaseData)
-            self._voice_hotword = rospy.ServiceProxy('/robofriend/voicehotword', SrvVoiceHotwordActivationData)
+            
 
             self._face_node_started = True
 
@@ -115,9 +117,8 @@ class RobobrainFacedetectionDataHandler():
                             if self.__take_picture_known_face(face_grade) is True:
                                 self.__create_database()
 
-                            # start voice interaction
-                            while True:
-                                self._voice_interaction()
+                            # start voice interaction            
+                            self._voice_interaction()
 
                             ##########################################################
                             #TODO: Do mething in case of known face
@@ -403,32 +404,52 @@ class RobobrainFacedetectionDataHandler():
             return retVal
 
     def _voice_interaction(self):
-        yes_no = ""
+        yes_no = None
 
         self.__publish_speech_message("custom", "Da wir uns kennen hast du die volle kontrolle uber mein zu Hause")
-        while yes_no is not "nein":
+        sleep(3)
+        while yes_no is not False:
             self.__publish_speech_message("custom", "Was mochtest du in meiner Wohnunng steuern")
+            sleep(3)
             response = self._voice_hotword(True)
-            if response is True:
+            if response.response is True:
+                rospy.logwarn("Response is True")
                 self.__evaluate_voice_inputs()
+            
+            #TODO: check response, process should continue if voce detecion is finished
+            sleep(1)
+            self.__publish_speech_message("custom", "Mochtest du weiter machen tippe ja oder nein ein")
+            yes_no = self.__yes_no_keyboard_request()
+                
 
     def __evaluate_voice_inputs(self):
+        
+        start_time = self.__time_request()
         try:
             while self.__time_request() - start_time < self._elapse_time:
-                vc_input = self._vc_queue.get(timeout = self._elapse_time)
-                rosp.logwarn("Voiceeeee intent received")
-
-                sep_mes = vc_input.split("/")
-                #######################################
+                vc_input = self._vc_queue.get(timeout = self._elapse_time)           
+                
+                rospy.logwarn("Seperated message: {%s}", vc_input)
+                rospy.logwarn("Seperated message: {%s}", type(vc_input))
+                print("-------vc input: {}".format(vc_input))
+                sep_mes = vc_input.slots.split("/")
+                rospy.logwarn("Seperated message: {%s}", sep_mes)
                 if vc_input.intent == "lights":
                     if sep_mes[1] == "on":
-                        if sep_mes[0] == "living_room":
-                            urllib2.urlopen("http://172.22.0.166:8081/rest/runtime/model/components/67-111-109-109-97-110-100-73-110-112-117-116-/ports/105-110-/data/64-75-78-88-58-49-49-47-48-47-48-44-49-46-48-48-49-44-111-110-")
+                        if sep_mes[0] == "living room":
+                            urlopen("http://172.22.0.166:8081/rest/runtime/model/components/67-111-109-109-97-110-100-73-110-112-117-116-/ports/105-110-/data/64-75-78-88-58-49-49-47-48-47-48-44-49-46-48-48-49-44-111-110-")
+                            rospy.logwarn("Lights on!!")
                         elif sep_mes[1] == "kitchen":
+                            urlopen("http://172.22.0.166:8081/rest/runtime/model/components/67-111-109-109-97-110-100-73-110-112-117-116-/ports/105-110-/data/64-75-78-88-58-49-49-47-48-47-56-44-49-46-48-48-49-44-111-110-")
                             rospy.logwarn("Wir sind in der Kuche")                   
                     elif sep_mes[1] == "off":
-                        urllib2.urlopen("http://172.22.0.166:8081/rest/runtime/model/components/67-111-109-109-97-110-100-73-110-112-117-116-/ports/105-110-/data/64-75-78-88-58-49-49-47-48-47-48-44-49-46-48-48-49-44-111-102-102-")
-
+                        if sep_mes[0] == "living room":
+                            urlopen("http://172.22.0.166:8081/rest/runtime/model/components/67-111-109-109-97-110-100-73-110-112-117-116-/ports/105-110-/data/64-75-78-88-58-49-49-47-48-47-48-44-49-46-48-48-49-44-111-102-102-")
+                            rospy.logwarn("living room off!!")
+                        elif sep_mes[0] == "kitchen":
+                            urlopen("http://172.22.0.166:8081/rest/runtime/model/components/67-111-109-109-97-110-100-73-110-112-117-116-/ports/105-110-/data/64-75-78-88-58-49-49-47-48-47-56-44-49-46-48-48-49-44-111-102-102-")
+                            rospy.logwarn("kitchen room off!!")
+                    break
             else:
                 rospy.loginfo("{%s} - Loop stopped since nothing said!\n",
                     self.__class__.__name__)

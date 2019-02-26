@@ -23,6 +23,7 @@ import keyboardModule as keyboardModule
 from systemModule import *
 
 # import ROS modules
+from RobobrainNode import *
 from FaceDetectionNode import *
 from KeyboardNode import *
 from SpeechNode import *
@@ -61,13 +62,14 @@ def main():
 	time.sleep(2)
 
 	print("Starting Robofriend Startup ...")
-	rosrobo = RosRobo()
-	rosrobo.run()
+	#rosrobo = RosRobo()
+	#rosrobo.run()
 
 
 
 	# TODO
 	rospy.init_node('Robofriend_node', anonymous = True)
+	
 	print("Done ... starting Webserver!")
 	webserverModule.start()
 	print("Done ... starting Gamecommunicator")
@@ -76,7 +78,7 @@ def main():
 	KeyboardNode.node_start()
 	print("Done ... starting FaceModue")
 	faceModule.drawFace()
-	#print("Done ... starting RosFacedetectionNode")
+	print("Done ... starting RosFacedetectionNode")
 	FaceDetectionNode.node_start()
 	print("Done ... start Speech Node")
 	SpeechNode.node_start()
@@ -88,6 +90,7 @@ def main():
 	IOWarriorNode.node_start()
 	print("Done ... start Voice Detection Node")
 	VoiceDetectionNode.node_start()
+	RobobrainNode.node_start()
 
 
 
