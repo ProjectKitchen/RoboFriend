@@ -60,6 +60,7 @@ add_message_files(
    LedEarsData.msg
    ServoCamData.msg
    IOWarriorData.msg
+   VoiceData.msg
 )
 
 ## Generate services in the 'srv' folder

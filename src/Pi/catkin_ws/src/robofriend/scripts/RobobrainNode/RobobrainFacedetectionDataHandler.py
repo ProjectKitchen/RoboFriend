@@ -407,7 +407,7 @@ class RobobrainFacedetectionDataHandler():
 
         self.__publish_speech_message("custom", "Da wir uns kennen hast du die volle kontrolle uber mein zu Hause")
         while yes_no is not "nein":
-            self.__publish_speech_message("custom", "Was möchtest du in meiner Wohnung steuern")
+            self.__publish_speech_message("custom", "Was mochtest du in meiner Wohnunng steuern")
             response = self._voice_hotword(True)
             if response is True:
                 self.__evaluate_voice_inputs()
@@ -424,6 +424,9 @@ class RobobrainFacedetectionDataHandler():
                     if sep_mes[1] == "on":
                         if sep_mes[0] == "living_room":
                             urlib2.urlopen("http://172.22.0.166:8081/rest/runtime/model/components/67-111-109-109-97-110-100-73-110-112-117-116-/ports/105-110-/data/64-75-78-88-58-49-49-47-48-47-48-44-49-46-48-48-49-44-111-110-")
+                        elif sep_mes[1] == "kitchen":
+                            rospy.logwarn("Wir sind in der Kuche")
+                            pass
                     else sep_mes[1] == "off":
                         urlib2.urlopen("http://172.22.0.166:8081/rest/runtime/model/components/67-111-109-109-97-110-100-73-110-112-117-116-/ports/105-110-/data/64-75-78-88-58-49-49-47-48-47-48-44-49-46-48-48-49-44-111-102-102-")
 
