@@ -38,6 +38,7 @@ class RobobrainFacedetectionDataHandler():
         self.__pic_record = 10
 
         self._elapse_time = 30
+        self._elapse_time_voice = 15
 
         self.__record_pic_speech = {1  : "Erstes", \
                                     2  : "Zweites", \
@@ -410,7 +411,7 @@ class RobobrainFacedetectionDataHandler():
         sleep(3)
         while yes_no is not False:
             self.__publish_speech_message("custom", "Was mochtest du in meiner Wohnunng steuern")
-            sleep(3)
+            sleep(2)
             response = self._voice_hotword(True)
             if response.response is True:
                 rospy.logwarn("Response is True")
@@ -426,35 +427,26 @@ class RobobrainFacedetectionDataHandler():
         
         start_time = self.__time_request()
         try:
-            while self.__time_request() - start_time < 10:
-                vc_input = self._vc_queue.get(timeout = self._elapse_time)           
-                
-                rospy.logwarn("Seperated message: {%s}", vc_input)
-                rospy.logwarn("Seperated message: {%s}", type(vc_input))
-                print("-------vc input: {}".format(vc_input))
-                sep_mes = vc_input.slots.split("/")
-                rospy.logwarn("Seperated message: {%s}", sep_mes)
-                if vc_input.intent == "lights":
-                    if sep_mes[1] == "on":
-                        if sep_mes[0] == "living room":
-                            urlopen("http://172.22.0.166:8081/rest/runtime/model/components/67-111-109-109-97-110-100-73-110-112-117-116-/ports/105-110-/data/64-75-78-88-58-49-49-47-48-47-48-44-49-46-48-48-49-44-111-110-")
-                            rospy.logwarn("Lights on!!")
-                        elif sep_mes[1] == "kitchen":
-                            urlopen("http://172.22.0.166:8081/rest/runtime/model/components/67-111-109-109-97-110-100-73-110-112-117-116-/ports/105-110-/data/64-75-78-88-58-49-49-47-48-47-56-44-49-46-48-48-49-44-111-110-")
-                            rospy.logwarn("Wir sind in der Kuche")                   
-                    elif sep_mes[1] == "off":
-                        if sep_mes[0] == "living room":
-                            urlopen("http://172.22.0.166:8081/rest/runtime/model/components/67-111-109-109-97-110-100-73-110-112-117-116-/ports/105-110-/data/64-75-78-88-58-49-49-47-48-47-48-44-49-46-48-48-49-44-111-102-102-")
-                            rospy.logwarn("living room off!!")
-                        elif sep_mes[0] == "kitchen":
-                            urlopen("http://172.22.0.166:8081/rest/runtime/model/components/67-111-109-109-97-110-100-73-110-112-117-116-/ports/105-110-/data/64-75-78-88-58-49-49-47-48-47-56-44-49-46-48-48-49-44-111-102-102-")
-                            rospy.logwarn("kitchen room off!!")
-                    break
+            vc_input = self._vc_queue.get(timeout = self._elapse_time_voice)           
+            sep_mes = vc_input.slots.split("/")
+            rospy.logwarn("Seperated message: {%s}", sep_mes)
+            if vc_input.intent == "lights":
+                if sep_mes[1] == "on":
+                    if sep_mes[0] == "living room":
+                        urlopen("http://172.22.0.166:8081/rest/runtime/model/components/67-111-109-109-97-110-100-73-110-112-117-116-/ports/105-110-/data/64-75-78-88-58-49-49-47-48-47-48-44-49-46-48-48-49-44-111-110-")
+                        rospy.logwarn("Lights on!!")
+                    elif sep_mes[1] == "kitchen":
+                        urlopen("http://172.22.0.166:8081/rest/runtime/model/components/67-111-109-109-97-110-100-73-110-112-117-116-/ports/105-110-/data/64-75-78-88-58-49-49-47-48-47-56-44-49-46-48-48-49-44-111-110-")
+                        rospy.logwarn("Wir sind in der Kuche")                   
+                elif sep_mes[1] == "off":
+                    if sep_mes[0] == "living room":
+                        urlopen("http://172.22.0.166:8081/rest/runtime/model/components/67-111-109-109-97-110-100-73-110-112-117-116-/ports/105-110-/data/64-75-78-88-58-49-49-47-48-47-48-44-49-46-48-48-49-44-111-102-102-")
+                        rospy.logwarn("living room off!!")
+                    elif sep_mes[0] == "kitchen":
+                        urlopen("http://172.22.0.166:8081/rest/runtime/model/components/67-111-109-109-97-110-100-73-110-112-117-116-/ports/105-110-/data/64-75-78-88-58-49-49-47-48-47-56-44-49-46-48-48-49-44-111-102-102-")
+                        rospy.logwarn("kitchen room off!!")
             else:
-                rospy.loginfo("{%s} - Loop stopped since nothing said!\n",
-                    self.__class__.__name__)
-                self.__publish_speech_message("custom", "Du hast nichts gesagt!")
-                return False, None
+                self.__publish_speech_message("custom", "Ich habe dich nicht verstanden")
         except Empty:
             rospy.loginfo("{%s} - Timeout occured within {%s} seconds!\n"
                 , self.__class__.__name__, self._elapse_time)
