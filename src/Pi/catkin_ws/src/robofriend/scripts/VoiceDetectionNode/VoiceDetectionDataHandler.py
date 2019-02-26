@@ -98,7 +98,7 @@ class VoiceDetectionDataHandler():
         port=1883)
 
     def _message_publish(self, intent, slot):
-        rospy.logwarn("Message send: %s %s!", intent, slot)
         self._msg.intent = intent
-        self._msg.slots = slots
+        self._msg.slots = slot
+        rospy.logwarn("Message send: %s!", self._msg)
         self._pub.publish(self._msg)

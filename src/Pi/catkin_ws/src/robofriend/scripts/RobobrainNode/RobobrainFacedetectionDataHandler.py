@@ -426,7 +426,7 @@ class RobobrainFacedetectionDataHandler():
         
         start_time = self.__time_request()
         try:
-            while self.__time_request() - start_time < self._elapse_time:
+            while self.__time_request() - start_time < 10:
                 vc_input = self._vc_queue.get(timeout = self._elapse_time)           
                 
                 rospy.logwarn("Seperated message: {%s}", vc_input)
@@ -453,12 +453,12 @@ class RobobrainFacedetectionDataHandler():
             else:
                 rospy.loginfo("{%s} - Loop stopped since nothing said!\n",
                     self.__class__.__name__)
-                self.__publish_speech_message("custom", "Du hast nicht enter getippt!")
+                self.__publish_speech_message("custom", "Du hast nichts gesagt!")
                 return False, None
         except Empty:
             rospy.loginfo("{%s} - Timeout occured within {%s} seconds!\n"
                 , self.__class__.__name__, self._elapse_time)
-            self.__publish_speech_message("custom", "Du warst mit der eingabe zu langsam")
+            self.__publish_speech_message("custom", "Du hast nichts gesagt")
             return False, None
 
     def __publish_speech_message(self, mode, text = None):
