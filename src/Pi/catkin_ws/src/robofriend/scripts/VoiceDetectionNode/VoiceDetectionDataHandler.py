@@ -1,11 +1,12 @@
 import paho.mqtt.client as mqtt
 import paho.mqtt.publish as publish
-import threading 
+import threading
 import rospy
 import json
 
 # import ros messages and services
 from robofriend.srv import SrvVoiceHotwordActivationData, SrvVoiceHotwordActivationDataResponse
+from robofriend.msg import VoiceData
 
 class VoiceDetectionDataHandler():
 
@@ -19,6 +20,9 @@ class VoiceDetectionDataHandler():
 
         self._host = 'localhost'
         self._port = 1883
+
+        self._pub = rospy.Publisher('/robofriend/voice_data', VoiceData, queue_size = 10)
+        self._msg = VoiceData()
 
         self._start_mqtt_thread()
 
@@ -67,11 +71,10 @@ class VoiceDetectionDataHandler():
                 if room is False or action is False:
                     rospy.logwarn("{%s} - Wrong phrase!\n",
                         self.__class__.__name__)
-                    #TODO: send false
                 else:
                     rospy.logdebug("{%s} - Right slotvalues detected!\n",
                         self.__class__.__name__)
-                    #TODO: send elements
+                    self.__message_publish("lights", str(room) + "/" + str(action))
 
     def _check_slot_value(self, slotamount, payload, list):
         for cnt in range(slotamount):
@@ -93,3 +96,7 @@ class VoiceDetectionDataHandler():
         publish.single('hermes/hotword/default/detected', payload=json.dumps(
         {'siteId': 'default', 'modelId': 'robofriend-ts'}), hostname='localhost',
         port=1883)
+
+    def _message_publish(self, intent, slot):
+        self._msg.intent = intent
+        self._msg.slots = slots

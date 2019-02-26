@@ -10,6 +10,7 @@ from Queue import *
 from robofriend.msg import IRSensorData
 from robofriend.msg import CamData
 from robofriend.msg import KeyboardData
+from robofriend.msg import VoiceData
 
 # import ROS modules
 from RobobrainFacedetectionDataHandler import *
@@ -60,7 +61,7 @@ def main():
     # rospy.Subscriber("/robofriend/ir_data",   String, ir.process_data)
     rospy.Subscriber("/robofriend/cam_data",  CamData, facedetection.process_data)
     rospy.Subscriber("/robofriend/keyb_data", KeyboardData, keyboard.process_data)
-    #rospy.Subscriber("/robofriend/voice_data", VoiceData, voicedetection.process_data)
+    rospy.Subscriber("/robofriend/voice_data", VoiceData, voicedetection.process_data)
 
     rate = rospy.Rate(0.2) # 200mhz
 

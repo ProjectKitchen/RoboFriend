@@ -8,10 +8,12 @@ from time import *
 from Queue import *
 import rospy
 import traceback
+import urlib2
 
 # import ros service
 from robofriend.srv import SrvFaceRecordData
 from robofriend.srv import SrvFaceDatabaseData
+from robofriend.srv import SrvVoiceHotwordActivationData
 
 # import ros messages
 from robofriend.msg import SpeechData
@@ -30,6 +32,7 @@ class RobobrainFacedetectionDataHandler():
 
         self._statehandler = sh
         self._keyboard_queue = queue
+        self._vc_queue = vc_queue
 
         # amount of recorded pictures
         self.__pic_record = 10
@@ -68,6 +71,7 @@ class RobobrainFacedetectionDataHandler():
             rospy.logdebug("{%s} - Facedection Node started!", self.__class__.__name__)
             self.__facerecord_request = rospy.ServiceProxy('/robofriend/facerecord', SrvFaceRecordData)
             self.__facedatabase_request = rospy.ServiceProxy('/robofriend/facedatabase', SrvFaceDatabaseData)
+            self._voice_hotword = rospy.ServiceProxy('/robofriend/voicehotword', SrvVoiceHotwordActivationDatar)
 
             self._face_node_started = True
 
@@ -110,6 +114,10 @@ class RobobrainFacedetectionDataHandler():
                             self.__known_face_speech(face_grade)
                             if self.__take_picture_known_face(face_grade) is True:
                                 self.__create_database()
+
+                            # start voice interaction
+                            while True:
+                                self._voice_interaction()
 
                             ##########################################################
                             #TODO: Do mething in case of known face
@@ -393,6 +401,42 @@ class RobobrainFacedetectionDataHandler():
             if retVal is True:
                 rospy.logdebug("{%s} - New Database created!\n", self.__class__.__name__)
             return retVal
+
+    def _voice_interaction(self):
+        yes_no = ""
+
+        self.__publish_speech_message("custom", "Da wir uns kennen hast du die volle kontrolle uber mein zu Hause")
+        while yes_no is not "nein":
+            self.__publish_speech_message("custom", "Was möchtest du in meiner Wohnung steuern")
+            response = self._voice_hotword(True)
+            if response is True:
+                self.__evaluate_voice_inputs()
+
+    def __evaluate_voice_inputs(self):
+        try:
+            while self.__time_request() - start_time < self._elapse_time:
+                vc_input = self._vc_queue.get(timeout = self._elapse_time)
+                rosp.logwarn("Voiceeeee intent received")
+
+                sep_mes = vc_input.split("/")
+                #######################################
+                if vc_input.intent == "lights":
+                    if sep_mes[1] == "on":
+                        if sep_mes[0] == "living_room":
+                            urlib2.urlopen("http://172.22.0.166:8081/rest/runtime/model/components/67-111-109-109-97-110-100-73-110-112-117-116-/ports/105-110-/data/64-75-78-88-58-49-49-47-48-47-48-44-49-46-48-48-49-44-111-110-")
+                    else sep_mes[1] == "off":
+                        urlib2.urlopen("http://172.22.0.166:8081/rest/runtime/model/components/67-111-109-109-97-110-100-73-110-112-117-116-/ports/105-110-/data/64-75-78-88-58-49-49-47-48-47-48-44-49-46-48-48-49-44-111-102-102-")
+
+            else:
+                rospy.loginfo("{%s} - Loop stopped since nothing said!\n",
+                    self.__class__.__name__)
+                self.__publish_speech_message("custom", "Du hast nicht enter getippt!")
+                return False, None
+        except Empty:
+            rospy.loginfo("{%s} - Timeout occured within {%s} seconds!\n"
+                , self.__class__.__name__, self._elapse_time)
+            self.__publish_speech_message("custom", "Du warst mit der eingabe zu langsam")
+            return False, None
 
     def __publish_speech_message(self, mode, text = None):
         self._msg_speech.mode = mode
