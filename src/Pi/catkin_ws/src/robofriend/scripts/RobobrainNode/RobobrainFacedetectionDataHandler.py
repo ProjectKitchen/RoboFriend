@@ -8,7 +8,7 @@ from time import *
 from Queue import *
 import rospy
 import traceback
-import urlib2
+import urllib2
 
 # import ros service
 from robofriend.srv import SrvFaceRecordData
@@ -71,7 +71,7 @@ class RobobrainFacedetectionDataHandler():
             rospy.logdebug("{%s} - Facedection Node started!", self.__class__.__name__)
             self.__facerecord_request = rospy.ServiceProxy('/robofriend/facerecord', SrvFaceRecordData)
             self.__facedatabase_request = rospy.ServiceProxy('/robofriend/facedatabase', SrvFaceDatabaseData)
-            self._voice_hotword = rospy.ServiceProxy('/robofriend/voicehotword', SrvVoiceHotwordActivationDatar)
+            self._voice_hotword = rospy.ServiceProxy('/robofriend/voicehotword', SrvVoiceHotwordActivationData)
 
             self._face_node_started = True
 
@@ -423,12 +423,11 @@ class RobobrainFacedetectionDataHandler():
                 if vc_input.intent == "lights":
                     if sep_mes[1] == "on":
                         if sep_mes[0] == "living_room":
-                            urlib2.urlopen("http://172.22.0.166:8081/rest/runtime/model/components/67-111-109-109-97-110-100-73-110-112-117-116-/ports/105-110-/data/64-75-78-88-58-49-49-47-48-47-48-44-49-46-48-48-49-44-111-110-")
+                            urllib2.urlopen("http://172.22.0.166:8081/rest/runtime/model/components/67-111-109-109-97-110-100-73-110-112-117-116-/ports/105-110-/data/64-75-78-88-58-49-49-47-48-47-48-44-49-46-48-48-49-44-111-110-")
                         elif sep_mes[1] == "kitchen":
-                            rospy.logwarn("Wir sind in der Kuche")
-                            pass
-                    else sep_mes[1] == "off":
-                        urlib2.urlopen("http://172.22.0.166:8081/rest/runtime/model/components/67-111-109-109-97-110-100-73-110-112-117-116-/ports/105-110-/data/64-75-78-88-58-49-49-47-48-47-48-44-49-46-48-48-49-44-111-102-102-")
+                            rospy.logwarn("Wir sind in der Kuche")                   
+                    elif sep_mes[1] == "off":
+                        urllib2.urlopen("http://172.22.0.166:8081/rest/runtime/model/components/67-111-109-109-97-110-100-73-110-112-117-116-/ports/105-110-/data/64-75-78-88-58-49-49-47-48-47-48-44-49-46-48-48-49-44-111-102-102-")
 
             else:
                 rospy.loginfo("{%s} - Loop stopped since nothing said!\n",
