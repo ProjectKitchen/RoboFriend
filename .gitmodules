@@ -1,7 +1,6 @@
 [submodule "src/Pi/catkin_ws/src/hls_lfcd_lds_driver"]
 	path = src/Pi/catkin_ws/src/hls_lfcd_lds_driver
 	url = https://github.com/ROBOTIS-GIT/hls_lfcd_lds_driver.git
-	branch = melodic-devel
 [submodule "src/Pi/catkin_ws/src/turtlebot3"]
         path = src/Pi/catkin_ws/src/turtlebot3
         url = https://github.com/ROBOTIS-GIT/turtlebot3.git
