@@ -32,7 +32,7 @@ class FaceDetectionDataHandler():
         # declare face record service
         serv = rospy.Service('/robofriend/facerecord', SrvFaceRecordData, self.__face_record_service_handler)
 
-        # declare creat database service
+        # declare database service
         serv = rospy.Service('/robofriend/facedatabase', SrvFaceDatabaseData, self.__face_create_database_service_handler)
 
         self.__face_recognition_event = threading.Event()
@@ -96,8 +96,9 @@ class FaceDetectionDataHandler():
                 # to 500px (to speedup processing)
                 if self.__mjpg_stream == True:			# pictures are captured via the stream
                     self.__vs = cv2.VideoCapture(self.__url)
-                    stat, frame = vs.read()
+                    stat, frame = self.__vs.read()
                 else:
+                    print("Testttt")
                     frame = self.__vs.read()
 
                 #Flip camera vertically
@@ -132,7 +133,7 @@ class FaceDetectionDataHandler():
                         # encodings
                         matches = face_recognition.compare_faces(self.__data["encodings"],
                             encoding)
-                        name = "Unknown"
+                        name = "unknown"
 
                         # check to see if we have found a match
                         if True in matches:

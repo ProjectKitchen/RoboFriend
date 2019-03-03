@@ -60,6 +60,7 @@ add_message_files(
    LedEarsData.msg
    ServoCamData.msg
    IOWarriorData.msg
+   VoiceData.msg
 )
 
 ## Generate services in the 'srv' folder
@@ -69,6 +70,7 @@ add_service_files(
    SrvRFIDData.srv
    SrvFaceRecordData.srv
    SrvFaceDatabaseData.srv
+   SrvVoiceHotwordActivationData.srv
 )
 
 ## Generate actions in the 'action' folder

@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <launch>
+<<<<<<< HEAD
 	<!-- Global Arguments -->
 	<arg name="model" default="$(enc TURTLEBOT3_MODEL)" doc="model type [burger, waffle, waffle_pi]"/>
 	<arg name="lidar" default="true"/>
@@ -32,6 +33,8 @@
 		</include>
 	</group>
 
+=======
+>>>>>>> b54445e73a26cd872db95f449e1c25651df1b34b
 	<node pkg="robofriend" type="RobobrainNode.py" name="robofriend_robobrain" output="screen">
 	</node>
 
