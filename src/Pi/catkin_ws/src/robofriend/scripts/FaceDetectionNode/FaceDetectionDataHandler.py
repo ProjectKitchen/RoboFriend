@@ -98,7 +98,6 @@ class FaceDetectionDataHandler():
                     self.__vs = cv2.VideoCapture(self.__url)
                     stat, frame = self.__vs.read()
                 else:
-                    print("Testttt")
                     frame = self.__vs.read()
 
                 #Flip camera vertically
