@@ -20,7 +20,7 @@ from robofriend.msg import ServoCamData
 
 class RobobrainFacedetectionDataHandler():
 
-    def __init__(self, sh, queue):
+    def __init__(self, sh, queue, vc_queue):
         self._top = 0
         self._right = 0
         self._bottom = 0
@@ -30,11 +30,13 @@ class RobobrainFacedetectionDataHandler():
 
         self._statehandler = sh
         self._keyboard_queue = queue
+        self._vc_queue = vc_queue
 
         # amount of recorded pictures
         self.__pic_record = 10
 
         self._elapse_time = 30
+        self._elapse_time_voice = 15
 
         self.__record_pic_speech = {1  : "Erstes", \
                                     2  : "Zweites", \
@@ -56,6 +58,8 @@ class RobobrainFacedetectionDataHandler():
         self._msg_led_ears = LedEarsData()
         self._msg_servo_cam = ServoCamData()
         self._search_new_face = Event()
+
+        self._voice_hotword = rospy.ServiceProxy('/robofriend/voicehotword', SrvVoiceHotwordActivationData)
 
         try:
             rospy.wait_for_service('/robofriend/facerecord', timeout = self._elapse_time)
@@ -104,10 +108,14 @@ class RobobrainFacedetectionDataHandler():
                     if  face_detectded is True:
                         rospy.logdebug("{%s} - Face detected! Further steps are activated!\n", self.__class__.__name__)
                         self.__publish_speech_message("custom", "Ich habe jemanden gefunden")
+                        face_grade .lower()
                         if face_grade != "unknown":
                             self.__known_face_speech(face_grade)
                             if self.__take_picture_known_face(face_grade) is True:
                                 self.__create_database()
+
+                            # start voice interaction
+                            self._voice_interaction()
 
                             ##########################################################
                             #TODO: Do mething in case of known face
@@ -391,6 +399,55 @@ class RobobrainFacedetectionDataHandler():
             if retVal is True:
                 rospy.logdebug("{%s} - New Database created!\n", self.__class__.__name__)
             return retVal
+
+    def _voice_interaction(self):
+        yes_no = None
+
+        self.__publish_speech_message("custom", "Da wir uns kennen hast du die volle kontrolle uber mein zu Hause")
+        sleep(3)
+        while yes_no is not False:
+            self.__publish_speech_message("custom", "Was mochtest du in meiner Wohnunng steuern")
+            sleep(2)
+            response = self._voice_hotword(True)
+            if response.response is True:
+                rospy.logwarn("Response is True")
+                self.__evaluate_voice_inputs()
+
+            #TODO: check response, process should continue if voce detecion is finished
+            sleep(1)
+            self.__publish_speech_message("custom", "Mochtest du weiter machen tippe ja oder nein ein")
+            yes_no = self.__yes_no_keyboard_request()
+
+
+    def __evaluate_voice_inputs(self):
+
+        start_time = self.__time_request()
+        try:
+            vc_input = self._vc_queue.get(timeout = self._elapse_time_voice)
+            sep_mes = vc_input.slots.split("/")
+            rospy.debug("Seperated message: {%s}", sep_mes)
+            if vc_input.intent == "lights":
+                if sep_mes[1] == "on":
+                    if sep_mes[0] == "living room":
+                        rospy.logdebug("Living room lights on!\n")
+                        #urlopen("http://172.22.0.166:8081/rest/runtime/model/components/67-111-109-109-97-110-100-73-110-112-117-116-/ports/105-110-/data/64-75-78-88-58-49-49-47-48-47-48-44-49-46-48-48-49-44-111-110-")
+                    elif sep_mes[0] == "kitchen":
+                        rospy.logdebug("Kitchen lights on!\n")
+                        #urlopen("http://172.22.0.166:8081/rest/runtime/model/components/67-111-109-109-97-110-100-73-110-112-117-116-/ports/105-110-/data/64-75-78-88-58-49-49-47-48-47-56-44-49-46-48-48-49-44-111-110-")
+                elif sep_mes[1] == "off":
+                    if sep_mes[0] == "living room":
+                        rospy.logdebug("Living room lights off!\n")
+                        #urlopen("http://172.22.0.166:8081/rest/runtime/model/components/67-111-109-109-97-110-100-73-110-112-117-116-/ports/105-110-/data/64-75-78-88-58-49-49-47-48-47-48-44-49-46-48-48-49-44-111-102-102-")
+                    elif sep_mes[0] == "kitchen":
+                        rospy.logdebug("Kitchen lights off!\n")
+                        #urlopen("http://172.22.0.166:8081/rest/runtime/model/components/67-111-109-109-97-110-100-73-110-112-117-116-/ports/105-110-/data/64-75-78-88-58-49-49-47-48-47-56-44-49-46-48-48-49-44-111-102-102-")
+            else:
+                self.__publish_speech_message("custom", "Ich habe dich nicht verstanden")
+        except Empty:
+            rospy.loginfo("{%s} - Timeout occured within {%s} seconds!\n"
+                , self.__class__.__name__, self._elapse_time)
+            self.__publish_speech_message("custom", "Du hast nichts gesagt")
+            return False, None
 
     def __publish_speech_message(self, mode, text = None):
         self._msg_speech.mode = mode
