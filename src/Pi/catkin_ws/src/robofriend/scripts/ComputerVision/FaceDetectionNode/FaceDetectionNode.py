@@ -22,3 +22,7 @@ def node_start():
 
     #rospy.init_node('FaceDetection_node', anonymous = True)
     facedetect = FaceDetectionDataHandler()
+
+
+if __name__ == "__main__":
+    main()
