@@ -54,14 +54,14 @@ void drive() {
 }
 
 void provideSensorValues() {
-	sensors.reportSensorValues();
+	sensors.provideSensorValues();
 }
 
 void setSensorThresholds() {
 	char *arg;
-	int left = DEFAULT_IR_LEFT_THRESHOLD;
-	int middle = DEFAULT_IR_MIDDLE_THRESHOLD;
-	int right = DEFAULT_IR_RIGHT_THRESHOLD;
+	int left = Sensor::IR_LFT_THOLD_DEF;
+	int middle = Sensor::IR_MID_THOLD_DEF;
+	int right =Sensor:: IR_RYT_THOLD_DEF;
 
 	arg = sc.next();
 	if (arg != NULL) {

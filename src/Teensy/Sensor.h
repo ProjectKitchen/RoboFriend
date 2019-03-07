@@ -1,28 +1,43 @@
+/*
+ * @file    	Parser.h
+ * @version 	v1.0
+ * @date    	01.01.20xx
+ * @changed 	07.03.2019
+ * @author  	cveigl, mzahedi
+ * @brief   	DESCRIPTION
+ */
+
+
 #ifndef SENSOR_H_
 #define SENSOR_H_
 
-#include "RunningAverage.h"   // Library used for averaging sensor data
+/****************************************************************** INCLUDES */
 
-#define IR_SENSOR_AVERAGER_SIZE  10
-#define BATTERY_SENSOR_AVERAGER_SIZE  80
-#define DEFAULT_IR_LEFT_THRESHOLD   220
-#define DEFAULT_IR_MIDDLE_THRESHOLD 450
-#define DEFAULT_IR_RIGHT_THRESHOLD  220
+#include <stdint.h>
+#include "RunningAverage.h"   // library used for averaging sensor data
+
+/********************************************************** CLASS DEFINITION */
 
 extern class Sensor sensors;
 
 class Sensor {
 
 public:
+  
+  static const uint16_t BAT_BUFFER_SIZE = 80;
+  static const uint16_t IR_BUFFER_SIZE = 10;
+  static const uint16_t IR_LFT_THOLD_DEF = 220;
+  static const uint16_t IR_MID_THOLD_DEF = 450;
+  static const uint16_t IR_RYT_THOLD_DEF = 220;
+
   Sensor(void);
-  ~Sensor();
+  ~Sensor(void);
 
   void init();
   void updateSensorData();
-  void reportSensorValues();
+  void provideSensorValues();
   void setSensorThresholds(int left, int middle, int right);
 
-  int getBatteryValue();
   int getIRSensorLeftValue();
   int getIRSensorMiddleValue();
   int getIRSensorRightValue();
@@ -31,25 +46,27 @@ public:
   bool isIRSensorMiddleTriggered();
   bool isIRSensorRightTriggered();
 
+
 protected:
-  int Battery = 0; 
+  int battery;
 
-  int IRSensorMiddleThreshold = DEFAULT_IR_MIDDLE_THRESHOLD;
-  int IRSensorLeftThreshold   = DEFAULT_IR_LEFT_THRESHOLD;
-  int IRSensorRightThreshold  = DEFAULT_IR_RIGHT_THRESHOLD;
+  int ir_lft;
+  int ir_lft_thold;
+  bool ir_lft_trig;
 
-  int IRSensorMiddle = 0;
-  int IRSensorLeft = 0;
-  int IRSensorRight = 0;
+  int ir_mid;
+  int ir_mid_thold;
+  bool ir_mid_trig;
 
-  bool IRSensorMiddleTriggered;
-  bool IRSensorLeftTriggered;
-  bool IRSensorRightTriggered;
+  int ir_ryt;
+  int ir_ryt_thold;
+  bool ir_ryt_trig;
 
-  RunningAverage * BatterySensorBuffer;
-  RunningAverage * IRSensorLeftBuffer;
-  RunningAverage * IRSensorMiddleBuffer;
-  RunningAverage * IRSensorRightBuffer;
+  RunningAverage *batteryBuffer;
+  RunningAverage *IRSensorLeftBuffer;
+  RunningAverage *IRSensorMiddleBuffer;
+  RunningAverage *IRSensorRightBuffer;
+
 };
 
 #endif /* SENSOR_H_ */
