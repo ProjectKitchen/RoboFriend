@@ -50,11 +50,11 @@ void drive() {
 	if (arg != NULL) {
 		duration = atoi(arg);
 	}
-	Motors.drive(left, right, duration);
+	motors.drive(left, right, duration);
 }
 
 void provideSensorValues() {
-	Sensors.reportSensorValues();
+	sensors.reportSensorValues();
 }
 
 void setSensorThresholds() {
@@ -75,7 +75,7 @@ void setSensorThresholds() {
 	if (arg != NULL) {
 		right = atoi(arg);
 	}
-	Sensors.setSensorThresholds(left, middle, right);
+	sensors.setSensorThresholds(left, middle, right);
 }
 
 void defaultHandler() {

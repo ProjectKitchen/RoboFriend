@@ -1,11 +1,11 @@
-
 /*
- *  Robofriend Teensy++2.0 firmware
- *
- *  implements PWM motor control, sensor management and serial communication with RaspberryPi  
- *  
- *  Version: 9.0 (code modularisation and major rework)
- *  Datum: 06/2018
+ * @file      Teensy.ino
+ * @version   v9.0
+ * @date      01.06.2018
+ * @changed   07.03.2019
+ * @author    cveigl, mzahedi
+ * @brief     Robofriend Teensy++2.0 firmware
+ *            Implements PWM motor control, sensor management and serial communication with RaspberryPi
  */
 
 #include "Motor.h"
@@ -16,8 +16,8 @@
 
 // #define PRINT_ENCODER_VALUES
 
-Sensor Sensors;
-Motor  Motors;
+Sensor sensors;
+Motor  motors;
 Odometry odo;
 Parser parser;
 
@@ -27,10 +27,9 @@ long timestamp;
 void setup()
 {
     Serial.begin(9600);   // connects to RaspberryPi control interface (robofriend.py)
-    Motors.init();
-    Sensors.init();
+    motors.init();
+    sensors.init();
     odo.init();
-    
     parser.init();
 }
 
@@ -38,9 +37,9 @@ void setup()
 void loop()
 {   
     timestamp = micros();
-    Sensors.updateSensorData();
+    sensors.updateSensorData();
     parser.processSerialCommands();
-    Motors.updateMotors();
+    motors.updateMotors();
  
     loopcounter++;   // used for limiting serial messages etc.
 

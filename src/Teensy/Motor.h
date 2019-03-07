@@ -9,7 +9,7 @@
 #define ACCEL_STEP      2
 #define MOVE_THRESHOLD  ACCEL_STEP*2
 
-extern class Motor Motors;
+extern class Motor motors;
 
 class Motor {
 

@@ -9,7 +9,7 @@
 #define DEFAULT_IR_MIDDLE_THRESHOLD 450
 #define DEFAULT_IR_RIGHT_THRESHOLD  220
 
-extern class Sensor Sensors;
+extern class Sensor sensors;
 
 class Sensor {
 

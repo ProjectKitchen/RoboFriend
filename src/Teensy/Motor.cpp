@@ -162,26 +162,26 @@ void Motor::drive(int left, int right, int duration) {
 int Motor::handleObstacles() {
     int triggered=0;
 
-    if (Sensors.isIRSensorRightTriggered()) {
+    if (sensors.isIRSensorRightTriggered()) {
       triggered=1;
       if (rightSpeed>0) rightSpeed=0;
       if (PRINT_SENSOR_MESSAGES) {
-         if ((loopcounter % 10) == 0) Serial.printf("Right %04d ",Sensors.getIRSensorRightValue());
+         if ((loopcounter % 10) == 0) Serial.printf("Right %04d ",sensors.getIRSensorRightValue());
       }
     }
-    if (Sensors.isIRSensorLeftTriggered()) {
+    if (sensors.isIRSensorLeftTriggered()) {
       triggered=1;
       if (leftSpeed>0) leftSpeed=0;
       if (PRINT_SENSOR_MESSAGES) {
-         if ((loopcounter % 10) == 0) Serial.printf("Left %04d ",Sensors.getIRSensorLeftValue());
+         if ((loopcounter % 10) == 0) Serial.printf("Left %04d ",sensors.getIRSensorLeftValue());
       }
     }
-    if (Sensors.isIRSensorMiddleTriggered()) {
+    if (sensors.isIRSensorMiddleTriggered()) {
       triggered = 1;
       if (rightSpeed > 0) rightSpeed = 0;
       if (leftSpeed > 0) leftSpeed = 0;
       if (PRINT_SENSOR_MESSAGES) {
-         if ((loopcounter % 10) == 0) Serial.printf("Middle %04d ",Sensors.getIRSensorMiddleValue());
+         if ((loopcounter % 10) == 0) Serial.printf("Middle %04d ",sensors.getIRSensorMiddleValue());
       }
     }
     if (PRINT_SENSOR_MESSAGES) {
