@@ -30,3 +30,9 @@
 # Python/src
 *.pyc
 *.iml
+
+# Eclipse
+.cproject
+.project
+/src/Teensy/build
+/src/Teensy/Teensy.cpp

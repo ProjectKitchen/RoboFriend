@@ -5,6 +5,7 @@
 extern long loopcounter;
 
 Sensor::Sensor() {
+
 }
 
 Sensor::~Sensor() {
@@ -42,9 +43,9 @@ void Sensor::updateSensorData()
 }
 
 void Sensor::reportSensorValues() {
-
     // send sensor status
-    Serial.printf("Sensors,%04d,%04d,%04d,%04d\n",Battery,IRSensorLeft,IRSensorMiddle,IRSensorRight);
+    Serial.printf("Sensors,%04d,%04d,%04d,%04d\n",
+    		Battery, IRSensorLeft, IRSensorMiddle, IRSensorRight);
 }
 
 void Sensor::setSensorThresholds(int left, int middle, int right) {

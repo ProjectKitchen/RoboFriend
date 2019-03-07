@@ -31,7 +31,7 @@ Lesser General Public License for more details.
 You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
-***********************************************************************************/
+ ***********************************************************************************/
 #ifndef SerialCommand_h
 #define SerialCommand_h
 
@@ -72,37 +72,37 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 class SerialCommand
 {
-	public:
-		SerialCommand();      // Constructor
-		#ifndef SERIALCOMMAND_HARDWAREONLY
-		SerialCommand(SoftwareSerial &SoftSer);  // Constructor for using SoftwareSerial objects
-		#endif
+public:
+	SerialCommand();      // Constructor
+#ifndef SERIALCOMMAND_HARDWAREONLY
+	SerialCommand(SoftwareSerial &SoftSer);  // Constructor for using SoftwareSerial objects
+#endif
 
-		void clearBuffer();   // Sets the command buffer to all '\0' (nulls)
-		char *next();         // returns pointer to next token found in command buffer (for getting arguments to commands)
-		void readSerial();    // Main entry point.  
-		void addCommand(const char *, void(*)());   // Add commands to processing dictionary
-		void addDefaultHandler(void (*function)());    // A handler to call when no valid command received. 
-	
-	private:
-		char inChar;          // A character read from the serial stream 
-		char buffer[SERIALCOMMANDBUFFER];   // Buffer of stored characters while waiting for terminator character
-		int  bufPos;                        // Current position in the buffer
-		char delim[MAXDELIMETER];           // null-terminated list of character to be used as delimeters for tokenizing (default " ")
-		char term;                          // Character that signals end of command (default '\r')
-		char *token;                        // Returned token from the command buffer as returned by strtok_r
-		char *last;                         // State variable used by strtok_r during processing
-		typedef struct _callback {
-			char command[SERIALCOMMANDBUFFER];
-			void (*function)();
-		} SerialCommandCallback;            // Data structure to hold Command/Handler function key-value pairs
-		int numCommand;
-		SerialCommandCallback CommandList[MAXSERIALCOMMANDS];   // Actual definition for command/handler array
-		void (*defaultHandler)();           // Pointer to the default handler function 
-		int usingSoftwareSerial;            // Used as boolean to see if we're using SoftwareSerial object or not
-		#ifndef SERIALCOMMAND_HARDWAREONLY 
-		SoftwareSerial *SoftSerial;         // Pointer to a user-created SoftwareSerial object
-		#endif
+	void clearBuffer();   // Sets the command buffer to all '\0' (nulls)
+	char *next();         // returns pointer to next token found in command buffer (for getting arguments to commands)
+	void readSerial();    // Main entry point.
+	void addCommand(const char *, void(*)());   // Add commands to processing dictionary
+	void addDefaultHandler(void (*function)());    // A handler to call when no valid command received.
+
+private:
+	char inChar;          // A character read from the serial stream
+	char buffer[SERIALCOMMANDBUFFER];   // Buffer of stored characters while waiting for terminator character
+	int  bufPos;                        // Current position in the buffer
+	char delim[MAXDELIMETER];           // null-terminated list of character to be used as delimeters for tokenizing (default " ")
+	char term;                          // Character that signals end of command (default '\r')
+	char *token;                        // Returned token from the command buffer as returned by strtok_r
+	char *last;                         // State variable used by strtok_r during processing
+	typedef struct _callback {
+		char command[SERIALCOMMANDBUFFER];
+		void (*function)();
+	} SerialCommandCallback;            // Data structure to hold Command/Handler function key-value pairs
+	int numCommand;
+	SerialCommandCallback CommandList[MAXSERIALCOMMANDS];   // Actual definition for command/handler array
+	void (*defaultHandler)();           // Pointer to the default handler function
+	int usingSoftwareSerial;            // Used as boolean to see if we're using SoftwareSerial object or not
+#ifndef SERIALCOMMAND_HARDWAREONLY
+	SoftwareSerial *SoftSerial;         // Pointer to a user-created SoftwareSerial object
+#endif
 };
 
 #endif //SerialCommand_h

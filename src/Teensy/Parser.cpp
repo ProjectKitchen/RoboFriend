@@ -1,69 +1,86 @@
-#include <Arduino.h>
-#include "Motor.h"
-#include "Sensor.h"
-#include "SerialCommand.h"
+/*
+ * @file    	Parser.cpp
+ * @version 	v1.0
+ * @date    	07.03.2019
+ * @changed 	07.03.2019
+ * @author  	mzahedi
+ * @brief   	DESCRIPTION
+ */
 
-SerialCommand SCmd;   // The demo SerialCommand object
+/****************************************************************** INCLUDES */
 
-void drive()
-{
-  int left=0,right=0,duration=-1;  
-  char *arg; 
+#include "Parser.h"
 
-  arg = SCmd.next(); 
-  if (arg != NULL) {
-    left=atoi(arg);    // Converts a char string to an integer
-  } 
-  arg = SCmd.next(); 
-  if (arg != NULL)  {
-    right=atoi(arg);
-  } 
-  arg = SCmd.next(); 
-  if (arg != NULL)  {
-    duration=atoi(arg);
-  } 
-  Motors.drive(left,right,duration);
+/*************************************************************** DEFINITIONS */
+
+SerialCommand sc;
+
+Parser::Parser() {
 }
 
-void report_sensorValues()
-{
-  Sensors.reportSensorValues();
+Parser::~Parser() {
 }
 
-void set_sensorThresholds()
-{
-  int left=DEFAULT_IR_LEFT_THRESHOLD;
-  int middle=DEFAULT_IR_MIDDLE_THRESHOLD;
-  int right=DEFAULT_IR_RIGHT_THRESHOLD;  
-  char *arg; 
-
-  arg = SCmd.next(); 
-  if (arg != NULL) {
-    left=atoi(arg);
-  } 
-  arg = SCmd.next(); 
-  if (arg != NULL) {
-    middle=atoi(arg);
-  } 
-  arg = SCmd.next(); 
-  if (arg != NULL) {
-    right=atoi(arg);
-  } 
-  Sensors.setSensorThresholds(left,middle,right);
+void Parser::init() {
+	sc.addCommand("D", drive);
+	sc.addCommand("R", provideSensorValues);
+	sc.addCommand("S", setSensorThresholds);
+	sc.addDefaultHandler(defaultHandler);
 }
 
-void unsupported_command() {
-  Serial.println("Unsupported command");
+void Parser::processSerialCommands() {
+	sc.readSerial();
 }
 
-void parser_init()
-{
-  SCmd.addCommand("D",drive);  
-  SCmd.addCommand("R",report_sensorValues);  
-  SCmd.addCommand("S",set_sensorThresholds);  
-  SCmd.addDefaultHandler(unsupported_command);
+void drive() {
+	char *arg;
+	int left = 0;
+	int right = 0;
+	int duration = -1;
+
+	arg = sc.next();
+	if (arg != NULL) {
+		left = atoi(arg);
+	}
+	arg = sc.next();
+	if (arg != NULL) {
+		right = atoi(arg);
+	}
+	arg = sc.next();
+	if (arg != NULL) {
+		duration = atoi(arg);
+	}
+	Motors.drive(left, right, duration);
 }
 
-void parser_processSerialCommands() {
-  SCmd.readSerial(); 
+void provideSensorValues() {
+	Sensors.reportSensorValues();
 }
+
+void setSensorThresholds() {
+	char *arg;
+	int left = DEFAULT_IR_LEFT_THRESHOLD;
+	int middle = DEFAULT_IR_MIDDLE_THRESHOLD;
+	int right = DEFAULT_IR_RIGHT_THRESHOLD;
+
+	arg = sc.next();
+	if (arg != NULL) {
+		left = atoi(arg);
+	}
+	arg = sc.next();
+	if (arg != NULL) {
+		middle = atoi(arg);
+	}
+	arg = sc.next();
+	if (arg != NULL) {
+		right = atoi(arg);
+	}
+	Sensors.setSensorThresholds(left, middle, right);
+}
+
+void defaultHandler() {
+	char *arg;
+	arg = sc.next();
+	Serial.printf("Received unsupported command: %c\n", arg);
+}
+

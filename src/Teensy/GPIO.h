@@ -1,20 +1,14 @@
 /*
- * @file    GPIO.h
- * @version v1.0
- * @date    14.11.2018
- * @author  mzahedi
- * @brief   DESCRIPTION
+ * @file    	GPIO.h
+ * @version 	v1.0
+ * @date    	14.11.2018
+ * @changed 	07.03.2019
+ * @author  	mzahedi
+ * @brief   	DESCRIPTION
  */
 
 #ifndef GPIO_H_
 #define GPIO_H_
-
-// pin definitions for power management 
-
-#define Hauptrelais     20
-#define Serienschaltung 21
-#define Relais12V       22
-#define Relais5V        23
 
 /******************************************************************* DEFINES */
 
@@ -27,12 +21,10 @@
 #define PIN_UART_TX     3  // D3
 
 /* SPI interface */
-/*
-#define PIN_SPI_MISO    23  // B3
-#define PIN_SPI_MOSI    22  // B2
-#define PIN_SPI_SCK     21  // B1
 #define PIN_SPI_SS      20  // B0
-*/
+#define PIN_SPI_SCK     21  // B1
+#define PIN_SPI_MOSI    22  // B2
+#define PIN_SPI_MISO    23  // B3
 
 /* ultrasonic sensors */
 #define PIN_US1_ECHO    4  // D4
@@ -60,8 +52,8 @@
 
 /* Overcurrent protection */
 #define PIN_OC          19 // E7
-#define PIN_OC_INT      18 // E6
-#define PIN_OC_ADC      44 // F6
+#define PIN_OC_DI      	18 // E6
+#define PIN_OC_AN      	44 // F6
 
 /* ADC and infrared sensors */
 #define PIN_ADC_VBAT    38 // F0

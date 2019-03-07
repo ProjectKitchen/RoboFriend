@@ -10,7 +10,6 @@
 
 #include "Motor.h"
 #include "Sensor.h"
-#include "LegacyPower.h"
 #include "Parser.h"
 #include "Odometry.h"
 #include "GPIO.h"
@@ -20,6 +19,7 @@
 Sensor Sensors;
 Motor  Motors;
 Odometry odo;
+Parser parser;
 
 long loopcounter=0;
 long timestamp;
@@ -31,9 +31,7 @@ void setup()
     Sensors.init();
     odo.init();
     
-    parser_init();
-    legacyPower_init();
-    legacyPower_startup();
+    parser.init();
 }
 
 
@@ -41,7 +39,7 @@ void loop()
 {   
     timestamp = micros();
     Sensors.updateSensorData();
-    parser_processSerialCommands();
+    parser.processSerialCommands();
     Motors.updateMotors();
  
     loopcounter++;   // used for limiting serial messages etc.
