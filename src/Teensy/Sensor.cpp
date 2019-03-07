@@ -1,7 +1,20 @@
-#include "Sensor.h"
-#include "GPIO.h"
+/*
+ * @file    	Parser.h
+ * @version 	v1.0
+ * @date    	01.01.20xx
+ * @changed 	07.03.2019
+ * @author  	cveigl, mzahedi
+ * @brief   	DESCRIPTION
+ */
 
-extern long loopcounter;
+/****************************************************************** INCLUDES */
+
+#include "GPIO.h"
+#include "Sensor.h"
+
+extern long loopcounter; // FIXME: what is this for?
+
+/*************************************************************** DEFINITIONS */
 
 Sensor::Sensor(void) {
 	  ir_lft_thold = Sensor::IR_LFT_THOLD_DEF;
@@ -28,9 +41,8 @@ void Sensor::init() {
 	IRSensorRightBuffer = new RunningAverage(Sensor::IR_BUFFER_SIZE);
 }
 
-void Sensor::updateSensorData() {
+void Sensor::readSensorValues() {
 	batteryBuffer->addValue(analogRead(PIN_ADC_VBAT));
-
 	IRSensorLeftBuffer->addValue(analogRead(PIN_ADC_IR1));
 	IRSensorMiddleBuffer->addValue(analogRead(PIN_ADC_IR2));
 	IRSensorRightBuffer->addValue(analogRead(PIN_ADC_IR3));
@@ -43,8 +55,6 @@ void Sensor::updateSensorData() {
 	ir_lft_trig = (ir_lft >= ir_lft_thold);
 	ir_mid_trig = (ir_mid >= ir_mid_thold);
 	ir_ryt_trig = (ir_ryt >= ir_ryt_thold);
-
-	//if ((loopcounter % 200) == 0) reportSensorValues();
 }
 
 void Sensor::provideSensorValues() {
