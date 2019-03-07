@@ -17,6 +17,10 @@
 #define DUMP_SENSOR_MSG 	0
 #define DUMP_ENCODER_VALUES	0
 
+/*********************************************************************** IMU */
+
+#define IMU_ADRESS			0x50
+
 /******************************************************************** MOTORS */
 
 #define HANDLE_OBSTACLES 	0	// currently disables because sensor values are not valid in Robofriend v2!

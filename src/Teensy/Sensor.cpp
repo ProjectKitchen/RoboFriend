@@ -9,6 +9,7 @@
 
 /****************************************************************** INCLUDES */
 
+#include "Config.h"
 #include "GPIO.h"
 #include "Sensor.h"
 
@@ -59,6 +60,24 @@ void Sensor::readSensorValues() {
 	ir_lft_trig = (ir_lft >= ir_lft_thold);
 	ir_mid_trig = (ir_mid >= ir_mid_thold);
 	ir_ryt_trig = (ir_ryt >= ir_ryt_thold);
+
+#if IMU
+	byte num=0;
+
+	Wire.beginTransmission(IMU_ADRESS);
+	Wire.write(0); // addresss high byte
+	Wire.write(0); // address low byte
+	Wire.endTransmission();
+
+	// read 1 byte
+	Wire.requestFrom(IMU_ADRESS, 1);
+	while(Wire.read()) {
+		num = Wire.receive();
+	}
+	Serial.print("num = ");
+	Serial.println(num, DEC);
+#endif
+
 }
 
 void Sensor::provideSensorValues() {

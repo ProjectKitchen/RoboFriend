@@ -12,6 +12,7 @@
 
 /****************************************************************** INCLUDES */
 
+#include <Wire.h>
 #include "RunningAverage.h"   // library used for averaging sensor data
 
 /******************************************************************* EXTERNS */

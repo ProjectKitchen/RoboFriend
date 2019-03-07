@@ -1,15 +1,16 @@
 /*
- * @file      Teensy.ino
- * @version   v10.0
- * @date      01.01.20xx
- * @changed   07.03.2019
- * @author    cveigl, mzahedi
- * @brief     Robofriend Teensy++2.0 firmware
- *            Implements PWM motor control, sensor management and serial communication with Raspberry Pi
- */
+   @file      Teensy.ino
+   @version   v10.0
+   @date      01.01.20xx
+   @changed   07.03.2019
+   @author    cveigl, mzahedi
+   @brief     Robofriend Teensy++2.0 firmware
+              Implements PWM motor control, sensor management and serial communication with Raspberry Pi
+*/
 
 /****************************************************************** INCLUDES */
 
+#include <avr/wdt.h>
 #include "Motor.h"
 #include "Sensor.h"
 #include "Parser.h"
@@ -29,32 +30,34 @@ long timestamp;
 /*************************************************************** DEFINITIONS */
 
 void setup() {
-	Serial.begin(9600); // connects to RaspberryPi control interface (robofriend.py)
-	motors.init();
+  Wire.begin();
+  Serial.begin(9600); // connects to RaspberryPi control interface (robofriend.py)
+  motors.init();
 #if MOTOR_CTR_TEST
-	motors.test();
+  motors.test();
 #endif
-	sensors.init();
-	odo.init();
-	parser.init();
-	// TODO: watchdog
+  sensors.init();
+  odo.init();
+  parser.init();
+  wdt_enable(WDTO_8S);
 }
 
 void loop() {
-	timestamp = micros();
-	sensors.readSensorValues();
-	parser.processSerialCommands();
-	motors.performIntendedMovement();
+  timestamp = micros();
+  sensors.readSensorValues();
+  parser.processSerialCommands();
+  motors.performIntendedMovement();
 
-	loopcounter++;   // used for limiting serial messages etc.
+  loopcounter++;   // used for limiting serial messages etc.
 
 #if DUMP_ENCODER_VALUES
-	if (!(loopcounter % 50)) { // this is for printing current speed ! ( should be replaced by speed control algorithm )
-		odo.printEncoderValues();
-		odo.clearEncoderValues();
-	}
+  if (!(loopcounter % 50)) { // this is for printing current speed ! ( should be replaced by speed control algorithm )
+    odo.printEncoderValues();
+    odo.clearEncoderValues();
+  }
 #endif
 
-	while (micros() - timestamp < 5000)
-		;
+  while (micros() - timestamp < 5000)
+    ;
+  wdt_reset();
 }
