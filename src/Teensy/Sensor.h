@@ -1,6 +1,6 @@
 /*
  * @file    	Parser.h
- * @version 	v1.0
+ * @version 	v10.0
  * @date    	01.01.20xx
  * @changed 	07.03.2019
  * @author  	cveigl, mzahedi
@@ -12,18 +12,18 @@
 
 /****************************************************************** INCLUDES */
 
-#include <stdint.h>
-
 #include "RunningAverage.h"   // library used for averaging sensor data
 
-/********************************************************** CLASS DEFINITION */
+/******************************************************************* EXTERNS */
 
 extern class Sensor sensors;
 
+/********************************************************** CLASS DEFINITION */
+
 class Sensor {
 public:
-	static const uint16_t BAT_BUFFER_SIZE = 80;
-	static const uint16_t IR_BUFFER_SIZE = 10;
+	static const uint8_t BAT_BUFFER_SIZE = 80;
+	static const uint8_t IR_BUFFER_SIZE = 10;
 	static const uint16_t IR_LFT_THOLD_DEF = 220;
 	static const uint16_t IR_MID_THOLD_DEF = 450;
 	static const uint16_t IR_RYT_THOLD_DEF = 220;
@@ -31,20 +31,20 @@ public:
 	Sensor(void);
 	~Sensor(void);
 
-	void init();
-	void readSensorValues();
-	void provideSensorValues();
+	void init(void);
+	void readSensorValues(void);
+	void provideSensorValues(void);
 	void setSensorThresholds(int left, int middle, int right);
 
-	int getIRSensorLeftValue();
-	int getIRSensorMiddleValue();
-	int getIRSensorRightValue();
+	int getIRSensorLeftValue(void);
+	int getIRSensorMiddleValue(void);
+	int getIRSensorRightValue(void);
 
-	bool isIRSensorLeftTriggered();
-	bool isIRSensorMiddleTriggered();
-	bool isIRSensorRightTriggered();
+	bool isIRSensorLeftTriggered(void);
+	bool isIRSensorMiddleTriggered(void);
+	bool isIRSensorRightTriggered(void);
 
-protected:
+private:
 	int battery;
 
 	int ir_lft;

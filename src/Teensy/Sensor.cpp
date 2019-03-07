@@ -1,6 +1,6 @@
 /*
  * @file    	Parser.h
- * @version 	v1.0
+ * @version 	v10.0
  * @date    	01.01.20xx
  * @changed 	07.03.2019
  * @author  	cveigl, mzahedi
@@ -12,14 +12,14 @@
 #include "GPIO.h"
 #include "Sensor.h"
 
-extern long loopcounter; // FIXME: what is this for?
+/******************************************************************* EXTERNS */
+
+extern long loopcounter;
 
 /*************************************************************** DEFINITIONS */
 
 Sensor::Sensor(void) {
-	  ir_lft_thold = Sensor::IR_LFT_THOLD_DEF;
-	  ir_mid_thold = Sensor::IR_MID_THOLD_DEF;
-	  ir_ryt_thold = Sensor::IR_RYT_THOLD_DEF;
+
 }
 
 Sensor::~Sensor(void) {
@@ -34,6 +34,10 @@ Sensor::~Sensor(void) {
 }
 
 void Sensor::init() {
+	ir_lft_thold = Sensor::IR_LFT_THOLD_DEF;
+	ir_mid_thold = Sensor::IR_MID_THOLD_DEF;
+	ir_ryt_thold = Sensor::IR_RYT_THOLD_DEF;
+
 	/* create circular buffers */
 	batteryBuffer = new RunningAverage(Sensor::BAT_BUFFER_SIZE);
 	IRSensorLeftBuffer = new RunningAverage(Sensor::IR_BUFFER_SIZE);
@@ -58,7 +62,8 @@ void Sensor::readSensorValues() {
 }
 
 void Sensor::provideSensorValues() {
-	Serial.printf("Sensors,%04d,%04d,%04d,%04d\n", battery, ir_lft, ir_mid, ir_ryt);
+	Serial.printf("Sensors,%04d,%04d,%04d,%04d\n",
+			battery, ir_lft, ir_mid, ir_ryt);
 }
 
 void Sensor::setSensorThresholds(int left, int middle, int right) {

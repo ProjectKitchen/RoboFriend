@@ -1,36 +1,52 @@
+/*
+ * @file    	Motor.h
+ * @version 	v10.0
+ * @date    	01.01.20xx
+ * @changed 	07.03.2019
+ * @author  	cveigl, mzahedi
+ * @brief   	DESCRIPTION
+ */
+
 #ifndef MOTOR_H_
 #define MOTOR_H_
 
-#define PRINT_MOTORSPEED_MESSAGES 0
-#define PRINT_SENSOR_MESSAGES     0
+/****************************************************************** INCLUDES */
 
-#define STEPLENGTH      50
-#define STEPLENGTH_TURN 20
-#define ACCEL_STEP      2
-#define MOVE_THRESHOLD  ACCEL_STEP*2
+#include "Config.h"
 
-extern class Motor motors;
+/******************************************************************* EXTERNS */
+
+extern class Motor motors; // FIXME: change this
+
+/********************************************************** CLASS DEFINITION */
 
 class Motor {
-
 public:
-  Motor(void);
-  ~Motor();
+	Motor(void);
+	~Motor(void);
 
-  void init();
-  void stop();
-  void drive (int left, int right, int duration);
-  void updateMotors();
+	void init(void);
+#if MOTOR_CTR_TEST
+	void test(void);
+#endif
+	void softStop(void);
+	void hardStop(void);
+	void setIntendedParam(int left, int right, int duration);
+	void performIntendedMovement(void);
 
 protected:
+	int handleObstacles();
+	int intendedRightSpeed;
+	int intendedLeftSpeed;
+	int intendedDuration;
+	int rightSpeed;
+	int leftSpeed;
 
-  int intendedRightSpeed;
-  int intendedLeftSpeed;
-  int intendedDuration;
-  int rightSpeed;
-  int leftSpeed;
-  int handleObstacles();
-
+private:
+	const uint8_t STEPLENGTH = 50;
+	const uint8_t STEPLENGTH_TURN = 20;
+	const uint8_t ACCEL_STEP = 2;
+	const uint8_t MOVE_THRESHOLD = ACCEL_STEP * 2;
 };
 
 #endif /* MOTOR_H_ */

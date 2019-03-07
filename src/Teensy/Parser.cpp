@@ -1,24 +1,30 @@
 /*
  * @file    	Parser.cpp
- * @version 	v1.0
- * @date    	07.03.2019
+ * @version 	v10.0
+ * @date    	01.01.20xx
  * @changed 	07.03.2019
- * @author  	mzahedi
+ * @author  	cveigl, mzahedi
  * @brief   	DESCRIPTION
  */
 
 /****************************************************************** INCLUDES */
 
+#include <Arduino.h>
 #include "Parser.h"
+#include "Motor.h"
+#include "Sensor.h"
+#include "SerialCommand.h"
 
 /*************************************************************** DEFINITIONS */
 
 SerialCommand sc;
 
 Parser::Parser() {
+
 }
 
 Parser::~Parser() {
+
 }
 
 void Parser::init() {
@@ -50,7 +56,7 @@ void drive() {
 	if (arg != NULL) {
 		duration = atoi(arg);
 	}
-	motors.drive(left, right, duration);
+	motors.setIntendedParam(left, right, duration);
 }
 
 void provideSensorValues() {

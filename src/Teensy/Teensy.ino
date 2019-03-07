@@ -1,12 +1,14 @@
 /*
  * @file      Teensy.ino
- * @version   v9.0
- * @date      01.06.2018
+ * @version   v10.0
+ * @date      01.01.20xx
  * @changed   07.03.2019
  * @author    cveigl, mzahedi
  * @brief     Robofriend Teensy++2.0 firmware
- *            Implements PWM motor control, sensor management and serial communication with RaspberryPi
+ *            Implements PWM motor control, sensor management and serial communication with Raspberry Pi
  */
+
+/****************************************************************** INCLUDES */
 
 #include "Motor.h"
 #include "Sensor.h"
@@ -14,41 +16,45 @@
 #include "Odometry.h"
 #include "GPIO.h"
 
-// #define PRINT_ENCODER_VALUES
+/******************************************************************* GLOBALS */
 
 Sensor sensors;
-Motor  motors;
+Motor motors;
 Odometry odo;
 Parser parser;
 
-long loopcounter=0;
+long loopcounter = 0;
 long timestamp;
 
-void setup()
-{
-    Serial.begin(9600);   // connects to RaspberryPi control interface (robofriend.py)
-    motors.init();
-    sensors.init();
-    odo.init();
-    parser.init();
+/*************************************************************** DEFINITIONS */
+
+void setup() {
+	Serial.begin(9600); // connects to RaspberryPi control interface (robofriend.py)
+	motors.init();
+#if MOTOR_CTR_TEST
+	motors.test();
+#endif
+	sensors.init();
+	odo.init();
+	parser.init();
+	// TODO: watchdog
 }
 
+void loop() {
+	timestamp = micros();
+	sensors.readSensorValues();
+	parser.processSerialCommands();
+	motors.performIntendedMovement();
 
-void loop()
-{   
-    timestamp = micros();
-    sensors.updateSensorData();
-    parser.processSerialCommands();
-    motors.updateMotors();
- 
-    loopcounter++;   // used for limiting serial messages etc.
+	loopcounter++;   // used for limiting serial messages etc.
 
-    #ifdef PRINT_ENCODER_VALUES
-    if (!(loopcounter % 50)) {    // this is for printing current speed ! ( should be replaced by speed control algorithm )
-      odo.printEncoderValues();
-      odo.clearEncoderValues();   
-    }
-    #endif
+#if DUMP_ENCODER_VALUES
+	if (!(loopcounter % 50)) { // this is for printing current speed ! ( should be replaced by speed control algorithm )
+		odo.printEncoderValues();
+		odo.clearEncoderValues();
+	}
+#endif
 
-    while (micros()-timestamp < 5000);
+	while (micros() - timestamp < 5000)
+		;
 }

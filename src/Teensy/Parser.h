@@ -1,36 +1,29 @@
 /*
  * @file    	Parser.h
- * @version 	v1.0
- * @date    	07.03.2019
+ * @version 	v10.0
+ * @date    	01.01.20xx
  * @changed 	07.03.2019
- * @author  	mzahedi
+ * @author  	cveigl, mzahedi
  * @brief   	DESCRIPTION
  */
 
 #ifndef PARSER_H_
 #define PARSER_H_
 
-/****************************************************************** INCLUDES */
-
-#include <Arduino.h>
-#include "Motor.h"
-#include "Sensor.h"
-#include "SerialCommand.h"
-
 /********************************************************** CLASS DEFINITION */
 
 class Parser {
 public:
-    Parser();
-    ~Parser();
+	Parser();
+	~Parser();
 
-    void init(void);
-    void processSerialCommands(void);    
+	void init(void);
+	void processSerialCommands(void);
 };
 
-  void drive();
-  void provideSensorValues();
-  void setSensorThresholds();
-  void defaultHandler();
+void drive();
+void provideSensorValues();
+void setSensorThresholds();
+void defaultHandler();
 
 #endif /* PARSER_H_ */
