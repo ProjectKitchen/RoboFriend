@@ -51,15 +51,18 @@ find_package(catkin REQUIRED COMPONENTS
 add_message_files(
    FILES
    CamData.msg
-   OdoData.msg
-   LandmarkDistance.msg
+   Coordinates.msg
+   IOWarriorData.msg
+   IRSensorData.msg
    KeyboardData.msg
+   LandmarkDistance.msg
+   LedEarsData.msg
+   OdoData.msg
+   ServoCamData.msg
    SpeechData.msg
    TeensyMotorData.msg
    IRSensorData.msg
-   LedEarsData.msg
-   ServoCamData.msg
-   IOWarriorData.msg
+   VoiceData.msg
 )
 
 ## Generate services in the 'srv' folder

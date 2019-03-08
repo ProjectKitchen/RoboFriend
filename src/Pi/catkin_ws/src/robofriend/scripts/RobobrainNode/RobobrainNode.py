@@ -49,7 +49,7 @@ def main():
     # ir  = RobobrainInfraredDataHandler()
     keyboard = RobobrainKeyboardDataHandler(statehandler, event, keyboard_queue)
     # TODO: this is not working
-    facedetection = RobobrainFacedetectionDataHandler(statehandler, keyboard_queue)
+    # facedetection = RobobrainFacedetectionDataHandler(statehandler, keyboard_queue)
 
     # TODO: this can be managed in an easier way
     # publish_handler = RobobrainPublisherHandler(topics)
@@ -58,9 +58,9 @@ def main():
     rospy.Subscriber("/robofriend/infrared_data", IRSensorData, bat.process_ir_data)
     # rospy.Subscriber("/robofriend/odom_data", Pose, odo.process_data)
     # rospy.Subscriber("/robofriend/ir_data",   String, ir.process_data)
-    rospy.Subscriber("/robofriend/cam_data",  CamData, facedetection.process_data)
+    # rospy.Subscriber("/robofriend/cam_data",  CamData, facedetection.process_data)
     rospy.Subscriber("/robofriend/keyb_data", KeyboardData, keyboard.process_data)
-    rospy.Subscriber('/robofriend/voice_data', VoiceData, voicedetection.process_data)
+    # rospy.Subscriber('/robofriend/voice_data', VoiceData, voicedetection.process_data)
 
     rate = rospy.Rate(0.2) # 200mhz
 
