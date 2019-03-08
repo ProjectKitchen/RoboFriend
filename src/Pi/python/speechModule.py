@@ -1,8 +1,3 @@
-"""
-TODO: Uncomment the speechEngine lines in case of a working speech
-      engine
-"""
-
 # -*- coding: utf-8 -*-
 
 import pyttsx3
@@ -21,6 +16,7 @@ runFlag = True
 
 def speak(text, disablesIdle = True):
     global speechEngine, lastSpeakWord
+    # TODO: uncomment the following lines in case of a working speech engine
     #if disablesIdle:
     #    statusModule.setNonIdle()
     print("speaking: {}".format(text))

@@ -4,7 +4,8 @@ import pygame.gfxdraw
 import teensyCommunicator
 import utils
 
-"""TODO: restore FULLSCREEN Flag """
+""" TODO: restore FULLSCREEN Flag """
+""" TODO: is there a way to control the mode via command line? """
 
 #init
 print("initializing faceModule...")

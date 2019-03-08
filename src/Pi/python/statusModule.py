@@ -104,8 +104,6 @@ def updateFromRawStatus(rawStatus):
     global currentStatus, keyBat, keyBatPercent, keyIrL, keyIrM, keyIrR, batCoversionConstant, batMovingAverageN
 
     batVolt = getBatteryVoltage()
-    # if batVolt == None:
-    #    batVolt = 1000
     # see schematic 
     r1 = 7210
     r2 = 2780

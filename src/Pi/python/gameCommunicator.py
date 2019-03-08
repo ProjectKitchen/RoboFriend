@@ -33,6 +33,7 @@ def sendtogui(i):
     except OSError as msg:
         print("Error Code: {}, Message: {}".format(str(msg[0]), str(msg[1])))
         IP = ''
+
 # This function is used as Thread to always listen if there is a client (gamegui) sending commands
 def data_listener():
     global IP, runFlag
