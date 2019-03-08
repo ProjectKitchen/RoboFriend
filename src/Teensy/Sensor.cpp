@@ -11,6 +11,7 @@
 
 #include "Config.h"
 #include "GPIO.h"
+#include "Motor.h"
 #include "Sensor.h"
 
 /******************************************************************* EXTERNS */
@@ -26,6 +27,8 @@ Sensor::Sensor(void) {
 Sensor::~Sensor(void) {
 	if (batteryBuffer)
 		free(batteryBuffer);
+	if (shuntAmpBuffer)
+		free(shuntAmpBuffer);
 	if (IRSensorLeftBuffer)
 		free(IRSensorLeftBuffer);
 	if (IRSensorMiddleBuffer)
@@ -41,6 +44,7 @@ void Sensor::init() {
 
 	/* create circular buffers */
 	batteryBuffer = new RunningAverage(Sensor::BAT_BUFFER_SIZE);
+	shuntAmpBuffer = new RunningAverage(Sensor::SHUNT_AMP_BUFFER_SIZE);
 	IRSensorLeftBuffer = new RunningAverage(Sensor::IR_BUFFER_SIZE);
 	IRSensorMiddleBuffer = new RunningAverage(Sensor::IR_BUFFER_SIZE);
 	IRSensorRightBuffer = new RunningAverage(Sensor::IR_BUFFER_SIZE);
@@ -48,11 +52,13 @@ void Sensor::init() {
 
 void Sensor::readSensorValues() {
 	batteryBuffer->addValue(analogRead(PIN_ADC_VBAT));
+	shuntAmpBuffer->addValue(analogRead(PIN_OC_AN));
 	IRSensorLeftBuffer->addValue(analogRead(PIN_ADC_IR1));
 	IRSensorMiddleBuffer->addValue(analogRead(PIN_ADC_IR2));
 	IRSensorRightBuffer->addValue(analogRead(PIN_ADC_IR3));
 
 	battery = batteryBuffer->getFastAverage();
+	shuntAmp = shuntAmpBuffer->getFastAverage();
 	ir_lft = IRSensorLeftBuffer->getFastAverage();
 	ir_mid = IRSensorMiddleBuffer->getFastAverage();
 	ir_ryt = IRSensorRightBuffer->getFastAverage();
@@ -60,6 +66,16 @@ void Sensor::readSensorValues() {
 	ir_lft_trig = (ir_lft >= ir_lft_thold);
 	ir_mid_trig = (ir_mid >= ir_mid_thold);
 	ir_ryt_trig = (ir_ryt >= ir_ryt_thold);
+
+	float shuntAmpVoltage = Sensor::ADC_INTERNAL_VREF / (float)Sensor::ADC_RESOLUTION * shuntAmp;
+	float maxVoltage = Motor::MOTORS_MAX_CURRENT * Sensor::SHUNT_AMP_MAX_VOLTAGE / Sensor::SHUNT_AMP_MAX_CURRENT;
+	if (shuntAmpVoltage >= maxVoltage) {
+		// TODO: handle overcurrent
+		overCurrent = true;
+	} else {
+		overCurrent = false;
+		// TODO: clear overcurrent
+	}
 
 #if IMU
 	byte num=0;

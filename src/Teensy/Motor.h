@@ -22,6 +22,8 @@ extern class Motor motors; // FIXME: change this
 
 class Motor {
 public:
+	static const uint8_t MOTORS_MAX_CURRENT = 5; // [A]
+
 	Motor(void);
 	~Motor(void);
 
