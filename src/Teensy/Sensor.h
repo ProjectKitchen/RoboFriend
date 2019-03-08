@@ -39,7 +39,7 @@ public:
 	 * since we have a linear output, the 5A will be represented by 1V at the output
 	 */
 	static const uint8_t ADC_INTERNAL_VREF = 5;
-	static const float ADC_EXTERNAL_VREG = 4.096;
+	static constexpr float ADC_EXTERNAL_VREG = 4.096;
 	static const uint16_t ADC_RESOLUTION = 1023;
 	static const uint8_t SHUNT_AMP_MAX_CURRENT = 10; // [A]
 	static const uint8_t SHUNT_AMP_MAX_VOLTAGE = 2; // [V]
@@ -63,7 +63,6 @@ public:
 private:
 	int battery;
 	int shuntAmp;
-	bool overCurrent;
 
 	int ir_lft;
 	int ir_lft_thold;
@@ -83,5 +82,7 @@ private:
 	RunningAverage *IRSensorMiddleBuffer;
 	RunningAverage *IRSensorRightBuffer;
 };
+
+void readComparatorValue(void);
 
 #endif /* SENSOR_H_ */

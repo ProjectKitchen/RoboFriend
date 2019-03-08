@@ -14,6 +14,11 @@
 #include "Motor.h"
 #include "Sensor.h"
 
+/******************************************************************* GLOBALS */
+
+volatile bool overCurrentAnalog = false;
+volatile bool overCurrentDigital = false;
+
 /******************************************************************* EXTERNS */
 
 extern long loopcounter;
@@ -48,6 +53,9 @@ void Sensor::init() {
 	IRSensorLeftBuffer = new RunningAverage(Sensor::IR_BUFFER_SIZE);
 	IRSensorMiddleBuffer = new RunningAverage(Sensor::IR_BUFFER_SIZE);
 	IRSensorRightBuffer = new RunningAverage(Sensor::IR_BUFFER_SIZE);
+
+	pinMode(PIN_OC_DI, INPUT_PULLUP);
+	attachInterrupt(digitalPinToInterrupt(PIN_OC_DI), readComparatorValue, CHANGE);
 }
 
 void Sensor::readSensorValues() {
@@ -70,10 +78,10 @@ void Sensor::readSensorValues() {
 	float shuntAmpVoltage = Sensor::ADC_INTERNAL_VREF / (float)Sensor::ADC_RESOLUTION * shuntAmp;
 	float maxVoltage = Motor::MOTORS_MAX_CURRENT * Sensor::SHUNT_AMP_MAX_VOLTAGE / Sensor::SHUNT_AMP_MAX_CURRENT;
 	if (shuntAmpVoltage >= maxVoltage) {
+		overCurrentAnalog = true;
 		// TODO: handle overcurrent
-		overCurrent = true;
 	} else {
-		overCurrent = false;
+		overCurrentAnalog = false;
 		// TODO: clear overcurrent
 	}
 
@@ -129,5 +137,10 @@ bool Sensor::isIRSensorMiddleTriggered() {
 
 bool Sensor::isIRSensorRightTriggered() {
 	return ir_ryt_trig;
+}
+
+void readComparatorValue() {
+	overCurrentDigital = !overCurrentDigital;
+	// TODO: handle overcurrent
 }
 
