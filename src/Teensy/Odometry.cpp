@@ -34,7 +34,7 @@ Odometry::Odometry() {
 }
 
 Odometry::~Odometry() {
-
+	Timer1.detachInterrupt();
 }
 
 void Odometry::init() {

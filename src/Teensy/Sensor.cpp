@@ -40,6 +40,9 @@ Sensor::~Sensor(void) {
 		free(IRSensorMiddleBuffer);
 	if (IRSensorRightBuffer)
 		free(IRSensorRightBuffer);
+
+	pinMode(PIN_OC_DI, INPUT);
+	detachInterrupt(digitalPinToInterrupt(PIN_OC_DI));
 }
 
 void Sensor::init() {
