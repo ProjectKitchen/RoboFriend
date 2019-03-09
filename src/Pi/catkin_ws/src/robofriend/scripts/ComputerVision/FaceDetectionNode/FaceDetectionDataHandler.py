@@ -51,7 +51,7 @@ class FaceDetectionDataHandler():
         self.__start_facedetect_thread()
 
     def __face_recog_init(self):
-        print("[INFO] {} - Loadings encodings and face detetcted")
+        print("[INFO] Loadings encodings and face detetcted")
 
         self.__path = os.path.dirname(os.path.realpath(__file__))
 
