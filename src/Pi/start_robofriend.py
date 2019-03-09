@@ -43,9 +43,9 @@ def stop():
 		roscore.terminate()
 		rospy.signal_shutdown("Shutdown completed!")
 	except Exception as inst:
-	    rospy.logwarn('*** Roscore termination failed! ***')
-	    rospy.logwarn(type(inst))
-	    rospy.logwarn(inst.args)
+		rospy.logwarn('*** Roscore termination failed! ***')
+		rospy.logwarn(type(inst))
+		rospy.logwarn(inst.args)
 
 def handler_stop_signals(signum, frame):
 	stop()
