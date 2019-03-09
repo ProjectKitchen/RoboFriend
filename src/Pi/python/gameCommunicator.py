@@ -10,7 +10,7 @@ import speechModule
 import gameCommunicator
 
 # globals
-UDP_PORT = 9000 #socket port
+UDP_PORT = 9000 # socket port
 AppListener = None
 SendToApp = None
 IP = ''
