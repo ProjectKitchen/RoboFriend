@@ -64,9 +64,7 @@ def main():
 	rosrobo = RosRobo()
 	rosrobo.run()
 
-
-
-	# TODO
+	# TODO: this has to be handled a better way probably
 	rospy.init_node('Robofriend_node', anonymous = True)
 	print("Done ... starting Webserver!")
 	webserverModule.start()
@@ -89,10 +87,6 @@ def main():
 	print("Done ... start Voice Detection Node")
 	VoiceDetectionNode.node_start()
 	
-
-
-
-
 	print("Initialization done! Registering keyboard interrput signal handlers ...")
 
 	# setting up signal handlers for shutdown
