@@ -122,7 +122,7 @@ def updateFromRawStatus(rawStatus):
         print("error parsing status values: " + rawStatus)
 
     currentStatus[keyBat] = batVolt
-    currentStatus[keyBatPercent] = utils.getBatPercent(batVolt)
+    # currentStatus[keyBatPercent] = utils.getBatPercent(batVolt) # ZAHEDIM: the webserver module needs this param
     currentStatus[keyIrL] = irSensorLeft
     currentStatus[keyIrM] = irSensorMiddle
     currentStatus[keyIrR] = irSensorRight
