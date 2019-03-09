@@ -1,69 +1,62 @@
 #!/usr/bin/env python
-
 import rospy
-import serial
-import constants
 
 # import ros services
-from robofriend.srv import SrvRFIDData, SrvRFIDDataResponse
+from robofriend.srv import SrvRFIDData
 
-class RFIDDataHandler(object):
-    def __init__(self, serial):
-        self._serial = serial
+# import ros messages
+from std_msgs.msg import String
 
-    def service_handler(self, request):
-        data = ""
-        readRFIDnumber = None
-
-        if self._serial is not None:
-            try:
-                data = str(self._serial.read(16))
-                data = data.strip("b'")
-                data = data.replace("\\x02", "").replace("\\x03", "").replace("\\x0a", "").replace("\\x0d", "").replace("\\r\\n", "")
-                
-                readRFIDnumber = data
-                if readRFIDnumber != "empty":
-                    readRFIDnumber = "empty"      
-
-            except Exception as e:
-                rospy.logwarn('*** Read serial for RFID Handler failed! ***')
-                rospy.logwarn(type(inst))
-                rospy.logwarn(inst.args)
-        else:
-            readRFIDnumber = "readRFIDnumber:01"
-
-        rospy.loginfo("{%s} - Service handler RFID message: %s", self.__class__.__name__, readRFIDnumber)
-
-        return SrvRFIDDataResponse(readRFIDnumber)
+class RFIDReaderDataHandler(object):
+    def __init__(self, pub):
+        self._pub = pub
+        self._rfid_number = "empty"
+        
+    def publishRFIDNumber(self, args):
+        if args is None:
+            return 
+        
+        self._rfid_number = args.rfid_number
+        
+        data = String()
+        data.data = self._rfid_number
+        
+        rospy.logdebug("{%s} RFID data:\n%s", 
+            self.__class__.__name__,
+            data)
+        
+        # publish message
+        self._pub.publish(data)
 
 def shutdown():
-    rospy.signal_shutdown("Stopping RFID node!")
+    rospy.signal_shutdown("Stopping RFID Handler node!")
 
-def RFID():
+def RFIDReader():
     rospy.init_node("robofriend_rfid_handler", log_level = rospy.INFO)
     rospy.loginfo("Starting RFID Handler node!")
     
-    ser = None
-
-    try:
-        ser = serial.Serial(constants.SER_DEV_RFID, constants.SER_DEV_RFID_BD)
-        rospy.loginfo("Serial for RFID reader opened!")
-
-    except Exception as inst:
-        rospy.logwarn('This is a controlled catch!')
-        rospy.logwarn('Serial for FRID reader could not opened!')
-        rospy.logwarn('Exception type: %s', type(inst))
-        rospy.logwarn('Exception argument: %s', inst.args[1])
-
-    dh = RFIDDataHandler(ser)
-
-    # declare service
-    serv = rospy.Service('/robofriend/get_rfid_data', SrvRFIDData, dh.service_handler)
+    pub = rospy.Publisher("/robofriend/rfid_number", String, queue_size = 1)
     
-    rospy.spin()
+    dh = RFIDReaderDataHandler(pub)
+    
+    rate = rospy.Rate(1) # 1hz
+    
+    while not rospy.is_shutdown():
+        srv_resp = None
+        rospy.wait_for_service('/robofriend/get_rfid_number')
+        
+        try:
+            request = rospy.ServiceProxy('/robofriend/get_rfid_number', SrvRFIDData)
+            srv_resp = request(True)
+        except rospy.ServiceException:
+            rospy.logwarn("{%s} - Service call failed", self.__class__.__name__)
+   
+        dh.publishRFIDNumber(srv_resp)
+    
+        rate.sleep() # make sure the publish rate maintains at the needed frequency
 
 if __name__ == '__main__':
     try:
-        RFID()
+        RFIDReader()
     except rospy.ROSInterruptException:
         pass

@@ -4,7 +4,7 @@ import rospy
 # import ros services
 from robofriend.srv import SrvPCBSensorDataResponse
 
-class TeensyDataHandler():
+class Teensy(object):
 
     step_duration = 50
     loop_duration = 0
