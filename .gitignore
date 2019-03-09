@@ -34,5 +34,6 @@
 # Eclipse
 .cproject
 .project
+.pydevproject
 /src/Teensy/build
 /src/Teensy/Teensy.cpp
