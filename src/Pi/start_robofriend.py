@@ -23,7 +23,7 @@ import keyboardModule as keyboardModule
 from systemModule import *
 
 # import ROS modules
-from FaceDetectionNode import *
+#from FaceDetectionNode import *
 from KeyboardNode import *
 from SpeechNode import *
 from LedEarsNode import *
@@ -75,7 +75,7 @@ def main():
 	print("Done ... starting FaceModue")
 	faceModule.drawFace()
 	print("Done ... starting RosFacedetectionNode")
-	FaceDetectionNode.node_start()
+	#FaceDetectionNode.node_start()
 	print("Done ... start Speech Node")
 	SpeechNode.node_start()
 	print("Done ... start Led Ears Node")
@@ -86,7 +86,7 @@ def main():
 	IOWarriorNode.node_start()
 	print("Done ... start Voice Detection Node")
 	VoiceDetectionNode.node_start()
-	
+
 	print("Initialization done! Registering keyboard interrput signal handlers ...")
 
 	# setting up signal handlers for shutdown

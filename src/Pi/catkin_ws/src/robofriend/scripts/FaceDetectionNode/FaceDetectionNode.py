@@ -1,14 +1,26 @@
-from FaceDetectionNode.FaceDetectionDataHandler import *
+#!/usr/bin/env python3
 
-# globals
-runFlag = True
+from FaceDetectionDataHandler import *
+import rospy
 
-def node_stop():
-    global runFlag
-    runFlag = False
-    print("[INFO] Stopping cam node!")
+def shutdown():
+    rospy.signal_shutdown("Stopping Face Detecion node!")
 
-def node_start():
-    print("[INFO] Ros FaceDetection Node started!\n!")
+def FaceDetecion():
+    rospy.init_node("robofriend_face_detection_node", log_level = rospy.INFO)
+    rospy.loginfo("Starting Face Detecion Node!")
 
-    facedetect = FaceDetectionDataHandler()
+    fd = FaceDetectionDataHandler()
+
+    rate = rospy.Rate(2) # 2 fps
+
+    while not rospy.is_shutdown():
+        fd._face_recognition()
+
+        rate.sleep()
+
+if __name__ == '__main__':
+    try:
+        FaceDetecion()
+    except rospy.ROSInterruptException:
+        pass
