@@ -4,7 +4,7 @@ import rospy
 # import ros services
 from robofriend.srv import SrvPCBSensorDataResponse
 
-class TeensyDataHandler():
+class Teensy(object):
 
     step_duration = 50
     loop_duration = 0
@@ -44,10 +44,11 @@ class TeensyDataHandler():
         if self._serial is not None:
             try:
                 serial_resp = str(self._serial.readline())
-            except Exception as e:
+            except Exception as inst:
+                rospy.logwarn('This is a controlled catch!')
                 rospy.logwarn('*** Read serial for Teensy failed! ***')
-                rospy.logwarn(type(inst))
-                rospy.logwarn(inst.args)
+                rospy.logwarn('Exception type: %s', type(inst))
+                rospy.logwarn('Exception argument: %s', inst.args[1])
         else:
             # serial_resp = "Sensors,3.996,01.10,02.20,03.30" # full battery
             # serial_resp = "Sensors,3.796,01.10,02.20,03.30" # good
@@ -101,9 +102,10 @@ class TeensyDataHandler():
 
         try:
             self._serial.write(str.encode(serial_message) + '\r'.encode('ascii'))
-        except Exception as e:
+        except Exception as inst:
+            rospy.logwarn('This is a controlled catch!')
             rospy.logwarn('*** Send serial for Teensy failed! ***')
-            rospy.logwarn(type(inst))
-            rospy.logwarn(inst.args)
+            rospy.logwarn('Exception type: %s', type(inst))
+            rospy.logwarn('Exception argument: %s', inst.args[1])
 
         self.send_lock.release()

@@ -44,6 +44,6 @@
 	<node pkg="robofriend" type="PCBSensorData.py" name="robofriend_pcb_sensor_data" output="screen">
 	</node>
 
-	<node pkg="robofriend" type="TeensyNode.py" name="robofriend_teensy_communicator" output="screen">
+	<node pkg="robofriend" type="SerialNode.py" name="robofriend_serial_data_handler" output="screen">
 	</node>
 </launch>

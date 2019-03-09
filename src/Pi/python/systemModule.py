@@ -1,37 +1,21 @@
-# external modules
-import os
-import time
-
-import subprocess
-import shlex
-import sys
-import signal
+import os, sys, time, signal
 import psutil
-# import rosgraph
 import roslaunch
+import subprocess
 
-# TODO: kann man anders loesen 
-# ******************************
-# own modules
-# import speechModule
-# 
-# def shutdown():
-#     speechModule.speakShutdown()
-#     time.sleep(3)
-#     os.system('sudo init 0')
-# ******************************
+def shutdown():
+    # ZAHEDIM: make sure to terminate ROS
+    time.sleep(3)
+    os.system('sudo init 0')
 
 def kill_child_processes(parent_pid, sig=signal.SIGTERM):
     try:
         parent = psutil.Process(parent_pid)
-        # print(parent)
     except psutil.NoSuchProcess:
         print("Parent process not existing")
         return
     children = parent.children(recursive=True)
-    # print(children)
     for process in children:
-        # print("Try to kill child: " + str(process))
         process.send_signal(sig)
 
 class Roscore(object):
@@ -46,14 +30,12 @@ class Roscore(object):
         Roscore.__initialized = True
     def run(self):
         try:
-            # if rosgraph.is_master_online() == False:
             self.roscore_process = subprocess.Popen(['roscore'])
             self.roscore_pid = self.roscore_process.pid  # pid of the roscore process (which has child processes)
         except OSError as e:
             sys.stderr.write('Roscore could not be launched!')
             raise e
     def terminate(self):
-        # print("Try to kill child pids of roscore pid: " + str(self.roscore_pid))
         kill_child_processes(self.roscore_pid)
         self.roscore_process.terminate()
         self.roscore_process.wait()  # important to prevent from zombie process
