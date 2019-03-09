@@ -9,9 +9,14 @@ from Queue import *
 import rospy
 import traceback
 
+#from urllib.request import urlopen     # python3
+from urllib2 import urlopen             # python2
+
+
 # import ros service
 from robofriend.srv import SrvFaceRecordData
 from robofriend.srv import SrvFaceDatabaseData
+from robofriend.srv import SrvVoiceHotwordActivationData
 
 # import ros messages
 from robofriend.msg import SpeechData
@@ -425,7 +430,7 @@ class RobobrainFacedetectionDataHandler():
         try:
             vc_input = self._vc_queue.get(timeout = self._elapse_time_voice)
             sep_mes = vc_input.slots.split("/")
-            rospy.debug("Seperated message: {%s}", sep_mes)
+            rospy.logdebug("Seperated message: {%s}", sep_mes)
             if vc_input.intent == "lights":
                 if sep_mes[1] == "on":
                     if sep_mes[0] == "living room":
