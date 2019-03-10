@@ -69,10 +69,6 @@ def main():
 
 	# TODO: this has to be handled a better way probably
 	rospy.init_node('Robofriend_node', anonymous = True)
-	print("Done ... starting Webserver!")
-	# webserverModule.start()
-	print("Done ... starting Gamecommunicator")
-	GameCommunicator.start()
 	print("Done ... starting KeyboardModule")
 	KeyboardNode.node_start()
 	print("Done ... starting FaceModue")
