@@ -4,6 +4,7 @@
 	<arg name="model" default="$(env TURTLEBOT3_MODEL)" doc="model type [burger, waffle, waffle_pi]"/>
 	<arg name="lidar" default="true"/>
 	<arg name="slam" default="true"/>
+	<arg name="fdet" default="false"/> 
 
 	<!-- Arguments: LIDAR -->
 	<arg name="port" default="/dev/ttyUSB0" />
@@ -32,15 +33,11 @@
 		</include>
 	</group>
 
-	<node pkg="robofriend" type="RobobrainNode.py" name="robofriend_robobrain" output="screen">
-	</node>
-
-	<node pkg="robofriend" type="RFIDData.py" name="robofriend_rfid_data" output="screen">
-	</node>
-
-	<node pkg="robofriend" type="PCBSensorData.py" name="robofriend_pcb_sensor_data" output="screen">
-	</node>
-
-	<node pkg="robofriend" type="SerialNode.py" name="robofriend_serial_data_handler" output="screen">
-	</node>
+	<node pkg="robofriend" type="RobobrainNode.py" name="robofriend_robobrain" output="screen" />
+	<node pkg="robofriend" type="RFIDData.py" name="robofriend_rfid_data" output="screen" />
+	<node pkg="robofriend" type="PCBSensorData.py" name="robofriend_pcb_sensor_data" output="screen" />
+	<node pkg="robofriend" type="SerialNode.py" name="robofriend_serial_data_handler" output="screen" />
+	<group if="$(arg fdet)">
+		<node pkg="robofriend" type="FaceDetectionNode.py" name="robofriend_face_detection_node" output="screen" />
+	</group>	
 </launch>

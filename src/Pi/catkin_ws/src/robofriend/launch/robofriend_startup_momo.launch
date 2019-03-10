@@ -4,26 +4,24 @@
 	<arg name="model" default="$(env TURTLEBOT3_MODEL)" doc="model type [burger, waffle, waffle_pi]"/>
 	<arg name="lidar" default="true"/>
 	<arg name="slam" default="true"/>
-	<arg name="fdet" default="false"/> 
-	
+	<arg name="fdet" default="true"/> 
+
 	<!-- Arguments: LIDAR -->
 	<arg name="port" default="/dev/ttyUSB0" />
-	<arg name="frame_id" default="map" />	
+	<arg name="frame_id" default="map" />
 
 	<!-- Arguments: SLAM -->
 	<arg name="slam_methods" default="gmapping" doc="slam type [gmapping, cartographer, hector, karto, frontier_exploration]"/>
-  	<arg name="configuration_basename" default="turtlebot3_lds_2d.lua"/>
+	<arg name="configuration_basename" default="turtlebot3_lds_2d.lua"/>
 
 	<!-- Drivers: LIDAR -->
-  	<group if="$(arg lidar)"> 
+  	<group if="$(arg lidar)">
 		<include file="$(find hls_lfcd_lds_driver)/launch/hlds_laser.launch" />
-		<!-- rviz -->
-		<!-- node name="rviz" pkg="rviz" type="rviz" args="-d $(find hls_lfcd_lds_driver)/rviz/hlds_laser.rviz" /-->
 	</group>
 
 	<!-- Drivers: SLAM -->
-	<group if="$(arg slam)"> 
-		<!-- TurtleBot3 -->
+	<group if="$(arg slam)">
+	  	<!-- TurtleBot3 -->
 		<include file="$(find turtlebot3_bringup)/launch/turtlebot3_remote.launch">
     		<arg name="model" value="$(arg model)" />
   		</include>
@@ -33,9 +31,6 @@
 			<arg name="model" value="$(arg model)"/>
 			<arg name="configuration_basename" value="$(arg configuration_basename)"/>
 		</include>
-		
-		<!-- rviz -->  
-		<node name="rviz" pkg="rviz" type="rviz" required="true" args="-d $(find turtlebot3_slam)/rviz/turtlebot3_$(arg slam_methods).rviz"/>
 	</group>
 
 	<node pkg="robofriend" type="RobobrainNode.py" name="robofriend_robobrain" output="screen" />

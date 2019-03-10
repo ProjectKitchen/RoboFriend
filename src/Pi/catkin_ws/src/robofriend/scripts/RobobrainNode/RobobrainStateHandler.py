@@ -1,3 +1,5 @@
+import rospy
+
 from threading import Lock, Thread
 from time import sleep
 
@@ -36,7 +38,7 @@ class RobobrainStateHandler():
                 # os.system("init 0")
             # *************************** IDLE *************************** '''
             elif self.state == RobobrainStateHandler.robostate["IDLE"]:
-                print("[INFO] Within IDLE state")
+                rospy.loginfo("{%s} - Within IDLE state", rospy.get_caller_id())
                 event_is_set = self.__event.wait(self.__idle_elapse_time)
                 if event_is_set == True:
                     print("Input from either keyboard or webserver therefore stay in IDLE state!")
