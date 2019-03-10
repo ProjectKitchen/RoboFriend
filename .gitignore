@@ -10,6 +10,7 @@
 /src/Pi/catkin_ws/build
 /src/Pi/catkin_ws/devel
 /src/Pi/catkin_ws/install
+/src/Pi/catkin_ws/.catkin_workspace
 
 # Object files
 *.o
@@ -35,6 +36,6 @@
 .cproject
 .project
 .pydevproject
-/src/Pi/.settings
+/src/Pi/.settings/*
 /src/Teensy/build
 /src/Teensy/Teensy.cpp
