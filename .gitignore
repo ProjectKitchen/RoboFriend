@@ -35,5 +35,6 @@
 .cproject
 .project
 .pydevproject
+/src/Pi/.settings
 /src/Teensy/build
 /src/Teensy/Teensy.cpp

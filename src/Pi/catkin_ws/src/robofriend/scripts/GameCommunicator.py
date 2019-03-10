@@ -33,10 +33,10 @@ def sendToGUI(data):
         UDP_SOCKET.sendto(bytesToSend, (IP, UDP_PORT + 1))
     except OSError as inst:
         IP = ''
-        rospy.logwarn('{GameCommunicator} - this is a controlled catch.')
-        rospy.logwarn('{GameCommunicator} - failed to send data via udp socket.')
-        rospy.logwarn('{GameCommunicator} - exception type: %s', type(inst))
-        rospy.logwarn('{GameCommunicator} - exception argument: %s', inst.args[1])
+        rospy.logwarn('{%s} - this is a controlled catch.', rospy.get_caller_id())
+        rospy.logwarn('{%s} - failed to send data via udp socket.', rospy.get_caller_id())
+        rospy.logwarn('{%s} - exception type: %s', rospy.get_caller_id(), type(inst))
+        rospy.logwarn('{%s} - exception argument: %s', rospy.get_caller_id(), inst.args[1])
 
 """ 
 This function is used as Thread to always listen if there is a client (gamegui) sending commands
@@ -51,10 +51,10 @@ def data_listener():
     try: 
         tempData, addr = UDP_SOCKET.recvfrom(50)
     except Exception as inst:
-        rospy.logwarn('{GameCommunicator} - this is a controlled catch.')
-        rospy.logwarn('{GameCommunicator} - could not receive data from udp socket.')
-        rospy.logwarn('{GameCommunicator} - exception type: %s', type(inst))
-        rospy.logwarn('{GameCommunicator} - exception argument: %s', inst.args[1])
+        rospy.logwarn('{%s} - this is a controlled catch.', rospy.get_caller_id())
+        rospy.logwarn('{%s} - could not receive data from udp socket.', rospy.get_caller_id())
+        rospy.logwarn('{%s} - exception type: %s', rospy.get_caller_id(), type(inst))
+        rospy.logwarn('{%s} - exception argument: %s', rospy.get_caller_id(), inst.args[1])
         return
         
     receivedData += tempData.decode("utf-8")
@@ -66,13 +66,13 @@ def data_listener():
     if endFlagIndex != -1:
         receivedData = receivedData[:endFlagIndex]
     else:
-        rospy.logwarn("{GameCommunicator} - expected string format: \":RUN:xxx:EOL:\", your string: %s", 
-                      receivedData)
+        rospy.logwarn("{%s} - expected string format: \":RUN:xxx:EOL:\", your string: %s", 
+                      rospy.get_caller_id(), receivedData)
         return
  
     IP = addr[0]
-    rospy.loginfo("{GameCommunicator} - received data: %s, from app: %s", 
-                  receivedData, str(IP))
+    rospy.loginfo("{%s} - received data: %s, from app: %s", 
+                  rospy.get_caller_id(), receivedData, str(IP))
     chooseAction(receivedData)
 
 def chooseAction(data):
@@ -149,14 +149,14 @@ def shutdown():
         UDP_SOCKET.close()
     if appListener is not None:
         appListener.join(2)
-    rospy.loginfo("{GameCommunicator} - stopping game communicator node.")
+    rospy.loginfo("{%s} - stopping game communicator node.", rospy.get_caller_id())
     rospy.signal_shutdown("controlled shutdown.")
 
 def start():
     global UDP_IP, UDP_SOCKET, appListener, isInitialized
     
     if not isInitialized:
-        rospy.loginfo("{GameCommunicator} - starting game communicator handler node!")
+        rospy.loginfo("{%s} - starting game communicator handler node!", rospy.get_caller_id())
         rospy.on_shutdown(shutdown)
         # handle commandline arguments to get ip address
         if len(sys.argv) == 2:
@@ -165,10 +165,10 @@ def start():
                 UDP_IP = sys.argv[1]
                 socket.inet_aton(UDP_IP)
             except Exception as inst:
-                rospy.logwarn('{GameCommunicator} - this is a controlled catch.')
-                rospy.logwarn('{GameCommunicator} - invalid ip address (\'%s\'), try again.', UDP_IP)
-                rospy.logwarn('{GameCommunicator} - exception type: %s', type(inst))
-                rospy.logwarn('{GameCommunicator} - exception argument: %s', inst.args[0])
+                rospy.logwarn('{%s} - this is a controlled catch.')
+                rospy.logwarn('{%s} - invalid ip address (\'%s\'), try again.', UDP_IP)
+                rospy.logwarn('{%s} - exception type: %s', type(inst))
+                rospy.logwarn('{%s} - exception argument: %s', inst.args[0])
                 sys.exit()
         else:
             UDP_IP = ''
@@ -178,12 +178,12 @@ def start():
             UDP_SOCKET = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) # UDP
             UDP_SOCKET.bind((UDP_IP, UDP_PORT))
             isInitialized = True
-            rospy.loginfo("{GameCommunicator} - udp socket opened.")
+            rospy.loginfo("{%s} - udp socket opened.")
         except Exception as inst:
-            rospy.logwarn('{GameCommunicator} - this is a controlled catch.')
-            rospy.logwarn('{GameCommunicator} - could not open udp socket.')
-            rospy.logwarn('{GameCommunicator} - exception type: %s', type(inst))
-            rospy.logwarn('{GameCommunicator} - exception argument: %s', inst.args[1])
+            rospy.logwarn('{%s} - this is a controlled catch.')
+            rospy.logwarn('{%s} - could not open udp socket.')
+            rospy.logwarn('{%s} - exception type: %s', type(inst))
+            rospy.logwarn('{%s} - exception argument: %s', inst.args[1])
     
         appListener = threading.Thread(target=data_listener)
         appListener.daemon = True

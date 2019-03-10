@@ -7,15 +7,10 @@ from std_msgs.msg import String
 # import ros services
 from robofriend.srv import SrvRFIDData
 
-# import modules
-import GameCommunicator
-
 def publishRFIDNumber(pub, args):
     if args is None:
         return 
     
-    # send to game communicator
-    GameCommunicator.sendToGUI("rfid;" + str(args.rfid_number))
 
     data = String()
     data.data = args.rfid_number
@@ -24,7 +19,9 @@ def publishRFIDNumber(pub, args):
     
     # publish message
     pub.publish(data)
-    
+
+    # MZAHEDI: happening via topic cloud
+    # GameCommunicator.sendToGUI("rfid;" + str(args.rfid_number))
 
 def shutdown():
     rospy.loginfo("{%s} - stopping rfid data handler node.", rospy.get_caller_id())
