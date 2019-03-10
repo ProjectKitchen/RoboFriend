@@ -24,7 +24,7 @@ def sendToGUI(data):
     global IP, UDP_PORT, UDP_SOCKET
 
     # init if not already initialized
-    start()
+    # start()
 
     if IP == '':
         return
@@ -188,7 +188,7 @@ def start():
         appListener = threading.Thread(target=data_listener)
         appListener.daemon = True
         appListener.start()
-        # appListener.run() MZAHEDI: this thread should actually run
+        # appListener.run() # MZAHEDI: this thread should actually run
         
 if __name__ == '__main__':
     try:

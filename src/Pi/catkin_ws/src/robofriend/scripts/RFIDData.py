@@ -15,7 +15,7 @@ def publishRFIDNumber(pub, args):
         return 
     
     # send to game communicator
-    # GameCommunicator.sendToGUI("rfid;" + str(args.rfid_number))
+    GameCommunicator.sendToGUI("rfid;" + str(args.rfid_number))
 
     data = String()
     data.data = args.rfid_number
