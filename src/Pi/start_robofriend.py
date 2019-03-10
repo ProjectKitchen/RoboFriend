@@ -6,6 +6,8 @@ import rospy
 
 module_path = str(os.getcwd()) + "/python"
 sys.path.append(module_path)
+catkin_path = str(os.getcwd()) + "/catkin_ws/src/robofriend"
+sys.path.append(catkin_path)
 catkin_path = str(os.getcwd()) + "/catkin_ws/src/robofriend/scripts"
 sys.path.append(catkin_path)
 
@@ -13,7 +15,6 @@ sys.path.append(catkin_path)
 import faceModule as faceModule
 # import webserverModule as webserverModule
 import statusModule as statusModule
-import gameCommunicator as gameCommunicator
 # import keyboardModule as keyboardModule
 #import teensyCommunicator as teensyCommunicator
 #import ioWarriorModule as ioWarriorModule
@@ -24,12 +25,14 @@ from SystemModule import *
 
 # import ROS modules
 #from FaceDetectionNode import *
+from scripts import GameCommunicator
 from KeyboardNode import *
 from SpeechNode import *
 from LedEarsNode import *
 from ServoCamNode import *
 from IOWarriorNode import *
 # from VoiceDetectionNode import *
+
 
 # globals
 roscore = None
@@ -69,7 +72,7 @@ def main():
 	print("Done ... starting Webserver!")
 	# webserverModule.start()
 	print("Done ... starting Gamecommunicator")
-	gameCommunicator.start()
+	GameCommunicator.start()
 	print("Done ... starting KeyboardModule")
 	KeyboardNode.node_start()
 	print("Done ... starting FaceModue")

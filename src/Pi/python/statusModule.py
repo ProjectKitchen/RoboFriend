@@ -6,7 +6,7 @@ import os
 
 #own modules
 import speechModule
-import gameCommunicator
+#import gameCommunicator
 import teensyCommunicator
 import utils
 
@@ -83,7 +83,7 @@ def StatusInfo():
             currentStatus[keyIsIdle] = True
         rawStatus = teensyCommunicator.getRawStatus()
         currentStatus = updateFromRawStatus(rawStatus)
-        gameCommunicator.sendtogui("battery;"+str(getBatteryVoltage()))
+        gameCommunicator.sendToGUI("battery;"+str(getBatteryVoltage()))
 
 #        print ("Battery= " + str(getBatteryPercent()) + "% ("  + str(getBatteryVoltage()) + " Volt)")
         if statusCount >= batMovingAverageN and getBatteryVoltage() < 12.0:

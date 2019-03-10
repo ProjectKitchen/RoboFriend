@@ -35,9 +35,6 @@
 	<node pkg="robofriend" type="RobobrainNode.py" name="robofriend_robobrain" output="screen">
 	</node>
 
-	<node pkg="robofriend" type="GameCommunicator.py" name="robofriend_game_communicator" output="screen">
-	</node>
-
 	<node pkg="robofriend" type="RFIDData.py" name="robofriend_rfid_data" output="screen">
 	</node>
 

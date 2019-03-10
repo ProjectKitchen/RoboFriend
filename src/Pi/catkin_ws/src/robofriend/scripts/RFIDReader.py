@@ -15,15 +15,13 @@ class RFIDReader(object):
         if self._serial is not None:
             try:
                 data = str(self._serial.read(16))
-                # data = data.strip("b'") # TODO: is this nessecary?
+                data = data.strip("b'")
                 data = data.replace("\x02", "")
                 data = data.replace("\x03", "")
                 data = data.replace("\x0a", "")
                 data = data.replace("\x0d", "")
-                # data = data.replace("\\r\\n", "")  # TODO: is this nessecary?
+                data = data.replace("\\r\\n", "")
                 readRFIDnumber = data
-                # in the old logic, the rdif number is provided to gui in a thread:
-                # ZAHEDIM: gameCommunicator.sendtogui("rfid;"+str(readRFIDnumber))
             except Exception as inst:                
                 rospy.logwarn('This is a controlled catch!')
                 rospy.logwarn('*** Read serial for RFID Handler failed! ***')

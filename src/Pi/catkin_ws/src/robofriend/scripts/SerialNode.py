@@ -35,21 +35,21 @@ def SerialNode():
 
     try:
         ser_rfid = serial.Serial(constants.SER_DEV_RFID, constants.SER_DEV_RFID_BD)
-        rospy.loginfo("serial for rfid reader opened.")
+        rospy.loginfo("{%s} - serial for rfid reader opened.")
     except Exception as inst:
-        rospy.logwarn('this is a controlled catch.')
-        rospy.logwarn('serial for rfid reader could not opened.')
-        rospy.logwarn('exception type: %s', type(inst))
-        rospy.logwarn('exception argument: %s', inst.args[1])
+        rospy.logwarn('{%s} - this is a controlled catch.', rospy.get_caller_id())
+        rospy.logwarn('{%s} - serial for rfid reader could not opened.', rospy.get_caller_id())
+        rospy.logwarn('{%s} - exception type: %s', rospy.get_caller_id(), type(inst))
+        rospy.logwarn('{%s} - exception argument: %s', rospy.get_caller_id(), inst.args[1])
 
     try:
         ser_teensy = serial.Serial(constants.SER_DEV_TEENSY, constants.SER_DEV_TEENSY_BD, timeout = 1)
-        rospy.loginfo("serial for teensy opened.")
+        rospy.loginfo("{%s} - serial for teensy opened.")
     except Exception as inst:
-        rospy.logwarn('this is a controlled catch.')
-        rospy.logwarn('terial for teensy could not opened.')
-        rospy.logwarn('exception type: %s', type(inst))
-        rospy.logwarn('exception argument: %s', inst.args[1])
+        rospy.logwarn('{%s} - this is a controlled catch.', rospy.get_caller_id())
+        rospy.logwarn('{%s} - terial for teensy could not opened.', rospy.get_caller_id())
+        rospy.logwarn('{%s} - exception type: %s', rospy.get_caller_id(), type(inst))
+        rospy.logwarn('{%s} - exception argument: %s', rospy.get_caller_id(), inst.args[1])
 
     rfid = RFIDReader(ser_rfid)
     teensy = TeensyCommunicator(ser_teensy)
