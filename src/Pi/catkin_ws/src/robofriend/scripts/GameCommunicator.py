@@ -1,20 +1,11 @@
 #!/usr/bin/env python
-import rospy, sys
-import socket, threading
-
-# own modules
-import TeensyCommunicator
-# import faceModule
-# import soundModule
-# import speechModule
+import rospy, sys, socket
 
 # globals
 IP = ''
 UDP_IP = ''
 UDP_PORT = 9000 # socket port
 UDP_SOCKET = None
-appListener = None
-isInitialized = False
 
 """ 
 This function is used to send information to the gamegui and can be called 
@@ -147,51 +138,50 @@ def move(dataArray):
 def shutdown():
     if UDP_SOCKET is not None:
         UDP_SOCKET.close()
-    if appListener is not None:
-        appListener.join(2)
     rospy.loginfo("{%s} - stopping game communicator node.", rospy.get_caller_id())
     rospy.signal_shutdown("controlled shutdown.")
 
-def start():
-    global UDP_IP, UDP_SOCKET, appListener, isInitialized
+def GameCommunicator():
+    global UDP_IP, UDP_SOCKET
     
-    if not isInitialized:
-        rospy.loginfo("{%s} - starting game communicator handler node!", rospy.get_caller_id())
-        rospy.on_shutdown(shutdown)
-        # handle commandline arguments to get ip address
-        if len(sys.argv) == 2:
-            try:
-                # check for a valid input
-                UDP_IP = sys.argv[1]
-                socket.inet_aton(UDP_IP)
-            except Exception as inst:
-                rospy.logwarn('{%s} - this is a controlled catch.')
-                rospy.logwarn('{%s} - invalid ip address (\'%s\'), try again.', UDP_IP)
-                rospy.logwarn('{%s} - exception type: %s', type(inst))
-                rospy.logwarn('{%s} - exception argument: %s', inst.args[0])
-                sys.exit()
-        else:
-            UDP_IP = ''
-        
-        # connect the udp port
-        try: 
-            UDP_SOCKET = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) # UDP
-            UDP_SOCKET.bind((UDP_IP, UDP_PORT))
-            isInitialized = True
-            rospy.loginfo("{%s} - udp socket opened.")
+    rospy.init_node("robofriend_game_communicator", log_level = rospy.INFO)
+    rospy.loginfo("{%s} - starting game communicator handler node!", rospy.get_caller_id())
+    rospy.on_shutdown(shutdown)
+    
+    # handle commandline arguments to get ip address
+    if len(sys.argv) == 2:
+        try:
+            # check for a valid input
+            UDP_IP = sys.argv[1]
+            socket.inet_aton(UDP_IP)
         except Exception as inst:
-            rospy.logwarn('{%s} - this is a controlled catch.')
-            rospy.logwarn('{%s} - could not open udp socket.')
-            rospy.logwarn('{%s} - exception type: %s', type(inst))
-            rospy.logwarn('{%s} - exception argument: %s', inst.args[1])
+            rospy.logwarn('{%s} - this is a controlled catch.', rospy.get_caller_id())
+            rospy.logwarn('{%s} - invalid ip address (\'%s\'), try again.', rospy.get_caller_id(), UDP_IP)
+            rospy.logwarn('{%s} - exception type: %s', rospy.get_caller_id(), type(inst))
+            rospy.logwarn('{%s} - exception argument: %s', rospy.get_caller_id(), inst.args[0])
+            sys.exit()
+    else:
+        UDP_IP = ''
     
-        appListener = threading.Thread(target=data_listener)
-        appListener.daemon = True
-        appListener.start()
-        # appListener.run() # MZAHEDI: this thread should actually run
+    # connect the udp port
+    try: 
+        UDP_SOCKET = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) # UDP
+        UDP_SOCKET.bind((UDP_IP, UDP_PORT))
+        rospy.loginfo("{%s} - udp socket opened.", rospy.get_caller_id())
+    except Exception as inst:
+        rospy.logwarn('{%s} - this is a controlled catch.', rospy.get_caller_id())
+        rospy.logwarn('{%s} - could not open udp socket.', rospy.get_caller_id())
+        rospy.logwarn('{%s} - exception type: %s', rospy.get_caller_id(), type(inst))
+        rospy.logwarn('{%s} - exception argument: %s', rospy.get_caller_id(), inst.args[1])
+
+    rate = rospy.Rate(100) # 1hz    
+    
+    while not rospy.is_shutdown():
+        data_listener()
+        rate.sleep() # make sure the publish rate maintains at the needed frequency
         
 if __name__ == '__main__':
     try:
-        start()
+        GameCommunicator()
     except rospy.ROSInterruptException:
         pass

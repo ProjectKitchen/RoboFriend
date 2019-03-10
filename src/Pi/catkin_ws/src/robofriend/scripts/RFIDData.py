@@ -10,7 +10,6 @@ from robofriend.srv import SrvRFIDData
 def publishRFIDNumber(pub, args):
     if args is None:
         return 
-    
 
     data = String()
     data.data = args.rfid_number
