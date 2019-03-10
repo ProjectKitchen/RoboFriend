@@ -1,10 +1,7 @@
 #!/usr/bin/env python
 
-import rospy, os, sys
+import rospy
 import serial
-
-path = os.path.dirname(os.path.abspath(__file__)) + "/.."
-sys.path.append(path)
 import constants
 
 # import ros messages
