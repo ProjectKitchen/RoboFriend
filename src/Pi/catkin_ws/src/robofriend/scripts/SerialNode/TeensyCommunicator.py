@@ -4,7 +4,7 @@ import rospy
 # import ros services
 from robofriend.srv import SrvPCBSensorDataResponse
 
-class Teensy(object):
+class TeensyCommunicator(object):
 
     step_duration = 50
     loop_duration = 0
@@ -50,10 +50,7 @@ class Teensy(object):
                 rospy.logwarn('Exception type: %s', type(inst))
                 rospy.logwarn('Exception argument: %s', inst.args[1])
         else:
-            # serial_resp = "Sensors,3.996,01.10,02.20,03.30" # full battery
-            # serial_resp = "Sensors,3.796,01.10,02.20,03.30" # good
-            serial_resp = "Sensors,0696,01.10,02.20,03.30" # charging
-            # serial_resp = "Sensors,2.966,01.10,02.20,03.30" # shutdown
+            serial_resp = "Sensors,0696,01.10,02.20,03.30" # GOOD
         
         rospy.logdebug("{%s} Sensor values from teensy: %s", self.__class__.__name__, serial_resp)
         sensor, bat_voltage, inf_left, inf_middle, inf_right = serial_resp.split(',')

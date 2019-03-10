@@ -8,7 +8,7 @@ class RFIDReader(object):
     def __init__(self, serial):
         self._serial = serial
 
-    def service_handler(self, request):
+    def service_handler(self, req):
         data = ""
         readRFIDnumber = None
 
@@ -21,14 +21,9 @@ class RFIDReader(object):
                 data = data.replace("\x0a", "")
                 data = data.replace("\x0d", "")
                 # data = data.replace("\\r\\n", "")  # TODO: is this nessecary?
-                # lock
                 readRFIDnumber = data
-                # release
-                if readRFIDnumber != "empty": #if rfid not locked: if rfid != empty, lock. --- release
-                    # in the old logic, the rdif number is provided to gui in a thread:
-                    # gameCommunicator.sendtogui("rfid;"+str(readRFIDnumber))
-                    # ZAHEDIM: time the return value and the clearance
-                    readRFIDnumber = "empty" 
+                # in the old logic, the rdif number is provided to gui in a thread:
+                # ZAHEDIM: gameCommunicator.sendtogui("rfid;"+str(readRFIDnumber))
             except Exception as inst:                
                 rospy.logwarn('This is a controlled catch!')
                 rospy.logwarn('*** Read serial for RFID Handler failed! ***')
@@ -37,6 +32,6 @@ class RFIDReader(object):
         else:
             readRFIDnumber = "Dummy RFID number: 01"
             
-        rospy.loginfo("{%s} - Service handler RFID message: %s", self.__class__.__name__, readRFIDnumber)
+        rospy.loginfo("{%s} - Service handler RFID message: %s", rospy.get_caller_id(), readRFIDnumber)
 
         return SrvRFIDDataResponse(readRFIDnumber)

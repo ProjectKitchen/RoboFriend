@@ -1,61 +1,66 @@
 #!/usr/bin/env python
 
-import os, sys, rospy
+import rospy, os, sys
 import serial
 
 path = os.path.dirname(os.path.abspath(__file__)) + "/.."
 sys.path.append(path)
 import constants
 
+# import ros messages
+
 # import ros service
 from robofriend.srv import SrvPCBSensorData
 from robofriend.srv import SrvRFIDData
 
-# import ros messages
-from robofriend.msg import TeensyMotorData
+# import modules
+from RFIDReader import RFIDReader
+from TeensyCommunicator import TeensyCommunicator
 
-# import ros modules
-from RFIDReader import *
-from Teensy import *
+# globals 
+ser_rfid = None
+ser_teensy = None
 
 def shutdown():
-    rospy.signal_shutdown("Stopping Teensy Handler node!")
-
+    if ser_rfid is not None:
+        ser_rfid.close()
+    if ser_teensy is not None:
+        ser_teensy.close()
+    rospy.loginfo("{%s} - stopping serial data handler node.", rospy.get_caller_id())
+    rospy.signal_shutdown("controlled shutdown.")
 
 def SerialNode():
+    global ser_rfid, ser_teensy
+    
     rospy.init_node("robofriend_serial_data_handler", log_level = rospy.INFO)
-    rospy.loginfo("Starting Serial Data Handler node!")
-
-    tennsy_ser = None # ZAHEDIM: close the serial somewhere
+    rospy.loginfo("{%s} - starting serial data handler node.", rospy.get_caller_id())
+    rospy.on_shutdown(shutdown)
 
     try:
-        tennsy_ser = serial.Serial(constants.SER_DEV_TEENSY, constants.SER_DEV_TEENSY_BD, timeout = 1)
-        rospy.loginfo("Serial for Teensy opened!")
+        ser_rfid = serial.Serial(constants.SER_DEV_RFID, constants.SER_DEV_RFID_BD)
+        rospy.loginfo("serial for rfid reader opened.")
     except Exception as inst:
-        rospy.logwarn('This is a controlled catch!')
-        rospy.logwarn('Serial for Teensy could not opened!')
-        rospy.logwarn('Exception type: %s', type(inst))
-        rospy.logwarn('Exception argument: %s', inst.args[1])
+        rospy.logwarn('this is a controlled catch.')
+        rospy.logwarn('serial for rfid reader could not opened.')
+        rospy.logwarn('exception type: %s', type(inst))
+        rospy.logwarn('exception argument: %s', inst.args[1])
 
-    rfid_ser = None # ZAHEDIM: close the serial somewhere
     try:
-        rfid_ser = serial.Serial(constants.SER_DEV_RFID, constants.SER_DEV_RFID_BD, timeout = 1)
-        rospy.loginfo("Serial for RFID Reader opened!")
+        ser_teensy = serial.Serial(constants.SER_DEV_TEENSY, constants.SER_DEV_TEENSY_BD, timeout = 1)
+        rospy.loginfo("serial for teensy opened.")
     except Exception as inst:
-        rospy.logwarn('This is a controlled catch!')
-        rospy.logwarn('Serial for RFID reader could not opened!')
-        rospy.logwarn('Exception type: %s', type(inst))
-        rospy.logwarn('Exception argument: %s', inst.args[1])
+        rospy.logwarn('this is a controlled catch.')
+        rospy.logwarn('terial for teensy could not opened.')
+        rospy.logwarn('exception type: %s', type(inst))
+        rospy.logwarn('exception argument: %s', inst.args[1])
 
-    teensy_dh = Teensy(tennsy_ser)
-    rfid_dh = RFIDReader(rfid_ser)
+    rfid = RFIDReader(ser_rfid)
+    teensy = TeensyCommunicator(ser_teensy)
 
     # declare services
-    serv = rospy.Service('/robofriend/get_pcb_sensor_data', SrvPCBSensorData, teensy_dh.service_handler)
-    serv = rospy.Service('/robofriend/get_rfid_number', SrvRFIDData, rfid_dh.service_handler)
+    rospy.Service('/robofriend/get_rfid_number', SrvRFIDData, rfid.service_handler)
+    rospy.Service('/robofriend/get_pcb_sensor_data', SrvPCBSensorData, teensy.service_handler)
 
-    # declare Subscriber callback
-    rospy.Subscriber("T_TEENSY_MOTOR_DATA", TeensyMotorData, teensy_dh.motor_process_data)
     rospy.spin()
     
 if __name__ == '__main__':
