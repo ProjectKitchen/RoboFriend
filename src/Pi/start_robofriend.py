@@ -11,16 +11,16 @@ sys.path.append(catkin_path)
 
 # own modules
 import faceModule as faceModule
-import webserverModule as webserverModule
+# import webserverModule as webserverModule
 import statusModule as statusModule
 import gameCommunicator as gameCommunicator
-import keyboardModule as keyboardModule
+# import keyboardModule as keyboardModule
 #import teensyCommunicator as teensyCommunicator
 #import ioWarriorModule as ioWarriorModule
 #import speechModule as speechModule
 #import cam_node as cam_node
 #import facedetectionModule as facedetectionModule
-from systemModule import *
+from SystemModule import *
 
 # import ROS modules
 #from FaceDetectionNode import *
@@ -29,7 +29,7 @@ from SpeechNode import *
 from LedEarsNode import *
 from ServoCamNode import *
 from IOWarriorNode import *
-from VoiceDetectionNode import *
+# from VoiceDetectionNode import *
 
 # globals
 roscore = None
@@ -67,7 +67,7 @@ def main():
 	# TODO: this has to be handled a better way probably
 	rospy.init_node('Robofriend_node', anonymous = True)
 	print("Done ... starting Webserver!")
-	webserverModule.start()
+	# webserverModule.start()
 	print("Done ... starting Gamecommunicator")
 	gameCommunicator.start()
 	print("Done ... starting KeyboardModule")
@@ -85,7 +85,7 @@ def main():
 	print("Done ... start IOWarrior Node")
 	IOWarriorNode.node_start()
 	print("Done ... start Voice Detection Node")
-	VoiceDetectionNode.node_start()
+	# VoiceDetectionNode.node_start()
 
 	print("Initialization done! Registering keyboard interrput signal handlers ...")
 
