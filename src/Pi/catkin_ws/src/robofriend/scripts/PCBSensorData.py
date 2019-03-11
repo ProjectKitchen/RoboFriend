@@ -7,7 +7,7 @@ from robofriend.msg import IRSensorData
 from sensor_msgs.msg import BatteryState
 
 # import ros services
-from robofriend.srv import SrvPCBSensorData
+from robofriend.srv import SrvTeensySerialData
 
 def processSensorValues(bs_pub, ir_pub, args):
     if args is None:
@@ -94,11 +94,11 @@ def PCBSensorData():
 
     while not rospy.is_shutdown():
         srv_resp = None
-        rospy.wait_for_service('/robofriend/get_pcb_sensor_data')
+        rospy.wait_for_service('/robofriend/teensy_serial_data')
 
         try:
-            request = rospy.ServiceProxy('/robofriend/get_pcb_sensor_data', SrvPCBSensorData)
-            srv_resp = request('R')
+            request = rospy.ServiceProxy('/robofriend/teensy_serial_data', SrvTeensySerialData)
+            srv_resp = request('R', True)
         except rospy.ServiceException:
             rospy.logwarn("{%s} - service call failed. check the teensy serial data.", rospy.get_caller_id())
 

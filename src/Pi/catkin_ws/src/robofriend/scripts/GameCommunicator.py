@@ -1,14 +1,19 @@
 #!/usr/bin/env python
 import rospy, select, socket, sys
 
+# import user modules
+import constants
+
 # import ros services
 from robofriend.srv import SrvRFIDData
+from robofriend.srv import SrvTeensySerialData
 
 # globals
 IP = ''
 UDP_IP = ''
 UDP_PORT = 9000 # socket port
 UDP_SOCKET = None
+TEENSY_SRV_REQ = None
 
 """ 
 This function is used to send information to the gamegui and can be called 
@@ -45,7 +50,7 @@ def sendToGUI(data):
 """ 
 This function is used as Thread to always listen if there is a client (gamegui) sending commands
 """
-def data_listener():
+def dataListener():
     global IP
  
     startFlag = ":RUN:"
@@ -116,6 +121,7 @@ def chooseAction(data):
 this function is called by chooseAction if the robot has to move
 """
 def move(dataArray):
+    global TEENSY_SRV_REQ
     print(dataArray)
     dir = dataArray[0]
     if len(dataArray) > 1: # step informationen vorhanden, Tablet Toucheingabe verwendet
@@ -123,34 +129,33 @@ def move(dataArray):
         dataArray = dataArray[1:]
         step = dataArray[0] # fuer spaeter hier Erweiterung moeglich auf Laenge der steps eingehen, jetzt nur standardwert verwendet
         if dir == "forward":
-            teensyCommunicator.moveForwardStep()
-        elif dir == "backward":
-            teensyCommunicator.moveBackStep()
-        elif dir == "left":
-            teensyCommunicator.moveLeftStep()
+            TEENSY_SRV_REQ = constants.MOVE_STEP_FWD
         elif dir == "right":
-            teensyCommunicator.moveRightStep()
+            TEENSY_SRV_REQ = constants.MOVE_STEP_RYT
+        elif dir == "backward":
+            TEENSY_SRV_REQ = constants.MOVE_STEP_BCK
+        elif dir == "left":
+            TEENSY_SRV_REQ = constants.MOVE_STEP_LFT
     else: # keine step informationen vorhanden, daher loop, Joystick verwendet
         print ("loop")
         if dir == "forward":
-            pass
-#             teensyCommunicator.moveForwardLoop()
-        elif dir == "backward":
-            teensyCommunicator.moveBackLoop()
-        elif dir == "left":
-            teensyCommunicator.moveLeftLoop()
+            TEENSY_SRV_REQ = constants.MOVE_LOOP_FWD
         elif dir == "right":
-            teensyCommunicator.moveRightLoop()
+            TEENSY_SRV_REQ = constants.MOVE_LOOP_RYT
+        elif dir == "backward":
+            TEENSY_SRV_REQ = constants.MOVE_LOOP_BCK
+        elif dir == "left":
+            TEENSY_SRV_REQ = constants.MOVE_LOOP_LFT
         elif dir == "forward_right":
-            teensyCommunicator.moveForwardRightLoop()
+            TEENSY_SRV_REQ = constants.MOVE_LOOP_FWD_RYT
         elif dir == "forward_left":
-            teensyCommunicator.moveForwardLeftLoop()
+            TEENSY_SRV_REQ = constants.MOVE_LOOP_FWD_LFT
         elif dir == "backward_right":
-            teensyCommunicator.moveBackRightLoop()
+            TEENSY_SRV_REQ = constants.MOVE_LOOP_BCK_RYT
         elif dir == "backward_left":
-            teensyCommunicator.moveBackLeftLoop()
+            TEENSY_SRV_REQ = constants.MOVE_LOOP_BCK_LFT
         elif dir == "stop":
-            teensyCommunicator.stopMovement()
+            TEENSY_SRV_REQ = constants.STOP_MOVING
 
 def shutdown():
     if UDP_SOCKET is not None:
@@ -159,7 +164,7 @@ def shutdown():
     rospy.signal_shutdown("controlled shutdown.")
 
 def GameCommunicator():
-    global UDP_IP, UDP_SOCKET
+    global UDP_IP, UDP_SOCKET, TEENSY_SRV_REQ
     
     rospy.init_node("robofriend_game_communicator", log_level = rospy.INFO)
     rospy.loginfo("{%s} - starting game communicator handler node!", rospy.get_caller_id())
@@ -195,18 +200,29 @@ def GameCommunicator():
     rate = rospy.Rate(1) # 1hz    
     
     while not rospy.is_shutdown():
-        srv_resp = None
+        rfid_srv_resp = None
         rospy.wait_for_service('/robofriend/get_rfid_number')
         
         try:
             request = rospy.ServiceProxy('/robofriend/get_rfid_number', SrvRFIDData)
-            srv_resp = request(True)
+            rfid_srv_resp = request(True)
         except rospy.ServiceException:
             rospy.logwarn("{%s} - service call failed. check the rfid serial data.", rospy.get_caller_id())
    
-        provideRFIDNumber(srv_resp)
+        provideRFIDNumber(rfid_srv_resp)
+        dataListener()
         
-        data_listener()
+        if TEENSY_SRV_REQ is not None:
+            rospy.wait_for_service('/robofriend/teensy_serial_data')
+    
+            try:
+                request = rospy.ServiceProxy('/robofriend/teensy_serial_data', SrvTeensySerialData)
+                request(TEENSY_SRV_REQ, False)
+                TEENSY_SRV_REQ = None
+            except rospy.ServiceException:
+                rospy.logwarn("{%s} - service call failed. check the teensy serial data.", rospy.get_caller_id())
+            
+        
         rate.sleep() # make sure the publish rate maintains at the needed frequency
         
 if __name__ == '__main__':

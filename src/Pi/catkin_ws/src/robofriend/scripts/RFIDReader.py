@@ -1,17 +1,15 @@
-import rospy
+#!/usr/bin/env python
+import rospy, serial
 
 # import user modules
 import constants
 
-# import ros services
+# import ros service
+from robofriend.srv import SrvRFIDData
 from robofriend.srv import SrvRFIDDataResponse
 
 # globals
 ser = None
-
-def setSerial(serial):
-    global ser
-    ser = serial
 
 def serviceHandler(req):
     data = ""
@@ -28,10 +26,10 @@ def serviceHandler(req):
             data = data.replace("\\r\\n", "")
             readRFIDnumber = data
         except Exception as inst:                
-            rospy.logwarn('this is a controlled catch.')
-            rospy.logwarn('*** read serial for rfid handler failed. ***')
-            rospy.logwarn('exception type: %s', type(inst))
-            rospy.logwarn('exception argument: %s', inst.args[1])
+            rospy.logwarn('{%s} - this is a controlled catch.', rospy.get_caller_id())
+            rospy.logwarn('{%s} - read serial for rfid handler failed.', rospy.get_caller_id())
+            rospy.logwarn('{%s} - exception type: %s', rospy.get_caller_id(), type(inst))
+            rospy.logwarn('{%s} - exception argument: %s', rospy.get_caller_id(), inst.args[1])
     else:
         if constants.DEBUG is True:
             readRFIDnumber = "dummy_rfid_number;01"
@@ -39,3 +37,36 @@ def serviceHandler(req):
     if readRFIDnumber is not None: 
         rospy.logdebug("{%s} - service handler rfid message: %s", rospy.get_caller_id(), readRFIDnumber)
     return SrvRFIDDataResponse(readRFIDnumber)
+
+def shutdown():
+    if ser is not None:
+        ser.close()
+    rospy.loginfo("{%s} - stopping rfid reader node.", rospy.get_caller_id())
+    rospy.signal_shutdown("controlled shutdown.")
+
+def RFIDReader():
+    global ser
+    
+    rospy.init_node("robofriend_rfid_reader", log_level = rospy.INFO)
+    rospy.loginfo("{%s} - starting rfid reader node.", rospy.get_caller_id())
+    rospy.on_shutdown(shutdown)
+
+    try:
+        ser = serial.Serial(constants.SER_DEV_RFID, constants.SER_DEV_RFID_BD)
+        rospy.loginfo("{%s} - serial for rfid reader opened.")
+    except Exception as inst:
+        rospy.logwarn('{%s} - this is a controlled catch.', rospy.get_caller_id())
+        rospy.logwarn('{%s} - serial for rfid reader could not opened.', rospy.get_caller_id())
+        rospy.logwarn('{%s} - exception type: %s', rospy.get_caller_id(), type(inst))
+        rospy.logwarn('{%s} - exception argument: %s', rospy.get_caller_id(), inst.args[1])
+
+    # declare services
+    rospy.Service('/robofriend/get_rfid_number', SrvRFIDData, serviceHandler)
+
+    rospy.spin()
+    
+if __name__ == '__main__':
+    try:
+        RFIDReader()
+    except rospy.ROSInterruptException:
+        pass

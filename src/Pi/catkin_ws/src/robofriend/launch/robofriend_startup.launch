@@ -36,7 +36,8 @@
 	<node pkg="robofriend" type="RobobrainNode.py" name="robofriend_robobrain" output="screen" />
 	<node pkg="robofriend" type="GameCommunicator.py" name="robofriend_game_communicator" output="screen" />
 	<node pkg="robofriend" type="PCBSensorData.py" name="robofriend_pcb_sensor_data" output="screen" />
-	<node pkg="robofriend" type="SerialNode.py" name="robofriend_serial_data_handler" output="screen" />
+	<node pkg="robofriend" type="RFIDReader.py" name="robofriend_rfid_reader" output="screen" />
+	<node pkg="robofriend" type="TeensyCommunicator.py" name="robofriend_teensy_communicator" output="screen" />
 	<group if="$(arg fdet)">
 		<node pkg="robofriend" type="FaceDetectionNode.py" name="robofriend_face_detection_node" output="screen" />
 	</group>	

@@ -70,7 +70,7 @@ add_service_files(
    FILES
    SrvFaceDatabaseData.srv
    SrvFaceRecordData.srv
-   SrvPCBSensorData.srv
+   SrvTeensySerialData.srv
    SrvRFIDData.srv
    SrvVoiceHotwordActivationData.srv
 )

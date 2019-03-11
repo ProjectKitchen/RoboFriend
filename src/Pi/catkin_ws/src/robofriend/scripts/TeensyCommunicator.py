@@ -1,43 +1,88 @@
-import rospy, threading
+#!/usr/bin/env python
+import rospy, serial, threading, time
 
 # import user modules
 import constants
 
-# import ros services
-from robofriend.srv import SrvPCBSensorDataResponse
+# import ros service
+from robofriend.srv import SrvTeensySerialData
+from robofriend.srv import SrvTeensySerialDataResponse
 
 # globals
 ser = None
-step_duration = 50
-loop_duration = 0
 send_lock = threading.Lock()
-motor_direction = {
-    'right' : "D 128 -128 ", \
-    'left' : "D -128 128 ", \
-    'forward' : "D 255 255 ", \
-    'backward' : "D -255 -255 ", \
-    'backleft' : "D -128 0 ", \
-    'backright' : "D 0 -128 ", \
-    'forwardright' : "D 128 0 ", \
-    'forwardleft' : "D 0 128 ", \
-    'stop' : "D"
-}
+driveDuration = 50
 
-def drive():
-    sendSerial('D')
+def move(left, right, duration = driveDuration):
+    stopMovement()
+    sendSerial("D " + str(left) + " " + str(right) + " " + str(duration))
+
+def stopMovement():
+#     statusModule.setNonIdle() # MZAHEDI: update statusModule
+    sendSerial("D")
+
+def shakeHeadForNo(): # TODO: called from faceModule
+    sendSerial("D 50 -50 10")
+    time.sleep(0.5)
+    sendSerial("D -50 50 10")
 
 def readSensorValue():
-    print("readSensorValues")
     sendSerial('R')
     
-def setSensorThresholds():
-    sendSerial('S')
-
 # map the inputs to the function blocks
-options = {'D' : drive,
+options = {'D' : move,
            'R' : readSensorValue,
-           'S' : setSensorThresholds,
+           'S' : stopMovement,
 }
+
+def serviceHandler(req):
+    if len(req.cmd) == 1:
+        options[req.cmd]()
+    elif len(req.cmd) > 1:
+        param = req.cmd[2:].split()
+        if len(param) == 2:
+            options[req.cmd[0]](param[0], param[1], driveDuration)
+        elif len(param) == 3:
+            options[req.cmd[0]](param[0], param[1], param[2])
+
+    bat_voltage = -1
+    inf_left = -1
+    inf_middle = -1
+    inf_right = -1
+    
+    if req.readResponse is True:
+        sensor = None
+        serial_resp = None
+        
+        if ser is not None:
+            try:
+                serial_resp = str(ser.readline())
+            except Exception as inst:
+                rospy.logwarn('{%s} - this is a controlled catch.', rospy.get_caller_id())
+                rospy.logwarn('{%s} - read serial for teensy failed.', rospy.get_caller_id())
+                rospy.logwarn('{%s} - exception type: %s', rospy.get_caller_id(), type(inst))
+                rospy.logwarn('{%s} - exception argument: %s', rospy.get_caller_id(), inst.args[1])
+        else:
+            if constants.DEBUG is True:
+                serial_resp = "Sensors,0696,0200,0100,0300" # GOOD
+        
+        if serial_resp is not None:
+            rospy.logdebug("{%s} - Sensor values from teensy: %s", rospy.get_caller_id(), serial_resp)
+            sensor, bat_voltage, inf_left, inf_middle, inf_right = serial_resp.split(',')
+            rospy.logdebug("{%s} - Response Service: Sensor: %s, Battery: %s, Infrared left: %s, Infrared middle: %s, Infrared right: %s",
+                    rospy.get_caller_id(), 
+                    sensor, 
+                    bat_voltage,
+                    inf_left, 
+                    inf_middle, 
+                    inf_right)
+
+    return SrvTeensySerialDataResponse(
+        float(bat_voltage), 
+        float(inf_left), 
+        float(inf_middle), 
+        float(inf_right)
+        )
 
 def sendSerial(cmd):
     send_lock.acquire()
@@ -48,85 +93,43 @@ def sendSerial(cmd):
         try:
             ser.write(str.encode(cmd) + '\r'.encode('ascii'))
         except Exception as inst:
-            rospy.logwarn('This is a controlled catch!')
-            rospy.logwarn('*** Send serial for Teensy failed! ***')
-            rospy.logwarn('Exception type: %s', type(inst))
-            rospy.logwarn('Exception argument: %s', inst.args[1])
+            rospy.logwarn('{%s} - this is a controlled catch.', rospy.get_caller_id())
+            rospy.logwarn('{%s} - send serial for teensy failed.', rospy.get_caller_id())
+            rospy.logwarn('{%s} - exception type: %s', rospy.get_caller_id(), type(inst))
+            rospy.logwarn('{%s} - exception argument: %s', rospy.get_caller_id(), inst.args[1])
     
     send_lock.release()
 
-def setSerial(serial):
-    global ser
-    ser = serial
-#     direction = None
-#     duration = None
-#     webserver_motor_msg = None
-#     motor_loop = {}
-#     motor_step = {}
-# 
-#     for cnt in motor_direction:
-#         motor_loop[cnt] = motor_direction[cnt] + str(loop_duration)
-#         motor_step[cnt] = motor_direction[cnt] + str(step_duration)
-
-def serviceHandler(req):
-    options[req.cmd]()
-    
-    sensor = None
-    bat_voltage = -1
-    inf_left = -1
-    inf_middle = -1
-    inf_right = -1
-    serial_resp = None
-    
+def shutdown():
     if ser is not None:
-        try:
-            serial_resp = str(ser.readline())
-        except Exception as inst:
-            rospy.logwarn('This is a controlled catch!')
-            rospy.logwarn('*** Read serial for Teensy failed! ***')
-            rospy.logwarn('Exception type: %s', type(inst))
-            rospy.logwarn('Exception argument: %s', inst.args[1])
-    else:
-        if constants.DEBUG is True:
-            serial_resp = "Sensors,0696,01.10,02.20,03.30" # GOOD
+        ser.close()
+    rospy.loginfo("{%s} - stopping serial data handler node.", rospy.get_caller_id())
+    rospy.signal_shutdown("controlled shutdown.")
+
+def TeensyCommunicator():
+    global ser
     
-    if serial_resp is not None:
-        rospy.logdebug("{%s} Sensor values from teensy: %s", rospy.get_caller_id(), serial_resp)
-        sensor, bat_voltage, inf_left, inf_middle, inf_right = serial_resp.split(',')
-        rospy.logdebug("{%s} Response Service: Sensor: %s, Battery: %s, Infrared left: %s, Infrared middle: %s, Infrared right: %s",
-                rospy.get_caller_id(), 
-                sensor, 
-                bat_voltage,
-                inf_left, 
-                inf_middle, 
-                inf_right)
+    rospy.init_node("robofriend_teensy_communicator", log_level = rospy.INFO)
+    rospy.loginfo("{%s} - starting teensy communicator node.", rospy.get_caller_id())
+    rospy.on_shutdown(shutdown)
 
-    return SrvPCBSensorDataResponse(
-        float(bat_voltage), 
-        float(inf_left), 
-        float(inf_middle), 
-        float(inf_right)
-        )
+    try:
+        ser = serial.Serial(constants.SER_DEV_TEENSY, constants.SER_DEV_TEENSY_BD, timeout = 1)
+        rospy.loginfo("{%s} - serial for teensy opened.")
+    except Exception as inst:
+        rospy.logwarn('{%s} - this is a controlled catch.', rospy.get_caller_id())
+        rospy.logwarn('{%s} - serial for teensy could not opened.', rospy.get_caller_id())
+        rospy.logwarn('{%s} - exception type: %s', rospy.get_caller_id(), type(inst))
+        rospy.logwarn('{%s} - exception argument: %s', rospy.get_caller_id(), inst.args[1])
 
-def motor_process_data(data):
-    direction = data.direction
-    duration = data.duration
-    web_motor_msg = data.web_motor_msg
+    # declare services
+    rospy.Service('/robofriend/teensy_serial_data', SrvTeensySerialData, serviceHandler)
 
-    print("[INFO] {} - Received Message from Brain Node: {}".format(__class__.__name__, data))
+    rospy.spin()
+    
+if __name__ == '__main__':
+    try:
+        TeensyCommunicator()
+    except rospy.ROSInterruptException:
+        pass
 
-    if web_motor_msg:
-        left, right, duration = web_motor_msg
-        sendSerial(motor_direction['stop'])
-        sendSerial("D " + str(left) + " " + str(right) + " " + str(duration))
-    else:
-        if duration == "loop":
-            sendSerial(motor_direction['stop'])
-#             sendSerial(motor_loop[direction])
-        elif duration == "step":
-            sendSerial(motor_direction['stop'])
-#             sendSerial(motor_step[direction])
-        elif duration == "stop":
-            sendSerial(motor_direction['stop'])
-        else:
-            print("[INFO] Wrong duration")
