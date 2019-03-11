@@ -33,7 +33,7 @@ class RFIDReader(object):
         else:
             if constants.DEBUG is True:
                 readRFIDnumber = "dummy_rfid_number;01"
-            
-        rospy.loginfo("{%s} - service handler rfid message: %s", rospy.get_caller_id(), readRFIDnumber)
-
+        
+        if readRFIDnumber is not None: 
+            rospy.logdebug("{%s} - service handler rfid message: %s", rospy.get_caller_id(), readRFIDnumber)
         return SrvRFIDDataResponse(readRFIDnumber)

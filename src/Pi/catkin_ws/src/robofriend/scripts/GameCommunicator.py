@@ -18,8 +18,10 @@ by the Thread serialRFIDread (for RFID data) and chooseAction (for battery infor
 def provideRFIDNumber(args):
     if args is None:
         return 
+    if args.data is '':
+        return
     
-    rospy.logdebug("{%s} - sending rfid number to gui: %s", rospy.get_caller_id(), args.rfid_number)
+    rospy.loginfo("{%s} - sending rfid number to gui: %s", rospy.get_caller_id(), args.data)
     # sendToGUI("rfid;" + str(args.data))
 
 def sendToGUI(data):
@@ -195,11 +197,11 @@ def GameCommunicator():
             request = rospy.ServiceProxy('/robofriend/get_rfid_number', SrvRFIDData)
             srv_resp = request(True)
         except rospy.ServiceException:
-            rospy.logwarn("{%s} - service call failed.", rospy.get_caller_id())
+            rospy.logwarn("{%s} - service call failed. check the rfid serial data.", rospy.get_caller_id())
    
         provideRFIDNumber(srv_resp)
         
-        data_listener()
+        # data_listener()
         rate.sleep() # make sure the publish rate maintains at the needed frequency
         
 if __name__ == '__main__':

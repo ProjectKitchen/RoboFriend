@@ -10,7 +10,7 @@ def kill_child_processes(parent_pid, sig=signal.SIGTERM):
     try:
         parent = psutil.Process(parent_pid)
     except psutil.NoSuchProcess:
-        print("Parent process not existing")
+        sys.stderr.write("Parent process not existing")
         return
     children = parent.children(recursive=True)
     for process in children:

@@ -37,10 +37,11 @@ class TeensyCommunicator(object):
 
     def service_handler(self, request):
         sensor = None
-        bat_voltage = None
-        inf_left = None
-        inf_middle = None
-        inf_right = None
+        bat_voltage = -1
+        inf_left = -1
+        inf_middle = -1
+        inf_right = -1
+        serial_resp = None
         
         if self._serial is not None:
             try:
@@ -54,16 +55,17 @@ class TeensyCommunicator(object):
             if constants.DEBUG is True:
                 serial_resp = "Sensors,0696,01.10,02.20,03.30" # GOOD
         
-        rospy.logdebug("{%s} Sensor values from teensy: %s", self.__class__.__name__, serial_resp)
-        sensor, bat_voltage, inf_left, inf_middle, inf_right = serial_resp.split(',')
-        rospy.logdebug("{%s} Response Service: Sensor: %s, Battery: %s, Infrared left: %s, Infrared middle: %s, Infrared right: %s",
-                self.__class__.__name__, 
-                sensor, 
-                bat_voltage,
-                inf_left, 
-                inf_middle, 
-                inf_right)
-
+        if serial_resp is not None:
+            rospy.logdebug("{%s} Sensor values from teensy: %s", self.__class__.__name__, serial_resp)
+            sensor, bat_voltage, inf_left, inf_middle, inf_right = serial_resp.split(',')
+            rospy.logdebug("{%s} Response Service: Sensor: %s, Battery: %s, Infrared left: %s, Infrared middle: %s, Infrared right: %s",
+                    self.__class__.__name__, 
+                    sensor, 
+                    bat_voltage,
+                    inf_left, 
+                    inf_middle, 
+                    inf_right)
+    
         return SrvPCBSensorDataResponse(
             float(bat_voltage), 
             float(inf_left), 

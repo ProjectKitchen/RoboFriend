@@ -12,6 +12,8 @@ from robofriend.srv import SrvPCBSensorData
 def processSensorValues(bs_pub, ir_pub, args):
     if args is None:
         return
+    if args.bat_voltage == -1:
+        return
 
     # this is the voltage divider result in volts (between 0 - ADC_INTERNAL_VREF)
     volt_div_val = constants.ADC_INTERNAL_VREF / float(constants.ADC_RESOLUTION) * args.bat_voltage
@@ -98,7 +100,7 @@ def PCBSensorData():
             request = rospy.ServiceProxy('/robofriend/get_pcb_sensor_data', SrvPCBSensorData)
             srv_resp = request(True)
         except rospy.ServiceException:
-            rospy.logwarn("{%s} - service call failed.", rospy.get_caller_id())
+            rospy.logwarn("{%s} - service call failed. check the teensy serial data.", rospy.get_caller_id())
 
         processSensorValues(bs_pub, ir_pub, srv_resp) 
 
