@@ -53,15 +53,13 @@ add_message_files(
    CamData.msg
    Coordinates.msg
    IOWarriorData.msg
-   IRSensorData.msg
    KeyboardData.msg
    LandmarkDistance.msg
    LedEarsData.msg
    OdoData.msg
    ServoCamData.msg
    SpeechData.msg
-   TeensyMotorData.msg
-   IRSensorData.msg
+   StatusModuleData.msg
    VoiceData.msg
 )
 

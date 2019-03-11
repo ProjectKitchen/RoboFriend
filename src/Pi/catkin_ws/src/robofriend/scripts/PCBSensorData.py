@@ -3,13 +3,17 @@ import rospy
 import constants
 
 # import ros message
-from robofriend.msg import IRSensorData
-from sensor_msgs.msg import BatteryState
+from robofriend.msg import StatusModuleData
 
 # import ros services
 from robofriend.srv import SrvTeensySerialData
 
-def processSensorValues(bs_pub, ir_pub, args):
+# globals
+batVolt = None
+
+def processSensorValues(pub, args):
+    global batVolt
+    
     if args is None:
         return
     if args.bat_voltage == -1:
@@ -20,7 +24,6 @@ def processSensorValues(bs_pub, ir_pub, args):
     # this is the actual battery voltage (between 0 - 12V)
     act_bat_volt = (volt_div_val * (constants.VOLT_DIV_R1 + constants.VOLT_DIV_R2)) / constants.VOLT_DIV_R2
 
-    batVolt = 0
     batMovingAverage = 30
     
     # get moving average for more precise measurement
@@ -28,23 +31,19 @@ def processSensorValues(bs_pub, ir_pub, args):
     # get the precent on the moving average
     batPercent = getBatteryPercent(batVolt)
 
-    # http://docs.ros.org/api/sensor_msgs/html/msg/BatteryState.html
-    bs_data = BatteryState()
-    bs_data.voltage = batVolt
-    bs_data.percentage = batPercent
-    bs_data.power_supply_status = getPowerSupplyStatus(batPercent)
+    data = StatusModuleData()
+    data.voltage = batVolt
+    data.percentage = batPercent
+    data.ir_sensor_left = args.inf_left
+    data.ir_sensor_middle = args.inf_middle
+    data.ir_sensor_right = args.inf_right
+    data.power_supply_status = getPowerSupplyStatus(batPercent)
+    data.is_idle = False # MZAHEDI: set idle status
     
-    ir_data = IRSensorData()
-    ir_data.inf_left = args.inf_left
-    ir_data.inf_middle = args.inf_middle
-    ir_data.inf_right = args.inf_right
-
-    rospy.logdebug("{%s} - battery state data:\n%s", rospy.get_caller_id(), bs_data)
-    rospy.logdebug("{%s} - infrared sensor data:\n%s", rospy.get_caller_id(), ir_data)
+    rospy.logdebug("{%s} - status module data:\n%s", rospy.get_caller_id(), data)
 
     # publish message to robobrain node
-    bs_pub.publish(bs_data)
-    ir_pub.publish(ir_data)
+    pub.publish(data)
 
 def getMovingAverage(newValue, currentMean, n):
     if not currentMean:
@@ -87,8 +86,7 @@ def PCBSensorData():
     rospy.loginfo("{%s} - starting pcb sensor data handler node.", rospy.get_caller_id())
     rospy.on_shutdown(shutdown)
 
-    bs_pub = rospy.Publisher("/robofriend/battery_state", BatteryState, queue_size = 2)
-    ir_pub = rospy.Publisher("/robofriend/infrared_data", IRSensorData, queue_size = 2)
+    pub = rospy.Publisher("/robofriend/status_module", StatusModuleData, queue_size = 2)
 
     rate = rospy.Rate(1) # 1hz
 
@@ -102,7 +100,7 @@ def PCBSensorData():
         except rospy.ServiceException:
             rospy.logwarn("{%s} - service call failed. check the teensy serial data.", rospy.get_caller_id())
 
-        processSensorValues(bs_pub, ir_pub, srv_resp) 
+        processSensorValues(pub, srv_resp) 
 
         rate.sleep() # make sure the publish rate maintains at the needed frequency
 
