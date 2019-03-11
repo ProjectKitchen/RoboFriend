@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-import rospy, socket, sys
+import rospy, select, socket, sys
 
 # import ros services
 from robofriend.srv import SrvRFIDData
@@ -22,7 +22,7 @@ def provideRFIDNumber(args):
         return
     
     rospy.loginfo("{%s} - sending rfid number to gui: %s", rospy.get_caller_id(), args.data)
-    # sendToGUI("rfid;" + str(args.data))
+    sendToGUI("rfid;" + str(args.data))
 
 def sendToGUI(data):
     global IP, UDP_PORT, UDP_SOCKET
@@ -55,10 +55,12 @@ def data_listener():
     try: 
         tempData, addr = UDP_SOCKET.recvfrom(50)
     except Exception as inst:
-        rospy.logwarn('{%s} - this is a controlled catch.', rospy.get_caller_id())
-        rospy.logwarn('{%s} - could not receive data from udp socket.', rospy.get_caller_id())
-        rospy.logwarn('{%s} - exception type: %s', rospy.get_caller_id(), type(inst))
-        rospy.logwarn('{%s} - exception argument: %s', rospy.get_caller_id(), inst.args[1])
+        # we want to have debug level here since we have a non-blocking socket which 
+        # will make the socket always 'temporarily  unavaiable' in the loop 
+        rospy.logdebug('{%s} - this is a controlled catch.', rospy.get_caller_id())
+        rospy.logdebug('{%s} - could not receive data from udp socket.', rospy.get_caller_id())
+        rospy.logdebug('{%s} - exception type: %s', rospy.get_caller_id(), type(inst))
+        rospy.logdebug('{%s} - exception argument: %s', rospy.get_caller_id(), inst.args[1])
         return
         
     receivedData += tempData.decode("utf-8")
@@ -74,8 +76,9 @@ def data_listener():
                       rospy.get_caller_id(), receivedData)
         return
  
+    # make sure we answer the caller
     IP = addr[0]
-    rospy.loginfo("{%s} - received data: %s, from app: %s", 
+    rospy.loginfo("{%s} - received data: \"%s\", from app: %s", 
                   rospy.get_caller_id(), receivedData, str(IP))
     chooseAction(receivedData)
 
@@ -130,7 +133,8 @@ def move(dataArray):
     else: # keine step informationen vorhanden, daher loop, Joystick verwendet
         print ("loop")
         if dir == "forward":
-            teensyCommunicator.moveForwardLoop()
+            pass
+#             teensyCommunicator.moveForwardLoop()
         elif dir == "backward":
             teensyCommunicator.moveBackLoop()
         elif dir == "left":
@@ -180,6 +184,7 @@ def GameCommunicator():
     try: 
         UDP_SOCKET = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) # UDP
         UDP_SOCKET.bind((UDP_IP, UDP_PORT))
+        UDP_SOCKET.setblocking(0)
         rospy.loginfo("{%s} - udp socket opened.", rospy.get_caller_id())
     except Exception as inst:
         rospy.logwarn('{%s} - this is a controlled catch.', rospy.get_caller_id())
@@ -201,7 +206,7 @@ def GameCommunicator():
    
         provideRFIDNumber(srv_resp)
         
-        # data_listener()
+        data_listener()
         rate.sleep() # make sure the publish rate maintains at the needed frequency
         
 if __name__ == '__main__':
