@@ -3,8 +3,8 @@ import rospy, serial
 
 # import user modules
 import constants
-from RFIDReader import RFIDReader
-from TeensyCommunicator import TeensyCommunicator
+import RFIDReader
+import TeensyCommunicator
 
 # import ros service
 from robofriend.srv import SrvRFIDData
@@ -47,12 +47,12 @@ def SerialNode():
         rospy.logwarn('{%s} - exception type: %s', rospy.get_caller_id(), type(inst))
         rospy.logwarn('{%s} - exception argument: %s', rospy.get_caller_id(), inst.args[1])
 
-    rfid = RFIDReader(ser_rfid)
-    teensy = TeensyCommunicator(ser_teensy)
+    RFIDReader.setSerial(ser_rfid)
+    TeensyCommunicator.setSerial(ser_teensy)
 
     # declare services
-    rospy.Service('/robofriend/get_rfid_number', SrvRFIDData, rfid.service_handler)
-    rospy.Service('/robofriend/get_pcb_sensor_data', SrvPCBSensorData, teensy.service_handler)
+    rospy.Service('/robofriend/get_rfid_number', SrvRFIDData, RFIDReader.serviceHandler)
+    rospy.Service('/robofriend/get_pcb_sensor_data', SrvPCBSensorData, TeensyCommunicator.serviceHandler)
 
     rospy.spin()
     

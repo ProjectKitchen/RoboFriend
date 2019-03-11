@@ -1,5 +1,5 @@
 # Request from Client (sensor_data_node) 
-bool request
+string cmd
 ---
 # Response from Server (teensy node)
 float64 bat_voltage

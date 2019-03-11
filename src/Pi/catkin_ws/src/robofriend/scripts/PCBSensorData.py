@@ -98,7 +98,7 @@ def PCBSensorData():
 
         try:
             request = rospy.ServiceProxy('/robofriend/get_pcb_sensor_data', SrvPCBSensorData)
-            srv_resp = request(True)
+            srv_resp = request('R')
         except rospy.ServiceException:
             rospy.logwarn("{%s} - service call failed. check the teensy serial data.", rospy.get_caller_id())
 

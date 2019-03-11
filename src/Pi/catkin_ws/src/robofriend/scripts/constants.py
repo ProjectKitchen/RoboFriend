@@ -1,7 +1,7 @@
 # coding=utf-8
 
 # Dump Debug Data
-DEBUG = False
+DEBUG = True
 
 # Serial Ports
 SER_DEV_LIDAR	= "/dev/ttyUSB0"

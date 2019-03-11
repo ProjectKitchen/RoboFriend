@@ -11,7 +11,6 @@ import teensyCommunicator
 import utils
 
 # globals
-StatusThread = None
 refreshIntervalMs = 1000
 keyBat = 'batVolt'
 keyBatPercent = 'batPercent'
@@ -66,7 +65,6 @@ def setScreenshotTimestamp(timestamp = None):
 def isIdle():
     global currentStatus, idleTimestamp, keyIsIdle
     return currentStatus[keyIsIdle]
-
 
 def setNonIdle():
     global currentStatus, idleTimestamp, keyIsIdle
@@ -127,23 +125,3 @@ def updateFromRawStatus(rawStatus):
     currentStatus[keyIrM] = irSensorMiddle
     currentStatus[keyIrR] = irSensorRight
     return currentStatus
-
-def getMovingAverage(newValue, currentMean, n):
-    if not currentMean:
-        return newValue
-    newMean = currentMean - currentMean / n
-    newMean = newMean + newValue / n
-    return newMean
-
-def start():
-    global StatusThread
-
-    print("starting statusModule...")
-    StatusThread = threading.Thread(target=StatusInfo)
-    StatusThread.daemon = True
-    StatusThread.start()
-
-def stop():
-    global runFlag
-    print("stopping statusModule...")
-    runFlag = False
