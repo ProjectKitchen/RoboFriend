@@ -1,5 +1,7 @@
-import threading
-import rospy
+import rospy, threading
+
+# import user modules
+import constants
 
 # import ros services
 from robofriend.srv import SrvPCBSensorDataResponse
@@ -39,8 +41,7 @@ class TeensyCommunicator(object):
         inf_left = None
         inf_middle = None
         inf_right = None
-
-
+        
         if self._serial is not None:
             try:
                 serial_resp = str(self._serial.readline())
@@ -50,7 +51,8 @@ class TeensyCommunicator(object):
                 rospy.logwarn('Exception type: %s', type(inst))
                 rospy.logwarn('Exception argument: %s', inst.args[1])
         else:
-            serial_resp = "Sensors,0696,01.10,02.20,03.30" # GOOD
+            if constants.DEBUG is True:
+                serial_resp = "Sensors,0696,01.10,02.20,03.30" # GOOD
         
         rospy.logdebug("{%s} Sensor values from teensy: %s", self.__class__.__name__, serial_resp)
         sensor, bat_voltage, inf_left, inf_middle, inf_right = serial_resp.split(',')

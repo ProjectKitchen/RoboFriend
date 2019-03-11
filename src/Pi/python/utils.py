@@ -1,5 +1,8 @@
 import os
 
+""" MOMO: einfach die Methoden in die jeweiligen Module verschieben """
+""" Es bedarf hier keine Topics """
+
 # MOMOKARL: called from soundModule.py. Please make sure to implement this method.
 def getFilenames(path):
     return next(os.walk(path))[2]

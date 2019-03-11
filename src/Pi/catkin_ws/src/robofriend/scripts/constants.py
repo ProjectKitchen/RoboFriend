@@ -1,5 +1,8 @@
 # coding=utf-8
 
+# Dump Debug Data
+DEBUG = True
+
 # Serial Ports
 SER_DEV_LIDAR	= "/dev/ttyUSB0"
 SER_DEV_RFID	= "/dev/ttyUSB1"

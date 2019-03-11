@@ -1,25 +1,20 @@
 #!/usr/bin/env python
-
-# external modules
-import os, sys, time, signal
-import rospy
+import os, rospy, signal, sys, time, 
 
 module_path = str(os.getcwd()) + "/python"
 sys.path.append(module_path)
 catkin_path = str(os.getcwd()) + "/catkin_ws/src/robofriend/scripts"
 sys.path.append(catkin_path)
 
-# own modules
+# import user modules
 import faceModule as faceModule
 import statusModule as statusModule
-# import keyboardModule as keyboardModule
+#import keyboardModule as keyboardModule
 #import ioWarriorModule as ioWarriorModule
 #import speechModule as speechModule
 #import cam_node as cam_node
 #import facedetectionModule as facedetectionModule
 from SystemModule import *
-
-# import ROS modules
 #from FaceDetectionNode import *
 from KeyboardNode import *
 from SpeechNode import *
@@ -27,7 +22,6 @@ from LedEarsNode import *
 from ServoCamNode import *
 from IOWarriorNode import *
 # from VoiceDetectionNode import *
-
 
 # globals
 roscore = None

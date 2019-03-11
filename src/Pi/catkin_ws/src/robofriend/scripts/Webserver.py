@@ -7,7 +7,7 @@ import logging
 import os
 import subprocess
 
-#own modules
+# import user modules
 import ioWarriorModule
 import teensyCommunicator
 import statusModule

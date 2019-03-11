@@ -1,5 +1,8 @@
 #!/usr/bin/env python
-import rospy, sys, socket
+import rospy, socket, sys
+
+# import ros services
+from robofriend.srv import SrvRFIDData
 
 # globals
 IP = ''
@@ -11,6 +14,14 @@ UDP_SOCKET = None
 This function is used to send information to the gamegui and can be called 
 by the Thread serialRFIDread (for RFID data) and chooseAction (for battery information)
 """
+
+def provideRFIDNumber(args):
+    if args is None:
+        return 
+    
+    rospy.logdebug("{%s} - sending rfid number to gui: %s", rospy.get_caller_id(), args.rfid_number)
+    # sendToGUI("rfid;" + str(args.data))
+
 def sendToGUI(data):
     global IP, UDP_PORT, UDP_SOCKET
 
@@ -174,9 +185,20 @@ def GameCommunicator():
         rospy.logwarn('{%s} - exception type: %s', rospy.get_caller_id(), type(inst))
         rospy.logwarn('{%s} - exception argument: %s', rospy.get_caller_id(), inst.args[1])
 
-    rate = rospy.Rate(100) # 1hz    
+    rate = rospy.Rate(1) # 1hz    
     
     while not rospy.is_shutdown():
+        srv_resp = None
+        rospy.wait_for_service('/robofriend/get_rfid_number')
+        
+        try:
+            request = rospy.ServiceProxy('/robofriend/get_rfid_number', SrvRFIDData)
+            srv_resp = request(True)
+        except rospy.ServiceException:
+            rospy.logwarn("{%s} - service call failed.", rospy.get_caller_id())
+   
+        provideRFIDNumber(srv_resp)
+        
         data_listener()
         rate.sleep() # make sure the publish rate maintains at the needed frequency
         

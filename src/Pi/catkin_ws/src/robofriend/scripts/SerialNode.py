@@ -1,18 +1,14 @@
 #!/usr/bin/env python
+import rospy, serial
 
-import rospy
-import serial
+# import user modules
 import constants
-
-# import ros messages
-
-# import ros service
-from robofriend.srv import SrvPCBSensorData
-from robofriend.srv import SrvRFIDData
-
-# import modules
 from RFIDReader import RFIDReader
 from TeensyCommunicator import TeensyCommunicator
+
+# import ros service
+from robofriend.srv import SrvRFIDData
+from robofriend.srv import SrvPCBSensorData
 
 # globals 
 ser_rfid = None

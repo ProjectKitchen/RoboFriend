@@ -1,5 +1,8 @@
 import rospy
 
+# import user modules
+import constants
+
 # import ros services
 from robofriend.srv import SrvRFIDDataResponse
 
@@ -23,13 +26,14 @@ class RFIDReader(object):
                 data = data.replace("\\r\\n", "")
                 readRFIDnumber = data
             except Exception as inst:                
-                rospy.logwarn('This is a controlled catch!')
-                rospy.logwarn('*** Read serial for RFID Handler failed! ***')
-                rospy.logwarn('Exception type: %s', type(inst))
-                rospy.logwarn('Exception argument: %s', inst.args[1])
+                rospy.logwarn('this is a controlled catch.')
+                rospy.logwarn('*** read serial for rfid handler failed. ***')
+                rospy.logwarn('exception type: %s', type(inst))
+                rospy.logwarn('exception argument: %s', inst.args[1])
         else:
-            readRFIDnumber = "Dummy RFID number: 01"
+            if constants.DEBUG is True:
+                readRFIDnumber = "dummy_rfid_number;01"
             
-        rospy.loginfo("{%s} - Service handler RFID message: %s", rospy.get_caller_id(), readRFIDnumber)
+        rospy.loginfo("{%s} - service handler rfid message: %s", rospy.get_caller_id(), readRFIDnumber)
 
         return SrvRFIDDataResponse(readRFIDnumber)
