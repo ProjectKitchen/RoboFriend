@@ -14,12 +14,9 @@ send_lock = threading.Lock()
 driveDuration = 50
 
 def move(left, right, duration = driveDuration):
-    stopMovement()
-    sendSerial("D " + str(left) + " " + str(right) + " " + str(duration))
-
-def stopMovement():
 #     statusModule.setNonIdle() # MZAHEDI: update statusModule
-    sendSerial("D")
+    sendSerial(constants.STOP_MOVING)
+    sendSerial("D " + str(left) + " " + str(right) + " " + str(duration))
 
 def shakeHeadForNo(): # TODO: called from faceModule
     sendSerial("D 50 -50 10")
@@ -32,7 +29,7 @@ def readSensorValue():
 # map the inputs to the function blocks
 options = {'D' : move,
            'R' : readSensorValue,
-           'S' : stopMovement,
+#            'S' : setSensorThresholds,
 }
 
 def serviceHandler(req):
