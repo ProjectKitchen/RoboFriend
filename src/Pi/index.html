@@ -46,6 +46,7 @@
             communicator.getStatus().then(function(response) {
                 if(response) {
                     var irMax = 512;
+                    // TODO: adapt response var names
                     L('#batIndicator').innerHTML = response.batPercent + "% (" + parseFloat(response.batVolt).toFixed(2) + "V)";
                     window.showBatWarning = (window.showBatWarning || parseFloat(response.batVolt) < 12.0) && parseFloat(response.batVolt) < 12.15;
                     L.setVisible('#batteryWarning', window.showBatWarning);
