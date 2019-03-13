@@ -14,8 +14,6 @@ send_lock = threading.Lock()
 driveDuration = 50
 
 def move(left, right, duration = driveDuration):
-    # ZAHEDIM: update statusModule
-#     statusModule.setNonIdle() 
     sendSerial(constants.STOP_MOVING)
     sendSerial("D " + str(left) + " " + str(right) + " " + str(duration))
 

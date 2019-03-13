@@ -15,6 +15,7 @@ from robofriend.srv import SrvTeensySerialData
 IP = ''
 UDP_PORT = 9000 # socket port
 UDP_SOCKET = None
+BAT_VOLT = 0
 TEENSY_SRV_REQ = None
 
 
@@ -82,10 +83,9 @@ def chooseAction(data):
 #         faceModule.faceManipulation(dataArray)
     elif action == "get":
         info = dataArray[0]
-        # ZAHEDIM: not defined yet
         # echo -n ":RUN:get;status:EOL:" >/dev/udp/localhost/9000
-        if info == "status" and currentStatus:
-            sendToGUI("battery;" + str(currentStatus['batVolt']))
+        if info == "status" and BAT_VOLT > 0:
+            sendToGUI("battery;" + str(round(BAT_VOLT, 2)))
     elif action == "IPcheck":
         pass
 
@@ -131,8 +131,9 @@ def move(dataArray):
 def provideBatteryVoltage(args):
     if args.voltage <= 0:
         return
-
-    sendToGUI("battery;" + str(round(args.voltage, 2)))
+    global BAT_VOLT
+    BAT_VOLT = args.voltage
+    sendToGUI("battery;" + str(round(BAT_VOLT, 2)))
 
 def provideRFIDNumber(args):
     if args is None:
