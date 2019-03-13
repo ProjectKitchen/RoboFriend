@@ -1,8 +1,7 @@
 import os, psutil, roslaunch, signal, subprocess, sys, time
 
-# ZAHEDIM: where to call this def?
+# ZAHEDIM: where to call this def and make sure to terminate ROS
 def shutdown():
-    # ZAHEDIM: make sure to terminate ROS
     time.sleep(3)
     os.system('sudo init 0')
 

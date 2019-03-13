@@ -1,1 +1,1 @@
-__all__ = ["constants", "GameCommunicator", "PCBSensorData", "RFIDData", "RFIDReader", "SerialNode", "SystemModule", "TeensyCommunicator", "Webserver"]
+__all__ = ["constants", "GameCommunicator", "PCBSensorData", "RFIDReader", "SystemModule", "TeensyCommunicator", "Webserver"]

@@ -1,4 +1,4 @@
-import rospy
+import os, rospy
 
 from threading import Lock, Thread
 from time import sleep
@@ -17,6 +17,7 @@ class RobobrainStateHandler():
 
     def __init__(self, event):
         self.__state = RobobrainStateHandler.robostate["IDLE"]
+        self.__batWasLow = False
         self.__lock = Lock()
         self.__event = event
         self.__idle_elapse_time = 40         # waits 90 sec to change state if no input from webserver and keyboard
@@ -32,13 +33,15 @@ class RobobrainStateHandler():
         while True:
             # ************************* SHUTDOWN *************************
             if self.state == RobobrainStateHandler.robostate["SHUTDOWN"]:
-                print("[INFO] Within SHUTDOWN state")
-                # TODO: Speech module publishen
-                # sleep(5)
-                # os.system("init 0")
+                rospy.logwarn("{%s} - within shutdown state", rospy.get_caller_id())
+                # TODO: speakBatteryShutdown()
+                sleep(5)
+                os.system("init 0")
             # *************************** IDLE *************************** '''
             elif self.state == RobobrainStateHandler.robostate["IDLE"]:
-                rospy.loginfo("{%s} - Within IDLE state", rospy.get_caller_id())
+                rospy.loginfo("{%s} - within idle state", rospy.get_caller_id())
+                self.__batWasLow = False
+                # speakOnRecharge()
                 event_is_set = self.__event.wait(self.__idle_elapse_time)
                 if event_is_set == True:
                     print("Input from either keyboard or webserver therefore stay in IDLE state!")
@@ -48,23 +51,25 @@ class RobobrainStateHandler():
                     self.state = RobobrainStateHandler.robostate["FACEDETECTION"]
             # ************************* AUTONOM ************************** '''
             elif self.state == RobobrainStateHandler.robostate["AUTONOM"]:
-                    print("[INFO] Within AUTONOM state")
+                rospy.loginfo("{%s} - within autonom state", rospy.get_caller_id())
             # ************************** MANUAL ************************** '''
             elif self.state == RobobrainStateHandler.robostate["MANUAL"]:
-                    print("[INFO] Within MANUAL state")
+                rospy.loginfo("{%s} - within manual state", rospy.get_caller_id())
             # *********************** FACEDETECTION ********************** '''
             elif self.state == RobobrainStateHandler.robostate["FACEDETECTION"]:
-                    print("[INFO] Within FACEDETECTION state")
-                    sleep(10)
+                rospy.loginfo("{%s} - within face detection state", rospy.get_caller_id())
+                sleep(10)
             # ************************** CHARGE ************************** '''
             elif self.state == RobobrainStateHandler.robostate["CHARGE"]:
-                    print("[INFO] CHARGE state")
+                rospy.loginfo("{%s} - within charge state", rospy.get_caller_id())
+                self.__batWasLow = True
+                # TODO: speakBatteryLow()
             # ************************** ADMIN *************************** '''
             elif self.state == RobobrainStateHandler.robostate["ADMIN"]:
-                print("[INFO] ADMIN state")
+                rospy.loginfo("{%s} - within admin state", rospy.get_caller_id())
             # ************************* UNKNOWN ************************** '''
             else:
-                print("[ERROR] Robobrain state unknown!")
+                rospy.logerr("{%s} - robot state unknown", rospy.get_caller_id())
 
     @property
     def state(self):
