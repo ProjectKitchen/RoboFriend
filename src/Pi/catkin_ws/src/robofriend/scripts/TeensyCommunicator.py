@@ -4,7 +4,7 @@ import rospy, serial, threading, time
 # import user modules
 import constants
 
-# import ros service
+# import ros services
 from robofriend.srv import SrvTeensySerialData
 from robofriend.srv import SrvTeensySerialDataResponse
 

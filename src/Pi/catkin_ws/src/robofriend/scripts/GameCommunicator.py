@@ -4,7 +4,7 @@ import rospy, socket, sys
 # import user modules
 import constants
 
-# import ros message
+# import ros messages
 from robofriend.msg import PCBSensorData
 
 # import ros services
@@ -17,7 +17,6 @@ UDP_PORT = 9000 # socket port
 UDP_SOCKET = None
 BAT_VOLT = 0
 TEENSY_SRV_REQ = None
-
 
 def dataListener():
     """ 
@@ -95,38 +94,31 @@ def move(dataArray):
     dir = dataArray[0]
     # step informationen vorhanden, tablet toucheingabe verwendet
     if len(dataArray) > 1:
-        dataArray = dataArray[1:]
         # TODO: fuer spaeter hier erweiterung moeglich,
         # auf laenge der steps eingehen, jetzt nur standardwert verwendet
+        # dataArray = dataArray[1:]
         # step = dataArray[0] 
-        if dir == "forward":
-            TEENSY_SRV_REQ = constants.MOVE_STEP_FWD
-        elif dir == "right":
-            TEENSY_SRV_REQ = constants.MOVE_STEP_RYT
-        elif dir == "backward":
-            TEENSY_SRV_REQ = constants.MOVE_STEP_BCK
-        elif dir == "left":
-            TEENSY_SRV_REQ = constants.MOVE_STEP_LFT
+        options = {'forward':       constants.MOVE_STEP_FWD,
+                   'right':         constants.MOVE_STEP_RYT,
+                   'backward':      constants.MOVE_STEP_BCK,
+                   'left':          constants.MOVE_STEP_LFT
+                   }
+        if dir in options:
+            TEENSY_SRV_REQ = options[dir]
     # keine step informationen vorhanden, daher loop, joystick verwendet
     else: 
-        if dir == "forward":
-            TEENSY_SRV_REQ = constants.MOVE_LOOP_FWD
-        elif dir == "right":
-            TEENSY_SRV_REQ = constants.MOVE_LOOP_RYT
-        elif dir == "backward":
-            TEENSY_SRV_REQ = constants.MOVE_LOOP_BCK
-        elif dir == "left":
-            TEENSY_SRV_REQ = constants.MOVE_LOOP_LFT
-        elif dir == "forward_right":
-            TEENSY_SRV_REQ = constants.MOVE_LOOP_FWD_RYT
-        elif dir == "forward_left":
-            TEENSY_SRV_REQ = constants.MOVE_LOOP_FWD_LFT
-        elif dir == "backward_right":
-            TEENSY_SRV_REQ = constants.MOVE_LOOP_BCK_RYT
-        elif dir == "backward_left":
-            TEENSY_SRV_REQ = constants.MOVE_LOOP_BCK_LFT
-        elif dir == "stop":
-            TEENSY_SRV_REQ = constants.STOP_MOVING
+        options = {'forward':       constants.MOVE_LOOP_FWD,
+                   'right':         constants.MOVE_LOOP_RYT,
+                   'backward':      constants.MOVE_LOOP_BCK,
+                   'left':          constants.MOVE_LOOP_LFT,
+                   'forward_right': constants.MOVE_LOOP_FWD_RYT,
+                   'forward_left':  constants.MOVE_LOOP_FWD_LFT,
+                   'backward_right':constants.MOVE_LOOP_BCK_RYT,
+                   'backward_left': constants.MOVE_LOOP_BCK_LFT,
+                   'stop':          constants.STOP_MOVING
+                   }
+        if dir in options:
+            TEENSY_SRV_REQ = options[dir]
             
 def provideBatteryVoltage(args):
     if args.voltage <= 0:
@@ -218,7 +210,6 @@ def GameCommunicator():
         # get data from rfid reader
         rfid_srv_resp = None
         rospy.wait_for_service('/robofriend/get_rfid_number')
-        
         try:
             request = rospy.ServiceProxy('/robofriend/get_rfid_number', SrvRFIDData)
             rfid_srv_resp = request(True)
@@ -231,14 +222,12 @@ def GameCommunicator():
         # send data to teensy per service request param
         if TEENSY_SRV_REQ is not None:
             rospy.wait_for_service('/robofriend/teensy_serial_data')
-    
             try:
                 request = rospy.ServiceProxy('/robofriend/teensy_serial_data', SrvTeensySerialData)
                 request(TEENSY_SRV_REQ, False)
                 TEENSY_SRV_REQ = None
             except rospy.ServiceException:
                 rospy.logwarn("{%s} - service call failed. check the teensy serial data.", rospy.get_caller_id())
-            
         
         rate.sleep() # make sure the publish rate maintains at the needed frequency
         

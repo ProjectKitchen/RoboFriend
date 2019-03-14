@@ -1,8 +1,10 @@
 #!/usr/bin/env python
 import rospy
+
+# import user modules
 import constants
 
-# import ros message
+# import ros messages
 from robofriend.msg import PCBSensorData
 
 # import ros services

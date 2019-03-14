@@ -4,7 +4,7 @@ import rospy, serial
 # import user modules
 import constants
 
-# import ros service
+# import ros services
 from robofriend.srv import SrvRFIDData
 from robofriend.srv import SrvRFIDDataResponse
 
