@@ -217,8 +217,6 @@ def webserver():
 
 def start():
 
-    #TODO: initialize ros topic, ...
-
     print("starting webserverModule...")
     WebserverThread = threading.Thread(target=webserver)
     WebserverThread.daemon = True
@@ -226,9 +224,7 @@ def start():
 
 def stop():
     print("stopping webserverModule...")
-    # TODO: stop flask?!
 
-# TODO: move to util module
 def translateIntRange(value, leftMin, leftMax, rightMin, rightMax):
     # Figure out how 'wide' each range is
     leftSpan = leftMax - leftMin
