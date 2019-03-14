@@ -90,7 +90,7 @@ def chooseAction(data):
 
 def move(dataArray):
     global TEENSY_SRV_REQ
-    rospy.loginfo("{%s} - received move array: %s", rospy.get_caller_id(), dataArray)
+    rospy.logdebug("{%s} - received move array: %s", rospy.get_caller_id(), dataArray)
     dir = dataArray[0]
     # step informationen vorhanden, tablet toucheingabe verwendet
     if len(dataArray) > 1:
@@ -148,7 +148,7 @@ def sendToGUI(data):
     if IP == '':
         return
     bytesToSend = bytes(":RUN:" + str(data) + ":EOL:")
-    rospy.loginfo("{%s} - sending data to gui: %s", rospy.get_caller_id(), bytesToSend)
+    rospy.logdebug("{%s} - sending data to gui: %s", rospy.get_caller_id(), bytesToSend)
     try:
         UDP_SOCKET.sendto(bytesToSend, (IP, UDP_PORT + 1))
     except OSError as inst:

@@ -1,4 +1,4 @@
-import os, rospy
+import os, rospy, subprocess
 
 from threading import Lock, Thread
 from time import sleep
@@ -36,7 +36,7 @@ class RobobrainStateHandler():
                 rospy.logwarn("{%s} - within shutdown state", rospy.get_caller_id())
                 # TODO: speakBatteryShutdown()
                 sleep(5)
-                os.system("init 0")
+                subprocess.call(["sudo", "init", "0"])
             # *************************** IDLE *************************** '''
             elif self.state == RobobrainStateHandler.robostate["IDLE"]:
                 rospy.loginfo("{%s} - within idle state", rospy.get_caller_id())

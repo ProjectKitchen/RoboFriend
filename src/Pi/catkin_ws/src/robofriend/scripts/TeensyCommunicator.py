@@ -67,7 +67,7 @@ def serviceHandler(req):
                 rospy.logwarn('{%s} - exception argument: %s', rospy.get_caller_id(), inst.args[1])
         else:
             if constants.DEBUG is True:
-                serial_resp = "Sensors,0696,0200,0100,0300" # GOOD
+                serial_resp = "Sensors,0696,0100,0200,0300" # GOOD
         
         if serial_resp is not None:
             rospy.logdebug("{%s} - Sensor values from teensy: %s", rospy.get_caller_id(), serial_resp)
@@ -90,7 +90,8 @@ def serviceHandler(req):
 def sendSerial(cmd):
     send_lock.acquire()
 
-    rospy.loginfo("{%s} - teensy send serial: \'%s\'", rospy.get_caller_id(), cmd)
+    if cmd is not 'R':
+        rospy.loginfo("{%s} - teensy send serial: \'%s\'", rospy.get_caller_id(), cmd)
 
     if ser is not None:
         try:

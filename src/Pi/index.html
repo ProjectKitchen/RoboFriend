@@ -46,16 +46,16 @@
             communicator.getStatus().then(function(response) {
                 if(response) {
                     var irMax = 512;
-                    // TODO: adapt response var names
-                    L('#batIndicator').innerHTML = response.batPercent + "% (" + parseFloat(response.batVolt).toFixed(2) + "V)";
-                    window.showBatWarning = (window.showBatWarning || parseFloat(response.batVolt) < 12.0) && parseFloat(response.batVolt) < 12.15;
+                    L('#batIndicator').innerHTML = response.percentage + "% (" + parseFloat(response.voltage).toFixed(2) + "V)";
+                    window.showBatWarning = (window.showBatWarning || parseFloat(response.voltage) < 12.0) && parseFloat(response.voltage) < 12.15;
                     L.setVisible('#batteryWarning', window.showBatWarning);
-                    L('#irval-left').innerHTML = response.irLeft;
-                    L('#irval-middle').innerHTML = response.irMiddle;
-                    L('#irval-right').innerHTML = response.irRight;
-                    L('#ircontainer-left').style.width = (response.irLeft/irMax*100) + '%';
-                    L('#ircontainer-middle').style.width = (response.irMiddle/irMax*100) + '%';
-                    L('#ircontainer-right').style.width = (response.irRight/irMax*100) + '%';
+                    L('#irval-left').innerHTML = response.ir_sensor_left;
+                    L('#irval-middle').innerHTML = response.ir_sensor_middle;
+                    L('#irval-right').innerHTML = response.ir_sensor_right;
+                    L('#ircontainer-left').style.width = (response.ir_sensor_left/irMax*100) + '%';
+                    L('#ircontainer-middle').style.width = (response.ir_sensor_middle/irMax*100) + '%';
+                    L('#ircontainer-right').style.width = (response.ir_sensor_right/irMax*100) + '%';
+                    // TODO: get screenshot timestamp
                     if(window.screenshotTimestamp != response.screenshotTimestamp) {
                         window.screenshotTimestamp = response.screenshotTimestamp;
                         L('#faceScreenshot').src = './face/image?t=' + new Date().getTime();
@@ -117,40 +117,51 @@
         <div class="six columns">
             <h2>Actions</h2>
             <div class="row">
+                <label class="two columns">Maps</label>
+                <div class="ten columns">
+                    <div>
+                        <input id="maps" class="seven columns" type="text" maxlength="">
+                        <button onclick="communicator.sendAction('map/save/' + L('#maps').value)" name="saveMap"> Save </button>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
                 <label class="two columns">Sounds</label>
                 <div class="ten columns">
                     <div>
-                        <select id="comboSounds" class="six columns" onchange="comboHandler.selectedSound(event)">
-                        </select>
+                        <select id="comboSounds" class="seven columns" onchange="comboHandler.selectedSound(event)"></select>
                         <button onclick="communicator.sendAction('sound/play/file/' + L('#comboSounds').value)"> Play </button>
                         <button onclick="communicator.sendAction('sound/play/random')" name="sound2"> Random Sound </button>
                     </div>
-
                 </div>
             </div>
             <div class="row">
                 <label class="two columns">Camera</label>
-                <div class="ten columns">
-                    <button type="submit" onclick="communicator.sendAction('camera/up')" name="camUp"> Camera UP </button>
-                    <button type="submit" onclick="communicator.sendAction('camera/down')" name="camDown"> Camera DOWN </button>
+                <div class="eight columns">
+                    <button type="submit" class="four columns" onclick="communicator.sendAction('camera/up')" name="camUp"> Camera UP </button>
+                    <button type="submit" class="four columns" onclick="communicator.sendAction('camera/down')" name="camDown"> Camera DOWN </button>
                 </div>
             </div>
             <div class="row">
                 <label class="two columns">Speak</label>
-                <div class="ten columns">
-                    <button type="submit" onclick="communicator.sendAction('speech/say/random')" name="speech"> Random </button>
-                    <button type="submit" onclick="communicator.sendAction('speech/say/bullshit')" name="speech"> Bullshit </button>
-                    <div class="row">
-                        <select id="comboRandom" class="six columns" onchange="comboHandler.selectedSpeech(event)">
-                        </select>
-                        <select id="comboBullshit" class="six columns" onchange="comboHandler.selectedSpeech(event)">
-                        </select>
-                    </div>
+                <div class="eight columns">
+                    <button type="submit" class="four columns" onclick="communicator.sendAction('speech/say/random')" name="speech"> Random </button>
+                    <button type="submit" class="four columns" onclick="communicator.sendAction('speech/say/bullshit')" name="speech"> Bullshit </button>
                 </div>
             </div>
             <div class="row">
-                <input id="customText" type="text" maxlength="" class="eight columns offset-by-two">
-                <button class="two columns" onclick="communicator.say(L('#customText').value)"> Say </button>
+                <label class="two columns"> </label>
+                <div class="eight columns">
+                    <select id="comboRandom" class="four columns" onchange="comboHandler.selectedSpeech(event)"></select>
+                    <select id="comboBullshit" class="four columns" onchange="comboHandler.selectedSpeech(event)"></select>
+                </div>
+            </div>
+            <div class="row">
+                <label class="two columns"> </label>
+                <div class="eight columns">
+                    <input id="customText" type="text" maxlength="" class="four columns">
+                    <button class="four columns" onclick="communicator.say(L('#customText').value)"> Say </button>
+                </div>
             </div>
             <div class="row">
                 <label for="colorPicker" class="two columns">Ear color</label>

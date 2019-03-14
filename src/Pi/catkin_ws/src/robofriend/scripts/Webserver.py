@@ -6,18 +6,21 @@ import json, os, rospy, threading, time, subprocess, urllib
 import constants
 
 # import ros messages
+from robofriend.msg import PCBSensorData
 
 # import ros services
 from robofriend.srv import SrvTeensySerialData
 
 # globals
+currentStatus = {}
 webserverHost = '0.0.0.0'
 webserverPort = 8765
 webserverDebug = False
-# init webserver
-app = Flask(__name__, static_folder='../../../../static')
 password = 'iamrobo'
 TEENSY_SRV_REQ = None
+
+# init webserver
+app = Flask(__name__, static_folder='../../../../static')
 
 # *********************************************************************** flask
 
@@ -30,12 +33,19 @@ def getResponse(responseString):
 def index():
     return make_response(send_file('../../../../index.html'))
 
+@app.route('/map/save/<filename>', methods=['POST'])
+def saveMap(filename):
+    filename = "../../../../maps/" + filename
+    print(filename)
+    subprocess.call(["rosrun", "map_server", "map_saver", "-f", "filename"])
+    return getResponse("OK")
+
 @app.route('/control/shutdown/<userPassword>', methods=['POST'])
 def shutdown(userPassword):
     global password
     if userPassword == password:
         time.sleep(3)
-        os.system('sudo init 0')
+        subprocess.call(["sudo", "init", "0"])
         return getResponse("OK")
     else:
         return getResponse("WRONG PASSWORD")
@@ -142,7 +152,15 @@ def setMood(moodState):
 
 @app.route('/get/status', methods=['GET'])
 def getStatus():
-    return getResponse(json.dumps(statusModule.getStatus()))
+    return getResponse(json.dumps(currentStatus))
+
+def providePCBSensorData(data):
+    global currentStatus
+    currentStatus['voltage'] = round(data.voltage, 2)
+    currentStatus['percentage'] = round(data.percentage, 2)
+    currentStatus['ir_sensor_left'] = data.ir_sensor_left
+    currentStatus['ir_sensor_middle'] = data.ir_sensor_middle
+    currentStatus['ir_sensor_right'] = data.ir_sensor_right
 
 # *************************************************************** speech module
     
@@ -171,7 +189,7 @@ def update(userPassword):
         p.wait()
         if p.returncode == 0:
             speechModule.speak('Neustart. Bis gleich!')
-            os.system('sudo reboot')
+            subprocess.call(["sudo", "reboot"])
         return getResponse("OK")
     else:
         return getResponse("WRONG PASSWORD")
@@ -255,6 +273,8 @@ def Webserver():
     rospy.init_node("robofriend_web_server", log_level = rospy.INFO)
     rospy.loginfo("{%s} - starting webserver node.", rospy.get_caller_id())
     rospy.on_shutdown(stop)
+    
+    rospy.Subscriber("/robofriend/pcb_sensor_data", PCBSensorData, providePCBSensorData)
     
     ws = threading.Thread(target = run)
     ws.daemon = True
