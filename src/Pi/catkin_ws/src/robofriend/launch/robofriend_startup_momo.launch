@@ -40,5 +40,7 @@
 	<node pkg="robofriend" type="TeensyCommunicator.py" name="robofriend_teensy_communicator" output="screen" />
 	<group if="$(arg fdet)">
 		<node pkg="robofriend" type="FaceDetectionNode.py" name="robofriend_face_detection_node" output="screen" />
+		<node pkg="robofriend" type="IOWarriorNode.py" name="robofriend_io_warrior_handler" output="screen" />
+		<node pkg="robofriend" type="KeyboardNode.py" name="robofriend_keyboard_node" output="screen" />
 	</group>
 </launch>
