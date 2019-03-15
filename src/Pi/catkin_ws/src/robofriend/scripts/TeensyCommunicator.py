@@ -4,7 +4,7 @@ import rospy, serial, threading, time
 # import user modules
 import constants
 
-# import ros service
+# import ros services
 from robofriend.srv import SrvTeensySerialData
 from robofriend.srv import SrvTeensySerialDataResponse
 
@@ -14,22 +14,28 @@ send_lock = threading.Lock()
 driveDuration = 50
 
 def move(left, right, duration = driveDuration):
-#     statusModule.setNonIdle() # MZAHEDI: update statusModule
     sendSerial(constants.STOP_MOVING)
     sendSerial("D " + str(left) + " " + str(right) + " " + str(duration))
 
-def shakeHeadForNo(): # TODO: called from faceModule
-    sendSerial("D 50 -50 10")
+# MOMOKARL: called from faceModule
+# make the following service request: request('H', False) 
+def shakeHeadForNo(): 
+    sendSerial(constants.STOP_MOVING)
+    sendSerial(constants.SHAKE_HEAD_FOR_NO_SEQ_1)
     time.sleep(0.5)
-    sendSerial("D -50 50 10")
+    sendSerial(constants.SHAKE_HEAD_FOR_NO_SEQ_2)
 
 def readSensorValue():
     sendSerial('R')
     
+def setSensorThresholds(left = -1, middle = -1, right = -1):
+    sendSerial("S " + str(left) + " " + str(middle) + " " + str(right))
+    
 # map the inputs to the function blocks
 options = {'D' : move,
+           'H' : shakeHeadForNo,
            'R' : readSensorValue,
-#            'S' : setSensorThresholds,
+           'S' : setSensorThresholds,
 }
 
 def serviceHandler(req):
@@ -61,7 +67,7 @@ def serviceHandler(req):
                 rospy.logwarn('{%s} - exception argument: %s', rospy.get_caller_id(), inst.args[1])
         else:
             if constants.DEBUG is True:
-                serial_resp = "Sensors,0696,0200,0100,0300" # GOOD
+                serial_resp = "Sensors,0696,0100,0200,0300" # GOOD
         
         if serial_resp is not None:
             rospy.logdebug("{%s} - Sensor values from teensy: %s", rospy.get_caller_id(), serial_resp)
@@ -84,7 +90,8 @@ def serviceHandler(req):
 def sendSerial(cmd):
     send_lock.acquire()
 
-    rospy.loginfo("{%s} - teensy send serial: \'%s\'", rospy.get_caller_id(), cmd)
+    if cmd is not 'R':
+        rospy.loginfo("{%s} - teensy send serial: \'%s\'", rospy.get_caller_id(), cmd)
 
     if ser is not None:
         try:

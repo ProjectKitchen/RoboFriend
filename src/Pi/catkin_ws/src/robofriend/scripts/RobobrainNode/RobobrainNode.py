@@ -8,7 +8,7 @@ from Queue import *
 # import ROS messages
 from robofriend.msg import CamData
 from robofriend.msg import IRSensorData
-from robofriend.msg import StatusModuleData
+from robofriend.msg import PCBSensorData
 from robofriend.msg import KeyboardData
 from robofriend.msg import VoiceData
 
@@ -45,7 +45,7 @@ def main():
     # voice queue to coomunicate from RobobrainVoice to RobobrainFaceDetection
     voice_queue = Queue()
 
-    status = RobobrainPCBSensorDataHandler(statehandler)
+    sensors = RobobrainPCBSensorDataHandler(statehandler)
     # odo = RobobrainOdometryDataHandler()
     # ir  = RobobrainInfraredDataHandler()
     keyboard = RobobrainKeyboardDataHandler(statehandler, event, keyboard_queue)
@@ -56,7 +56,7 @@ def main():
     # TODO: this can be managed in an easier way
     # publish_handler = RobobrainPublisherHandler(topics)
 
-    rospy.Subscriber("/robofriend/status_module", StatusModuleData, status.process_sm_data)
+    rospy.Subscriber("/robofriend/pcb_sensor_data", PCBSensorData, sensors.process_data)
     # rospy.Subscriber("/robofriend/odom_data", Pose, odo.process_data)
     rospy.Subscriber("/robofriend/cam_data",  CamData, facedetection.process_data)
     rospy.Subscriber("/robofriend/keyb_data", KeyboardData, keyboard.process_data)

@@ -1,15 +1,19 @@
 #!/usr/bin/env python
 import rospy
+
+# import user modules
 import constants
 
-# import ros message
-from robofriend.msg import StatusModuleData
+# import ros messages
+from robofriend.msg import PCBSensorData
 
 # import ros services
 from robofriend.srv import SrvTeensySerialData
 
 # globals
 batVolt = None
+statusCount = 0
+batMovingAverage = 30
 
 def processSensorValues(pub, args):
     global batVolt
@@ -24,23 +28,20 @@ def processSensorValues(pub, args):
     # this is the actual battery voltage (between 0 - 12V)
     act_bat_volt = (volt_div_val * (constants.VOLT_DIV_R1 + constants.VOLT_DIV_R2)) / constants.VOLT_DIV_R2
 
-    batMovingAverage = 30
-    
     # get moving average for more precise measurement
     batVolt = getMovingAverage(act_bat_volt, batVolt, batMovingAverage)
     # get the precent on the moving average
     batPercent = getBatteryPercent(batVolt)
 
-    data = StatusModuleData()
+    data = PCBSensorData()
     data.voltage = batVolt
     data.percentage = batPercent
     data.ir_sensor_left = args.inf_left
     data.ir_sensor_middle = args.inf_middle
     data.ir_sensor_right = args.inf_right
     data.power_supply_status = getPowerSupplyStatus(batPercent)
-    data.is_idle = False # MZAHEDI: set idle status
     
-    rospy.logdebug("{%s} - status module data:\n%s", rospy.get_caller_id(), data)
+    rospy.logdebug("{%s} - pcb sensor data:\n%s", rospy.get_caller_id(), data)
 
     # publish message to robobrain node
     pub.publish(data)
@@ -63,17 +64,22 @@ def getBatteryPercent(batVoltage):
     return percent
 
 def getPowerSupplyStatus(val):
-    # http://docs.ros.org/jade/api/sensor_msgs/html/msg/BatteryState.html
-    if val > 1.0:
-        return constants.BAT_OVERCHARGED
-    elif val <= 1.0 and val > 0.80:
-        return constants.BAT_FULL
-    elif val <= 0.80 and val > 0.20:
-        return constants.BAT_GOOD
-    elif val <= 0.20 and val > 0.05:
-        return constants.BAT_WARNING
-    elif val <= 0.5 and val > 0.0:
-        return constants.BAT_CRITICAL
+    global statusCount, batMovingAverage
+    
+    statusCount += 1
+    if statusCount >= batMovingAverage:
+        if val > 1.0:
+            return constants.BAT_OVERCHARGED
+        elif val <= 1.0 and val > 0.80:
+            return constants.BAT_FULL
+        elif val <= 0.80 and val > 0.20:
+            return constants.BAT_GOOD
+        elif val <= 0.20 and val > 0.05:
+            return constants.BAT_WARNING
+        elif val <= 0.5 and val > 0.0:
+            return constants.BAT_CRITICAL
+        else:
+            return constants.BAT_UNKNOWN
     else:
         return constants.BAT_UNKNOWN
 
@@ -81,12 +87,12 @@ def shutdown():
     rospy.loginfo("{%s} - stopping pcb sensor data handler node.", rospy.get_caller_id())
     rospy.signal_shutdown("controlled shutdown.")
 
-def PCBSensorData():
+def PCBSensors():
     rospy.init_node("robofriend_pcb_sensor_data", log_level = rospy.INFO)
     rospy.loginfo("{%s} - starting pcb sensor data handler node.", rospy.get_caller_id())
     rospy.on_shutdown(shutdown)
 
-    pub = rospy.Publisher("/robofriend/status_module", StatusModuleData, queue_size = 2)
+    pub = rospy.Publisher("/robofriend/pcb_sensor_data", PCBSensorData, queue_size = 2)
 
     rate = rospy.Rate(1) # 1hz
 
@@ -106,6 +112,6 @@ def PCBSensorData():
 
 if __name__ == '__main__':
     try:
-        PCBSensorData()
+        PCBSensors()
     except rospy.ROSInterruptException:
         pass

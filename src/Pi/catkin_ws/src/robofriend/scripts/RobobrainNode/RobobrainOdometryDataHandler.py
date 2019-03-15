@@ -25,28 +25,3 @@ class OdometryDataHandler():
         				self._linear_velocity,
         				self._angular_velocity
         				)                                    
-
-    # x
-    @property
-    def x(self):
-        return self._x
-
-    # y
-    @property
-    def y(self):
-        return self._y
-
-    # theta
-    @property
-    def theta(self):
-        return self._theta
-
-    # linear_velocity
-    @property
-    def linear_velocity(self):
-        return self._linear_velocity
-
-    # angular_velocity
-    @property
-    def angular_velocity(self):
-        return self._angular_velocity

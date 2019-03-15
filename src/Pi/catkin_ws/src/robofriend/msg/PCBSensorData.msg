@@ -4,4 +4,3 @@ float32 ir_sensor_left
 float32 ir_sensor_middle
 float32 ir_sensor_right
 uint8 power_supply_status
-bool is_idle

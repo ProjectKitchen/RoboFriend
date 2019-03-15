@@ -1,10 +1,4 @@
-import os, psutil, roslaunch, signal, subprocess, sys, time
-
-# ZAHEDIM: where to call this def?
-def shutdown():
-    # ZAHEDIM: make sure to terminate ROS
-    time.sleep(3)
-    os.system('sudo init 0')
+import psutil, roslaunch, signal, subprocess, sys
 
 def kill_child_processes(parent_pid, sig=signal.SIGTERM):
     try:

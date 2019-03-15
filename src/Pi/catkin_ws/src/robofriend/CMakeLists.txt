@@ -57,9 +57,9 @@ add_message_files(
    LandmarkDistance.msg
    LedEarsData.msg
    OdoData.msg
+   PCBSensorData.msg
    ServoCamData.msg
    SpeechData.msg
-   StatusModuleData.msg
    VoiceData.msg
 )
 
