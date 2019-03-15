@@ -64,6 +64,7 @@ class RobobrainStateHandler():
                 rospy.loginfo("{%s} - within charge state", rospy.get_caller_id())
                 self.__batWasLow = True
                 # TODO: speakBatteryLow()
+                # TODO: publish message to speach Node: mode: battery / text = low / recharge
             # ************************** ADMIN *************************** '''
             elif self.state == RobobrainStateHandler.robostate["ADMIN"]:
                 rospy.loginfo("{%s} - within admin state", rospy.get_caller_id())
