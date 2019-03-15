@@ -65,14 +65,14 @@ class FaceDetectionDataHandler():
         self.__vs = cv2.VideoCapture(self.__url)
 
         if self.__vs.isOpened():
-            print("[INFO] Pictures are captured via the mjpg-streamer")
+            rospy.logdebug("Pictures are captured via the mjpg-streamer!")
             self.__mjpg_stream = True
         else:
             try:
                 self.__vs = VideoStream(usePiCamera = True).start()
-                print("[INFO] Pictures are captured directly by the pi-camera")
+                rospy.logdebug("Pictures are captured directly by the pi-camera!")
             except ImportError:
-                print("[INFO] Pictures are captured from the webcam")
+                rospy.logdebug("Pictures are captured from the webcam!")
                 self.__vs = VideoStream(src = 0).start()
 
         time.sleep(2.0)
@@ -240,9 +240,8 @@ class FaceDetectionDataHandler():
         return retVal
 
     def __face_create_database_service_handler(self, request):
-        print("[INFO] {} - Creating Database Request received: {}\n".
-            format(self.__class__.__name__, request.create_database))
-
+        rospy.logdebug("{%s} - Creating database Request received: %s\n",
+                self.__class__.__name__, request.create_database)
         self.__set_event_block_face_recognition()
 
 
@@ -251,7 +250,8 @@ class FaceDetectionDataHandler():
 
         self.__clear_event_block_face_recognition()
 
-        print("[INFO] {} - Creating Database finished!\n".format(self.__class__.__name__))
+        rospy.logdebug("{%s} - Creating Database finished!\n",
+                    self.__class__.__name__)
         return SrvFaceDatabaseDataResponse(True) # response that recording has finished
 
     def __create_database(self):
@@ -261,19 +261,19 @@ class FaceDetectionDataHandler():
 
         image_paths = list(paths.list_images(dataset_path))
         for (i, image_path) in enumerate (image_paths):
-            print("[INFO] processing image {}/{}".format(i + 1,
-                len(image_paths)))
-            name = image_path.split(os.path.sep)[-2]
+            rospy.logdebug("{%s} - processing image %s / %s",
+                self.__class__.__name__, str(i + 1), str(len(image_paths)))
+        name = image_path.split(os.path.sep)[-2]
 
-            image = cv2.imread(image_path)
-            rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-            boxes = face_recognition.face_locations(rgb, model = "hog")
+        image = cv2.imread(image_path)
+        rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+        boxes = face_recognition.face_locations(rgb, model = "hog")
 
-            encodings = face_recognition.face_encodings(rgb, boxes)
+        encodings = face_recognition.face_encodings(rgb, boxes)
 
-            for encoding in encodings:
-                knownEncodings.append(encoding)
-                knownNames.append(name)
+        for encoding in encodings:
+            knownEncodings.append(encoding)
+            knownNames.append(name)
 
         data = {"encodings": knownEncodings, "names": knownNames}
         with open(os.path.join(self.__path, "encodings.pickle"), "wb+") as file:
