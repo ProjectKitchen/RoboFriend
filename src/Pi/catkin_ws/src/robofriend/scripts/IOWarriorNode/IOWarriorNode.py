@@ -19,7 +19,7 @@ class IOWarriorDataHandler():
         self.__send_to_iowarrior(self.__red, self.__green, self.__blue, self.__cam_pos)
 
     def process_data(self, data):
-        rospy.loginfo("{%s} - Received message: %s, %s\n",
+        rospy.logdebug("{%s} - Received message: %s, %s\n",
             self.__class__.__name__, str(data.rgb), str(data.cam_pos))
         if data.rgb:
             self.__red, self.__green, self.__blue = data.rgb
@@ -32,7 +32,7 @@ class IOWarriorDataHandler():
         cmd = "sudo ./iowarrior/iow " + str(int(round(red))) + ' ' + str(int(round(green))) + ' ' + str(int(round(blue)))
         if cam_pos:
             cmd = cmd + ' ' + str(cam_pos)
-        rospy.loginfo("{%s} - CMD command for IOWarrior: %s",
+        rospy.logdebug("{%s} - CMD command for IOWarrior: %s",
             self.__class__.__name__, cmd)
         os.system(cmd)
 
