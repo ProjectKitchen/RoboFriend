@@ -10,6 +10,7 @@ from robofriend.msg import PCBSensorData
 
 # import ros services
 from robofriend.srv import SrvTeensySerialData
+from robofriend.srv import SrvServoCameraData
 
 # globals
 currentStatus = {}
@@ -18,6 +19,7 @@ webserverPort = 8765
 webserverDebug = False
 password = 'iamrobo'
 TEENSY_SRV_REQ = None
+servo_cam_req = None
 
 # init webserver
 app = Flask(__name__, static_folder='../../../../static')
@@ -49,7 +51,7 @@ def shutdown(userPassword):
         return getResponse("OK")
     else:
         return getResponse("WRONG PASSWORD")
-    
+
 # ***************************************************************** face module
 
 @app.route('/mouth/smile/<action>', methods=['POST'])
@@ -75,7 +77,7 @@ def moveEyes(direction):
                'left':  faceModule.eyesLeft,
                'right': faceModule.eyesRight
                }
-    if direction in methods: 
+    if direction in methods:
         methods[direction]()
     return getResponse("OK")
 
@@ -88,20 +90,41 @@ def moveEyesXY(xPercent, yPercent):
 
 @app.route('/camera/change/<increment>', methods=['POST'])
 def camerachange(increment):
-    global cameraPos
-    ioWarriorModule.changeCameraPos(int(increment))
+    global servo_cam_req
+    response = None
+    response = servo_cam_req(int(increment))
+    if response.resp:
+        rospy.logdebug("{%s} - Successfull response / camerachange",
+                rospy.get_caller_id())
+    else:
+        rospy.logwarn("{%s} - Erroneous response / camerachange",
+                rospy.get_caller_id())
     return getResponse("OK")
 
 @app.route('/camera/down', methods=['POST'])
 def cameradown():
-    global cameraPos
-    ioWarriorModule.changeCameraPos(-10)
+    global servo_cam_req
+    response = None
+    response = servo_cam_req(constants.DOWN)
+    if response.resp:
+        rospy.logdebug("{%s} - Successfull response / cameradown",
+                rospy.get_caller_id())
+    else:
+        rospy.logwarn("{%s} - Erroneous response / cameradown",
+                rospy.get_caller_id())
     return getResponse("OK")
 
 @app.route('/camera/up', methods=['POST'])
 def cameraup():
-    global cameraPos
-    ioWarriorModule.changeCameraPos(10)
+    global servo_cam_req
+    response = None
+    response = servo_cam_req(constants.UP)
+    if response.resp:
+        rospy.logdebug("{%s} - Successfull response / cameradown",
+                rospy.get_caller_id())
+    else:
+        rospy.logwarn("{%s} - Erroneous response / cameradown",
+                rospy.get_caller_id())
     return getResponse("OK")
 
 @app.route('/ear/color/random/off', methods=['POST'])
@@ -144,7 +167,7 @@ def setMood(moodState):
                'neutral':   moodModule.setNeutral,
                'tired':     moodModule.setTired
                }
-    if moodState in methods: 
+    if moodState in methods:
         methods[moodState]()
     return getResponse("OK")
 
@@ -163,7 +186,7 @@ def providePCBSensorData(data):
     currentStatus['ir_sensor_right'] = data.ir_sensor_right
 
 # *************************************************************** speech module
-    
+
 @app.route('/speech/say/custom/<text>', methods=['POST'])
 def speak(text):
     text = urllib.parse.unquote(text).encode('utf8') #decode action to string
@@ -232,12 +255,12 @@ def moveStop():
 @app.route('/move/simple/<direction>', methods=['POST'])
 def moveSimple(direction):
     global TEENSY_SRV_REQ
-    methods = {'forward':   constants.MOVE_STEP_FWD, 
+    methods = {'forward':   constants.MOVE_STEP_FWD,
                'backward':  constants.MOVE_STEP_BCK,
                'left':      constants.MOVE_STEP_LFT,
                'right':     constants.MOVE_STEP_RYT
                }
-    if direction in methods: 
+    if direction in methods:
         TEENSY_SRV_REQ = methods[direction]
     return getResponse("OK")
 
@@ -269,31 +292,36 @@ def run():
 def Webserver():
     global app, webserverDebug, webserverHost, webserverPort
     global TEENSY_SRV_REQ
-    
+    global servo_cam_req
+
     rospy.init_node("robofriend_web_server", log_level = rospy.INFO)
     rospy.loginfo("{%s} - starting webserver node.", rospy.get_caller_id())
     rospy.on_shutdown(stop)
-    
+
     rospy.Subscriber("/robofriend/pcb_sensor_data", PCBSensorData, providePCBSensorData)
-    
+
     ws = threading.Thread(target = run)
     ws.daemon = True
     ws.start()
-     
-    rate = rospy.Rate(100) # 100hz    
-    
+
+    # create service to communicate with Servo Cam Node
+    rospy.wait_for_service('robofriend/camera_position')
+    servo_cam_req = rospy.ServiceProxy('/robofriend/camera_position', SrvServoCameraData)
+
+    rate = rospy.Rate(100) # 100hz
+
     while not rospy.is_shutdown():
         # send data to teensy per service request param
         if TEENSY_SRV_REQ is not None:
             rospy.wait_for_service('/robofriend/teensy_serial_data')
-    
+
             try:
                 request = rospy.ServiceProxy('/robofriend/teensy_serial_data', SrvTeensySerialData)
                 request(TEENSY_SRV_REQ, False)
                 TEENSY_SRV_REQ = None
             except rospy.ServiceException:
                 rospy.logwarn("{%s} - service call failed. check the teensy serial data.", rospy.get_caller_id())
-        
+
         rate.sleep() # make sure the publish rate maintains at the needed frequency
 
 if __name__ == '__main__':
