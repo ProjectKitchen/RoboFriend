@@ -72,6 +72,7 @@ add_service_files(
    SrvRFIDData.srv
    SrvVoiceHotwordActivationData.srv
    SrvServoCameraData.srv
+   SrvLedEarsData.srv
 )
 
 ## Generate actions in the 'action' folder
