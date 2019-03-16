@@ -10,7 +10,7 @@ from robofriend.msg import SpeechData
 
 def shutdown():
     rospy.loginfo("{%s} - stopping speech data handler", rospy.get_caller_id())
-    rospy.signal_shutdown("Stopping Keyboard node!")
+    rospy.signal_shutdown("Stopping Speech node!")
 
 def Speech():
     rospy.init_node("robofriend_speech_node", log_level = rospy.INFO)
