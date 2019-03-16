@@ -28,6 +28,7 @@ class ServoCamDataHandler():
             rospy.get_caller_id())
         self.__diff = request.cam_change
         self.__diff_calc()
+        return SrvServoCameraDataResponse(True)
 
     def _process_data(self, data):
         self.__max_min = data.max_min
@@ -60,7 +61,7 @@ class ServoCamDataHandler():
             self.__class__.__name__, str(self.__iowarrior_msg))
 
 def ServoCam():
-    rospy.init_node("robofriend_servo_cam", log_level = rospy.DEBUG)
+    rospy.init_node("robofriend_servo_cam", log_level = rospy.INFO)
     rospy.loginfo("Starting Servo Cam Node!")
 
     servocam = ServoCamDataHandler()
