@@ -4,7 +4,7 @@
 	<arg name="model" default="$(env TURTLEBOT3_MODEL)" doc="model type [burger, waffle, waffle_pi]"/>
 	<arg name="lidar" default="true"/>
 	<arg name="slam" default="true"/>
-	<arg name="fdet" default="true"/> 
+	<arg name="fdet" default="true"/>
 
 	<!-- Arguments: LIDAR -->
 	<arg name="port" default="/dev/ttyUSB0" />
@@ -45,5 +45,6 @@
 		<node pkg="robofriend" type="KeyboardNode.py" name="robofriend_keyboard_node" output="screen" />
 		<node pkg="robofriend" type="SpeechNode.py" name="robofriend_speech_node" output="screen" />
 		<node pkg="robofriend" type="ServoCamNode.py" name="robofriend_servo_cam_node" output="screen" />
+		<node pkg="robofriend" type="LedEarsNode.py" name="robofriend_led_ears" output="screen" />
 	</group>
 </launch>
