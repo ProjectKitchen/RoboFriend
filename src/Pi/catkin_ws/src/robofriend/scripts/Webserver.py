@@ -11,6 +11,7 @@ from robofriend.msg import PCBSensorData
 # import ros services
 from robofriend.srv import SrvTeensySerialData
 from robofriend.srv import SrvServoCameraData
+from robofriend.srv import SrvLedEarsData
 
 # globals
 currentStatus = {}
@@ -20,6 +21,7 @@ webserverDebug = False
 password = 'iamrobo'
 TEENSY_SRV_REQ = None
 servo_cam_req = None
+led_ears_req = None
 
 # init webserver
 app = Flask(__name__, static_folder='../../../../static')
@@ -127,22 +129,44 @@ def cameraup():
                 rospy.get_caller_id())
     return getResponse("OK")
 
-@app.route('/ear/color/random/off', methods=['POST'])
-def earRandomOff():
-    ioWarriorModule.stopRandomEarColor()
-    return getResponse("OK")
-
 @app.route('/ear/color/random/on', methods=['POST'])
 def earRandomOn():
-    ioWarriorModule.startRandomEarColor()
+    global led_ears_req
+    response = led_ears_req(constants.RANDOM_ON, None)
+    if response.resp:
+        rospy.logdebug("{%s} - Successfull response / earRandomOn",
+                rospy.get_caller_id())
+    else:
+        rospy.logwarn("{%s} - Erroneous response / earRandomOn",
+                rospy.get_caller_id())
+    return getResponse("OK")
+
+@app.route('/ear/color/random/off', methods=['POST'])
+def earRandomOff():
+    global led_ears_req
+    response = led_ears_req(constants.RANDOM_OFF, None)
+    if response.resp:
+        rospy.logdebug("{%s} - Successfull response / earRandomOff",
+                rospy.get_caller_id())
+    else:
+        rospy.logwarn("{%s} - Erroneous response / earRandomOff",
+                rospy.get_caller_id())
     return getResponse("OK")
 
 @app.route('/ear/color/<earColorR>/<earColorG>/<earColorB>', methods=['POST'])
 def setEarRGB(earColorR, earColorG, earColorB):
-    r = translateIntRange(int(earColorR), 0, 255, 0, 15)
-    g = translateIntRange(int(earColorG), 0, 255, 0, 15)
-    b = translateIntRange(int(earColorB), 0, 255, 0, 15)
-    ioWarriorModule.setEarColor(r, g, b)
+    rgb = []
+    rgb.append(translateIntRange(int(earColorR), 0, 255, 0, 15))
+    rgb.append(translateIntRange(int(earColorG), 0, 255, 0, 15))
+    rgb.append(translateIntRange(int(earColorB), 0, 255, 0, 15))
+
+    response = led_ears_req(constants.RGB, rgb)
+    if response.resp:
+        rospy.logdebug("{%s} - Successfull response / earRandomOff",
+                rospy.get_caller_id())
+    else:
+        rospy.logwarn("{%s} - Erroneous response / earRandomOff",
+                rospy.get_caller_id())
     return getResponse("OK")
 
 def translateIntRange(value, leftMin, leftMax, rightMin, rightMax):
@@ -292,7 +316,7 @@ def run():
 def Webserver():
     global app, webserverDebug, webserverHost, webserverPort
     global TEENSY_SRV_REQ
-    global servo_cam_req
+    global servo_cam_req, led_ears_req
 
     rospy.init_node("robofriend_web_server", log_level = rospy.INFO)
     rospy.loginfo("{%s} - starting webserver node.", rospy.get_caller_id())
@@ -304,9 +328,14 @@ def Webserver():
     ws.daemon = True
     ws.start()
 
-    # create service to communicate with Servo Cam Node
+    # create service to communicate with servo cam node
     rospy.wait_for_service('robofriend/camera_position')
     servo_cam_req = rospy.ServiceProxy('/robofriend/camera_position', SrvServoCameraData)
+
+    # create service to communicate with led ears node
+    rospy.wait_for_service('robofriend/led_ears_flash')
+    led_ears_req = rospy.ServiceProxy('/robofriend/led_ears_flash', SrvLedEarsData)
+
 
     rate = rospy.Rate(100) # 100hz
 
