@@ -5,17 +5,13 @@ import rospy
 from robofriend.msg import IOWarriorData
 from robofriend.msg import ServoCamData
 
-
-# import ros modules
-from ServoCamDataHandler import *
-
 def shutdown():
     rospy.loginfo("{%s} - stopping servo/cam data handler", rospy.get_caller_id())
     rospy.signal_shutdown("Stopping Servo/Cam node!")
 
 def ServoCam():
-    rospy.init_node("robofriend_servo_cam_node", log_level = rospy.INFO)
-    rospy.loginfo("Starting Speech Node!")
+    rospy.init_node("robofriend_servo_cam_node", log_level = rospy.DEBUG)
+    rospy.loginfo("Starting Servo Cam Node!")
 
     servocam = ServoCamDataHandler()
     rospy.Subscriber("/robofriend/servo_cam_data",

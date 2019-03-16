@@ -38,7 +38,7 @@ class IOWarriorDataHandler():
 
 def IOWarrior():
     rospy.init_node("robofriend_io_warrior_handler", log_level = rospy.INFO)
-    rospy.loginfo("Starting IOWarrior Data Handler Node")
+    rospy.loginfo("Starting IOWarrior Handler Node")
 
     iowarrior = IOWarriorDataHandler()
     rospy.Subscriber('/robofriend/io_warrior_data', IOWarriorData, iowarrior.process_data)
