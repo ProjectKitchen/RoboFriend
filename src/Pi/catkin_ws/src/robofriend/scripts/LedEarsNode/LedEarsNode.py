@@ -4,10 +4,10 @@ import threading
 import time
 import random
 
-# import ros message
+# import ros message and services
 from robofriend.msg import LedEarsData
 from robofriend.msg import IOWarriorData
-
+from robofriend.srv import SrvLedEarsData, SrvLedEarsDataResponse
 
 class LedEarsDataHandler():
 
@@ -25,13 +25,35 @@ class LedEarsDataHandler():
         self.__iowarrior_pub =  rospy.Publisher('/robofriend/io_warrior_data', IOWarriorData, queue_size = 10)
         self.__iowarrior_msg = IOWarriorData()
 
+        # Webserver services
+        rospy.Service('/robofriend/led_ears_flash', SrvLedEarsData, self._service_handler)
+
+    def _service_handler(self, request):
+        rospy.logdebug("{%s} - Led Ears Request received!",
+            rospy.get_caller_id())
+
+        if request.mode == "on":
+            self.__random = "on"
+        elif request.mode == "off":
+            self.__random = "off"
+        elif request.mode == "rgb":
+            self.__random = "rgb"
+            if len(request.rgb_color) is 3:
+                self.__rgb = list(request.rgb_color)
+                print(self.__rgb)
+        self._flash_led()
+        return SrvLedEarsDataResponse(True)
+
+
     def process_data(self, data):
         self.__random = data.random
         self.__repeat_num = list(data.repeat_num)
         self.__rgb = list(data.rgb_color)
         rospy.logdebug("{%s} - Received Data: %s, %s, %s",
             self.__class__.__name__, self.__random, self.__repeat_num, self.__rgb)
+        self._flash_led()
 
+    def _flash_led(self):
         if self.__random == "on" and self._is_random_flash_event_set() == False:
             self._set_event_random_flash()
         elif self.__random == "off" and self._is_random_flash_event_set() == True:
@@ -40,17 +62,26 @@ class LedEarsDataHandler():
                 self.__set_ear_color(self.__rgb[0], self.__rgb[1], self.__rgb[2])
             else:
                 pass
+        elif self.__random == "rgb":
+            if self._is_random_flash_event_set() == True:
+                self._clear_event_random_flash()
+
+            if self.__check_number_elements(self.__rgb):
+                self.__set_ear_color(self.__rgb[0], self.__rgb[1], self.__rgb[2])
+            else:
+                pass
         else:
             if self._is_random_flash_event_set() == True:
                 self._clear_event_random_flash()
 
-            if len(self.__repeat_num) is not 0 and len(self.__rgb) > 3:
-                self.__set_ear_color_series()
-            else:
-                if self.__check_number_elements(self.__rgb):
-                    self.__set_ear_color(self.__rgb[0], self.__rgb[1], self.__rgb[2])
+            if self.__repeat_num is not None:
+                if len(self.__repeat_num) is not 0 and len(self.__rgb) > 3:
+                    self.__set_ear_color_series()
                 else:
-                    pass
+                    if self.__check_number_elements(self.__rgb):
+                        self.__set_ear_color(self.__rgb[0], self.__rgb[1], self.__rgb[2])
+                    else:
+                        pass
 
     def _random_flash(self):
         if self._is_random_flash_event_set() is True:
@@ -100,10 +131,13 @@ class LedEarsDataHandler():
         self.__send_to_iowarrior(self.__red, self.__green, self.__blue)
 
     def __check_number_elements(self, rgb):
-        if len(rgb) is not 3:
-            return False
+        if rgb is not None:
+            if len(rgb) is not 3:
+                return False
+            else:
+                return True
         else:
-            return True
+            return False
 
     def __send_to_iowarrior(self, red, green, blue):
         self.__iowarrior_msg.rgb = [red, green, blue]
