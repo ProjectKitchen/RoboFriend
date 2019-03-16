@@ -36,7 +36,7 @@ BAT_LOWWER_THREDSHOLD = 10.5
 # Rges: 10000
 # Widerstandsreihe
 # Parall/Serienschaltung zulassen
-# Siehe also schematic 
+# Siehe also schematic
 VOLT_DIV_R1 = 7210
 VOLT_DIV_R2 = 2780
 
@@ -65,3 +65,7 @@ MOVE_LOOP_BCK_RYT = "D 0 -128 0"
 MOVE_LOOP_BCK_LFT = "D -128 0 0"
 SHAKE_HEAD_FOR_NO_SEQ_1 = "D 50 -50 10"
 SHAKE_HEAD_FOR_NO_SEQ_2 = "D -50 50 10"
+
+# Servo Camera Position
+UP = 10
+DOWN = -10
