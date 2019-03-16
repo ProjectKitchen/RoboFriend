@@ -291,11 +291,11 @@ class FaceDetectionDataHandler():
 
 def shutdown():
     rospy.loginfo("{%s} - stopping face detection data handler.", rospy.get_caller_id())
-    rospy.signal_shutdown("Stopping Face Detecion node!")
+    rospy.signal_shutdown("Stopping Face Detecion!")
 
 def FaceDetecion():
     rospy.init_node("robofriend_face_detection_node", log_level = rospy.INFO)
-    rospy.loginfo("Starting Face Detecion Node!")
+    rospy.loginfo("Starting Face Detecion!")
 
     fd = FaceDetectionDataHandler()
 
