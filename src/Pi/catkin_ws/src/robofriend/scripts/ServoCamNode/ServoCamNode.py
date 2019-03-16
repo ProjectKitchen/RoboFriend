@@ -9,16 +9,6 @@ def shutdown():
     rospy.loginfo("{%s} - stopping servo/cam data handler", rospy.get_caller_id())
     rospy.signal_shutdown("Stopping Servo/Cam node!")
 
-def ServoCam():
-    rospy.init_node("robofriend_servo_cam_node", log_level = rospy.DEBUG)
-    rospy.loginfo("Starting Servo Cam Node!")
-
-    servocam = ServoCamDataHandler()
-    rospy.Subscriber("/robofriend/servo_cam_data",
-                     ServoCamData, servocam.process_data)
-
-    rospy.spin()
-
 class ServoCamDataHandler():
 
     def __init__(self):
@@ -58,6 +48,16 @@ class ServoCamDataHandler():
         self.__iowarrior_pub.publish(self.__iowarrior_msg)
         rospy.logdebug("{%s} - Publish message to IOWarrior Node: {%s}",
             self.__class__.__name__, str(self.__iowarrior_msg))
+
+def ServoCam():
+    rospy.init_node("robofriend_servo_cam", log_level = rospy.DEBUG)
+    rospy.loginfo("Starting Servo Cam Node!")
+
+    servocam = ServoCamDataHandler()
+    rospy.Subscriber("/robofriend/servo_cam_data",
+                ServoCamData, servocam.process_data)
+
+    rospy.spin()
 
 if __name__ == '__main__':
     try:
