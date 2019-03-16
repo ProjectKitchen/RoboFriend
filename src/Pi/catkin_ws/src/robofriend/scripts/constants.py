@@ -69,3 +69,8 @@ SHAKE_HEAD_FOR_NO_SEQ_2 = "D -50 50 10"
 # Servo Camera Position
 UP = 10
 DOWN = -10
+
+# Led flashing options
+RANDOM_ON = "on"
+RANDOM_OFF = "off"
+RGB = "rgb"

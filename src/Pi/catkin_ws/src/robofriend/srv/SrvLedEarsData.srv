@@ -1,0 +1,4 @@
+string mode             # sets randon either on, off or rgb
+float64[] rgb_color     # colors
+---
+bool resp
