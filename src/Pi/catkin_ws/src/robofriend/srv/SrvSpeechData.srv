@@ -1,0 +1,6 @@
+bool get_text   # false or true
+string mode     # custom, bullshit, random
+string text     # individual text in case of custom mode
+---
+bool resp
+string[] get_text
