@@ -84,7 +84,8 @@ def shutdown():
 
 def Keyboard():
     rospy.init_node("robofriend_keyboard_node", log_level = rospy.INFO)
-    rospy.loginfo("Starting Keyboard Node!")
+    rospy.loginfo("{%s} - starting keyboard node!",
+        rospy.get_caller_id())
 
     kb = KeyboardDataHandler()
 
