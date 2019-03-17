@@ -81,7 +81,7 @@ class SpeechDataHandler():
         self._recv_text = request.text
 
         if request.get_text:
-            if request.mode in get_text:
+            if request.mode in self.get_text:
                 retVal = self.get_text[request.mode]()
                 return SrvSpeechDataResponse(True, retVal)
             else:
@@ -173,8 +173,9 @@ def shutdown():
     rospy.signal_shutdown("Stopping Speech node!")
 
 def Speech():
-    rospy.init_node("robofriend_speech_node", log_level = rospy.DEBUG)
-    rospy.loginfo("Starting Speech Node!")
+    rospy.init_node("robofriend_speech_node", log_level = rospy.INFO)
+    rospy.loginfo("{%s} - starting speech node!",
+        rospy.get_caller_id())
 
     speech_engine = InitSpeechEngine()
     speech = SpeechDataHandler(speech_engine, 'german')
