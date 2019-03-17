@@ -38,7 +38,6 @@ def getResponse(responseString):
 @app.route('/')
 def index():
     return make_response(send_file('../../../../index.html'))
-    print("HALLLLOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOo")
 
 @app.route('/map/save/<filename>', methods=['POST'])
 def saveMap(filename):
@@ -274,24 +273,32 @@ def moveSimple(direction):
 
 @app.route('/speech/get/<textCategory>', methods=['GET'])
 def getTextsBullshit(textCategory):
-    print("TESSSSSTTTTTTTTTTTTT")
-    methods = {'random':    speechModule.getRandomTexts,
-               'bullshit':  speechModule.getBullshitTexts,
-               'left':      constants.MOVE_STEP_LFT,
+    retVal = None
+
+    if textCategory in 'random':
+        retVal = get_random_text()
+    elif textCategory in 'bullshit':
+        retVal = get_bullshit_text()
+    else:
+        pass
+
+    methods = {'left':      constants.MOVE_STEP_LFT,
                'right':     constants.MOVE_STEP_RYT
                }
     texts = []
     if textCategory in methods:
         texts = methods[textCategory]()
-    return getResponse(json.dumps(texts))
+    return getResponse(json.dumps(retVal))
 
-# def get_random_text():
-#     rospy.logwarn("I am in get_random_text!")
-#     response = speech_req(True, constants.RANDOM, constants.STR_NONE)
-#     service_response_check(response.resp, "get_random_text")
-#     print("Received List: {}".format(response.get_text))
-#     return response.get_text
+def get_random_text():
+    response = speech_req(True, constants.RANDOM, constants.STR_NONE)
+    service_response_check(response.resp, "get_random_text")
+    return response.get_text
 
+def get_bullshit_text():
+    response = speech_req(True, constants.BULLSHIT, constants.STR_NONE)
+    service_response_check(response.resp, "get_bullshit_text")
+    return response.get_text
 
 def service_response_check(response = False, funct = ""):
     if response:
@@ -300,7 +307,6 @@ def service_response_check(response = False, funct = ""):
     else:
         rospy.logwarn("{%s} - Erroneous response / %s",
                 rospy.get_caller_id(), funct)
-
 
 def stop():
     rospy.loginfo("{%s} - stopping web server node.", rospy.get_caller_id())
