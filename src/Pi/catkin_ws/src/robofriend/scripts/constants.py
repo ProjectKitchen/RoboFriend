@@ -74,3 +74,9 @@ DOWN = -10
 RANDOM_ON = "on"
 RANDOM_OFF = "off"
 RGB = "rgb"
+
+# Speech messages
+CUSTOM = "custom"
+BULLSHIT = "bullshit"
+RANDOM = "random"
+STR_NONE = ""
