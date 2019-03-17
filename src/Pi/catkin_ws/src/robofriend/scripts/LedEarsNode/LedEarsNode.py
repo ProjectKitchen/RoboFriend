@@ -153,7 +153,8 @@ def shutdown():
 
 def LedEars():
     rospy.init_node("robofriend_led_ears", log_level = rospy.INFO)
-    rospy.loginfo("Starting Led Ears Node")
+    rospy.loginfo("{%s} - starting led ears node!",
+        rospy.get_caller_id())
 
     led_ears = LedEarsDataHandler()
     rospy.Subscriber('/robofriend/led_ears_data',

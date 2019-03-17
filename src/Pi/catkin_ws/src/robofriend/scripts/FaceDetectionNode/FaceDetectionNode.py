@@ -295,7 +295,8 @@ def shutdown():
 
 def FaceDetecion():
     rospy.init_node("robofriend_face_detection_node", log_level = rospy.INFO)
-    rospy.loginfo("Starting Face Detecion!")
+    rospy.loginfo("{%s} - starting face detecion node!",
+        rospy.get_caller_id())
 
     fd = FaceDetectionDataHandler()
 

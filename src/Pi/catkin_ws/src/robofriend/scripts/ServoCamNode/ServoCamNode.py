@@ -62,7 +62,8 @@ class ServoCamDataHandler():
 
 def ServoCam():
     rospy.init_node("robofriend_servo_cam", log_level = rospy.INFO)
-    rospy.loginfo("Starting Servo Cam Node!")
+    rospy.loginfo("{%s} - starting servo cam node!",
+        rospy.get_caller_id())
 
     servocam = ServoCamDataHandler()
     rospy.Subscriber("/robofriend/servo_cam_data",
