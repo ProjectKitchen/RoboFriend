@@ -73,6 +73,7 @@ add_service_files(
    SrvVoiceHotwordActivationData.srv
    SrvServoCameraData.srv
    SrvLedEarsData.srv
+   SrvSpeechData.srv
 )
 
 ## Generate actions in the 'action' folder
