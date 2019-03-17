@@ -10,6 +10,9 @@ from robofriend.msg import PCBSensorData
 
 # import ros services
 from robofriend.srv import SrvTeensySerialData
+from robofriend.srv import SrvServoCameraData
+from robofriend.srv import SrvLedEarsData
+from robofriend.srv import SrvSpeechData
 
 # globals
 currentStatus = {}
@@ -18,6 +21,9 @@ webserverPort = 8765
 webserverDebug = False
 password = 'iamrobo'
 TEENSY_SRV_REQ = None
+servo_cam_req = None
+led_ears_req = None
+speech_req = None
 
 # init webserver
 app = Flask(__name__, static_folder='../../../../static')
@@ -32,6 +38,7 @@ def getResponse(responseString):
 @app.route('/')
 def index():
     return make_response(send_file('../../../../index.html'))
+    print("HALLLLOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOo")
 
 @app.route('/map/save/<filename>', methods=['POST'])
 def saveMap(filename):
@@ -88,38 +95,51 @@ def moveEyesXY(xPercent, yPercent):
 
 @app.route('/camera/change/<increment>', methods=['POST'])
 def camerachange(increment):
-    global cameraPos
-    ioWarriorModule.changeCameraPos(int(increment))
+    global servo_cam_req
+    response = None
+    response = servo_cam_req(int(increment))
+    service_response_check(response.resp, "camerachange")
     return getResponse("OK")
 
 @app.route('/camera/down', methods=['POST'])
 def cameradown():
-    global cameraPos
-    ioWarriorModule.changeCameraPos(-10)
+    global servo_cam_req
+    response = None
+    response = servo_cam_req(constants.DOWN)
+    service_response_check(response.resp, "cameradown")
     return getResponse("OK")
 
 @app.route('/camera/up', methods=['POST'])
 def cameraup():
-    global cameraPos
-    ioWarriorModule.changeCameraPos(10)
-    return getResponse("OK")
-
-@app.route('/ear/color/random/off', methods=['POST'])
-def earRandomOff():
-    ioWarriorModule.stopRandomEarColor()
+    global servo_cam_req
+    response = None
+    response = servo_cam_req(constants.UP)
+    service_response_check(response.resp, "cameraup")
     return getResponse("OK")
 
 @app.route('/ear/color/random/on', methods=['POST'])
 def earRandomOn():
-    ioWarriorModule.startRandomEarColor()
+    global led_ears_req
+    response = led_ears_req(constants.RANDOM_ON, None)
+    service_response_check(response.resp, "earRandomOn")
+    return getResponse("OK")
+
+@app.route('/ear/color/random/off', methods=['POST'])
+def earRandomOff():
+    global led_ears_req
+    response = led_ears_req(constants.RANDOM_OFF, None)
+    service_response_check(response.resp, "earRandomOff")
     return getResponse("OK")
 
 @app.route('/ear/color/<earColorR>/<earColorG>/<earColorB>', methods=['POST'])
 def setEarRGB(earColorR, earColorG, earColorB):
-    r = translateIntRange(int(earColorR), 0, 255, 0, 15)
-    g = translateIntRange(int(earColorG), 0, 255, 0, 15)
-    b = translateIntRange(int(earColorB), 0, 255, 0, 15)
-    ioWarriorModule.setEarColor(r, g, b)
+    rgb = []
+    rgb.append(translateIntRange(int(earColorR), 0, 255, 0, 15))
+    rgb.append(translateIntRange(int(earColorG), 0, 255, 0, 15))
+    rgb.append(translateIntRange(int(earColorB), 0, 255, 0, 15))
+
+    response = led_ears_req(constants.RGB, rgb)
+    service_response_check(response.resp, "setEarRGB")
     return getResponse("OK")
 
 def translateIntRange(value, leftMin, leftMax, rightMin, rightMax):
@@ -166,29 +186,40 @@ def providePCBSensorData(data):
 
 @app.route('/speech/say/custom/<text>', methods=['POST'])
 def speak(text):
-    text = urllib.parse.unquote(text).encode('utf8') #decode action to string
-    speechModule.speak(text.decode("utf-8"))
+    global speech_req
+    #text = urllib.parse.unquote(text).encode('utf8') #decode action to string
+    response = speech_req(False, constants.CUSTOM, text)
+    service_response_check(response.resp, "speak")
     return getResponse("OK")
 
 @app.route('/speech/say/bullshit', methods=['POST'])
 def speakBullshit():
-    speechModule.speakBullshit()
+    global speech_req
+    response = speech_req(False, constants.BULLSHIT, constants.STR_NONE)
+    service_response_check(response.resp, "speakBullshit")
     return getResponse("OK")
 
 @app.route('/speech/say/random', methods=['POST'])
 def speakRandom():
-    speechModule.speakRandom()
+    global speech_req
+    response = speech_req(False, constants.RANDOM, constants.STR_NONE)
+    service_response_check(response.resp, "speakRandom")
     return getResponse("OK")
 
 @app.route('/control/update/<userPassword>', methods=['POST'])
 def update(userPassword):
-    global password
+    global password, speech_req
+    text = ""
     if userPassword == password:
-        speechModule.speak('Ich aktualisiere mich.')
+        text = "Ich aktualisiere mich."
+        response = speech_req(False, constants.CUSTOM, text)
+        service_response_check(response.resp, "update")
         p = subprocess.Popen(['git', 'pull'], stdout=subprocess.PIPE)
         p.wait()
         if p.returncode == 0:
-            speechModule.speak('Neustart. Bis gleich!')
+            text = "Neustart. Bis gleich!."
+            response = speech_req(False, constants.CUSTOM, text)
+            service_response_check(response.resp, "update")
             subprocess.call(["sudo", "reboot"])
         return getResponse("OK")
     else:
@@ -243,6 +274,7 @@ def moveSimple(direction):
 
 @app.route('/speech/get/<textCategory>', methods=['GET'])
 def getTextsBullshit(textCategory):
+    print("TESSSSSTTTTTTTTTTTTT")
     methods = {'random':    speechModule.getRandomTexts,
                'bullshit':  speechModule.getBullshitTexts,
                'left':      constants.MOVE_STEP_LFT,
@@ -252,6 +284,23 @@ def getTextsBullshit(textCategory):
     if textCategory in methods:
         texts = methods[textCategory]()
     return getResponse(json.dumps(texts))
+
+# def get_random_text():
+#     rospy.logwarn("I am in get_random_text!")
+#     response = speech_req(True, constants.RANDOM, constants.STR_NONE)
+#     service_response_check(response.resp, "get_random_text")
+#     print("Received List: {}".format(response.get_text))
+#     return response.get_text
+
+
+def service_response_check(response = False, funct = ""):
+    if response:
+        rospy.logdebug("{%s} - Successfull response / %s",
+                rospy.get_caller_id(), funct)
+    else:
+        rospy.logwarn("{%s} - Erroneous response / %s",
+                rospy.get_caller_id(), funct)
+
 
 def stop():
     rospy.loginfo("{%s} - stopping web server node.", rospy.get_caller_id())
@@ -269,6 +318,7 @@ def run():
 def Webserver():
     global app, webserverDebug, webserverHost, webserverPort
     global TEENSY_SRV_REQ
+    global servo_cam_req, led_ears_req, speech_req
 
     rospy.init_node("robofriend_web_server", log_level = rospy.INFO)
     rospy.loginfo("{%s} - starting webserver node.", rospy.get_caller_id())
@@ -279,6 +329,18 @@ def Webserver():
     ws = threading.Thread(target = run)
     ws.daemon = True
     ws.start()
+
+    # create service to communicate with servo cam node
+    rospy.wait_for_service('/robofriend/camera_position')
+    servo_cam_req = rospy.ServiceProxy('/robofriend/camera_position', SrvServoCameraData)
+
+    # create service to communicate with led ears node
+    rospy.wait_for_service('/robofriend/led_ears_flash')
+    led_ears_req = rospy.ServiceProxy('/robofriend/led_ears_flash', SrvLedEarsData)
+
+    # create service to communicate with speech node
+    rospy.wait_for_service('/robofriend/speech')
+    speech_req = rospy.ServiceProxy('/robofriend/speech', SrvSpeechData)
 
     rate = rospy.Rate(100) # 100hz
 
