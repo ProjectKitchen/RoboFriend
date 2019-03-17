@@ -23,6 +23,7 @@ password = 'iamrobo'
 TEENSY_SRV_REQ = None
 servo_cam_req = None
 led_ears_req = None
+speech_req = None
 
 # init webserver
 app = Flask(__name__, static_folder='../../../../static')
@@ -37,6 +38,7 @@ def getResponse(responseString):
 @app.route('/')
 def index():
     return make_response(send_file('../../../../index.html'))
+    print("HALLLLOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOo")
 
 @app.route('/map/save/<filename>', methods=['POST'])
 def saveMap(filename):
@@ -272,6 +274,7 @@ def moveSimple(direction):
 
 @app.route('/speech/get/<textCategory>', methods=['GET'])
 def getTextsBullshit(textCategory):
+    print("TESSSSSTTTTTTTTTTTTT")
     methods = {'random':    speechModule.getRandomTexts,
                'bullshit':  speechModule.getBullshitTexts,
                'left':      constants.MOVE_STEP_LFT,
@@ -328,11 +331,11 @@ def Webserver():
     ws.start()
 
     # create service to communicate with servo cam node
-    rospy.wait_for_service('robofriend/camera_position')
+    rospy.wait_for_service('/robofriend/camera_position')
     servo_cam_req = rospy.ServiceProxy('/robofriend/camera_position', SrvServoCameraData)
 
     # create service to communicate with led ears node
-    rospy.wait_for_service('robofriend/led_ears_flash')
+    rospy.wait_for_service('/robofriend/led_ears_flash')
     led_ears_req = rospy.ServiceProxy('/robofriend/led_ears_flash', SrvLedEarsData)
 
     # create service to communicate with speech node
