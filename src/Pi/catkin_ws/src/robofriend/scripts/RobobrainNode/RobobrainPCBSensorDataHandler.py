@@ -14,7 +14,7 @@ class RobobrainPCBSensorDataHandler(object):
         self._power_supply_status = 0
 
     def process_data(self, data):
-        rospy.loginfo("{%s} Battery Data Volt: %.2fV Perc: %.2f%% Status: %d",
+        rospy.logdebug("{%s} Battery Data Volt: %.2fV Perc: %.2f%% Status: %d",
             rospy.get_caller_id(),
             self._voltage,
             self._percentage * 100,

@@ -7,7 +7,6 @@ from Queue import *
 
 # import ROS messages
 from robofriend.msg import CamData
-from robofriend.msg import IRSensorData
 from robofriend.msg import PCBSensorData
 from robofriend.msg import KeyboardData
 from robofriend.msg import VoiceData
@@ -60,7 +59,7 @@ def main():
     # rospy.Subscriber("/robofriend/odom_data", Pose, odo.process_data)
     rospy.Subscriber("/robofriend/cam_data",  CamData, facedetection.process_data)
     rospy.Subscriber("/robofriend/keyb_data", KeyboardData, keyboard.process_data)
-   # rospy.Subscriber('/robofriend/voice_data', VoiceData, voicedetection.process_data)
+    # rospy.Subscriber('/robofriend/voice_data', VoiceData, voicedetection.process_data)
 
     rate = rospy.Rate(0.2) # 200mhz
 

@@ -1,0 +1,230 @@
+<!-- see: https://grid.layoutit.com/?id=9HYL8pw -->
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>RoboFriend Webservice</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <script type="text/javascript" src='static/lib/promise.polyfill.min.js'></script>
+        <script type="text/javascript" src='static/lib/lquery.js'></script>
+        <script type="text/javascript" src='static/lib/everpolate.polynomial.js'></script>
+        <script type="text/javascript" src='static/js/const.js'></script>
+        <script type="text/javascript" src='static/js/communicator.js'></script>
+        <script type="text/javascript" src='static/js/moveController.js'></script>
+        <script type="text/javascript" src='static/js/imageClicker.js'></script>
+        <script type="text/javascript" src='static/js/earColorService.js'></script>
+        <script type="text/javascript" src='static/js/keyController.js'></script>
+        <script type="text/javascript" src='static/js/comboHandler.js'></script>
+
+        <link rel="stylesheet" href="static/css/normalize.css">
+        <link rel="stylesheet" href="static/css/skeleton.css">
+        <link rel="stylesheet" href="static/css/custom.css">
+        <link rel="stylesheet" href="static/css/martin.css">
+    </head>
+
+    <script language="javascript">
+
+        function colorChanged(value) {
+            var rgb = L.hexToRgb(value);
+            communicator.sendAction('ear/color/' + rgb.r + '/' + rgb.g + '/' + rgb.b)
+        }
+
+        function controlAction(action, password) {
+            password = password || 'none';
+            L.setVisible('#wrongPassword', false);
+            communicator.sendAction('control/' + action + '/' + password).then(function (response) {
+                if(response != "OK") {
+                    L.setVisible('#wrongPassword', true);
+                }
+            })
+        }
+
+        window.onload = function () {
+            communicator.initVideo();
+            window.keyController.init();
+            window.comboHandler.init();
+
+            setInterval(function () {
+                communicator.getStatus().then(function(response) {
+                    if(response) {
+                        var irMax = 512;
+                        L('#batIndicator').innerHTML = response.percentage + "% (" + parseFloat(response.voltage).toFixed(2) + "V)";
+                        window.showBatWarning = (window.showBatWarning || parseFloat(response.voltage) < 12.0) && parseFloat(response.voltage) < 12.15;
+                        L.setVisible('#batteryWarning', window.showBatWarning);
+                        L('#irval-left').innerHTML = response.ir_sensor_left;
+                        L('#irval-middle').innerHTML = response.ir_sensor_middle;
+                        L('#irval-right').innerHTML = response.ir_sensor_right;
+                        L('#ircontainer-left').style.width = (response.ir_sensor_left/irMax*100) + '%';
+                        L('#ircontainer-middle').style.width = (response.ir_sensor_middle/irMax*100) + '%';
+                        L('#ircontainer-right').style.width = (response.ir_sensor_right/irMax*100) + '%';
+                        // TODO: get screenshot timestamp
+                        if(window.screenshotTimestamp != response.screenshotTimestamp) {
+                            window.screenshotTimestamp = response.screenshotTimestamp;
+                            L('#faceScreenshot').src = './face/image?t=' + new Date().getTime();
+                        }
+                    }
+                });
+            }, 1000);
+        }
+    </script>
+
+    <body >
+        <span id="posIndicator" style="position: absolute; top: 0px; left: 0px; z-index: 10; display: none">
+            <span class="circle" style="position: absolute; top: -7px; left: -7px; color: red;"></span>
+        </span>
+
+        <div class="grid-container">
+            <div class="left-body">
+                <div class="camera">
+                    <div class="center-div" style="position: relative">
+                        <span style="position: absolute; width: 100%; left: 0; top: 40%">Live view loading...</span>
+                        <img id="webcamPlaceholder" draggable="false" onmousedown="imageClicker.webcamMouseDown(event)" onmouseup="imageClicker.stopMovement()" onmousemove="imageClicker.mouseMoved(event)" onmouseleave="imageClicker.stop()" src="static/img/placeholder.png" style="width: 72%; border: solid 1px; z-index: -1; border-radius: 5px"/>
+                        <img id="webcam" class="noselect" draggable="false" onmousedown="imageClicker.webcamMouseDown(event)" ontouchstart="imageClicker.webcamMouseDown(event)" onmouseup="imageClicker.stopMovement()" onmousemove="imageClicker.mouseMoved(event)" ontouchmove="imageClicker.mouseMoved(event)" onmouseleave="imageClicker.stop()" ontouchend="imageClicker.stopMovement()" style="width: 72%; position: absolute; left: 14%; top: 1px; border-radius: 5px"/>
+                    </div>
+                </div>
+                <div class="nav-stop center-div">
+                    <button style="width: 300px; font-size: large" onclick="communicator.moveStop()"><b>STOP</b></button>
+                </div>
+                <div class="nav-box center-div">
+                    <div id="navigation-box" class="navigation-box" onmousedown="moveController.clickstart(event, CONST.DIR_NONE)" ontouchstart="moveController.clickstart(event, CONST.DIR_NONE)">
+                        <input class="button navbutton" style="top:0px; left: 90px; z-index: 1" type="image" onmousedown="moveController.clickstart(event, CONST.DIR_UP)" onkeydown="moveController.clickstart(event, CONST.DIR_UP)" ontouchstart="moveController.clickstart(event, CONST.DIR_UP)" ondragstart="moveController.doNothing(event)" src="./static/img/forward.svg">
+                        <input class="button navbutton" style="top:115px; left: 0px" type="image" onmousedown="moveController.clickstart(event, CONST.DIR_LEFT)" onkeydown="moveController.clickstart(event, CONST.DIR_LEFT)" ontouchstart="moveController.clickstart(event, CONST.DIR_LEFT)" ondragstart="moveController.doNothing(event)" src="./static/img/left.svg">
+                        <input class="button navbutton" style="top:115px; left: 180px" type="image" onmousedown="moveController.clickstart(event, CONST.DIR_RIGHT)" onkeydown="moveController.clickstart(event, CONST.DIR_RIGHT)" ontouchstart="moveController.clickstart(event, CONST.DIR_RIGHT)" ondragstart="moveController.doNothing(event)" src="./static/img/right.svg">
+                        <input class="button navbutton" style="top:230px; left: 90px" type="image"  onmousedown="moveController.clickstart(event, CONST.DIR_DOWN)" onkeydown="moveController.clickstart(event, CONST.DIR_DOWN)" ontouchstart="moveController.clickstart(event, CONST.DIR_DOWN)" ondragstart="moveController.doNothing(event)" src="./static/img/reverse.svg">
+                        <div id="posIndicatorHelpers" style="display: none">
+                            <div style="position: absolute; top: 250px; left: 10px; font-family: 'Courier New'">
+                                <div class="text-left">L: <span id="liveMoveLeft"></span></div>
+                                <div class="text-left">R: <span id="liveMoveRight"></span></div>
+                            </div>
+                            <span class="circle" style="position: absolute; top: 143px; left: 143px; background-color: lightgray;"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="right-body">
+                <div class="rb-01">
+                    <div class="rb-01-01"><b>State:</b> <span id="stateIndicator">(?)</span></div> 
+                    <div class="rb-01-02"><b>Akku:</b> <span id="batIndicator">(?)</span></div> 
+                    <div class="rb-01-03" id="batteryWarning" style="color: red; display: none"><b>Battery Low! Please recharge!</b></div> 
+                </div>
+                <div class="rb-02">
+                    <div class="rb-02-01" style="border: solid thin; position: relative">
+                        <div class="irval-indicator" id="ircontainer-left" style="width: 0%"></div>
+                            IR Left: <span id="irval-left">(?)</span>
+                    </div>
+                    <div class="rb-02-02" style="border: solid thin; position: relative">
+                        <div class="irval-indicator" id="ircontainer-middle" style="width: 0%"></div>
+                            IR Middle: <span id="irval-middle">(?)</span>
+                    </div>
+                    <div class="rb-02-03" style="border: solid thin; position: relative">
+                        <div class="irval-indicator" id="ircontainer-right" style="width:0%"></div>
+                            IR Right: <span id="irval-right">(?)</span> 
+                    </div>
+                </div>
+                <div class="rb-03">
+                <div class="rb-03-01"><label>Maps</label></div>
+                <div class="rb-03-02"><input id="maps" type="text" maxlength=""></div>
+                <div class="rb-03-03"><button onclick="communicator.sendAction('map/save/' + L('#maps').value)" name="saveMap">Save</button></div>
+                <div class="rb-03-04"><button onclick="communicator.sendAction('map/load/' + L('#maps').value)" name="loadMap">Load</button></div>
+                </div>
+                <div class="rb-04">
+                    <div class="rb-04-01"><label>Sound</label></div>
+                    <div class="rb-04-02"><select id="comboSounds" onchange="comboHandler.selectedSound(event)"></select></div>
+                    <div class="rb-04-03"><button onclick="communicator.sendAction('sound/play/file/' + L('#comboSounds').value)">Play</button></div>
+                    <div class="rb-04-04"><button onclick="communicator.sendAction('sound/play/random')" name="sound2">Random</button></div>
+                </div>
+                <div class="rb-05">
+                    <div class="rb-05-01"><label>Camera</label></div>
+                    <div class="rb-05-02">
+                        <button type="submit" onclick="communicator.sendAction('camera/up')" name="camUp">Move Up</button>
+                    </div>
+                    <div class="rb-05-03">
+                        <button type="submit" onclick="communicator.sendAction('camera/down')" name="camDown">Move Down</button>
+                    </div>
+                    <div class="rb-05-04"></div>
+                    <div class="rb-05-05"></div>
+                </div>
+                <div class="rb-06">
+                    <div class="rb-06-01"><label>Speech</label></div>
+                    <div class="rb-06-02">
+                        <button type="submit" onclick="communicator.sendAction('speech/say/random')" name="speech">Random</button>
+                    </div>
+                    <div class="rb-06-03">
+                        <button type="submit" onclick="communicator.sendAction('speech/say/bullshit')" name="speech">Bullshit</button>
+                    </div>
+                    <div class="rb-06-04"></div>
+                    <div class="rb-06-05"></div>
+                </div>
+                <div class="rb-07">
+                    <div class="rb-07-01"></div>
+                    <div class="rb-07-02"><select id="comboRandom" onchange="comboHandler.selectedSpeech(event)"></select></div>
+                    <div class="rb-07-03"><select id="comboBullshit" onchange="comboHandler.selectedSpeech(event)"></select></div>
+                </div>
+                <div class="rb-08">
+                    <div class="rb-08-01"></div>
+                    <div class="rb-08-02"><input id="customText" type="text" maxlength=""></div>
+                    <div class="rb-08-03"><button onclick="communicator.say(L('#customText').value)">Say</button></div>
+                </div>
+                <div class="rb-09">
+                    <div class="rb-09-01"><label>Ears</label></div>
+                    <div class="rb-09-02"><input id="colorPicker" value="#00A0A0" type="color" onchange="colorChanged(this.value)"/></div>
+                    <div class="rb-09-03" style="position: relative"> <!--  -->
+                        <input type="range" style="z-index: 1; width: 100%; margin-top: 8px" min="1" max="99" value="80" oninput="earColorService.onchange(event)"/>
+                        <img id="colorPickerImg" class="noselect" draggable="false" src="./static/img/rainbow.png" style="position: absolute; left: 0; top: 0; z-index: -1; width: 100%; max-height: 100%; margin-top: 6px;"/>
+                    </div>
+                    <div class="rb-09-04">
+                        <button class="randomEarBtn" onclick="earColorService.randomOn()">Random on</button>
+                        <button class="randomEarBtn" onclick="earColorService.randomOff()" style="display: none">Random off</button>
+                    </div>
+                </div>
+                <div class="rb-10">
+                    <div class="rb-10-01"><label>Eyes</label></div>
+                    <div class="rb-10-02"><button type="submit" onclick="communicator.sendAction('eyes/move/up')" name="lookUp">Look up</button></div>
+                    <div class="rb-10-03"><button type="submit" onclick="communicator.sendAction('eyes/move/down')" name="lookDown">Look down</button></div>
+                    <div class="rb-10-04"><button type="submit" onclick="communicator.sendAction('eyes/move/left')" name="lookLeft">Look left</button></div>
+                    <div class="rb-10-05"><button type="submit" onclick="communicator.sendAction('eyes/move/right')" name="lookRight">Look right</button></div>
+                </div>
+                <div class="rb-11">
+                    <div class="rb-11-01"><label>Mood</label></div>
+                    <div class="rb-11-02"><button type="submit" onclick="communicator.sendAction('mouth/smile/increase')">Smile more</button></div>
+                    <div class="rb-11-03"><button type="submit" onclick="communicator.sendAction('mouth/smile/decrease')">Smile less</button></div>
+                    <div class="rb-11-04"></div>
+                    <div class="rb-11-05"></div>
+                </div>
+                <div class="rb-12">
+                    <div class="rb-12-01"></div>
+                    <div class="rb-12-02">
+                        <img id="faceScreenshot" onclick="imageClicker.mouseMoved(event)" width="300" src="" style="margin-bottom: 1em"/>
+                    </div>
+                    <div class="rb-12-03">
+                        <div class="rb-12-03-01"><button type="submit" onclick="communicator.sendAction('mood/set/neutral')">Neutral</button></div>
+                        <div class="rb-12-03-02"><button type="submit" onclick="communicator.sendAction('mood/set/happy')">Happy</button></div>
+                        <div class="rb-12-03-03"><button type="submit" onclick="communicator.sendAction('mood/set/angry')">Angry</button></div>
+                        <div class="rb-12-03-04"><button type="submit" onclick="communicator.sendAction('mood/set/sad')">Sad</button></div>
+                        <div class="rb-12-03-05"><button type="submit" onclick="communicator.sendAction('mood/set/tired')">Tired</button></div>
+                    </div>
+                </div>
+                <div class="rb-13">
+                    <div class="rb-13-01"><label>Control</label></div>
+                    <div class="rb-13-02">
+                        <input id="password" type="password" placeholder="******"/>
+                    </div>
+                    <div class="rb-13-03">
+                        <button type="submit" onclick="controlAction('admin', L('#password').value)">Admin</button>
+                    </div>
+                    <div class="rb-13-04">
+                         <button type="submit" onclick="controlAction('update', L('#password').value)">Update</button>
+                    </div>
+                    <div class="rb-13-05">
+                        <button type="submit" onclick="controlAction('shutdown', L('#password').value)">Shutdown</button>
+                    </div> 
+                    <div class="rb-13-06 inline">
+                        <span id="wrongPassword" style="padding: 6px; color: red; display: none">Try again!</span>
+                    </div>
+                </div>
+            </div>
+        </div> 
+
+    </body>
+</html> 

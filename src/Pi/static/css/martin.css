@@ -1,0 +1,266 @@
+/* see: https://grid.layoutit.com/?id=9HYL8pw */
+
+.grid-container {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  grid-template-rows: 1fr;
+  grid-template-areas: "left-body right-body";
+}
+
+.left-body {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 62% 5% 30%;
+  grid-template-areas: "camera" "nav-stop" "nav-box";
+  grid-area: left-body;
+  margin-top: 10px;
+}
+
+.camera { grid-area: camera; }
+
+.nav-stop { grid-area: nav-stop; }
+
+.nav-box { grid-area: nav-box; }
+
+.right-body {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 4% 4% 5% 5% 5% 5% 5% 5% 5% 5% 5% 30% 5%;
+  grid-template-areas: "rb-01" "rb-02" "rb-03" "rb-04" "rb-05" "rb-06" "rb-07" "rb-08" "rb-09" "rb-10" "rb-11" "rb-12" "rb-13";
+  grid-area: right-body;
+  margin-right: 10px;
+}
+
+.right-body button, input, select {
+  width: 100%;
+}
+
+.right-body div {
+  margin: 2px;
+}
+
+.rb-01 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 1fr;
+  grid-template-areas: "rb-01-01 rb-01-02 rb-01-03";
+  grid-area: rb-01;
+}
+
+.rb-01-01 { grid-area: rb-01-01; }
+
+.rb-01-02 { grid-area: rb-01-02; }
+
+.rb-01-03 { grid-area: rb-01-03; }
+
+.rb-02 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 1fr;
+  grid-template-areas: "rb-02-01 rb-02-02 rb-02-03";
+  grid-area: rb-02;
+}
+
+.rb-02-01 { grid-area: rb-02-01; }
+
+.rb-02-02 { grid-area: rb-02-02; }
+
+.rb-02-03 { grid-area: rb-02-03; }
+
+.rb-03 {
+  display: grid;
+  grid-template-columns: 16.66% 50% 16.66% 16.66%;
+  grid-template-rows: 1fr;
+  grid-template-areas: "rb-03-01 rb-03-02 rb-03-03 rb-03-04";
+  grid-area: rb-03;
+}
+
+.rb-03-01 { grid-area: rb-03-01; }
+
+.rb-03-02 { grid-area: rb-03-02; }
+
+.rb-03-03 { grid-area: rb-03-03; }
+
+.rb-03-04 { grid-area: rb-03-04; }
+
+.rb-04 {
+  display: grid;
+  grid-template-columns: 16.66% 50% 16.66% 16.66%;
+  grid-template-rows: 1fr;
+  grid-template-areas: "rb-04-01 rb-04-02 rb-04-03 rb-04-04";
+  grid-area: rb-04;
+}
+
+.rb-04-01 { grid-area: rb-04-01; }
+
+.rb-04-02 { grid-area: rb-04-02; }
+
+.rb-04-03 { grid-area: rb-04-03; }
+
+.rb-04-04 { grid-area: rb-04-04; }
+
+.rb-05 {
+  display: grid;
+  grid-template-columns: 16.66% 20.83% 20.83% 20.83% 20.83%;
+  grid-template-rows: 1fr;
+  grid-template-areas: "rb-05-01 rb-05-02 rb-05-03 rb-05-04 rb-05-05";
+  grid-area: rb-05;
+}
+
+.rb-05-01 { grid-area: rb-05-01; }
+
+.rb-05-02 { grid-area: rb-05-02; }
+
+.rb-05-03 { grid-area: rb-05-03; }
+
+.rb-05-04 { grid-area: rb-05-04; }
+
+.rb-05-05 { grid-area: rb-05-05; }
+
+.rb-06 {
+  display: grid;
+  grid-template-columns: 16.66% 20.83% 20.83% 20.83% 20.83%;
+  grid-template-rows: 1fr;
+  grid-template-areas: "rb-06-01 rb-06-02 rb-06-03 rb-06-04 rb-06-05";
+  grid-area: rb-06;
+}
+
+.rb-06-02 { grid-area: rb-06-02; }
+
+.rb-06-01 { grid-area: rb-06-01; }
+
+.rb-06-03 { grid-area: rb-06-03; }
+
+.rb-06-04 { grid-area: rb-06-04; }
+
+.rb-06-05 { grid-area: rb-06-05; }
+
+.rb-07 {
+  display: grid;
+  grid-template-columns: 16.66% 41.66% 41.66%;
+  grid-template-rows: 1fr;
+  grid-template-areas: "rb-07-01 rb-07-02 rb-07-03";
+  grid-area: rb-07;
+}
+
+.rb-07-01 { grid-area: rb-07-01; }
+
+.rb-07-02 { grid-area: rb-07-02; }
+
+.rb-07-03 { grid-area: rb-07-03; }
+
+.rb-08 {
+  display: grid;
+  grid-template-columns: 0.5fr 2fr 0.5fr;
+  grid-template-rows: 1fr;
+  grid-template-areas: "rb-08-01 rb-08-02 rb-08-03";
+  grid-area: rb-08;
+}
+
+.rb-08-02 { grid-area: rb-08-02; }
+
+.rb-08-03 { grid-area: rb-08-03; }
+
+.rb-08-01 { grid-area: rb-08-01; }
+
+.rb-09 {
+  display: grid;
+  grid-template-columns: 16.66% 16.66% 50% 16.66%;
+  grid-template-rows: 1fr;
+  grid-template-areas: "rb-09-01 rb-09-02 rb-09-03 rb-09-04";
+  grid-area: rb-09;
+}
+
+.rb-09-02 { grid-area: rb-09-02; padding: 5px 10px 5px 0px;}
+
+.rb-09-03 { grid-area: rb-09-03; }
+
+.rb-09-04 { grid-area: rb-09-04; }
+
+.rb-09-01 { grid-area: rb-09-01; }
+
+.rb-10 {
+  display: grid;
+  grid-template-columns: 16.66% 20.83% 20.83% 20.83% 20.83%;
+  grid-template-rows: 1fr;
+  grid-template-areas: "rb-10-01 rb-10-02 rb-10-03 rb-10-04 rb-10-05";
+  grid-area: rb-10;
+}
+
+.rb-10-01 { grid-area: rb-10-01; }
+
+.rb-10-02 { grid-area: rb-10-02; }
+
+.rb-10-03 { grid-area: rb-10-03; }
+
+.rb-10-04 { grid-area: rb-10-04; }
+
+.rb-10-05 { grid-area: rb-10-05; }
+
+.rb-11 {
+  display: grid;
+  grid-template-columns: 16.66% 20.83% 20.83% 20.83% 20.83%;
+  grid-template-rows: 1fr;
+  grid-template-areas: "rb-11-01 rb-11-02 rb-11-03 rb-11-04 rb-11-05";
+  grid-area: rb-11;
+}
+
+.rb-11-01 { grid-area: rb-11-01; }
+
+.rb-11-02 { grid-area: rb-11-02; }
+
+.rb-11-03 { grid-area: rb-11-03; }
+
+.rb-11-04 { grid-area: rb-11-04; }
+
+.rb-11-05 { grid-area: rb-11-05; }
+
+.rb-12 {
+  display: grid;
+  grid-template-columns: 16.66% 66.68% 16.66%;
+  grid-template-rows: 1fr;
+  grid-template-areas: "rb-12-01 rb-12-02 rb-12-03";
+  grid-area: rb-12;
+}
+
+.rb-12-01 { grid-area: rb-12-01; }
+
+.rb-12-02 { grid-area: rb-12-02; }
+
+.rb-12-03 {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr 1fr 1fr 1fr 1fr;
+  grid-template-areas: "rb-12-03-01" "rb-12-03-02" "rb-12-03-03" "rb-12-03-04" "rb-12-03-05";
+  grid-area: rb-12-03;
+}
+
+.rb-12-03-01 { grid-area: rb-12-03-01; }
+
+.rb-12-03-02 { grid-area: rb-12-03-02; }
+
+.rb-12-03-03 { grid-area: rb-12-03-03; }
+
+.rb-12-03-04 { grid-area: rb-12-03-04; }
+
+.rb-12-03-05 { grid-area: rb-12-03-05; }
+
+.rb-13 {
+  display: grid;
+  grid-template-columns: 16.66% 16.66% 16.66% 16.66% 16.66% 16.66%;;
+  grid-template-rows: 1fr;
+  grid-template-areas: "rb-13-01 rb-13-02 rb-13-03 rb-13-04 rb-13-05 rb-13-06";
+  grid-area: rb-13;
+}
+
+.rb-13-01 { grid-area: rb-13-01; }
+
+.rb-13-02 { grid-area: rb-13-02; }
+
+.rb-13-03 { grid-area: rb-13-03; }
+
+.rb-13-04 { grid-area: rb-13-04; }
+
+.rb-13-05 { grid-area: rb-13-05; }
+
+.rb-13-06 { grid-area: rb-13-06; }

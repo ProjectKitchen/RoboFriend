@@ -37,8 +37,7 @@ def getResponse(responseString):
 
 @app.route('/')
 def index():
-    return make_response(send_file('../../../../index.html'))
-    print("HALLLLOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOo")
+    return make_response(send_file('../../../../martin.html'))
 
 @app.route('/map/save/<filename>', methods=['POST'])
 def saveMap(filename):
@@ -274,7 +273,6 @@ def moveSimple(direction):
 
 @app.route('/speech/get/<textCategory>', methods=['GET'])
 def getTextsBullshit(textCategory):
-    print("TESSSSSTTTTTTTTTTTTT")
     methods = {'random':    speechModule.getRandomTexts,
                'bullshit':  speechModule.getBullshitTexts,
                'left':      constants.MOVE_STEP_LFT,
