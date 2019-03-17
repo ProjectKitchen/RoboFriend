@@ -274,8 +274,8 @@ def moveSimple(direction):
 def getTextsBullshit(textCategory):
     methods = {'random':    speechModule.getRandomTexts,
                'bullshit':  speechModule.getBullshitTexts,
-               #'left':      constants.MOVE_STEP_LFT,
-               #'right':     constants.MOVE_STEP_RYT
+               'left':      constants.MOVE_STEP_LFT,
+               'right':     constants.MOVE_STEP_RYT
                }
     texts = []
     if textCategory in methods:
