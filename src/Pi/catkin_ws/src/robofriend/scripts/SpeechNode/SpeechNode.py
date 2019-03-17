@@ -7,20 +7,7 @@ import rospy
 
 # import ros message
 from robofriend.msg import SpeechData
-
-def shutdown():
-    rospy.loginfo("{%s} - stopping speech data handler", rospy.get_caller_id())
-    rospy.signal_shutdown("Stopping Speech node!")
-
-def Speech():
-    rospy.init_node("robofriend_speech_node", log_level = rospy.INFO)
-    rospy.loginfo("Starting Speech Node!")
-
-    speech_engine = InitSpeechEngine()
-    speech = SpeechDataHandler(speech_engine, 'german')
-    rospy.Subscriber("/robofriend/speech_data", SpeechData, speech.process_data)
-
-    rospy.spin()
+from robofriend.srv import SrvSpeechData, SrvSpeechDataResponse
 
 def InitSpeechEngine():
 
@@ -69,7 +56,6 @@ class SpeechDataHandler():
         'german' : ['Ich bin mude uns muss schlafen gehen.... Tschuss.', 'Meine Energie ist zu niedrig.... Tschuss.']
     }
 
-
     def __init__(self, speech_engine, language):
         self._speech_engine = speech_engine
         self._language = language
@@ -79,22 +65,56 @@ class SpeechDataHandler():
         self._recv_text = None
         self._last_speak_word = None
 
+        self.speech_meth = {'random' :   self.random_speech,
+                            'bullshit':  self.bullshit_speech,
+                            'custom':    self.custom_speech,
+                            'battery':   self.battery_speech
+        }
+
+        self.get_text = {'random' : self.get_random_text,
+                         'bullshit' : self.get_bullshit_text
+        }
+
+    def service_handler(self, request):
+        rospy.logdebug("{%s} - Speech Request received!",
+            rospy.get_caller_id())
+        self._recv_text = request.text
+
+        if request.get_text:
+            if request.mode in get_text:
+                retVal = self.get_text[request.mode]()
+                return SrvSpeechDataResponse(True, retVal)
+            else:
+                ropsy.logwarn("{%s} - Wrong get_text mode!",
+                    rospy.get_caller_id())
+        else:
+            self.handle_speech(request.mode)
+        return SrvSpeechDataResponse(True, [])
+
     def process_data(self, data):
-        self._mode = data.mode
         self._recv_text = data.text
         rospy.logdebug("{%s} - Received Data: %s, %s",
-            self.__class__.__name__, self._mode, self._recv_text)
+            self.__class__.__name__, data.mode, data.text)
+        self.handle_speech(data.mode)
 
-        if self._mode == "custom":
-            self.custom_speech()
-        elif self._mode == "random":
-            self.random_speech()
-        elif self._mode == "bullshit":
-            self.bullshit_speech()
-        elif self._mode == "battery":
-            self.battery_speech()
+    def handle_speech(self, mode = ""):
+        rospy.logdebug("{%s} - Speech Mode: %s",
+            rospy.get_caller_id(), mode)
+        if mode in self.speech_meth:
+            self.speech_meth[mode]()
         else:
-            rospy.logdebug("{%s} - Wrong speech mode")
+            rospy.logwarn("{%s} - Wrong speech mode!",
+                rospy.get_caller_id())
+
+    def get_random_text(self):
+        retVal = None
+        retVal = self.random_text[self._language].copy()
+        return retVal
+
+    def get_bullshit_text(self):
+        retVal = None
+        retVal = self.bullshit_text[self._language].copy()
+        return retVal
 
     def custom_speech(self):
         self.speak(self._recv_text)
@@ -147,6 +167,23 @@ class SpeechDataHandler():
         except:
             rospy.logwarn("{%s} - Speech Engine Error!",
                 self.__class__.__name__)
+
+def shutdown():
+    rospy.loginfo("{%s} - stopping speech data handler", rospy.get_caller_id())
+    rospy.signal_shutdown("Stopping Speech node!")
+
+def Speech():
+    rospy.init_node("robofriend_speech_node", log_level = rospy.DEBUG)
+    rospy.loginfo("Starting Speech Node!")
+
+    speech_engine = InitSpeechEngine()
+    speech = SpeechDataHandler(speech_engine, 'german')
+    rospy.Subscriber("/robofriend/speech_data", SpeechData, speech.process_data)
+
+    # Webserver service
+    rospy.Service('/robofriend/speech', SrvSpeechData, speech.service_handler)
+
+    rospy.spin()
 
 if __name__ == '__main__':
     try:
