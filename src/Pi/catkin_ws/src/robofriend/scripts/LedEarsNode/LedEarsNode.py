@@ -29,7 +29,7 @@ class LedEarsDataHandler():
         rospy.Service('/robofriend/led_ears_flash', SrvLedEarsData, self._service_handler)
 
     def _service_handler(self, request):
-        rospy.logdebug("{%s} - Led Ears Request received!",
+        rospy.logdebug("{%s} - Led Ears request received!",
             rospy.get_caller_id())
 
         if request.mode == "on":
