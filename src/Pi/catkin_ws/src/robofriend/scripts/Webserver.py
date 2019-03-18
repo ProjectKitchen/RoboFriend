@@ -13,6 +13,7 @@ from robofriend.srv import SrvTeensySerialData
 from robofriend.srv import SrvServoCameraData
 from robofriend.srv import SrvLedEarsData
 from robofriend.srv import SrvSpeechData
+from robofriend.srv import SrvFaceDrawData
 
 # globals
 currentStatus = {}
@@ -24,6 +25,7 @@ TEENSY_SRV_REQ = None
 servo_cam_req = None
 led_ears_req = None
 speech_req = None
+face_req = None
 
 # init webserver
 app = Flask(__name__, static_folder='../../../../static')
@@ -60,10 +62,15 @@ def shutdown(userPassword):
 
 @app.route('/mouth/smile/<action>', methods=['POST'])
 def changeSmile(action):
-    methods = {'increase': faceModule.increaseSmile,
-               'decrease': faceModule.decreaseSmile
-               }
-    if action in methods: methods[action]()
+    global face_req
+    response = None
+    param = []
+
+    if action in constants.INCREASE_SMILE:
+        response = face_req(constants.INCREASE_SMILE, param)
+    elif action in constants.DECREASE_SMILE:
+        response = face_req(constants.DECREASE_SMILE, param)
+    service_response_check(response.resp, "changeSmile")
     return getResponse("OK")
 
 @app.route('/face/image', methods=['GET'])
@@ -275,9 +282,9 @@ def moveSimple(direction):
 def getTextsBullshit(textCategory):
     retVal = None
 
-    if textCategory in 'random':
+    if textCategory in constants.RANDOM:
         retVal = get_random_text()
-    elif textCategory in 'bullshit':
+    elif textCategory in constants.BULLSHIT:
         retVal = get_bullshit_text()
     else:
         pass
@@ -324,7 +331,7 @@ def run():
 def Webserver():
     global app, webserverDebug, webserverHost, webserverPort
     global TEENSY_SRV_REQ
-    global servo_cam_req, led_ears_req, speech_req
+    global servo_cam_req, led_ears_req, speech_req, face_req
 
     rospy.init_node("robofriend_web_server", log_level = rospy.INFO)
     rospy.loginfo("{%s} - starting webserver node.", rospy.get_caller_id())
@@ -347,6 +354,10 @@ def Webserver():
     # create service to communicate with speech node
     rospy.wait_for_service('/robofriend/speech')
     speech_req = rospy.ServiceProxy('/robofriend/speech', SrvSpeechData)
+
+    # create service to communicate with face node
+    rospy.wait_for_service('/robofriend/face')
+    face_req = rospy.ServiceProxy('/robofriend/face', SrvFaceDrawData)
 
     rate = rospy.Rate(100) # 100hz
 
