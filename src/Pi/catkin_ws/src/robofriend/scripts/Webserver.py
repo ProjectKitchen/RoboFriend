@@ -75,8 +75,18 @@ def changeSmile(action):
 
 @app.route('/face/image', methods=['GET'])
 def getface():
-    global app
-    response = make_response(send_file("../" + faceModule.getScreenshotFilename()))
+    rospy.logwarn("#################################################")
+
+    global app, face_req
+    resp = None
+    param = []
+
+    resp = face_req(constants.GET_SCREEN_FN, param)
+    service_response_check(resp.resp, "getface")
+    rospy.logwarn("Filename: %s", resp.filename)
+
+    # response = make_response(send_file("../" + faceModule.getScreenshotFilename()))
+    response = make_response(send_file(resp.filename))
     response.headers['Cache-control'] = 'no-cache'
     response.headers['Access-Control-Allow-Origin'] = '*'
     return response
