@@ -16,6 +16,7 @@
 #include "Parser.h"
 #include "Odometry.h"
 #include "GPIO.h"
+#include "Config.h"
 
 /******************************************************************* GLOBALS */
 

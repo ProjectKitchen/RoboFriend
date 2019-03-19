@@ -70,7 +70,7 @@ def serviceHandler(req):
                 serial_resp = "Sensors,0696,0100,0200,0300" # GOOD
         
         if serial_resp is not None:
-            rospy.logdebug("{%s} - Sensor values from teensy: %s", rospy.get_caller_id(), serial_resp)
+            rospy.logwarn("{%s} - Sensor values from teensy: %s", rospy.get_caller_id(), serial_resp)
             sensor, bat_voltage, inf_left, inf_middle, inf_right = serial_resp.split(',')
             rospy.logdebug("{%s} - Response Service: Sensor: %s, Battery: %s, Infrared left: %s, Infrared middle: %s, Infrared right: %s",
                     rospy.get_caller_id(), 
