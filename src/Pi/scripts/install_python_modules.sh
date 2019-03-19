@@ -1,6 +1,8 @@
 sudo apt-get update
 sudo apt-get remove python3-pip
 sudo apt-get install python3-pip
+sudo apt-get install python-flask
+sudo apt-get install python-pygame
 sudo pip3 install --upgrade pip
 sudo pip3 install --upgrade setuptools
 sudo pip3 install pygame
