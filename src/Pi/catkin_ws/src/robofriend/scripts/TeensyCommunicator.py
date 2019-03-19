@@ -70,7 +70,7 @@ def serviceHandler(req):
                 serial_resp = "Sensors,0696,0100,0200,0300" # GOOD
         
         if serial_resp is not None:
-            rospy.logdebug("{%s} - Sensor values from teensy: %s", rospy.get_caller_id(), serial_resp)
+            rospy.loginfo("{%s} - Sensor values from teensy: %s", rospy.get_caller_id(), serial_resp) # TODO: what happened to vbat measurement
             sensor, bat_voltage, inf_left, inf_middle, inf_right = serial_resp.split(',')
             rospy.logdebug("{%s} - Response Service: Sensor: %s, Battery: %s, Infrared left: %s, Infrared middle: %s, Infrared right: %s",
                     rospy.get_caller_id(), 
@@ -119,7 +119,7 @@ def TeensyCommunicator():
 
     try:
         ser = serial.Serial(constants.SER_DEV_TEENSY, constants.SER_DEV_TEENSY_BD, timeout = 1)
-        rospy.loginfo("{%s} - serial for teensy opened.")
+        rospy.loginfo("{%s} - serial for teensy opened.", rospy.get_caller_id())
     except Exception as inst:
         rospy.logwarn('{%s} - this is a controlled catch.', rospy.get_caller_id())
         rospy.logwarn('{%s} - serial for teensy could not opened.', rospy.get_caller_id())

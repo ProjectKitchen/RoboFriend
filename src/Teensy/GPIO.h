@@ -37,6 +37,10 @@
 #define PIN_US4_TRIG    16 // C6
 
 /* Motor right */					// TODO: pin assignment review
+/* // design 
+#define PIN_MT_RI_FWD   10 // C0
+#define PIN_MT_RI_BCK   11 // C1
+*/
 #define PIN_MT_RI_FWD   10 // C0
 #define PIN_MT_RI_BCK   11 // C1
 #define PIN_MT_RI_PWM   14 // C4
@@ -44,8 +48,12 @@
 #define PIN_MT_RI_DEC   25 // B5
 
 /* Motor left */					// TODO: pin assignment review
-#define PIN_MT_LE_FWD   13 // C3 	// TODO: invert logic in KiCad
-#define PIN_MT_LE_BCK   12 // C2 	// TODO: invert logic in KiCad
+/* // deisng
+#define PIN_MT_LE_FWD   12 // C2
+#define PIN_MT_LE_BCK   13 // C3
+*/
+#define PIN_MT_LE_FWD   13 // C3
+#define PIN_MT_LE_BCK   12 // C2
 #define PIN_MT_LE_PWM   15 // C5
 #define PIN_MT_LE_INC   26 // B6
 #define PIN_MT_LE_DEC   27 // B7
