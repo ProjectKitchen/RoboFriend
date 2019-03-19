@@ -4,15 +4,17 @@ import time
 import pygame
 import pygame.gfxdraw
 import constants
+import os
 
 # import ros messages and services
 from robofriend.srv import SrvFaceDrawData, SrvFaceDrawDataResponse
+from robofriend.srv import SrvFaceScreenshotTimestamp
 
 class FaceDataHandler():
 
-    def __init__(self):
-
+    def __init__(self, time_req):
         pygame.init()
+        self._time_req = time_req
         self._screen = pygame.display.set_mode((654, 380)) # pygame.display.set_mode((654, 380), pygame.FULLSCREEN)
         self._screen.fill((0, 0, 0))
 
@@ -38,6 +40,8 @@ class FaceDataHandler():
 
         self._meth = ""
         self._param = []
+
+        self._draw_face()
 
         # service to communicate to sound node
         #rospy.Service('/robofriend/face_sound_stat', SrvFacSoundData,
@@ -85,6 +89,7 @@ class FaceDataHandler():
                         get(self._meth, self._errorhandler)()
                 rospy.logdebug("{%s} - Service response message: %s, %s",
                     rospy.get_caller_id(), resp, fn)
+
         self._draw_face()
         return SrvFaceDrawDataResponse(resp, fn)
 
@@ -169,9 +174,11 @@ class FaceDataHandler():
         pygame.draw.circle(self._screen, (10, 10, 10), (491 + self._eyes_x,100 + self._eyes_y), 20) #rightpupil
         self._draw_mouth()
         pygame.display.flip()
-        pygame.image.save(self._screen, self._screenshot_filename)
-        # MOMOKARL: maybe a better way to solve this?
-        #statusModule.setScreenshotTimestamp() ??????
+        path = os.path.dirname(os.path.realpath(__file__))
+        pygame.image.save(self._screen, os.path.join(path, self._screenshot_filename))
+        response = self._time_req(True)
+        self._service_response_check(response.resp)
+
 
     def _draw_mouth(self):
         if self._smile_percent < 0:
@@ -192,6 +199,14 @@ class FaceDataHandler():
         # Convert the 0-1 range into a value in the right range.
         return right_min + (value_scaled * right_span)
 
+    def _service_response_check(self, response = False):
+        if response:
+            rospy.logdebug("{%s} - Successfull response!",
+                    rospy.get_caller_id())
+        else:
+            rospy.logwarn("{%s} - Erroneous response!",
+                    rospy.get_caller_id())
+
 def shutdown():
     rospy.loginfo("{%s} - stopping face node!",
         rospy.get_caller_id())
@@ -199,15 +214,19 @@ def shutdown():
     rospy.signal_shutdown("Stopping face node")
 
 def Face():
-    rospy.init_node("robofriend_face", log_level = rospy.DEBUG)
+    rospy.init_node("robofriend_face", log_level = rospy.INFO)
     rospy.loginfo("{%s} - starting face node!",
         rospy.get_caller_id())
 
+    # create service to send to make time request
+    rospy.wait_for_service("/robofriend/face_screen_timestamp")
+    time_req = rospy.ServiceProxy('/robofriend/face_screen_timestamp', SrvFaceScreenshotTimestamp)
 
-    face = FaceDataHandler()
+    face = FaceDataHandler(time_req)
 
     # create Service
     rospy.Service('/robofriend/face', SrvFaceDrawData, face._service_handler)
+
     rospy.spin()
 
 if __name__ == '__main__':
