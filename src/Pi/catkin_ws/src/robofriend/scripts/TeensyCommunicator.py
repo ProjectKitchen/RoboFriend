@@ -59,7 +59,7 @@ def serviceHandler(req):
         
         if ser is not None:
             try:
-                serial_resp = str(ser.readline())
+                serial_resp = str(ser.readline()).strip()
             except Exception as inst:
                 rospy.logwarn('{%s} - this is a controlled catch.', rospy.get_caller_id())
                 rospy.logwarn('{%s} - read serial for teensy failed.', rospy.get_caller_id())

@@ -37,7 +37,7 @@ def getResponse(responseString):
 
 @app.route('/')
 def index():
-    return make_response(send_file('../../../../martin.html')) # TODO: rename file to index.html after testing
+    return make_response(send_file('../../../../index.html')) # TODO: rename file to index.html after testing
 
 @app.route('/map/save/<filename>', methods=['POST'])
 def saveMap(filename):
