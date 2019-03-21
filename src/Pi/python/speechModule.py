@@ -121,7 +121,7 @@ def autoSpeak():
     global runFlag
     while runFlag:
         time.sleep(random.randint(45, 90))
-        # MOMOKARL: here you should check the robot status controlled by robobrain
+        # MOMOKARL: is done when robo enters idle
         if statusModule.isIdle():
             speakRandom({
                 'english': ['I am bored.'],

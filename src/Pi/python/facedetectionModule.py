@@ -5,7 +5,6 @@ import ioWarriorModule
 from ros_robofriend.msg import CamData
 from std_msgs.msg import String
 
-# TODO: according to the known face let the ears light in different colors
 # TODO: test with a dummy talker until second Robofriend is operational
 
 def callback (data):

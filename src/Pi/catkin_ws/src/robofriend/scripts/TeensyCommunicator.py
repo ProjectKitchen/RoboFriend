@@ -17,8 +17,6 @@ def move(left, right, duration = driveDuration):
     sendSerial(constants.STOP_MOVING)
     sendSerial("D " + str(left) + " " + str(right) + " " + str(duration))
 
-# MOMOKARL: called from faceModule
-# make the following service request: request('H', False) 
 def shakeHeadForNo(): 
     sendSerial(constants.STOP_MOVING)
     sendSerial(constants.SHAKE_HEAD_FOR_NO_SEQ_1)

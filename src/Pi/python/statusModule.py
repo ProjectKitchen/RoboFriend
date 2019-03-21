@@ -10,7 +10,6 @@ def getScreenshotTimestamp():
     global currentStatus, keyScreenshotTimestamp
     return currentStatus[keyScreenshotTimestamp] if keyScreenshotTimestamp in currentStatus else None
 
-# TODO: called from the faceModule
 def setScreenshotTimestamp(timestamp = None):
     if not timestamp:
         timestamp = time.time()

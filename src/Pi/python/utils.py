@@ -7,7 +7,6 @@ import os
 def getFilenames(path):
     return next(os.walk(path))[2]
 
-# MOMOKARL: called from faceModule.py. Please make sure to implement this method.
 def mapRange(value, leftMin, leftMax, rightMin, rightMax):
     # Figure out how 'wide' each range is
     leftSpan = leftMax - leftMin
@@ -19,6 +18,5 @@ def mapRange(value, leftMin, leftMax, rightMin, rightMax):
     # Convert the 0-1 range into a value in the right range.
     return rightMin + (valueScaled * rightSpan)
 
-# MOMOKARL: called from faceModule.py. Please make sure to implement this method.
 def restrictRange(value, minValue, maxValue):
     return value if minValue <= value <= maxValue else (minValue if value < minValue else maxValue)

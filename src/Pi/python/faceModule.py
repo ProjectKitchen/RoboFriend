@@ -98,7 +98,6 @@ def drawFace():
     drawMouth()
     pygame.display.flip()
     pygame.image.save(screen, screenshotFilename)
-    # MOMOKARL: maybe a better way to solve this?
     statusModule.setScreenshotTimestamp()
 
 def drawMouth():
