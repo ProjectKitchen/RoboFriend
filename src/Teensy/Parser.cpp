@@ -87,6 +87,6 @@ void setSensorThresholds() {
 void defaultHandler() {
 	char *arg;
 	arg = sc.next();
-	Serial.printf("Received unsupported command: %c\n", arg);
+	Serial.printf("Received unsupported command: %c\n", arg); // TODO: print argument
 }
 

@@ -61,18 +61,18 @@ public:
 	bool isIRSensorRightTriggered(void);
 
 private:
-	int battery;
-	int shuntAmp;
+	int battery = 0;
+	int shuntAmp = 0;
 
-	int ir_lft;
+	int ir_lft = 0;
 	int ir_lft_thold;
 	bool ir_lft_trig;
 
-	int ir_mid;
+	int ir_mid = 0;
 	int ir_mid_thold;
 	bool ir_mid_trig;
 
-	int ir_ryt;
+	int ir_ryt = 0;
 	int ir_ryt_thold;
 	bool ir_ryt_trig;
 
