@@ -10,6 +10,7 @@ from robofriend.msg import PCBSensorData
 # import ros services
 from robofriend.srv import SrvRFIDData
 from robofriend.srv import SrvTeensySerialData
+from robofriend.srv import SrvFaceDrawData
 
 # globals
 IP = ''
@@ -17,6 +18,7 @@ UDP_PORT = 9000 # socket port
 UDP_SOCKET = None
 BAT_VOLT = 0
 TEENSY_SRV_REQ = None
+face_req = None
 
 def dataListener():
     """ 
@@ -78,8 +80,8 @@ def chooseAction(data):
 #         dataArray = dataArray[1:]
 #         if info == "play":
 #             soundModule.playsound(dataArray)
-#     elif action == "face":
-#         faceModule.faceManipulation(dataArray)
+    elif action == "face":
+        face_manipulation(dataArray)
     elif action == "get":
         info = dataArray[0]
         # echo -n ":RUN:get;status:EOL:" >/dev/udp/localhost/9000
@@ -87,6 +89,39 @@ def chooseAction(data):
             sendToGUI("battery;" + str(round(BAT_VOLT, 2)))
     elif action == "IPcheck":
         pass
+
+def face_manipulation(array):
+    global TEENSY_SRV_REQ
+    face_object = ["smile", "eyes"]
+    param = []
+    
+    face_ob, command = array[:2]
+    if face_ob in face_object:
+        face_node_service_request(command, param)
+    elif face_ob in "answer":
+        if command in "correct":
+            param = [60]
+            face_node_service_request(constants.SET_SMILE, param)
+        elif command in "wrong":
+            param = [-60]
+            face_node_service_request(constants.SET_SMILE, param)
+    else:
+        rospy.logwarn("{%s} - wrong command / face_manipulation", 
+                    rospy.get_caller_id())
+    TEENSY_SRV_REQ = 'H'
+            
+def face_node_service_request(action = "", param = []):
+    global face_req
+    response = None
+    
+    response = face_req(action. param)
+    if response.resp:
+        rospy.logdebug("{%s} - Successfull response from Face Node",
+                    rospy.get_caller_id())
+    else:
+        rospy.logwarn("{%s} - Erroneous response", 
+                    rospy.get_caller_id())
+    
 
 def move(dataArray):
     global TEENSY_SRV_REQ
@@ -165,13 +200,16 @@ def shutdown():
     rospy.signal_shutdown("controlled shutdown.")
 
 def GameCommunicator():
-    global UDP_SOCKET, TEENSY_SRV_REQ
+    global UDP_SOCKET, TEENSY_SRV_REQ, face_req
     
     rospy.init_node("robofriend_game_communicator", log_level = rospy.INFO)
     rospy.loginfo("{%s} - starting game communicator handler node!", rospy.get_caller_id())
     rospy.on_shutdown(shutdown)
     
     rospy.Subscriber("/robofriend/pcb_sensor_data", PCBSensorData, provideBatteryVoltage)
+    
+    # create service to communicate with face node
+    face_req = rospy.ServiceProxy('/robofriend/face', SrvFaceDrawData)
     
     UDP_IP = ''
     # handle commandline arguments to get ip address
