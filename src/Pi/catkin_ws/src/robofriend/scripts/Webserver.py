@@ -105,7 +105,7 @@ def moveEyes(direction):
     methods = ["up", "down", "left", "right"]
 
     if direction in methods:
-        response = face_req(methdods, param)
+        response = face_req(direction, param)
     service_response_check(response.resp, "moveEyes")
     return getResponse("OK")
 

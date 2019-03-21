@@ -29,10 +29,10 @@ class FaceDataHandler():
                            'increase_smile':  self._increase_smile, \
                            'decrease_smile':  self._decrease_smile, \
                            'set_eyes':        self._set_eyes, \
-                           'eyes_up':         self._eyes_up, \
-                           'eyes_down':       self._eyes_down, \
-                           'eyes_left':       self._eyes_left, \
-                           'eyes_right':      self._eyes_right
+                           'up':         self._eyes_up, \
+                           'down':       self._eyes_down, \
+                           'left':       self._eyes_left, \
+                           'right':      self._eyes_right
         }
 
         self.FIRST_ELEM = 0
@@ -166,6 +166,7 @@ class FaceDataHandler():
 
     def _is_sad(self):
         return self._smile_percent < 0
+        self._draw_face()
 
     def _restrict_range(self, value, minValue, maxValue):
         return value if minValue <= value <= maxValue else (minValue if value < minValue else maxValue)
