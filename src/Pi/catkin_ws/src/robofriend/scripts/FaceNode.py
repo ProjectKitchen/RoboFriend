@@ -83,7 +83,7 @@ class FaceDataHandler():
                 resp, fn = self._face_meth.\
                         get(self._meth, self._errorhandler)(self._param)
                 rospy.logdebug("{%s} - Service response message: %s, %s",
-                        rospy.get_caller_id(), res, fn)
+                        rospy.get_caller_id(), resp, fn)
         elif self._meth in self._face_meth:
                 resp, fn = self._face_meth.\
                         get(self._meth, self._errorhandler)()
@@ -123,9 +123,13 @@ class FaceDataHandler():
                 self._restrict_range(self._smile_percent - 10, -100, 100)
         return True, None
 
-    def _set_eyes(param):
+    def _set_eyes(self, param):
+        # x_percent = self._param[self.FIRST_ELEM]
+        # y_percent = self._param[self.SECOND_ELEM]
         x_percent = param[self.FIRST_ELEM]
         y_percent = param[self.SECOND_ELEM]
+        rospy.logdebug("x_percent: %s, y_percent: %s",
+            str(x_percent), str(y_percent))
 
         if x_percent < -100:
             x_percent = -100
@@ -136,8 +140,8 @@ class FaceDataHandler():
             y_percent = 100
         elif y_percent > 100:
             y_percent = 100
-        eyex = int(x_percent * (40.0 / 100))
-        eyey = int(y_percent * (40.0 / 100))
+        self._eyes_x = int(x_percent * (40.0 / 100))
+        self._eyes_y = int(y_percent * (40.0 / 100))
         return True, None
 
     def _eyes_up(self):

@@ -68,7 +68,7 @@ def record_face_timestamp(request):
         currentStatus['screenshotTimestamp'] = time.time()
         retVal = True
     else:
-        rospy.logwarn("{%s} - False as request received!",
+        rospy.logwarn("{%s} - False timestamp request received!",
             rospy.get_caller_id())
         retVal = False
     return SrvFaceScreenshotTimestampResponse(retVal)
@@ -99,18 +99,24 @@ def getface():
 
 @app.route('/eyes/move/<direction>', methods=['POST'])
 def moveEyes(direction):
-    methods = {'up':    faceModule.eyesUp,
-               'down':  faceModule.eyesDown,
-               'left':  faceModule.eyesLeft,
-               'right': faceModule.eyesRight
-               }
+    response = None
+    param = []
+
+    methods = ["up", "down", "left", "right"]
+
     if direction in methods:
-        methods[direction]()
+        response = face_req(methdods, param)
+    service_response_check(response.resp, "moveEyes")
     return getResponse("OK")
 
 @app.route('/eyes/set/<xPercent>/<yPercent>', methods=['POST'])
 def moveEyesXY(xPercent, yPercent):
-    faceModule.setEyes(int(xPercent), int(yPercent))
+    param = []
+    param.append(int(xPercent))
+    param.append(int(yPercent))
+    print(param)
+    response = face_req(constants.SET_EYES, param)
+    service_response_check(response.resp, "movesEyesXY")
     return getResponse("OK")
 
 # ************************************************************ iowarrior module
