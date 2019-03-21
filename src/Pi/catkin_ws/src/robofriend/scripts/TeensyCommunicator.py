@@ -68,15 +68,23 @@ def serviceHandler(req):
                 serial_resp = "Sensors,0696,0100,0200,0300" # GOOD
         
         if serial_resp is not None:
-            rospy.loginfo("{%s} - Sensor values from teensy: %s", rospy.get_caller_id(), serial_resp) # TODO: what happened to vbat measurement
-            sensor, bat_voltage, inf_left, inf_middle, inf_right = serial_resp.split(',')
-            rospy.logdebug("{%s} - Response Service: Sensor: %s, Battery: %s, Infrared left: %s, Infrared middle: %s, Infrared right: %s",
-                    rospy.get_caller_id(), 
-                    sensor, 
-                    bat_voltage,
-                    inf_left, 
-                    inf_middle, 
-                    inf_right)
+            try:
+                rospy.loginfo("{%s} - sensor values from teensy: %s", rospy.get_caller_id(), serial_resp)
+                temp = serial_resp.split(',')
+                if temp[0] == "Sensors":
+                    sensor, bat_voltage, inf_left, inf_middle, inf_right = serial_resp.split(',')
+                    rospy.logdebug("{%s} - Response Service: Sensor: %s, Battery: %s, Infrared left: %s, Infrared middle: %s, Infrared right: %s",
+                     	rospy.get_caller_id(), 
+                        	sensor, 
+                        	bat_voltage,
+                        	inf_left, 
+                        	inf_middle, 
+                        	inf_right)
+            except Exception as inst:
+                rospy.logwarn('{%s} - this is a controlled catch.', rospy.get_caller_id())
+                rospy.logwarn('{%s} - parsing teensy serial data failed.', rospy.get_caller_id())
+                rospy.logwarn('{%s} - exception type: %s', rospy.get_caller_id(), type(inst))
+                rospy.logwarn('{%s} - exception argument: %s', rospy.get_caller_id(), inst.args[1])
 
     return SrvTeensySerialDataResponse(
         float(bat_voltage), 

@@ -46,5 +46,6 @@
 		<node pkg="robofriend" type="SpeechNode.py" name="robofriend_speech_node" output="screen" />
 		<node pkg="robofriend" type="ServoCamNode.py" name="robofriend_servo_cam_node" output="screen" />
 		<node pkg="robofriend" type="LedEarsNode.py" name="robofriend_led_ears" output="screen" />
+		<node pkg="robofriend" type="FaceNode.py" name="robofriend_face" output="screen" />
 	</group>	
 </launch>
