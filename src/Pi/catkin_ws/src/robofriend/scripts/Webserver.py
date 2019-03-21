@@ -13,6 +13,8 @@ from robofriend.srv import SrvTeensySerialData
 from robofriend.srv import SrvServoCameraData
 from robofriend.srv import SrvLedEarsData
 from robofriend.srv import SrvSpeechData
+from robofriend.srv import SrvFaceDrawData
+from robofriend.srv import SrvFaceScreenshotTimestamp, SrvFaceScreenshotTimestampResponse
 
 # globals
 currentStatus = {}
@@ -24,6 +26,8 @@ TEENSY_SRV_REQ = None
 servo_cam_req = None
 led_ears_req = None
 speech_req = None
+face_req = None
+screenshot_filename = ""
 
 # init webserver
 app = Flask(__name__, static_folder='../../../../static')
@@ -57,19 +61,38 @@ def shutdown(userPassword):
         return getResponse("WRONG PASSWORD")
 
 # ***************************************************************** face module
+def record_face_timestamp(request):
+    global currentStatus
+    retVal = False
+    if request.record_time is True:
+        currentStatus['screenshotTimestamp'] = time.time()
+        retVal = True
+    else:
+        rospy.logwarn("{%s} - False as request received!",
+            rospy.get_caller_id())
+        retVal = False
+    return SrvFaceScreenshotTimestampResponse(retVal)
 
 @app.route('/mouth/smile/<action>', methods=['POST'])
 def changeSmile(action):
-    methods = {'increase': faceModule.increaseSmile,
-               'decrease': faceModule.decreaseSmile
-               }
-    if action in methods: methods[action]()
+    global face_req
+    response = None
+    param = []
+
+    if action in constants.INCREASE_SMILE:
+        response = face_req(constants.INCREASE_SMILE, param)
+    elif action in constants.DECREASE_SMILE:
+        response = face_req(constants.DECREASE_SMILE, param)
+    service_response_check(response.resp, "changeSmile")
     return getResponse("OK")
 
 @app.route('/face/image', methods=['GET'])
 def getface():
-    global app
-    response = make_response(send_file("../" + faceModule.getScreenshotFilename()))
+    global app, screenshot_filename
+    resp = None
+    param = []
+
+    response = make_response(send_file(screenshot_filename))
     response.headers['Cache-control'] = 'no-cache'
     response.headers['Access-Control-Allow-Origin'] = '*'
     return response
@@ -275,9 +298,9 @@ def moveSimple(direction):
 def getTextsBullshit(textCategory):
     retVal = None
 
-    if textCategory in 'random':
+    if textCategory in constants.RANDOM:
         retVal = get_random_text()
-    elif textCategory in 'bullshit':
+    elif textCategory in constants.BULLSHIT:
         retVal = get_bullshit_text()
     else:
         pass
@@ -324,11 +347,14 @@ def run():
 def Webserver():
     global app, webserverDebug, webserverHost, webserverPort
     global TEENSY_SRV_REQ
-    global servo_cam_req, led_ears_req, speech_req
+    global servo_cam_req, led_ears_req, speech_req, face_req, screenshot_filename
+
+    param = []
 
     rospy.init_node("robofriend_web_server", log_level = rospy.INFO)
     rospy.loginfo("{%s} - starting webserver node.", rospy.get_caller_id())
     rospy.on_shutdown(stop)
+
 
     rospy.Subscriber("/robofriend/pcb_sensor_data", PCBSensorData, providePCBSensorData)
 
@@ -347,6 +373,14 @@ def Webserver():
     # create service to communicate with speech node
     rospy.wait_for_service('/robofriend/speech')
     speech_req = rospy.ServiceProxy('/robofriend/speech', SrvSpeechData)
+
+    rospy.Service("/robofriend/face_screen_timestamp", SrvFaceScreenshotTimestamp, record_face_timestamp)
+
+    # create service to communicate with face node
+    rospy.wait_for_service('/robofriend/face')
+    face_req = rospy.ServiceProxy('/robofriend/face', SrvFaceDrawData)
+    resp = face_req(constants.GET_SCREEN_FN, param)
+    screenshot_filename = resp.filename
 
     rate = rospy.Rate(100) # 100hz
 

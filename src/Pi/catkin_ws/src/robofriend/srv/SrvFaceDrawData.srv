@@ -1,0 +1,5 @@
+string  action    # actions triggered from other nodes (e.g. set_smile, set_eyes, ... )
+int8[]  param     # parameters fro set Smile and set Eyes
+---
+bool    resp
+string  filename    # containing screenshot filename for webserver

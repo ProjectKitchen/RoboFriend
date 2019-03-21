@@ -71,8 +71,8 @@ class SpeechDataHandler():
                             'battery':   self.battery_speech
         }
 
-        self.get_text = {'random' : self.get_random_text,
-                         'bullshit' : self.get_bullshit_text
+        self.get_text = {'random':   self.get_random_text,
+                         'bullshit': self.get_bullshit_text
         }
 
     def service_handler(self, request):

@@ -74,6 +74,8 @@ add_service_files(
    SrvServoCameraData.srv
    SrvLedEarsData.srv
    SrvSpeechData.srv
+   SrvFaceDrawData.srv
+   SrvFaceScreenshotTimestamp.srv
 )
 
 ## Generate actions in the 'action' folder

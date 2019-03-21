@@ -80,3 +80,14 @@ CUSTOM = "custom"
 BULLSHIT = "bullshit"
 RANDOM = "random"
 STR_NONE = ""
+
+# Face messages
+GET_SCREEN_FN =  'get_screen_fn'
+SET_SMILE =      'set_smile'
+INCREASE_SMILE = 'increase_smile'
+DECREASE_SMILE = 'decrease_smile'
+SET_EYES =       'set_eyes'
+EYES_UP =        'eyes_up'
+EYES_DOWN =      'eyes_down'
+EYES_LEFT =      'eyes_left'
+EYES_RIGHT =     'eyes_right'
