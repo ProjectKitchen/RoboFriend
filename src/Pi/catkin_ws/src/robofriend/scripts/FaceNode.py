@@ -26,8 +26,8 @@ class FaceDataHandler():
 
         self._face_meth = {'get_screen_fn':   self._get_screenshot_filename, \
                            'set_smile':       self._set_smile, \
-                           'increase_smile':  self._increase_smile, \
-                           'decrease_smile':  self._decrease_smile, \
+                           'increase':        self._increase_smile, \
+                           'decrease':        self._decrease_smile, \
                            'set_eyes':        self._set_eyes, \
                            'up':         self._eyes_up, \
                            'down':       self._eyes_down, \
