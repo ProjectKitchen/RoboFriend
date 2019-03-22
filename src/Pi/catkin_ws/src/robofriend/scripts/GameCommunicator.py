@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-import rospy, socket, sys, thread, time
+import rospy, socket, sys, threading, time
 
 # import user modules
 import constants
@@ -17,8 +17,9 @@ IP = ''
 UDP_PORT = 9000 # socket port
 UDP_SOCKET = None
 BAT_VOLT = 0
+FACEMOD_SRV_REQ_ACTION = None
+FACEMOD_SRV_REQ_PARAM = None
 TEENSY_SRV_REQ = None
-face_req = None
 
 def dataListener():
     """ 
@@ -81,7 +82,10 @@ def chooseAction(data):
 #         if info == "play":
 #             soundModule.playsound(dataArray)
     elif action == "face":
-        face_manipulation(dataArray)
+        # echo -n ":RUN:face;smile;increase:EOL:" >/dev/udp/localhost/9000
+        # echo -n ":RUN:face;eyes;up:EOL:" >/dev/udp/localhost/9000
+        # echo -n ":RUN:face;answer;wrong:EOL:" >/dev/udp/localhost/9000
+        manipulateFace(dataArray)
     elif action == "get":
         info = dataArray[0]
         # echo -n ":RUN:get;status:EOL:" >/dev/udp/localhost/9000
@@ -92,7 +96,6 @@ def chooseAction(data):
 
 def move(dataArray):
     global TEENSY_SRV_REQ
-    rospy.logdebug("{%s} - received move array: %s", rospy.get_caller_id(), dataArray)
     dir = dataArray[0]
     # step informationen vorhanden, tablet toucheingabe verwendet
     if len(dataArray) > 1:
@@ -122,53 +125,27 @@ def move(dataArray):
         if dir in options:
             TEENSY_SRV_REQ = options[dir]
 
-def face_manipulation(array):
-    global TEENSY_SRV_REQ
-    face_object = ["smile", "eyes"]
+def manipulateFace(dataArray):
+    global FACEMOD_SRV_REQ_ACTION, FACEMOD_SRV_REQ_PARAM, TEENSY_SRV_REQ
+    
+    objects = ["smile", "eyes"]
     param = []
     
-    face_ob, command = array[:2]
-    if face_ob in face_object:
-        face_node_service_request(command, param)
-    elif face_ob in "answer":
+    faceObj, command = dataArray[:2]
+    if faceObj in objects:
+        FACEMOD_SRV_REQ_ACTION = command
+        FACEMOD_SRV_REQ_PARAM = param
+    elif faceObj in "answer":
         if command in "correct":
             param = [60]
-            face_node_service_request(constants.SET_SMILE, param)
         elif command in "wrong":
             param = [-60]
-            face_node_service_request(constants.SET_SMILE, param)
+            TEENSY_SRV_REQ = 'H'
+        
+        FACEMOD_SRV_REQ_ACTION = constants.SET_SMILE
+        FACEMOD_SRV_REQ_PARAM = param
     else:
-        rospy.logwarn("{%s} - wrong command / face_manipulation", 
-                    rospy.get_caller_id())
-    TEENSY_SRV_REQ = 'H'
-            
-def face_node_service_request(action = "", param = []):
-    global face_req
-    response = None
-    
-    response = face_req(action. param)
-    if response.resp:
-        rospy.logdebug("{%s} - Successfull response from Face Node",
-                    rospy.get_caller_id())
-    else:
-        rospy.logwarn("{%s} - Erroneous response", 
-                    rospy.get_caller_id())
-    
-            
-def readBatteryVoltage(args):
-    if args.voltage <= 0:
-        return
-    global BAT_VOLT
-    BAT_VOLT = args.voltage
-    sendToGUI("battery;" + str(round(BAT_VOLT, 2)))
-
-def provideRFIDNumber(args):
-    if args is None:
-        return 
-    if args.data is '':
-        return
-    
-    sendToGUI("rfid;" + str(args.data))
+        rospy.logwarn("{%s} - wrong command for the face module", rospy.get_caller_id())
 
 def sendToGUI(data):
     """ 
@@ -192,21 +169,32 @@ def sendToGUI(data):
         rospy.logwarn('{%s} - failed to send data via udp socket.', rospy.get_caller_id())
         rospy.logwarn('{%s} - exception type: %s', rospy.get_caller_id(), type(inst))
         rospy.logwarn('{%s} - exception argument: %s', rospy.get_caller_id(), inst.args[1])
-
-def shutdown():
-    if UDP_SOCKET is not None:
-        UDP_SOCKET.close()
-    rospy.loginfo("{%s} - stopping game communicator node.", rospy.get_caller_id())
-    rospy.signal_shutdown("controlled shutdown.")
     
-def RFIDThreadHandler(threadName, delay):
-    rospy.loginfo("{%s} - starting %s", rospy.get_caller_id(), threadName)
+def faceModuleThreadHandler():
+    global FACEMOD_SRV_REQ_ACTION, FACEMOD_SRV_REQ_PARAM
     while True:
-        rospy.loginfo("{%s} - tick", rospy.get_caller_id())
+        # send data to teensy per service request param
+        if FACEMOD_SRV_REQ_ACTION is not None:
+            rospy.wait_for_service('/robofriend/face')
+            try:
+                request = rospy.ServiceProxy('/robofriend/face', SrvFaceDrawData)
+                # the service response is irrelevant since we dont care about the response
+                request(FACEMOD_SRV_REQ_ACTION, FACEMOD_SRV_REQ_PARAM)
+                # make sure to clear the service request parameter
+                FACEMOD_SRV_REQ_ACTION = None
+            except rospy.ServiceException:
+                rospy.logwarn("{%s} - service call failed. check the face module.", rospy.get_caller_id())
+                
+        # maintain the thread at the needed frequency
+        time.sleep(1)
+    
+def RFIDModuleThreadHandler():
+    while True:
         # get data from rfid reader
         srv_resp = None
         rospy.wait_for_service('/robofriend/get_rfid_number')
         try:
+            # ZAHEDIM: this is causing a bad exit on keyboard interrupt
             request = rospy.ServiceProxy('/robofriend/get_rfid_number', SrvRFIDData)
             srv_resp = request(True)
         except rospy.ServiceException:
@@ -215,13 +203,11 @@ def RFIDThreadHandler(threadName, delay):
         # process the response
         provideRFIDNumber(srv_resp)
         # maintain the thread at the needed frequency
-        time.sleep(delay)
+        time.sleep(1)
     
-def teensyThreadHandler(threadName, delay):
+def teensyModuleThreadHandler():
     global TEENSY_SRV_REQ
-    rospy.loginfo("{%s} - starting %s", rospy.get_caller_id(), threadName)
     while True:
-        rospy.loginfo("{%s} - tack", rospy.get_caller_id())
         # send data to teensy per service request param
         if TEENSY_SRV_REQ is not None:
             rospy.wait_for_service('/robofriend/teensy_serial_data')
@@ -235,10 +221,32 @@ def teensyThreadHandler(threadName, delay):
                 rospy.logwarn("{%s} - service call failed. check the teensy serial data.", rospy.get_caller_id())
                 
         # maintain the thread at the needed frequency
-        time.sleep(delay)
+        time.sleep(1)
+
+def provideRFIDNumber(args):
+    if args is None:
+        return 
+    if args.data is '':
+        return
+    
+    sendToGUI("rfid;" + str(args.data))
+                
+def readBatteryVoltage(args):
+    if args.voltage <= 0:
+        return
+    global BAT_VOLT
+    BAT_VOLT = args.voltage
+    sendToGUI("battery;" + str(round(BAT_VOLT, 2)))
+
+def shutdown():
+    if UDP_SOCKET is not None:
+        UDP_SOCKET.close()
+    rospy.loginfo("{%s} - stopping game communicator node.", rospy.get_caller_id())
+    rospy.signal_shutdown("controlled shutdown.")
 
 def GameCommunicator():
-    global UDP_SOCKET, face_req
+    global t1, t2, t3
+    global UDP_SOCKET
     
     rospy.init_node("robofriend_game_communicator", log_level = rospy.INFO)
     rospy.loginfo("{%s} - starting game communicator handler node!", rospy.get_caller_id())
@@ -246,9 +254,6 @@ def GameCommunicator():
     
     # subscribe to this topic to be able to send the battery voltage via socket
     rospy.Subscriber("/robofriend/pcb_sensor_data", PCBSensorData, readBatteryVoltage)
-    
-    # create service to communicate with face node
-    face_req = rospy.ServiceProxy('/robofriend/face', SrvFaceDrawData)
     
     UDP_IP = ''
     # handle commandline arguments to get ip address
@@ -280,9 +285,16 @@ def GameCommunicator():
         
     # create threads
     try:
-        thread.start_new_thread(RFIDThreadHandler, ("rfid-reader-thread", 1, ) )
-        thread.start_new_thread(teensyThreadHandler, ("teensy-reader-thread", 1, ) )
-    except:
+        t1 = threading.Thread(target=faceModuleThreadHandler, name='face-module-thread') 
+        t1.daemon = True
+        t1.start()
+        t2 = threading.Thread(target=RFIDModuleThreadHandler, name='rfid-reader-thread')
+        t2.daemon = True
+        t2.start()
+        t3 = threading.Thread(target=teensyModuleThreadHandler, name='teensy-reader-thread')
+        t3.daemon = True
+        t3.start()
+    except Exception as inst:
         rospy.logerr('{%s} - this is a controlled catch.', rospy.get_caller_id())
         rospy.logerr('{%s} - unable to start threads.', rospy.get_caller_id())
         rospy.logerr('{%s} - exception type: %s', rospy.get_caller_id(), type(inst))
@@ -298,5 +310,8 @@ def GameCommunicator():
 if __name__ == '__main__':
     try:
         GameCommunicator()
-    except rospy.ROSInterruptException:
-        pass
+    except rospy.ROSInterruptException as inst:
+        rospy.logerr('{%s} - this is a controlled catch.', rospy.get_caller_id())
+        rospy.logerr('{%s} - unable to stop the init correctly.', rospy.get_caller_id())
+        rospy.logerr('{%s} - exception type: %s', rospy.get_caller_id(), type(inst))
+        rospy.logerr('{%s} - exception argument: %s', rospy.get_caller_id(), inst.args[0])
