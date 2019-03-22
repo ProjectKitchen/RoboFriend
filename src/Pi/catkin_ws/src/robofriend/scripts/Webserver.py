@@ -80,9 +80,9 @@ def changeSmile(action):
     param = []
 
     if action in constants.INCREASE_SMILE:
-        response = face_req(constants.INCREASE_SMILE, param)
+        response = face_req("increase", param)
     elif action in constants.DECREASE_SMILE:
-        response = face_req(constants.DECREASE_SMILE, param)
+        response = face_req("decrease", param)
     service_response_check(response.resp, "changeSmile")
     return getResponse("OK")
 
