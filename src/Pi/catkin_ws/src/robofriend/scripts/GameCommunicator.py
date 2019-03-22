@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-import rospy, socket, sys
+import rospy, socket, sys, thread, time
 
 # import user modules
 import constants
@@ -8,9 +8,9 @@ import constants
 from robofriend.msg import PCBSensorData
 
 # import ros services
+from robofriend.srv import SrvFaceDrawData
 from robofriend.srv import SrvRFIDData
 from robofriend.srv import SrvTeensySerialData
-from robofriend.srv import SrvFaceDrawData
 
 # globals
 IP = ''
@@ -34,7 +34,7 @@ def dataListener():
         tempData, addr = UDP_SOCKET.recvfrom(50)
     except Exception as inst:
         # we want to have debug level here since we have a non-blocking socket which 
-        # will make the socket always 'temporarily  unavaiable' in the loop 
+        # will make the socket always 'temporarily  unavailable' in the loop 
         rospy.logdebug('{%s} - this is a controlled catch.', rospy.get_caller_id())
         rospy.logdebug('{%s} - could not receive data from udp socket.', rospy.get_caller_id())
         rospy.logdebug('{%s} - exception type: %s', rospy.get_caller_id(), type(inst))
@@ -90,6 +90,38 @@ def chooseAction(data):
     elif action == "IPcheck":
         pass
 
+def move(dataArray):
+    global TEENSY_SRV_REQ
+    rospy.logdebug("{%s} - received move array: %s", rospy.get_caller_id(), dataArray)
+    dir = dataArray[0]
+    # step informationen vorhanden, tablet toucheingabe verwendet
+    if len(dataArray) > 1:
+        # TODO: fuer spaeter hier erweiterung moeglich,
+        # auf laenge der steps eingehen, jetzt nur standardwert verwendet
+        # dataArray = dataArray[1:]
+        # step = dataArray[0] 
+        options = {'forward':       constants.MOVE_STEP_FWD,
+                   'right':         constants.MOVE_STEP_RYT,
+                   'backward':      constants.MOVE_STEP_BCK,
+                   'left':          constants.MOVE_STEP_LFT
+                   }
+        if dir in options:
+            TEENSY_SRV_REQ = options[dir]
+    # keine step informationen vorhanden, daher loop, joystick verwendet
+    else: 
+        options = {'forward':       constants.MOVE_LOOP_FWD,
+                   'right':         constants.MOVE_LOOP_RYT,
+                   'backward':      constants.MOVE_LOOP_BCK,
+                   'left':          constants.MOVE_LOOP_LFT,
+                   'forward_right': constants.MOVE_LOOP_FWD_RYT,
+                   'forward_left':  constants.MOVE_LOOP_FWD_LFT,
+                   'backward_right':constants.MOVE_LOOP_BCK_RYT,
+                   'backward_left': constants.MOVE_LOOP_BCK_LFT,
+                   'stop':          constants.STOP_MOVING
+                   }
+        if dir in options:
+            TEENSY_SRV_REQ = options[dir]
+
 def face_manipulation(array):
     global TEENSY_SRV_REQ
     face_object = ["smile", "eyes"]
@@ -122,40 +154,8 @@ def face_node_service_request(action = "", param = []):
         rospy.logwarn("{%s} - Erroneous response", 
                     rospy.get_caller_id())
     
-
-def move(dataArray):
-    global TEENSY_SRV_REQ
-    rospy.logdebug("{%s} - received move array: %s", rospy.get_caller_id(), dataArray)
-    dir = dataArray[0]
-    # step informationen vorhanden, tablet toucheingabe verwendet
-    if len(dataArray) > 1:
-        # TODO: fuer spaeter hier erweiterung moeglich,
-        # auf laenge der steps eingehen, jetzt nur standardwert verwendet
-        # dataArray = dataArray[1:]
-        # step = dataArray[0] 
-        options = {'forward':       constants.MOVE_STEP_FWD,
-                   'right':         constants.MOVE_STEP_RYT,
-                   'backward':      constants.MOVE_STEP_BCK,
-                   'left':          constants.MOVE_STEP_LFT
-                   }
-        if dir in options:
-            TEENSY_SRV_REQ = options[dir]
-    # keine step informationen vorhanden, daher loop, joystick verwendet
-    else: 
-        options = {'forward':       constants.MOVE_LOOP_FWD,
-                   'right':         constants.MOVE_LOOP_RYT,
-                   'backward':      constants.MOVE_LOOP_BCK,
-                   'left':          constants.MOVE_LOOP_LFT,
-                   'forward_right': constants.MOVE_LOOP_FWD_RYT,
-                   'forward_left':  constants.MOVE_LOOP_FWD_LFT,
-                   'backward_right':constants.MOVE_LOOP_BCK_RYT,
-                   'backward_left': constants.MOVE_LOOP_BCK_LFT,
-                   'stop':          constants.STOP_MOVING
-                   }
-        if dir in options:
-            TEENSY_SRV_REQ = options[dir]
             
-def provideBatteryVoltage(args):
+def readBatteryVoltage(args):
     if args.voltage <= 0:
         return
     global BAT_VOLT
@@ -198,15 +198,54 @@ def shutdown():
         UDP_SOCKET.close()
     rospy.loginfo("{%s} - stopping game communicator node.", rospy.get_caller_id())
     rospy.signal_shutdown("controlled shutdown.")
+    
+def RFIDThreadHandler(threadName, delay):
+    rospy.loginfo("{%s} - starting %s", rospy.get_caller_id(), threadName)
+    while True:
+        rospy.loginfo("{%s} - tick", rospy.get_caller_id())
+        # get data from rfid reader
+        srv_resp = None
+        rospy.wait_for_service('/robofriend/get_rfid_number')
+        try:
+            request = rospy.ServiceProxy('/robofriend/get_rfid_number', SrvRFIDData)
+            srv_resp = request(True)
+        except rospy.ServiceException:
+            rospy.logwarn("{%s} - service call failed. check the rfid serial data.", rospy.get_caller_id())
+        
+        # process the response
+        provideRFIDNumber(srv_resp)
+        # maintain the thread at the needed frequency
+        time.sleep(delay)
+    
+def teensyThreadHandler(threadName, delay):
+    global TEENSY_SRV_REQ
+    rospy.loginfo("{%s} - starting %s", rospy.get_caller_id(), threadName)
+    while True:
+        rospy.loginfo("{%s} - tack", rospy.get_caller_id())
+        # send data to teensy per service request param
+        if TEENSY_SRV_REQ is not None:
+            rospy.wait_for_service('/robofriend/teensy_serial_data')
+            try:
+                request = rospy.ServiceProxy('/robofriend/teensy_serial_data', SrvTeensySerialData)
+                # the service response is irrelevant since we dont need to read the response from the teensy dk
+                request(TEENSY_SRV_REQ, False)
+                # make sure to clear the service request parameter
+                TEENSY_SRV_REQ = None
+            except rospy.ServiceException:
+                rospy.logwarn("{%s} - service call failed. check the teensy serial data.", rospy.get_caller_id())
+                
+        # maintain the thread at the needed frequency
+        time.sleep(delay)
 
 def GameCommunicator():
-    global UDP_SOCKET, TEENSY_SRV_REQ, face_req
+    global UDP_SOCKET, face_req
     
     rospy.init_node("robofriend_game_communicator", log_level = rospy.INFO)
     rospy.loginfo("{%s} - starting game communicator handler node!", rospy.get_caller_id())
     rospy.on_shutdown(shutdown)
     
-    rospy.Subscriber("/robofriend/pcb_sensor_data", PCBSensorData, provideBatteryVoltage)
+    # subscribe to this topic to be able to send the battery voltage via socket
+    rospy.Subscriber("/robofriend/pcb_sensor_data", PCBSensorData, readBatteryVoltage)
     
     # create service to communicate with face node
     face_req = rospy.ServiceProxy('/robofriend/face', SrvFaceDrawData)
@@ -219,10 +258,10 @@ def GameCommunicator():
             UDP_IP = sys.argv[1]
             socket.inet_aton(UDP_IP)
         except Exception as inst:
-            rospy.logwarn('{%s} - this is a controlled catch.', rospy.get_caller_id())
-            rospy.logwarn('{%s} - invalid ip address (\'%s\'), try again.', rospy.get_caller_id(), UDP_IP)
-            rospy.logwarn('{%s} - exception type: %s', rospy.get_caller_id(), type(inst))
-            rospy.logwarn('{%s} - exception argument: %s', rospy.get_caller_id(), inst.args[0])
+            rospy.logerr('{%s} - this is a controlled catch.', rospy.get_caller_id())
+            rospy.logerr('{%s} - invalid ip address (\'%s\'), try again.', rospy.get_caller_id(), UDP_IP)
+            rospy.logerr('{%s} - exception type: %s', rospy.get_caller_id(), type(inst))
+            rospy.logerr('{%s} - exception argument: %s', rospy.get_caller_id(), inst.args[0])
             sys.exit()
     else:
         UDP_IP = ''
@@ -234,39 +273,26 @@ def GameCommunicator():
         UDP_SOCKET.setblocking(0)
         rospy.loginfo("{%s} - udp socket opened.", rospy.get_caller_id())
     except Exception as inst:
-        rospy.logwarn('{%s} - this is a controlled catch.', rospy.get_caller_id())
-        rospy.logwarn('{%s} - could not open udp socket.', rospy.get_caller_id())
-        rospy.logwarn('{%s} - exception type: %s', rospy.get_caller_id(), type(inst))
-        rospy.logwarn('{%s} - exception argument: %s', rospy.get_caller_id(), inst.args[1])
+        rospy.logerr('{%s} - this is a controlled catch.', rospy.get_caller_id())
+        rospy.logerr('{%s} - could not open udp socket.', rospy.get_caller_id())
+        rospy.logerr('{%s} - exception type: %s', rospy.get_caller_id(), type(inst))
+        rospy.logerr('{%s} - exception argument: %s', rospy.get_caller_id(), inst.args[1])
+        
+    # create threads
+    try:
+        thread.start_new_thread(RFIDThreadHandler, ("rfid-reader-thread", 1, ) )
+        thread.start_new_thread(teensyThreadHandler, ("teensy-reader-thread", 1, ) )
+    except:
+        rospy.logerr('{%s} - this is a controlled catch.', rospy.get_caller_id())
+        rospy.logerr('{%s} - unable to start threads.', rospy.get_caller_id())
+        rospy.logerr('{%s} - exception type: %s', rospy.get_caller_id(), type(inst))
+        rospy.logerr('{%s} - exception argument: %s', rospy.get_caller_id(), inst.args[0])
 
     rate = rospy.Rate(1) # 1hz    
     
     while not rospy.is_shutdown():
         # listen to udp port
         dataListener()
-        
-        # get data from rfid reader
-        rfid_srv_resp = None
-        rospy.wait_for_service('/robofriend/get_rfid_number')
-        try:
-            request = rospy.ServiceProxy('/robofriend/get_rfid_number', SrvRFIDData)
-            rfid_srv_resp = request(True)
-        except rospy.ServiceException:
-            rospy.logwarn("{%s} - service call failed. check the rfid serial data.", rospy.get_caller_id())
-        
-        # process the response
-        provideRFIDNumber(rfid_srv_resp)
-        
-        # send data to teensy per service request param
-        if TEENSY_SRV_REQ is not None:
-            rospy.wait_for_service('/robofriend/teensy_serial_data')
-            try:
-                request = rospy.ServiceProxy('/robofriend/teensy_serial_data', SrvTeensySerialData)
-                request(TEENSY_SRV_REQ, False)
-                TEENSY_SRV_REQ = None
-            except rospy.ServiceException:
-                rospy.logwarn("{%s} - service call failed. check the teensy serial data.", rospy.get_caller_id())
-        
         rate.sleep() # make sure the publish rate maintains at the needed frequency
         
 if __name__ == '__main__':
