@@ -310,8 +310,5 @@ def GameCommunicator():
 if __name__ == '__main__':
     try:
         GameCommunicator()
-    except rospy.ROSInterruptException as inst:
-        rospy.logerr('{%s} - this is a controlled catch.', rospy.get_caller_id())
-        rospy.logerr('{%s} - unable to stop the init correctly.', rospy.get_caller_id())
-        rospy.logerr('{%s} - exception type: %s', rospy.get_caller_id(), type(inst))
-        rospy.logerr('{%s} - exception argument: %s', rospy.get_caller_id(), inst.args[0])
+    except rospy.ROSInterruptException:
+        pass

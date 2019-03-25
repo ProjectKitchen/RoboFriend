@@ -63,6 +63,8 @@ public:
 private:
 	int battery = 0;
 	int shuntAmp = 0;
+  float shuntAmpVoltage = 0;
+  float shuntAmpMaxVoltage = 0;
 
 	int ir_lft = 0;
 	int ir_lft_thold;
