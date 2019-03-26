@@ -48,7 +48,7 @@
 #define PIN_MT_RI_DEC   25 // B5
 
 /* Motor left */					// TODO: pin assignment review
-/* // deisng
+/* // design
 #define PIN_MT_LE_FWD   12 // C2
 #define PIN_MT_LE_BCK   13 // C3
 */

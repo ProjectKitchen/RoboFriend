@@ -75,7 +75,7 @@ void Sensor::init() {
 }
 
 void Sensor::readSensorValues() {
-  // ADMUX &= 0x3F; // set external voltage reference
+	ADMUX &= 0x3F; // set external voltage reference
 	batteryBuffer->addValue(analogRead(PIN_ADC_VBAT));
 #if OVERCURRENT_LOGIC
 	shuntAmpBuffer->addValue(analogRead(PIN_OC_AN));
@@ -106,9 +106,11 @@ void Sensor::readSensorValues() {
 	if (shuntAmpVoltage >= shuntAmpMaxVoltage) {
 		overCurrentAnalog = true;
 		// TODO: handle overcurrent
+		// Serial.println("Setting overcurrent flag (analog)");
 	} else {
 		overCurrentAnalog = false;
 		// TODO: clear overcurrent
+		// Serial.println("Clearing overcurrent flag (analog)");
 	}
 #endif
 
@@ -133,7 +135,12 @@ void Sensor::readSensorValues() {
 
 void Sensor::provideSensorValues() {
 	Serial.printf("Sensors,%04d,%s,%s,%04d,%04d,%04d\n",
-			battery, String(shuntAmpVoltage).c_str(), String(shuntAmpMaxVoltage).c_str(), ir_lft, ir_mid, ir_ryt);
+			battery,
+			String(shuntAmpVoltage).c_str(),
+			String(shuntAmpMaxVoltage).c_str(),
+			ir_lft,
+			ir_mid,
+			ir_ryt);
 }
 
 void Sensor::setSensorThresholds(int left, int middle, int right) {
@@ -169,5 +176,10 @@ bool Sensor::isIRSensorRightTriggered() {
 void readComparatorValue() {
 	overCurrentDigital = !overCurrentDigital;
 	// TODO: handle overcurrent
+	if (overCurrentDigital) {
+		Serial.println("Setting overcurrent flag (digital)");
+	} else {
+		Serial.println("Clearing overcurrent flag (digital)");
+	}
 }
 
