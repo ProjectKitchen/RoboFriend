@@ -39,8 +39,11 @@ class SoundDataHandler():
             else:
                 self._play_random()
         elif request.action in "mood":
-            mood_list = ["data/", "mood"]
-            self._playsound(mood_list)
+            if request.command is not "":
+                self._play_sound_file("data/mood/" + str(request.command))
+            else:
+                mood_list = ["data/", "mood"]
+                self._playsound(mood_list)
         elif request.action in "play":
             self._playsound(request.game_list)
         else:
