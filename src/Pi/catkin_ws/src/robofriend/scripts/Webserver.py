@@ -102,6 +102,7 @@ def getface():
 
 @app.route('/eyes/move/<direction>', methods=['POST'])
 def moveEyes(direction):
+    global face_req
     response = None
     param = []
 
@@ -114,10 +115,10 @@ def moveEyes(direction):
 
 @app.route('/eyes/set/<xPercent>/<yPercent>', methods=['POST'])
 def moveEyesXY(xPercent, yPercent):
+    global face_req
     param = []
     param.append(int(xPercent))
     param.append(int(yPercent))
-    print(param)
     response = face_req(constants.SET_EYES, param)
     service_response_check(response.resp, "movesEyesXY")
     return getResponse("OK")
@@ -151,25 +152,26 @@ def cameraup():
 @app.route('/ear/color/random/on', methods=['POST'])
 def earRandomOn():
     global led_ears_req
-    response = led_ears_req(constants.RANDOM_ON, None)
+    response = led_ears_req(constants.RANDOM_ON, [], None)
     service_response_check(response.resp, "earRandomOn")
     return getResponse("OK")
 
 @app.route('/ear/color/random/off', methods=['POST'])
 def earRandomOff():
     global led_ears_req
-    response = led_ears_req(constants.RANDOM_OFF, None)
+    response = led_ears_req(constants.RANDOM_OFF, [], None)
     service_response_check(response.resp, "earRandomOff")
     return getResponse("OK")
 
 @app.route('/ear/color/<earColorR>/<earColorG>/<earColorB>', methods=['POST'])
 def setEarRGB(earColorR, earColorG, earColorB):
+    global led_ears_req
     rgb = []
     rgb.append(translateIntRange(int(earColorR), 0, 255, 0, 15))
     rgb.append(translateIntRange(int(earColorG), 0, 255, 0, 15))
     rgb.append(translateIntRange(int(earColorB), 0, 255, 0, 15))
 
-    response = led_ears_req(constants.RGB, rgb)
+    response = led_ears_req(constants.RGB, [], rgb)
     service_response_check(response.resp, "setEarRGB")
     return getResponse("OK")
 
@@ -189,15 +191,74 @@ def translateIntRange(value, leftMin, leftMax, rightMin, rightMax):
 
 @app.route('/mood/set/<moodState>', methods=['POST'])
 def setMood(moodState):
-    methods = {'happy':     moodModule.setHappy,
-               'sad':       moodModule.setSad,
-               'angry':     moodModule.setAngry,
-               'neutral':   moodModule.setNeutral,
-               'tired':     moodModule.setTired
-               }
-    if moodState in methods:
-        methods[moodState]()
+    # methods = {'happy':     moodModule.setSad,
+    #            'sad':       moodModule.setSad,
+    #            'angry':     moodModule.setAngry,
+    #            'neutral':   moodModule.setNeutral,
+    #            'tired':     moodModule.setTired
+    #            }
+
+    if moodState in "happy":
+        rospy.logwarn("%s", moodState)
+        set_happy()
+    elif moodState in "sad":
+        set_sad()
+    elif moodState in "neutral":
+        set_neutral()
+    elif moodState in "angry":
+        set_angry()
+    elif moodState in "tired":
+        set_tired()
+    else:
+        rospy.logwarn("{%s} - Wrong mood!",
+            rospy.get_caller_id())
+
+
     return getResponse("OK")
+
+def set_happy():
+    global face_req, sound_req, led_ears_req
+
+    face_req(constants.SET_EYES, [9, -47])
+    face_req(constants.SET_SMILE, [80])
+    led_ears_req(constants.RGB, [5, 200], [255, 69, 0, 255, 191, 0])
+    sound_req(False, "mood", "happy.wav", [])
+
+def set_sad():
+    global face_req, sound_req, led_ears_req
+
+    face_req(constants.SET_EYES, [-1, -44])
+    face_req(constants.SET_SMILE, [-70])
+    led_ears_req(constants.RGB, [], [0, 0, 255])
+    sound_req(False, "mood", "sad.wav", [])
+
+def set_neutral():
+    global face_req, sound_req, led_ears_req
+
+    face_req(constants.SET_EYES, [0, 0])
+    face_req(constants.SET_SMILE, [20])
+    led_ears_req(constants.RGB, [], [255, 255, 255])
+    sound_req(False, "mood", "neutral.wav", [])
+
+def set_angry():
+    global face_req, sound_req, led_ears_req
+
+    face_req(constants.SET_EYES, [-46, -40])
+    face_req(constants.SET_SMILE, [-10])
+    led_ears_req(constants.RGB, [4, 300], [0, 0, 0, 255, 0, 0])
+    sound_req(False, "mood", "angry.wav", [])
+
+def set_tired():
+    global face_req, sound_req, led_ears_req
+
+    face_req(constants.SET_EYES, [23, -21])
+    face_req(constants.SET_SMILE, [-10])
+    led_ears_req(constants.RGB, [], [0, 0, 0])
+    sound_req(False, "mood", "tired.wav", [])
+
+
+
+
 
 # *************************************************************** status module
 
@@ -261,23 +322,19 @@ def update(userPassword):
 @app.route('/sound/play/file/<filename>', methods=['POST'])
 def playSound(filename):
     global sound_req
-
     sound_req(False, "random", filename, [])
-    # soundModule.playSoundFile('data/random/' + filename)
     return getResponse("OK")
 
 @app.route('/sound/play/random', methods=['POST'])
 def randomSound():
     global sound_req
     resp = sound_req(False, "random", "", [])
-    #soundModule.playRandom()
     return getResponse("OK")
 
 @app.route('/sound/play/mood', methods=['POST'])
 def moodSound():
     global sound_req
     sound_req(False, "mood", "", [])
-    # soundModule.playMood()
     return getResponse("OK")
 
 @app.route('/sound/get/random', methods=['GET'])
