@@ -32,16 +32,17 @@ class LedEarsDataHandler():
         rospy.logdebug("{%s} - Led Ears request received!",
             rospy.get_caller_id())
 
-        if request.mode == "on":
-            self.__random = "on"
-        elif request.mode == "off":
-            self.__random = "off"
-        elif request.mode == "rgb":
-            self.__random = "rgb"
-            if len(request.rgb_color) is 3:
-                self.__rgb = list(request.rgb_color)
-                print(self.__rgb)
-        self._flash_led()
+        # if request.mode == "on":
+        #     self.__random = "on"
+        # elif request.mode == "off":
+        #     self.__random = "off"
+        # elif request.mode == "rgb":
+        #     self.__random = "rgb"
+        #     if len(request.rgb_color) is 3:
+        #         self.__rgb = list(request.rgb_color)
+        #         print(self.__rgb)
+        # self._flash_led()
+        self.process_data(request)
         return SrvLedEarsDataResponse(True)
 
 
