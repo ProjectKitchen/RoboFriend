@@ -36,6 +36,8 @@ def processSensorValues(pub, args):
     data = PCBSensorData()
     data.voltage = batVolt
     data.percentage = batPercent
+    data.shuntAmp = args.shunt_amp
+    data.shuntAmpMax = args.shunt_amp_max
     data.ir_sensor_left = args.inf_left
     data.ir_sensor_middle = args.inf_middle
     data.ir_sensor_right = args.inf_right

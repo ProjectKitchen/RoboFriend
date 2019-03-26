@@ -47,6 +47,8 @@ def serviceHandler(req):
             options[req.cmd[0]](param[0], param[1], param[2])
 
     bat_voltage = -1
+    shunt_amp = -1
+    shunt_amp_max = -1
     inf_left = -1
     inf_middle = -1
     inf_right = -1
@@ -65,18 +67,20 @@ def serviceHandler(req):
                 rospy.logwarn('{%s} - exception argument: %s', rospy.get_caller_id(), inst.args[1])
         else:
             if constants.DEBUG is True:
-                serial_resp = "Sensors,0696,0100,0200,0300" # GOOD
+                serial_resp = "Sensors,0696,0.18,1.0,0100,0200,0300" # GOOD
         
         if serial_resp is not None:
             try:
                 rospy.loginfo("{%s} - sensor values from teensy: %s", rospy.get_caller_id(), serial_resp)
                 temp = serial_resp.split(',')
                 if temp[0] == "Sensors":
-                    sensor, bat_voltage, inf_left, inf_middle, inf_right = serial_resp.split(',')
-                    rospy.logdebug("{%s} - Response Service: Sensor: %s, Battery: %s, Infrared left: %s, Infrared middle: %s, Infrared right: %s",
+                    sensor, bat_voltage, shunt_amp, shunt_amp_max, inf_left, inf_middle, inf_right = serial_resp.split(',')
+                    rospy.logdebug("{%s} - response service: sensor: %s, battery: %s, shunt amp: %s (%s), infrared left: %s, infrared middle: %s, infrared right: %s",
                      	rospy.get_caller_id(), 
                         	sensor, 
                         	bat_voltage,
+                            shunt_amp,
+                            shunt_amp_max,
                         	inf_left, 
                         	inf_middle, 
                         	inf_right)
@@ -88,6 +92,8 @@ def serviceHandler(req):
 
     return SrvTeensySerialDataResponse(
         float(bat_voltage), 
+        float(shunt_amp),
+        float(shunt_amp_max),
         float(inf_left), 
         float(inf_middle), 
         float(inf_right)

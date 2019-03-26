@@ -1,5 +1,7 @@
 float32 voltage
 float32 percentage
+float32 shuntAmp
+float32 shuntAmpMax
 float32 ir_sensor_left
 float32 ir_sensor_middle
 float32 ir_sensor_right

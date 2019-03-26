@@ -16,7 +16,7 @@
 #define DUMP_SENSOR_MSG 	0
 #define DUMP_ENCODER_VALUES	0
 #define MOTOR_CTR_TEST		0
-#define OVERCURRENT_LOGIC	0
+#define OVERCURRENT_LOGIC	1
 #define READ_IR_SENSORS		0
 
 /*********************************************************************** IMU */

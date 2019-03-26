@@ -4,6 +4,8 @@ bool readResponse
 ---
 # Response from Server (teensy node)
 float64 bat_voltage
+float64 shunt_amp
+float64 shunt_amp_max
 float64 inf_left
 float64 inf_middle
 float64 inf_right
