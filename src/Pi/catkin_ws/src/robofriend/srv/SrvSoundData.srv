@@ -1,0 +1,6 @@
+bool get_random
+string action
+string command
+string[] game_list
+---
+string[] filedir
