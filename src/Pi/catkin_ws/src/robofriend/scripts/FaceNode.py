@@ -8,6 +8,7 @@ import os
 
 # import ros messages and services
 from robofriend.srv import SrvFaceDrawData, SrvFaceDrawDataResponse
+from robofriend.srv import SrvFaceStatusData, SrvFaceStatusDataResponse
 from robofriend.srv import SrvFaceScreenshotTimestamp
 
 class FaceDataHandler():
@@ -43,10 +44,6 @@ class FaceDataHandler():
 
         self._draw_face()
 
-        # service to communicate to sound node
-        #rospy.Service('/robofriend/face_sound_stat', SrvFacSoundData,
-        #    self._sound_service_handler)
-
     def _sound_service_handler(self, request):
         rospy.logdebug("{%s} - Request regarding status from sound node received!",
             rospy.get_caller_id())
@@ -65,7 +62,7 @@ class FaceDataHandler():
 
         rospy.logdebug("{%s} - Service response message: %s, %s",
             rospy.get_caller_id(), resp, is_sad)
-        return SrvFaceDrawDataResponse(resp, is_sad)
+        return SrvFaceStatusDataResponse(is_sad)
 
 
     def _service_handler(self, request):
@@ -166,7 +163,6 @@ class FaceDataHandler():
 
     def _is_sad(self):
         return self._smile_percent < 0
-        self._draw_face()
 
     def _restrict_range(self, value, minValue, maxValue):
         return value if minValue <= value <= maxValue else (minValue if value < minValue else maxValue)
@@ -231,6 +227,10 @@ def Face():
 
     # create Service
     rospy.Service('/robofriend/face', SrvFaceDrawData, face._service_handler)
+
+    # create service to communicate with sound Node
+    rospy.Service('/robofriend/face_sound_stat', SrvFaceStatusData,
+        face._sound_service_handler)
 
     rospy.spin()
 
