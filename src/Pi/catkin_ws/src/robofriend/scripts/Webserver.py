@@ -199,7 +199,6 @@ def setMood(moodState):
     #            }
 
     if moodState in "happy":
-        rospy.logwarn("%s", moodState)
         set_happy()
     elif moodState in "sad":
         set_sad()
@@ -221,7 +220,7 @@ def set_happy():
 
     face_req(constants.SET_EYES, [9, -47])
     face_req(constants.SET_SMILE, [80])
-    led_ears_req(constants.RGB, [5, 200], [255, 69, 0, 255, 191, 0])
+    led_ears_req("", [5, 200], [255, 69, 0, 255, 191, 0])
     sound_req(False, "mood", "happy.wav", [])
 
 def set_sad():
@@ -245,7 +244,7 @@ def set_angry():
 
     face_req(constants.SET_EYES, [-46, -40])
     face_req(constants.SET_SMILE, [-10])
-    led_ears_req(constants.RGB, [4, 300], [0, 0, 0, 255, 0, 0])
+    led_ears_req("", [4, 300], [0, 0, 0, 255, 0, 0])
     sound_req(False, "mood", "angry.wav", [])
 
 def set_tired():

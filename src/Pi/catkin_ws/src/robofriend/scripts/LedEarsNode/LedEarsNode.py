@@ -66,7 +66,6 @@ class LedEarsDataHandler():
         elif self.__random == "rgb":
             if self._is_random_flash_event_set() == True:
                 self._clear_event_random_flash()
-
             if self.__check_number_elements(self.__rgb):
                 self.__set_ear_color(self.__rgb[0], self.__rgb[1], self.__rgb[2])
             else:
@@ -77,6 +76,7 @@ class LedEarsDataHandler():
 
             if self.__repeat_num is not None:
                 if len(self.__repeat_num) is not 0 and len(self.__rgb) > 3:
+                    # rospy.logwarn("I ammmmm hereeeeeeeeee")
                     self.__set_ear_color_series()
                 else:
                     if self.__check_number_elements(self.__rgb):
