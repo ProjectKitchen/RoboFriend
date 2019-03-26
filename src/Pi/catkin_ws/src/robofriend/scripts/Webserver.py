@@ -15,6 +15,8 @@ from robofriend.srv import SrvLedEarsData
 from robofriend.srv import SrvSpeechData
 from robofriend.srv import SrvFaceDrawData
 from robofriend.srv import SrvFaceScreenshotTimestamp, SrvFaceScreenshotTimestampResponse
+from robofriend.srv import SrvSoundData
+
 
 # globals
 currentStatus = {}
@@ -28,6 +30,7 @@ led_ears_req = None
 speech_req = None
 face_req = None
 screenshot_filename = ""
+sound_req = None
 
 # init webserver
 app = Flask(__name__, static_folder='../../../../static')
@@ -257,22 +260,31 @@ def update(userPassword):
 
 @app.route('/sound/play/file/<filename>', methods=['POST'])
 def playSound(filename):
-    soundModule.playSoundFile('data/random/' + filename)
+    global sound_req
+
+    sound_req(False, "random", filename, [])
+    # soundModule.playSoundFile('data/random/' + filename)
     return getResponse("OK")
 
 @app.route('/sound/play/random', methods=['POST'])
 def randomSound():
-    soundModule.playRandom()
+    global sound_req
+    resp = sound_req(False, "random", "", [])
+    #soundModule.playRandom()
     return getResponse("OK")
 
 @app.route('/sound/play/mood', methods=['POST'])
 def moodSound():
-    soundModule.playMood()
+    global sound_req
+    sound_req(False, "mood", "", [])
+    # soundModule.playMood()
     return getResponse("OK")
 
 @app.route('/sound/get/random', methods=['GET'])
 def getRandomSounds():
-    return getResponse(json.dumps(soundModule.getRandomSounds()))
+    global sound_req
+    response = sound_req(True, "", "", [])
+    return getResponse(json.dumps(response.filedir))
 
 # *************************************************************** teensy module
 
@@ -353,7 +365,7 @@ def run():
 def Webserver():
     global app, webserverDebug, webserverHost, webserverPort
     global TEENSY_SRV_REQ
-    global servo_cam_req, led_ears_req, speech_req, face_req, screenshot_filename
+    global servo_cam_req, led_ears_req, speech_req, face_req, screenshot_filename, sound_req
 
     param = []
 
@@ -387,6 +399,9 @@ def Webserver():
     face_req = rospy.ServiceProxy('/robofriend/face', SrvFaceDrawData)
     resp = face_req(constants.GET_SCREEN_FN, param)
     screenshot_filename = resp.filename
+
+    rospy.wait_for_service('/robofriend/sound')
+    sound_req = rospy.ServiceProxy('/robofriend/sound', SrvSoundData)
 
     rate = rospy.Rate(100) # 100hz
 
