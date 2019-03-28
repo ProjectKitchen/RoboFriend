@@ -57,10 +57,7 @@ int main(int argc, char** argv)
 
     IOWKIT_HANDLE iowHandle = IowKitOpenDevice();	//Get first device handle which found
     G_iowHandle = iowHandle;
-
-
-
-
+    
 
     if(iowHandle != NULL)
     {
@@ -141,7 +138,7 @@ int main(int argc, char** argv)
     {
         printf("IoWarrior: Could not open interface (did you use sudo?)\n\n");
     }
-
+    printf("Successfull close\n");
     return (EXIT_SUCCESS);
 }
 
