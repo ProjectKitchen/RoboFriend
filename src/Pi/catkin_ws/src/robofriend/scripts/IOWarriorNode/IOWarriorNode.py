@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import rospy
 import os
+from os.path import expanduser
 
 # import ros message
 from robofriend.msg import IOWarriorData
@@ -11,12 +12,13 @@ from robofriend.msg import IOWarriorData
 class IOWarriorDataHandler():
 
     def __init__(self):
-        self.__red = 0
+        self.__red = 255
         self.__green = 10
-        self.__blue = 10
+        self.__blue = 0
         self.__cam_pos = 140
 
         self.__send_to_iowarrior(self.__red, self.__green, self.__blue, self.__cam_pos)
+	#rospy.logwarn("IOWarrior init done")
 
     def process_data(self, data):
         rospy.logdebug("{%s} - Received message: %s, %s\n",
@@ -29,7 +31,11 @@ class IOWarriorDataHandler():
         self.__send_to_iowarrior(self.__red, self.__green, self.__blue, self.__cam_pos)
 
     def __send_to_iowarrior(self, red = 0, green = 0, blue = 0, cam_pos = 0):
-        cmd = "sudo ./iowarrior/iow " + str(int(round(red))) + ' ' + str(int(round(green))) + ' ' + str(int(round(blue)))
+	home = expanduser("~")
+	cmd = "sudo " + home  + "/Git/RoboFriend/src/Pi/iowarrior/iow "
+        cmd =  cmd + str(int(round(red))) + ' ' + str(int(round(green))) + ' ' + str(int(round(blue)))
+	print(cmd)
+	#cmd = "sudo .~/Git/RoboFriend/src/Pi/iowarrior/iow " + str(int(round(red))) + ' ' + str(int(round(green))) + ' ' + str(int(round(blue)))
         if cam_pos:
             cmd = cmd + ' ' + str(cam_pos)
         rospy.logdebug("{%s} - CMD command for IOWarrior: %s",

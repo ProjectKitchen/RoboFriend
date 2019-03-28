@@ -221,7 +221,7 @@ def set_happy():
     face_req(constants.SET_EYES, [9, -47])
     face_req(constants.SET_SMILE, [80])
     led_ears_req("", [5, 200], [255, 69, 0, 255, 191, 0])
-    sound_req(False, "mood", "happy.wav", [])
+    #sound_req(False, "mood", "happy.wav", [])
 
 def set_sad():
     global face_req, sound_req, led_ears_req
@@ -456,6 +456,7 @@ def Webserver():
     resp = face_req(constants.GET_SCREEN_FN, param)
     screenshot_filename = resp.filename
 
+    # TODO: make threads
     rospy.wait_for_service('/robofriend/sound')
     sound_req = rospy.ServiceProxy('/robofriend/sound', SrvSoundData)
 

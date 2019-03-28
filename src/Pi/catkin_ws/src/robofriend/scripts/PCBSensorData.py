@@ -23,8 +23,8 @@ def processSensorValues(pub, args):
     if args.bat_voltage == -1:
         return
 
-    # this is the voltage divider result in volts (between 0 - ADC_INTERNAL_VREF)
-    volt_div_val = constants.ADC_INTERNAL_VREF / float(constants.ADC_RESOLUTION) * args.bat_voltage
+    # this is the voltage divider result in volts (between 0 - ADC_EXTERNAL_VREF)
+    volt_div_val = constants.ADC_EXTERNAL_VREF / float(constants.ADC_RESOLUTION) * args.bat_voltage
     # this is the actual battery voltage (between 0 - 12V)
     act_bat_volt = (volt_div_val * (constants.VOLT_DIV_R1 + constants.VOLT_DIV_R2)) / constants.VOLT_DIV_R2
 
