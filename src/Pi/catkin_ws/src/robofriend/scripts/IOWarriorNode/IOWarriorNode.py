@@ -1,11 +1,8 @@
 #!/usr/bin/env python
 import rospy
 import os
-<<<<<<< HEAD
 from os.path import expanduser
-=======
 import time
->>>>>>> acde9d9be36d99cec60cee0d191a379e609eee9d
 
 # import ros message
 from robofriend.msg import IOWarriorData
