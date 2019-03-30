@@ -75,7 +75,7 @@ class SpeechDataHandler():
                          'bullshit': self.get_bullshit_text
         }
 	
-        self.speak("I am Robofrend")
+        self.speak("      Ich bin Robofrend")
 
     def service_handler(self, request):
         rospy.logdebug("{%s} - Speech Request received!",

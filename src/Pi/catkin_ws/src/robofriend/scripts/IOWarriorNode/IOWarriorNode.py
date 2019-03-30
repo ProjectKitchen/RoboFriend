@@ -18,7 +18,7 @@ class IOWarriorDataHandler():
         self.__blue = 0
         self.__cam_pos = 140
         self._old_time = 0
-        self._valid_time = 0.5
+        self._valid_time = 1
 
         self.__send_to_iowarrior(self.__red, self.__green, self.__blue, self.__cam_pos)
 	#rospy.logwarn("IOWarrior init done")
