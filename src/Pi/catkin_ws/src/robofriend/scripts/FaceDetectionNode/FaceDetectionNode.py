@@ -40,7 +40,8 @@ class FaceDetectionDataHandler():
 
         # initialize the MJPG Stream Url to capture the frame
         self.__vs = None
-        self.__url = "http://localhost:8080/?action=stream"
+        # self.__url = "http://localhost:8080/?action=stream"
+        self.__url = "http://192.168.43.179:8080/?action=stream"
 
         # set mjpg stream flag to a default value
         self.__mjpg_stream = False
@@ -167,6 +168,8 @@ class FaceDetectionDataHandler():
                 self.__coordinates.append(name)
                 #print("[INFO] Coordinates in Submodule: {}".format(self.__coordinates))
                 self.__msg.top, self.__msg.right, self.__msg.bottom, self.__msg.left, self.__msg.name = self.__coordinates
+                rospy.logdebug("{%s} - Published messages: %s",
+                    self.__class__.__name__, str(self.__msg))
                 self.__robobrain_pub.publish(self.__msg)
                 rospy.logdebug("{%s} - Pictures are taken!",
                     self.__class__.__name__)
