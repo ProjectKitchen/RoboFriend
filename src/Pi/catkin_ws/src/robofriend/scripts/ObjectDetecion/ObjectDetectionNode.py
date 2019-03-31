@@ -15,7 +15,7 @@ from utils import visualization_utils as vis_util
 from robofriend.srv import SrvObjectDetection, SrvObjectDetectionResponse
 
 # global variables
-MJPG_URL = 'http://192.168.43.179:8080/?action=stream'
+MJPG_URL = 'http://127.0.0.1:8080/?action=stream'
 TF = {}
 STREAM = {}
 IM_WIDTH = 640
@@ -33,25 +33,28 @@ def start_object_detecion():
     else:
         frame = STREAM["vs"].read()
 
-    frame = imutils.resize(frame, width = IM_WIDTH, height = IM_HEIGHT)
-    frame_expanded = np.expand_dims(frame, axis = 0)
+    if frame is None:
+        obj = None
+    elif frame.any():
+        frame = imutils.resize(frame, width = IM_WIDTH, height = IM_HEIGHT)
+        frame_expanded = np.expand_dims(frame, axis = 0)
 
-    # Perform the actual detection by running the model with the image as input
-    (boxes, scores, classes, num) = TF["sess"].run(
-        [TF["detection_boxes"], TF["detection_scores"], TF["detection_classes"], TF["num_detections"]],
-        feed_dict = {TF["image_tensor"]: frame_expanded}
-    )
+        # Perform the actual detection by running the model with the image as input
+        (boxes, scores, classes, num) = TF["sess"].run(
+            [TF["detection_boxes"], TF["detection_scores"], TF["detection_classes"], TF["num_detections"]],
+            feed_dict = {TF["image_tensor"]: frame_expanded}
+        )
 
-    # Draw the results of the detection (aka 'visulaize the results')
-    image, obj = vis_util.visualize_boxes_and_labels_on_image_array(
-        frame,
-        np.squeeze(boxes),
-        np.squeeze(classes).astype(np.int32),
-        np.squeeze(scores),
-        TF["category_index"],
-        use_normalized_coordinates=True,
-        line_thickness=8,
-        min_score_thresh=0.85)
+        # Draw the results of the detection (aka 'visulaize the results')
+        image, obj = vis_util.visualize_boxes_and_labels_on_image_array(
+            frame,
+            np.squeeze(boxes),
+            np.squeeze(classes).astype(np.int32),
+            np.squeeze(scores),
+            TF["category_index"],
+            use_normalized_coordinates=True,
+            line_thickness=8,
+            min_score_thresh=0.85)
 
     return obj
 
@@ -89,7 +92,7 @@ def object_detetcion_init():
     model_name = 'ssdlite_mobilenet_v2_coco_2018_05_09'
 
     # grab path to current working directory
-    cwd_path = os.getcwd()
+    cwd_path = os.path.dirname(os.path.realpath(__file__))
 
     # Path to the frozen detection graph .pb file, which contains the model that is
     # for object detecion
@@ -138,8 +141,8 @@ def shutdown():
     rospy.signal_shutdown("controlled shutdown")
 
 def ObjectDetection():
-    rospy.init_node("robofriend_object_detection", log_level = rospy.DEBUG)
-    rospy.loginfo("{%s} - starting object detetcion node", rospy.get_caller_id())
+    rospy.init_node("robofriend_object_detection_node", log_level = rospy.INFO)
+    rospy.loginfo("{%s} - starting object detetcion node!", rospy.get_caller_id())
     rospy.on_shutdown(shutdown)
 
     # initializes all staff regarding tensorflow
