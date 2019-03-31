@@ -49,9 +49,6 @@ class FaceDetectionDataHandler():
         # configure Pi camera and load necessary files
         self.__face_recog_init()
 
-        # create and start facerecognition thread
-        #self.__start_facedetect_thread()
-
     def __face_recog_init(self):
         self.__path = os.path.dirname(os.path.realpath(__file__))
 
@@ -77,17 +74,6 @@ class FaceDetectionDataHandler():
                 self.__vs = VideoStream(src = 0).start()
 
         time.sleep(2.0)
-
-    def __start_facedetect_thread(self):
-        thread = threading.Thread(
-            target = self.__face_recognition
-        )
-
-        # set thread as a daemon
-        thread.daemon = True
-
-        # start thread
-        thread.start()
 
     def _face_recognition(self):
         if self.____is_face_recognition_blocked() is False:
