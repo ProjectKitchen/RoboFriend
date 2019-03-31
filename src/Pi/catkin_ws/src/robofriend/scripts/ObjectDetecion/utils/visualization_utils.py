@@ -172,8 +172,9 @@ def draw_bounding_box_on_image(image,
   draw.line([(left, top), (left, bottom), (right, bottom),
              (right, top), (left, top)], width=thickness, fill=color)
 
-  print("left: {}, right: {}, top: {}, bottom: {}".format(left, right, top, bottom))
-
+  ########################### COORDINATES OF THE BOX ###########################
+  #print("left: {}, right: {}, top: {}, bottom: {}".format(left, right, top, bottom))
+  ##############################################################################
 
   try:
     font = ImageFont.truetype('arial.ttf', 24)
