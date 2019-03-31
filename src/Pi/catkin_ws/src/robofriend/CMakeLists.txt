@@ -78,6 +78,7 @@ add_service_files(
    SrvFaceScreenshotTimestamp.srv
    SrvFaceStatusData.srv
    SrvSoundData.srv
+   SrvObjectDetection.srv
 )
 
 ## Generate actions in the 'action' folder
