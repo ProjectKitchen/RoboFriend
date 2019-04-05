@@ -17,7 +17,8 @@ class FaceDataHandler():
     def __init__(self, time_req):
         pygame.init()
         self._time_req = time_req
-        self._screen = pygame.display.set_mode((654, 380)) # pygame.display.set_mode((654, 380), pygame.FULLSCREEN)
+        #self._screen = pygame.display.set_mode((654, 380)) # pygame.display.set_mode((654, 380), pygame.FULLSCREEN)
+        self._screen = pygame.display.set_mode((654, 380), pygame.FULLSCREEN)
         self._screen.fill((0, 0, 0))
 
         self._eyes_x = 0
