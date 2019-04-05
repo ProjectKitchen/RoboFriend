@@ -41,16 +41,13 @@ class FaceDetectionDataHandler():
         # initialize the MJPG Stream Url to capture the frame
         self.__vs = None
         # self.__url = "http://localhost:8080/?action=stream"
-        self.__url = "http://192.168.43.179:8080/?action=stream"
+        self.__url = "http://127.0.0.1:8080/?action=stream"
 
         # set mjpg stream flag to a default value
         self.__mjpg_stream = False
 
         # configure Pi camera and load necessary files
         self.__face_recog_init()
-
-        # create and start facerecognition thread
-        #self.__start_facedetect_thread()
 
     def __face_recog_init(self):
         self.__path = os.path.dirname(os.path.realpath(__file__))
@@ -78,17 +75,6 @@ class FaceDetectionDataHandler():
 
         time.sleep(2.0)
 
-    def __start_facedetect_thread(self):
-        thread = threading.Thread(
-            target = self.__face_recognition
-        )
-
-        # set thread as a daemon
-        thread.daemon = True
-
-        # start thread
-        thread.start()
-
     def _face_recognition(self):
         if self.____is_face_recognition_blocked() is False:
             # grab the frame from the threaded video stream and resize it
@@ -101,78 +87,83 @@ class FaceDetectionDataHandler():
 
             #Flip camera vertically
             #frame = cv2.flip(frame, -1)
-            frame = resize(frame, width=320, height=240)
 
-            # convert the input frame from (1) BGR to grayscale (for face
-            # detection) and (2) from BGR to RGB (for face recognition)
-            gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-            rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+            if frame is None:
+                pass
+            elif frame.any():
+                frame = resize(frame, width=320, height=240)
 
-            # detect faces in the grayscale frame
-            rects = self.__detector.detectMultiScale(gray, scaleFactor=1.2,
-                minNeighbors=5, minSize=(20, 20),
-                flags=cv2.CASCADE_SCALE_IMAGE)
+                # convert the input frame from (1) BGR to grayscale (for face
+                # detection) and (2) from BGR to RGB (for face recognition)
+                gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+                rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 
-            # OpenCV returns bounding box coordinates in (x, y, w, h) order
-            # but we need them in (top, right, bottom, left) order, so we
-            # need to do a bit of reordering
-            boxes = [(y, x + w, y + h, x) for (x, y, w, h) in rects]
+                # detect faces in the grayscale frame
+                rects = self.__detector.detectMultiScale(gray, scaleFactor=1.2,
+                    minNeighbors=5, minSize=(20, 20),
+                    flags=cv2.CASCADE_SCALE_IMAGE)
 
-            # print("[INFO] Boxes: {}".format(boxes))
+                # OpenCV returns bounding box coordinates in (x, y, w, h) order
+                # but we need them in (top, right, bottom, left) order, so we
+                # need to do a bit of reordering
+                boxes = [(y, x + w, y + h, x) for (x, y, w, h) in rects]
 
-            if boxes != []:
-                # compute the facial embeddings for each face bounding box
-                encodings = face_recognition.face_encodings(rgb, boxes)
-                names = []
+                # print("[INFO] Boxes: {}".format(boxes))
 
-                # loop over the facial embeddings
-                for encoding in encodings:
-                    # attempt to match each face in the input image to our known
-                    # encodings
-                    matches = face_recognition.compare_faces(self.__data["encodings"],
-                        encoding)
-                    name = "unknown"
+                if boxes != []:
+                    # compute the facial embeddings for each face bounding box
+                    encodings = face_recognition.face_encodings(rgb, boxes)
+                    names = []
 
-                    # check to see if we have found a match
-                    if True in matches:
-                        # find the indexes of all matched faces then initialize a
-                        # dictionary to count the total number of times each face
-                        # was matched
-                        matchedIdxs = [i for (i, b) in enumerate(matches) if b]
-                        counts = {}
+                    # loop over the facial embeddings
+                    for encoding in encodings:
+                        # attempt to match each face in the input image to our known
+                        # encodings
+                        matches = face_recognition.compare_faces(self.__data["encodings"],
+                            encoding)
+                        name = "unknown"
 
-                        # loop over the matched indexes and maintain a count for
-                        # each recognized face face
-                        for i in matchedIdxs:
-                            name = self.__data["names"][i]
-                            counts[name] = counts.get(name, 0) + 1
+                        # check to see if we have found a match
+                        if True in matches:
+                            # find the indexes of all matched faces then initialize a
+                            # dictionary to count the total number of times each face
+                            # was matched
+                            matchedIdxs = [i for (i, b) in enumerate(matches) if b]
+                            counts = {}
 
-                        # determine the recognized face with the largest number
-                        # of votes (note: in the event of an unlikely tie Python
-                        # will select first entry in the dictionary)
-                        name = max(counts, key=counts.get)
+                            # loop over the matched indexes and maintain a count for
+                            # each recognized face face
+                            for i in matchedIdxs:
+                                name = self.__data["names"][i]
+                                counts[name] = counts.get(name, 0) + 1
 
-                    # update the list of names
-                    names.append(name)
+                            # determine the recognized face with the largest number
+                            # of votes (note: in the event of an unlikely tie Python
+                            # will select first entry in the dictionary)
+                            name = max(counts, key=counts.get)
 
-                # loop over the recognized faces
-                for ((top, right, bottom, left), name) in zip(boxes, names):
-                    # draw the predicted face name on the image
-                    cv2.rectangle(frame, (left, top), (right, bottom),
-                        (0, 255, 0), 2)
-                    y = top - 15 if top - 15 > 15 else top + 15
-                    cv2.putText(frame, name, (left, y), cv2.FONT_HERSHEY_SIMPLEX,
-                        0.75, (0, 255, 0), 2)
+                        # update the list of names
+                        names.append(name)
 
-                self.__coordinates = list(boxes[0]).copy()
-                self.__coordinates.append(name)
-                #print("[INFO] Coordinates in Submodule: {}".format(self.__coordinates))
-                self.__msg.top, self.__msg.right, self.__msg.bottom, self.__msg.left, self.__msg.name = self.__coordinates
-                rospy.logdebug("{%s} - Published messages: %s",
-                    self.__class__.__name__, str(self.__msg))
-                self.__robobrain_pub.publish(self.__msg)
-                rospy.logdebug("{%s} - Pictures are taken!",
-                    self.__class__.__name__)
+                    # loop over the recognized faces
+                    for ((top, right, bottom, left), name) in zip(boxes, names):
+                        # draw the predicted face name on the image
+                        cv2.rectangle(frame, (left, top), (right, bottom),
+                            (0, 255, 0), 2)
+                        y = top - 15 if top - 15 > 15 else top + 15
+                        cv2.putText(frame, name, (left, y), cv2.FONT_HERSHEY_SIMPLEX,
+                            0.75, (0, 255, 0), 2)
+
+                    self.__coordinates = list(boxes[0]).copy()
+                    self.__coordinates.append(name)
+                    #print("[INFO] Coordinates in Submodule: {}".format(self.__coordinates))
+                    self.__msg.top, self.__msg.right, self.__msg.bottom, self.__msg.left, self.__msg.name = self.__coordinates
+                    rospy.logdebug("{%s} - Published messages: %s",
+                        self.__class__.__name__, str(self.__msg))
+                    self.__robobrain_pub.publish(self.__msg)
+                    rospy.logdebug("{%s} - Pictures are taken!",
+                        self.__class__.__name__)
+
 
     def __face_record_service_handler(self, request):
         retVal = False
