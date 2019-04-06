@@ -20,7 +20,7 @@ class RobobrainStateHandler():
         self.__batWasLow = False
         self.__lock = Lock()
         self.__event = event
-        self.__idle_elapse_time = 40         # waits 90 sec to change state if no input from webserver and keyboard
+        self.__idle_elapse_time = 40         # waits defined sec to change state if no input from webserver and keyboard
         self.__start_thread()
 
     def __start_thread(self):
