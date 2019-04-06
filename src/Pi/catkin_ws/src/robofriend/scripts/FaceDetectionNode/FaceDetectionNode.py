@@ -40,8 +40,8 @@ class FaceDetectionDataHandler():
 
         # initialize the MJPG Stream Url to capture the frame
         self.__vs = None
-        # self.__url = "http://localhost:8080/?action=stream"
-        self.__url = "http://127.0.0.1:8080/?action=stream"
+        #self.__url = "http://127.0.0.1:8080/?action=stream"
+        self.__url = "http://192.168.1.108:8080/?action=stream"     # IP address of Pi
 
         # set mjpg stream flag to a default value
         self.__mjpg_stream = False

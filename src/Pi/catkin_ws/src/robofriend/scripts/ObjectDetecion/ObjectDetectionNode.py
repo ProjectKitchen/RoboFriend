@@ -15,7 +15,8 @@ from utils import visualization_utils as vis_util
 from robofriend.srv import SrvObjectDetection, SrvObjectDetectionResponse
 
 # global variables
-MJPG_URL = 'http://127.0.0.1:8080/?action=stream'
+# MJPG_URL = 'http://127.0.0.1:8080/?action=stream'
+MJPG_URL = 'http://192.168.1.108:8080/?action=stream'   # IP address of Pi
 TF = {}
 STREAM = {}
 IM_WIDTH = 640
