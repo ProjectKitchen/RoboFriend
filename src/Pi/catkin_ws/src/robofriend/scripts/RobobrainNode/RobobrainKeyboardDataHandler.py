@@ -27,6 +27,8 @@ class RobobrainKeyboardDataHandler():
     DOWN = "down"
     LEFT = "left"
     RIGHT = "right"
+    INCREASE_SMILE = ","
+    DECREASE_SMILE = "."
 
     def __init__(self, sh, event, queue):
         self._idle_event = event
@@ -98,6 +100,14 @@ class RobobrainKeyboardDataHandler():
             elif pressed_key == self.RIGHT:
                 self._teensy_srv_request(self.teensy_methods["MOVE_LOOP_RYT"])
 
+            ########### Face commands ###########
+            elif pressed_key == self.INCREASE_SMILE:
+                self._face_srv_request("increase")
+            elif pressed_key == self.DECREASE_SMILE:
+                self._face_srv_request("decrease")
+
+
+
             elif re.match('^[a-zA-Z ]$', pressed_key):
                 self._speech_buffer += pressed_key
                 rospy.loginfo("Actual Speech Buffer: %s", self._speech_buffer)
@@ -106,6 +116,11 @@ class RobobrainKeyboardDataHandler():
         rospy.loginfo("{%s} - Teensy command from keyboard pressed: %s",
             rospy.get_caller_id(), command)
         self._teensy_request(command, False)
+
+    def _face_srv_request(self, command):
+        param = []
+        self._face_request(action = command, param = param)
+
 
     def _publish_speech_message(self, mode, text = None):
         self._msg_speech.mode = mode
