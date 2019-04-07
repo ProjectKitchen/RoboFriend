@@ -49,6 +49,7 @@ class SoundDataHandler():
         else:
             rospy.logwarn("{%s} - Wrong methode recieved!",
                 rospy.get_caller_id())
+        return SrvSoundDataResponse("")
 
     def _get_filenames(self, given_path):
         return (os.listdir(self._path + given_path))
