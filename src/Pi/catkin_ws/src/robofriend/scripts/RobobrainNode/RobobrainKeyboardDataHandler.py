@@ -1,29 +1,24 @@
 from RobobrainStateHandler import *
+import rospy
 
 class RobobrainKeyboardDataHandler():
 
     def __init__(self, sh, event, queue):
-        self.__quit = None
-        self.__up_down = None
-        self.__pressed_key = None
-
-        self.__event = event
+        self._idle_event = event
         self._statehandler = sh
-        self.__queue = queue
+        self._queue = queue
 
     def process_data(self, data):
-        self.__quit = data.quit
-        self.__up_down = data.up_down
-        self.__pressed_key = data.pressed_key
-        print("[INFO] Class: {} ... Received message from keyboard-node: {}\n".format(self.__class__.__name__, data))
-        self.__input_handler(data)
+        rospy.logdebug("{%s} - Keyboard messages received: %s", self.__class__.__name__, data)
+        self._input_handler(data)
 
-    def __input_handler(self, data):
-        #print("[INFO] Within keyboard input handler!")
-        #print("[INFO] actual State: {}".format(self._statehandler.state))
+    def _input_handler(self, data):
         if self._statehandler.state == RobobrainStateHandler.robostate["IDLE"]:
-            self.__event.set()
-            print("[INFO] Event set!")
+            self._idle_event.set()      # set event to stay in IDLE State
+
+            self._process_input_idle(data)
+
             #TODO: Input processing according to the IDLE State
+
         elif self._statehandler.state == RobobrainStateHandler.robostate['FACEDETECTION']:
-            self.__queue.put(self.__pressed_key)
+            self._queue.put(data.pressed_key)

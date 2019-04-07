@@ -19,7 +19,7 @@ class RobobrainStateHandler():
         self.__state = RobobrainStateHandler.robostate["IDLE"]
         self.__batWasLow = False
         self.__lock = Lock()
-        self.__event = event
+        self.__idle_keyb_event = event
         self.__idle_elapse_time = 40         # waits defined sec to change state if no input from webserver and keyboard
         self.__start_thread()
 
@@ -42,10 +42,10 @@ class RobobrainStateHandler():
                 rospy.loginfo("{%s} - within idle state", rospy.get_caller_id())
                 self.__batWasLow = False
                 # speakOnRecharge()
-                event_is_set = self.__event.wait(self.__idle_elapse_time)
+                event_is_set = self.__idle_keyb_event.wait(self.__idle_elapse_time)
                 if event_is_set == True:
-                    print("Input from either keyboard or webserver therefore stay in IDLE state!")
-                    self.__event.clear()
+                    rospy.logdebug("{%s} - Input from keyboard node received therefore stay in IDLE Stat!")
+                    self.__idle_keyb_event.clear()
                 else:
                     print("No input within {} sec therefore change state to FACEDETECTION state!".format(self.__idle_elapse_time))
                     self.state = RobobrainStateHandler.robostate["FACEDETECTION"]
