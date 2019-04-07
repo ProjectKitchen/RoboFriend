@@ -6,6 +6,7 @@ import re
 # import ros services
 from robofriend.srv import SrvTeensySerialData
 from robofriend.srv import SrvFaceDrawData
+from robofriend.srv import SrvSoundData
 
 # import ros messages
 from robofriend.msg import SpeechData
@@ -19,16 +20,17 @@ class RobobrainKeyboardDataHandler():
                       'MOVE_LOOP_LFT' : 'D -128 128 0'
                       }
 
-    ENTER = "enter"
-    QUIT = "quit"
-    ESCAPE = "escape"
-    BACKSPACE = "backspace"
-    UP = "up"
-    DOWN = "down"
-    LEFT = "left"
-    RIGHT = "right"
-    INCREASE_SMILE = ","
-    DECREASE_SMILE = "."
+    ENTER =           'enter'
+    QUIT =            'quit'
+    ESCAPE =          'escape'
+    BACKSPACE =       'backspace'
+    UP =              'up'
+    DOWN =            'down'
+    LEFT =            'left'
+    RIGHT =           'right'
+    INCREASE_SMILE =  ','
+    DECREASE_SMILE =  '.'
+    PLAY_RANDOM =     '-'
 
     def __init__(self, sh, event, queue):
         self._idle_event = event
@@ -47,9 +49,13 @@ class RobobrainKeyboardDataHandler():
         rospy.wait_for_service('/robofriend/face')
         self._face_request = rospy.ServiceProxy('/robofriend/face', SrvFaceDrawData)
 
-        # init publisher to communicate with Speech Node
+        # init publisher to communicate with speech node
         self._pub_speech = rospy.Publisher('/robofriend/speech_data', SpeechData, queue_size = 0)
         self._msg_speech = SpeechData()
+
+        # init service to communicate with sound node
+        rospy.wait_for_service('/robofriend/sound')
+        self._sound_request = rospy.ServiceProxy('/robofriend/sound', SrvSoundData)
 
     def process_data(self, data):
         self._input_handler(data)
@@ -106,8 +112,31 @@ class RobobrainKeyboardDataHandler():
             elif pressed_key == self.DECREASE_SMILE:
                 self._face_srv_request("decrease")
 
+            ########### Sound commands ###########
+            elif pressed_key == self.PLAY_RANDOM:
+                self._sound_srv_request("random")
 
-
+            ########### Speech commands ##########
+            elif pressed_key == '1':
+                self._publish_speech_message("custom", "Hallo, wie gehts?")
+            elif pressed_key == '2':
+                self._publish_speech_message("custom", "Danke, mir geht es gut.")
+            elif pressed_key == '3':
+                self._publish_speech_message("custom", "Willst du etwas zum knabbern?")
+            elif pressed_key == '4':
+                self._publish_speech_message("custom", "Bitte, gerne.")
+            elif pressed_key == '5':
+                self._publish_speech_message("custom", "Wie heisst du?")
+            elif pressed_key == '6':
+                self._publish_speech_message("custom", "Ich heisse Robofreund.")
+            elif pressed_key == '7':
+                self._publish_speech_message("custom", "Mir  ist langweilig.")
+            elif pressed_key == '8':
+                self._publish_speech_message("custom", "Heute ist ein schoener Tag")
+            elif pressed_key == '9':
+                self._publish_speech_message(mode = "random")
+            elif pressed_key == '0':
+                self._publish_speech_message(mode = "bullshit")
             elif re.match('^[a-zA-Z ]$', pressed_key):
                 self._speech_buffer += pressed_key
                 rospy.loginfo("Actual Speech Buffer: %s", self._speech_buffer)
@@ -121,8 +150,12 @@ class RobobrainKeyboardDataHandler():
         param = []
         self._face_request(action = command, param = param)
 
+    def _sound_srv_request(self, command):
+        self._sound_request(False, command, "", [])
 
-    def _publish_speech_message(self, mode, text = None):
+
+
+    def _publish_speech_message(self, mode, text = ""):
         self._msg_speech.mode = mode
         self._msg_speech.text = text
         self._pub_speech.publish(self._msg_speech)
