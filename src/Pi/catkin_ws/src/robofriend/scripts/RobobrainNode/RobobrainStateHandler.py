@@ -43,7 +43,7 @@ class RobobrainStateHandler():
 
         previous_interaction_mode = None
         kb_choose_mode = None
-        face_familiarity = "known"
+        face_familiarity = None
 
         while True:
             # ************************* SHUTDOWN *************************
@@ -96,7 +96,7 @@ class RobobrainStateHandler():
                 else:
                     if kb_choose_mode == self.interaction["FACEDETECTION"]:
                         previous_interaction_mode = "facedetection"
-                        self._start_face_interaction()
+                        face_familiarity = self._start_face_interaction()
                     elif kb_choose_mode == self.interaction["OBJECTDETECTION"]:
                         previous_interaction_mode = "objectdetection"
                         self._start_object_interaction()
@@ -110,6 +110,8 @@ class RobobrainStateHandler():
                 if self._audiovisual_cnt == 2:
                     self.state = RobobrainStateHandler.robostate["IDLE"]
                     self._audiovisual_cnt = 0
+                    face_familiarity = None
+                    previous_interaction_mode = None
                 else:
                     self._audiovisual_cnt += 1
 
@@ -171,10 +173,13 @@ class RobobrainStateHandler():
         return retVal
 
     def _start_face_interaction(self):
-        rospy.logdebg("Start Facedetetcion")
+        rospy.loginfo("Start Facedetetcion interaction state")
+        self._fd._start_facedetection()
+        rospy.loginfo("Detected Face: %s", self._fd._face_familiarity)
+        return self._fd._face_familiarity
 
     def _start_object_interaction(self):
-        rospy.logdebug("Start Object detection")
+        rospy.loginfo("Start Object detection interaction state")
 
     def _start_voice_interaction(self, prev_mode, face_familiarity):
-        rospy.logdebug("Start Voice detection")
+        rospy.loginfo("Start Voice detection interaction state")
