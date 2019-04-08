@@ -3,9 +3,9 @@ import rospy
 
 class RobobrainVoicedetectionDataHandler():
 
-    def __init__(self, sh, queue):
-        self._statehandler = sh
-        self._queue = queue
+    # def __init__(self):
+        # self._statehandler = sh
+        # self._queue = queue
 
     def process_data(self, data):
         rospy.logdebug("{%s} - Message received from Voice Detection Node: {%s}",
@@ -13,5 +13,6 @@ class RobobrainVoicedetectionDataHandler():
         self._input_handler(data)
 
     def _input_handler(self, data):
-        if self._statehandler.state == RobobrainStateHandler.robostate['FACEDETECTION']:
-            self._queue.put(data)
+        pass
+        # if self._statehandler.state == RobobrainStateHandler.robostate['FACEDETECTION']:
+        #     self._queue.put(data)
