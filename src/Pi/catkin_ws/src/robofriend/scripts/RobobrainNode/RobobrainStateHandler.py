@@ -1,4 +1,4 @@
-import os, rospy, subprocess
+import os, rospy, subprocess, Queue, random
 
 from threading import Lock, Thread
 from time import sleep
@@ -8,19 +8,30 @@ class RobobrainStateHandler():
     robostate = {
         'ADMIN' : 0, \
         'CHARGE' : 1, \
-        'FACEDETECTION' : 2, \
+        'AUDIOVISUAL_INTERACTION' : 2, \
         'MANUAL' : 3, \
         'AUTONOM' : 4, \
         'IDLE' : 5, \
         'SHUTDOWN' : 6
     }
 
-    def __init__(self, event):
+    interaction = {
+        'FACEDETECTION'     : 0, \
+        'OBJECTDETECTION'   : 1, \
+        'VOICEDETECTION'    : 2
+    }
+
+    def __init__(self, event, fd, vd, queue):
         self.__state = RobobrainStateHandler.robostate["IDLE"]
         self.__batWasLow = False
         self.__lock = Lock()
         self.__idle_keyb_event = event
-        self.__idle_elapse_time = 40         # waits defined sec to change state if no input from webserver and keyboard
+        self.__idle_elapse_time = 10         # waits defined sec to change state if no input from webserver and keyboard
+        self.__keyboard_queue = queue
+        self._audiovisual_cnt = 0
+
+        self._fd = fd
+        self._vd = vd
         self.__start_thread()
 
     def __start_thread(self):
@@ -29,7 +40,11 @@ class RobobrainStateHandler():
         thread.start()
 
     def __state_handler_thread(self):
-        # print("{} - Thread to handle the states started!".format(self.__class__.__name__))
+
+        previous_interaction_mode = None
+        kb_choose_mode = None
+        face_familiarity = "known"
+
         while True:
             # ************************* SHUTDOWN *************************
             if self.state == RobobrainStateHandler.robostate["SHUTDOWN"]:
@@ -46,19 +61,60 @@ class RobobrainStateHandler():
                 if event_is_set == True:
                     rospy.logdebug("{%s} - Input from keyboard node received therefore stay in IDLE Stat!")
                     self.__idle_keyb_event.clear()
+                    kb_input = self._get_keyboard_input()
+                    if kb_input is not None:
+                        kb_choose_mode = kb_input
+                        self.state = RobobrainStateHandler.robostate["AUDIOVISUAL_INTERACTION"]
+                    else:
+                        pass
                 else:
-                    print("No input within {} sec therefore change state to FACEDETECTION state!".format(self.__idle_elapse_time))
-                    self.state = RobobrainStateHandler.robostate["FACEDETECTION"]
+                    rospy.logwarn("No input within %d seconds therefore change state to AUDIOVISUAL_INTERACTION state!", self.__idle_elapse_time)
+                    self.state = RobobrainStateHandler.robostate["AUDIOVISUAL_INTERACTION"]
             # ************************* AUTONOM ************************** '''
             elif self.state == RobobrainStateHandler.robostate["AUTONOM"]:
                 rospy.loginfo("{%s} - within autonom state", rospy.get_caller_id())
             # ************************** MANUAL ************************** '''
             elif self.state == RobobrainStateHandler.robostate["MANUAL"]:
                 rospy.loginfo("{%s} - within manual state", rospy.get_caller_id())
-            # *********************** FACEDETECTION ********************** '''
-            elif self.state == RobobrainStateHandler.robostate["FACEDETECTION"]:
-                rospy.loginfo("{%s} - within face detection state", rospy.get_caller_id())
-                sleep(10)
+            # *********************** AUDIOVISUAL_INTERACTION ********************** '''
+            elif self.state == RobobrainStateHandler.robostate["AUDIOVISUAL_INTERACTION"]:
+                rospy.loginfo("{%s} - within audiovisual interaction state", rospy.get_caller_id())
+                if kb_choose_mode == None:
+                    mode = self._choose_random_interaction_mode(previous_interaction_mode)
+
+                    if mode == "facedetection":
+                        previous_interaction_mode = "facedetection"
+                        self._start_face_interaction()
+                    elif mode == "objectdetection":
+                        rospy.logdebug("Start Objectdetetcion")
+                        previous_interaction_mode = "objectdetection"
+                        self._start_object_interaction()
+                    elif mode == "voicedetection":
+                        rospy.logdebug("Start Voicedetection")
+                        previous_interaction_mode = "voicedetection"
+                        self._start_voice_interaction(previous_interaction_mode, face_familiarity)
+                else:
+                    if kb_choose_mode == self.interaction["FACEDETECTION"]:
+                        previous_interaction_mode = "facedetection"
+                        self._start_face_interaction()
+                    elif kb_choose_mode == self.interaction["OBJECTDETECTION"]:
+                        previous_interaction_mode = "objectdetection"
+                        self._start_object_interaction()
+                    elif kb_choose_mode == self.interaction["VOICEDETECTION"]:
+                        previous_interaction_mode = "voicedetection"
+                        self._start_voice_interaction(previous_interaction_mode, face_familiarity)
+                    else:
+                        rospy.logwarn("Wrong keyboard input for audio audiovisual interaction!")
+                    kb_choose_mode = None
+
+                if self._audiovisual_cnt == 2:
+                    self.state = RobobrainStateHandler.robostate["IDLE"]
+                    self._audiovisual_cnt = 0
+                else:
+                    self._audiovisual_cnt += 1
+
+                sleep(5)
+
             # ************************** CHARGE ************************** '''
             elif self.state == RobobrainStateHandler.robostate["CHARGE"]:
                 rospy.loginfo("{%s} - within charge state", rospy.get_caller_id())
@@ -87,9 +143,41 @@ class RobobrainStateHandler():
         self.__lock_release()
 
     def __lock_acquire(self):
-        # print("Lock aquired!")
         self.__lock.acquire()
 
     def __lock_release(self):
-        # print("Lock released!")
         self.__lock.release()
+
+    def _get_keyboard_input(self):
+        retVal = None
+        try:
+            keyboard_input = self.__keyboard_queue.get(timeout = 1)     # waits for an input from keyboard node
+            if keyboard_input == "facedetection":
+                retVal = self.interaction["FACEDETECTION"]
+            elif keyboard_input == "objectdetection":
+                retVal = self.interaction["OBJECTDETETCION"]
+            elif keyboard_input == "voicedetection":
+                retVal = self.interaction["VOICEDETECTION"]
+        except Queue.Empty:
+            rospy.logdebug("No keyboard input")
+            retVal = None
+        return retVal
+
+    def _choose_random_interaction_mode(self, prev_mode):
+        mode = ["facedetection", "objectdetection", "voicedetection"]
+        if prev_mode in mode:
+            mode.remove(prev_mode)
+        rospy.logwarn("Choose random - Previous Mode: %s", prev_mode)
+        retVal = random.choice(mode)
+        rospy.logwarn("Choose random - Actual Mode: %s", retVal)
+
+        return retVal
+
+    def _start_face_interaction(self):
+        rospy.logwarn("Start Facedetetcion")
+
+    def _start_object_interaction(self):
+        rospy.logwarn("Start Object detection")
+
+    def _start_voice_interaction(self, prev_mode, face_familiarity):
+        rospy.logwarn("Start Voice detection")
