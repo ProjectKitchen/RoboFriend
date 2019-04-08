@@ -68,7 +68,7 @@ class RobobrainStateHandler():
                     else:
                         pass
                 else:
-                    rospy.logwarn("No input within %d seconds therefore change state to AUDIOVISUAL_INTERACTION state!", self.__idle_elapse_time)
+                    rospy.logdebug("No input within %s seconds therefore change state to AUDIOVISUAL_INTERACTION state!", str(self.__idle_elapse_time))
                     self.state = RobobrainStateHandler.robostate["AUDIOVISUAL_INTERACTION"]
             # ************************* AUTONOM ************************** '''
             elif self.state == RobobrainStateHandler.robostate["AUTONOM"]:
@@ -167,17 +167,14 @@ class RobobrainStateHandler():
         mode = ["facedetection", "objectdetection", "voicedetection"]
         if prev_mode in mode:
             mode.remove(prev_mode)
-        rospy.logwarn("Choose random - Previous Mode: %s", prev_mode)
         retVal = random.choice(mode)
-        rospy.logwarn("Choose random - Actual Mode: %s", retVal)
-
         return retVal
 
     def _start_face_interaction(self):
-        rospy.logwarn("Start Facedetetcion")
+        rospy.logdebg("Start Facedetetcion")
 
     def _start_object_interaction(self):
-        rospy.logwarn("Start Object detection")
+        rospy.logdebug("Start Object detection")
 
     def _start_voice_interaction(self, prev_mode, face_familiarity):
-        rospy.logwarn("Start Voice detection")
+        rospy.logdebug("Start Voice detection")
