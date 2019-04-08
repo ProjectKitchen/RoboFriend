@@ -20,17 +20,20 @@ class RobobrainKeyboardDataHandler():
                       'MOVE_LOOP_LFT' : 'D -128 128 0'
                       }
 
-    ENTER =           'enter'
-    QUIT =            'quit'
-    ESCAPE =          'escape'
-    BACKSPACE =       'backspace'
-    UP =              'up'
-    DOWN =            'down'
-    LEFT =            'left'
-    RIGHT =           'right'
-    INCREASE_SMILE =  ','
-    DECREASE_SMILE =  '.'
-    PLAY_RANDOM =     '-'
+    ENTER =                 'enter'
+    QUIT =                  'quit'
+    ESCAPE =                'escape'
+    BACKSPACE =             'backspace'
+    UP =                    'up'
+    DOWN =                  'down'
+    LEFT =                  'left'
+    RIGHT =                 'right'
+    INCREASE_SMILE =        ','
+    DECREASE_SMILE =        '.'
+    PLAY_RANDOM =           '-'
+    START_FACEDETECT =      '<'
+    START_OBJECTDETECT =    '+'
+    START_VOICEDETECT =     '#'
 
     def __init__(self, sh, event, queue):
         self._idle_event = event
@@ -63,17 +66,13 @@ class RobobrainKeyboardDataHandler():
     def _input_handler(self, data):
         if self._statehandler.state == RobobrainStateHandler.robostate["IDLE"]:
             self._idle_event.set()      # set event to stay in IDLE State
-
             self._process_input_idle_state(data)
-
-            #TODO: Input processing according to the IDLE State
-
-        elif self._statehandler.state == RobobrainStateHandler.robostate['FACEDETECTION']:
+        elif self._statehandler.state == RobobrainStateHandler.robostate['AUDIOVISUAL_INTERACTION']:
             self._queue.put(data.pressed_key)
 
     def _process_input_idle_state(self, data):
 
-        rospy.logwarn("Pressed Key: %s", data.pressed_key)
+        rospy.logdebug("Pressed Key: %s", data.pressed_key)
 
         up_down = data.up_down
         pressed_key = data.pressed_key
@@ -90,7 +89,7 @@ class RobobrainKeyboardDataHandler():
                     self._last_say = self._speech_buffer
                 self._speech_buffer = ""
             elif pressed_key == self.ESCAPE:
-                rospy.loginfo("Clear speech buffer")
+                rospy.logdebug("Clear speech buffer")
                 self._speech_buffer = ""
             elif pressed_key == self.BACKSPACE:
                 if self._last_say:
@@ -137,13 +136,24 @@ class RobobrainKeyboardDataHandler():
                 self._publish_speech_message(mode = "random")
             elif pressed_key == '0':
                 self._publish_speech_message(mode = "bullshit")
+
+            ########### Behavioral commands ##########
+            elif pressed_key == self.START_FACEDETECT:
+                rospy.logdebug("Start Face detection!")
+                self._queue.put("facedetection")
+            elif pressed_key == self.START_OBJECTDETECT:
+                rospy.logdebug("Start Object detection!")
+                self._queue.put("objectdetection")
+            elif pressed_key == self.START_VOICEDETECT:
+                rospy.logdebug("Start Voice detection!")
+                self._queue.put("voicedetection")
+
+            ########### Any other Buttons ##########
             elif re.match('^[a-zA-Z ]$', pressed_key):
                 self._speech_buffer += pressed_key
-                rospy.loginfo("Actual Speech Buffer: %s", self._speech_buffer)
+                rospy.logdebug("Actual Speech Buffer: %s", self._speech_buffer)
 
     def _teensy_srv_request(self, command):
-        rospy.loginfo("{%s} - Teensy command from keyboard pressed: %s",
-            rospy.get_caller_id(), command)
         self._teensy_request(command, False)
 
     def _face_srv_request(self, command):
@@ -153,11 +163,9 @@ class RobobrainKeyboardDataHandler():
     def _sound_srv_request(self, command):
         self._sound_request(False, command, "", [])
 
-
-
     def _publish_speech_message(self, mode, text = ""):
         self._msg_speech.mode = mode
         self._msg_speech.text = text
         self._pub_speech.publish(self._msg_speech)
-        rospy.loginfo("{%s} - Speech published data: {%s}",
+        rospy.logdebug("{%s} - Speech published data: {%s}",
             self.__class__.__name__, str(self._msg_speech))
