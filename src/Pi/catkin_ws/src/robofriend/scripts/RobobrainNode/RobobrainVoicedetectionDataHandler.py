@@ -91,7 +91,7 @@ class RobobrainVoicedetectionDataHandler():
                         rospy.logdebug("Living room lights off!\n")
                         #urlopen("http://172.22.0.166:8081/rest/runtime/model/components/67-111-109-109-97-110-100-73-110-112-117-116-/ports/105-110-/data/64-75-78-88-58-49-49-47-48-47-48-44-49-46-48-48-49-44-111-102-102-")
                     elif sep_mes[0] == "kitchen":
-                        rospy.log("Kitchen lights off!\n")
+                        rospy.logdebug("Kitchen lights off!\n")
                                 #urlopen("http://172.22.0.166:1ROSException/rest/runtime/model/components/67-111-109-109-97-110-100-73-110-112-117-116-/ports/105-110-/data/64-75-78-88-58-49-49-47-48-47-56-44-49-46-48-48-49-44-111-102-102-")
         except rospy.ROSException:
             rospy.logdebug("{%s} - Timeout occured within {%s} seconds!\n"
