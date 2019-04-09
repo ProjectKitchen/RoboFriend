@@ -3,7 +3,8 @@ import os, sys, rospy
 import threading
 # import queue
 
-from Queue import *
+# from Queue import *
+import Queue
 
 # import ROS messages
 from robofriend.msg import CamData
@@ -35,31 +36,31 @@ def main():
     # pub = rospy.Publisher('topic_name', MsgType, queue_size = 10)
 
     event = threading.Event()
-    # sets actual state to IDLE and starts thread
-    statehandler = RobobrainStateHandler(event)
 
-    #keyboard_queue = queue.Queue()
-    keyboard_queue = Queue()
+    # queue to pass messages from keyboardDataHandler to other Handlers
+    kb_queue = Queue.Queue()
 
     # voice queue to coomunicate from RobobrainVoice to RobobrainFaceDetection
-    voice_queue = Queue()
+    # voice_queue = Queue.Queue()
+
+    fd = RobobrainFacedetectionDataHandler(kb_queue)
+    #vd = RobobrainVoicedetectionDataHandler(kb_queue)
+    #TODO: ObjectdetetcionDataHandler
+
+    # sets actual state to IDLE and starts thread
+    statehandler = RobobrainStateHandler(event, fd, vd, kb_queue)
 
     sensors = RobobrainPCBSensorDataHandler(statehandler)
     # odo = RobobrainOdometryDataHandler()
     # ir  = RobobrainInfraredDataHandler()
-    keyboard = RobobrainKeyboardDataHandler(statehandler, event, keyboard_queue)
-    # TODO: this is not working
-    #voicedetection = RobobrainVoicedetectionDataHandler(statehandler, voice_queue)
-    facedetection = RobobrainFacedetectionDataHandler(statehandler, keyboard_queue, voice_queue)
+    kb = RobobrainKeyboardDataHandler(statehandler, event, kb_queue)
 
-    # TODO: this can be managed in an easier way
-    # publish_handler = RobobrainPublisherHandler(topics)
 
     rospy.Subscriber("/robofriend/pcb_sensor_data", PCBSensorData, sensors.process_data)
     # rospy.Subscriber("/robofriend/odom_data", Pose, odo.process_data)
-    rospy.Subscriber("/robofriend/cam_data",  CamData, facedetection.process_data)
-    rospy.Subscriber("/robofriend/keyb_data", KeyboardData, keyboard.process_data)
-    # rospy.Subscriber('/robofriend/voice_data', VoiceData, voicedetection.process_data)
+    rospy.Subscriber("/robofriend/cam_data",  CamData, fd.process_data)
+    rospy.Subscriber("/robofriend/keyb_data", KeyboardData, kb.process_data)
+    # rospy.Subscriber('/robofriend/voice_data', VoiceData, vd.process_data)
 
     rate = rospy.Rate(0.2) # 200mhz
 
