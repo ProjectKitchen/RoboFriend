@@ -163,12 +163,13 @@ class SpeechDataHandler():
         rospy.logdebug("{%s} - Speaking Text: %s",
             self.__class__.__name__, text)
         self._last_speak_word = text
-        try:
-            self._speech_engine.say(text)
-            self._speech_engine.runAndWait()
-        except:
-            rospy.logwarn("{%s} - Speech Engine Error!",
-                self.__class__.__name__)
+        #try:
+        self._speech_engine.say(text)
+        self._speech_engine.runAndWait()
+        #except Exception as e:
+            #rospy.logwarn("Speech Engine error: %s", e)
+            #rospy.logwarn("{%s} - Speech Engine Error!",
+              #  self.__class__.__name__)
 
 def shutdown():
     rospy.loginfo("{%s} - stopping speech data handler", rospy.get_caller_id())

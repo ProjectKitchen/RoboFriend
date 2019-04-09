@@ -26,7 +26,7 @@ class RobobrainStateHandler():
         self.__batWasLow = False
         self.__lock = Lock()
         self.__idle_keyb_event = event
-        self.__idle_elapse_time = 15         # waits defined sec to change state if no input from webserver and keyboard
+        self.__idle_elapse_time = 80       # waits defined sec to change state if no input from webserver and keyboard
         self.__keyboard_queue = queue
         self._audiovisual_cnt = 0
 

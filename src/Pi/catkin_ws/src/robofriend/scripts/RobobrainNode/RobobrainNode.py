@@ -44,7 +44,7 @@ def main():
     # voice_queue = Queue.Queue()
 
     fd = RobobrainFacedetectionDataHandler(kb_queue)
-    #vd = RobobrainVoicedetectionDataHandler(kb_queue)
+    vd = RobobrainVoicedetectionDataHandler(kb_queue)
     #TODO: ObjectdetetcionDataHandler
 
     # sets actual state to IDLE and starts thread
