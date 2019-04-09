@@ -280,6 +280,7 @@ class KeyboardDataHandler():
 def shutdown():
     rospy.loginfo("{%s} - stopping face/keyboard node!",
         rospy.get_caller_id())
+    pygame.display.quit()
     pygame.quit()
     rospy.signal_shutdown("Stopping face/keyboard node")
 

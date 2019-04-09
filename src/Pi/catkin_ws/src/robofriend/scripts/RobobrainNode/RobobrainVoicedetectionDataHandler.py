@@ -64,12 +64,11 @@ class RobobrainVoicedetectionDataHandler():
             sleep(5)
             response = self._voice_hotword_request(True)
             if response.response is True:
-                rospy.logwarn("Response is True")
+                rospy.logdebug("Response is True")
                 self._evaluate_voice_inputs()
-
-            #TODO: check response, process should continue if voce detecion is finished
             sleep(1)
             self._publish_speech_message("custom", "Mochtest du weiter machen tippe ja oder nein ein")
+            sleep(3)
             yes_no = self._yes_no_keyboard_request()
 
 
