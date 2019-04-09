@@ -76,27 +76,26 @@ class RobobrainVoicedetectionDataHandler():
     def _evaluate_voice_inputs(self):
         try:
             vc_input =rospy.wait_for_message('/robofriend/voice_data', VoiceData, timeout = self._elapse_time)
-            rospy.logwarn("{%s} - evaluate_voice_inputs : Received message: %s", self.__class__.__name__, vc_input)
-	    start_time = self._time_request()
+            rospy.logdebug("{%s} - evaluate_voice_inputs : Received message: %s", self.__class__.__name__, vc_input)
+            start_time = self._time_request()
             sep_mes = vc_input.slots.split("/")
-            rospy.logdebug("Seperated message: {%s}", sep_mes)
             if vc_input.intent == "lights":
             if sep_mes[1] == "on":
                 if sep_mes[0] == "living room":
-                    rospy.logwarn("Living room lights on!\n")
+                    rospy.logdebug("Living room lights on!\n")
                     #urlopen("http://172.22.0.166:8081/rest/runtime/model/components/67-111-109-109-97-110-100-73-110-112-117-116-/ports/105-110-/data/64-75-78-88-58-49-49-47-48-47-48-44-49-46-48-48-49-44-111-110-")
                 elif sep_mes[0] == "kitchen":
-                    rospy.logwarn("Kitchen lights on!\n")
+                    rospy.logdebug("Kitchen lights on!\n")
                     #urlopen("http://172.22.0.166:8081/rest/runtime/model/components/67-111-109-109-97-110-100-73-110-112-117-116-/ports/105-110-/data/64-75-78-88-58-49-49-47-48-47-56-44-49-46-48-48-49-44-111-110-")
             elif sep_mes[1] == "off":
                 if sep_mes[0] == "living room":
-                    rospy.logwarn("Living room lights off!\n")
+                    rospy.logdebug("Living room lights off!\n")
                     #urlopen("http://172.22.0.166:8081/rest/runtime/model/components/67-111-109-109-97-110-100-73-110-112-117-116-/ports/105-110-/data/64-75-78-88-58-49-49-47-48-47-48-44-49-46-48-48-49-44-111-102-102-")
                 elif sep_mes[0] == "kitchen":
                     rospy.log("Kitchen lights off!\n")
                             #urlopen("http://172.22.0.166:1ROSException/rest/runtime/model/components/67-111-109-109-97-110-100-73-110-112-117-116-/ports/105-110-/data/64-75-78-88-58-49-49-47-48-47-56-44-49-46-48-48-49-44-111-102-102-")
         except rospy.ROSException:
-            rospy.logwarn("{%s} - Timeout occured within {%s} seconds!\n"
+            rospy.logdebug("{%s} - Timeout occured within {%s} seconds!\n"
                 , self.__class__.__name__, self._elapse_time)
             self._publish_speech_message("custom", "Ich habe dich nicht verstanden")
             return False, None
