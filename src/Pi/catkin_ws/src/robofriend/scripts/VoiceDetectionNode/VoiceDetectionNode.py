@@ -59,9 +59,9 @@ class VoiceDetectionDataHandler():
 
 
     def _on_message(self, client, userdata, msg):
-        print("Message received on topic {0}: {1}\n".format(msg.topic, msg.payload))
+        rospy.logdebug("{%s} - Message received on topic %s: %s",
+            str(msg.topic), str(msg.payload))
         payload = json.loads(msg.payload.decode())
-        #print("Payload: {}\n".format(payload))
 
         if msg.topic == 'hermes/intent/momokarl:Lights':
             if len(payload['slots']) < 2:
@@ -76,7 +76,7 @@ class VoiceDetectionDataHandler():
                 else:
                     rospy.logwarn("{%s} - Right slotvalues detected!\n",
                         self.__class__.__name__)
-                    self._message_publish("lights", str(room) + "/" + str(action))
+                    self._message_publish("lights", str(room) + "/" + str(action)) # z.B: "lihts", "living room/on"
 
     def _check_slot_value(self, slotamount, payload, list):
         for cnt in range(slotamount):
@@ -99,10 +99,10 @@ class VoiceDetectionDataHandler():
         {'siteId': 'default', 'modelId': 'robofriend-ts'}), hostname='localhost',
         port=1883)
 
-    def _message_publish(self, intent, slot):
+    def _message_publish(self, intent = "", slot = ""):
         self._msg.intent = intent
         self._msg.slots = slot
-        rospy.logdebug("Message send: %s!", self._msg)
+        rospy.logdebug("{%s} - Message send: %s!", self.__class__.__name__, self._msg)
         self._pub.publish(self._msg)
 
 def shutdown():
