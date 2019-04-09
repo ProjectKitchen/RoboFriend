@@ -12,11 +12,9 @@ import traceback
 #from urllib.request import urlopen     # python3
 from urllib2 import urlopen             # python2
 
-
 # import ros service
 from robofriend.srv import SrvFaceRecordData
 from robofriend.srv import SrvFaceDatabaseData
-from robofriend.srv import SrvVoiceHotwordActivationData
 
 # import ros messages
 from robofriend.msg import SpeechData
@@ -40,7 +38,6 @@ class RobobrainFacedetectionDataHandler():
         self.__pic_record = 10
 
         self._elapse_time = 10
-        self._elapse_time_voice = 15
 
         self.__record_pic_speech = {1  : "Erstes", \
                                     2  : "Zweites", \
@@ -197,7 +194,6 @@ class RobobrainFacedetectionDataHandler():
             return False
 
     def __yes_no_keyboard_request(self):
-        #TODO: replace with voice detection
         rospy.logdebug("{%s} - Waiting for yes or no!\n", self.__class__.__name__)
         retVal, keyboard_input = self.__evaluate_keyboard_inputs()
         if retVal != True:
@@ -382,55 +378,6 @@ class RobobrainFacedetectionDataHandler():
             if retVal is True:
                 rospy.logdebug("{%s} - New Database created!\n", self.__class__.__name__)
             return retVal
-
-    def _voice_interaction(self):
-        yes_no = None
-
-        self.__publish_speech_message("custom", "Da wir uns kennen hast du die volle kontrolle uber mein zu Hause")
-        sleep(3)
-        while yes_no is not False:
-            self.__publish_speech_message("custom", "Was mochtest du in meiner Wohnunng steuern")
-            sleep(2)
-            response = self._voice_hotword(True)
-            if response.response is True:
-                rospy.logwarn("Response is True")
-                self.__evaluate_voice_inputs()
-
-            #TODO: check response, process should continue if voce detecion is finished
-            sleep(1)
-            self.__publish_speech_message("custom", "Mochtest du weiter machen tippe ja oder nein ein")
-            yes_no = self.__yes_no_keyboard_request()
-
-
-    def __evaluate_voice_inputs(self):
-
-        start_time = self.__time_request()
-        try:
-            vc_input = self._vc_queue.get(timeout = self._elapse_time_voice)
-            sep_mes = vc_input.slots.split("/")
-            rospy.logdebug("Seperated message: {%s}", sep_mes)
-            if vc_input.intent == "lights":
-                if sep_mes[1] == "on":
-                    if sep_mes[0] == "living room":
-                        rospy.logdebug("Living room lights on!\n")
-                        #urlopen("http://172.22.0.166:8081/rest/runtime/model/components/67-111-109-109-97-110-100-73-110-112-117-116-/ports/105-110-/data/64-75-78-88-58-49-49-47-48-47-48-44-49-46-48-48-49-44-111-110-")
-                    elif sep_mes[0] == "kitchen":
-                        rospy.logdebug("Kitchen lights on!\n")
-                        #urlopen("http://172.22.0.166:8081/rest/runtime/model/components/67-111-109-109-97-110-100-73-110-112-117-116-/ports/105-110-/data/64-75-78-88-58-49-49-47-48-47-56-44-49-46-48-48-49-44-111-110-")
-                elif sep_mes[1] == "off":
-                    if sep_mes[0] == "living room":
-                        rospy.logdebug("Living room lights off!\n")
-                        #urlopen("http://172.22.0.166:8081/rest/runtime/model/components/67-111-109-109-97-110-100-73-110-112-117-116-/ports/105-110-/data/64-75-78-88-58-49-49-47-48-47-48-44-49-46-48-48-49-44-111-102-102-")
-                    elif sep_mes[0] == "kitchen":
-                        rospy.logdebug("Kitchen lights off!\n")
-                        #urlopen("http://172.22.0.166:8081/rest/runtime/model/components/67-111-109-109-97-110-100-73-110-112-117-116-/ports/105-110-/data/64-75-78-88-58-49-49-47-48-47-56-44-49-46-48-48-49-44-111-102-102-")
-            else:
-                self.__publish_speech_message("custom", "Ich habe dich nicht verstanden")
-        except Empty:
-            rospy.logdebug("{%s} - Timeout occured within {%s} seconds!\n"
-                , self.__class__.__name__, self._elapse_time)
-            self.__publish_speech_message("custom", "Du hast nichts gesagt")
-            return False, None
 
     @property
     def _face_familiarity(self):
