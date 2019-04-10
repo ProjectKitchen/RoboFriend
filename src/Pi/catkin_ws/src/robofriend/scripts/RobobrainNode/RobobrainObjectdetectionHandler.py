@@ -24,8 +24,9 @@ class RobobrainObjectdetectionHandler():
                 self.__class__.__name__, str(self._elapse_time))
             self._objectdetection_node_started = False
         else:
-            rospy.logwarn("{%s} - Objectdetection node started", self.__class__.__name__)
+            rospy.logdebug("{%s} - Objectdetection node started", self.__class__.__name__)
             self._objectdetection_record_request = rospy.ServiceProxy('robofriend/detect_objects', SrvObjectDetection)
+            self._objectdetection_node_started = True
 
     def _start_persondetection(self):
         retVal  = False
@@ -34,11 +35,11 @@ class RobobrainObjectdetectionHandler():
         else:
             self._publish_speech_message("custom", "Ich schaue mich dann mal nach Personen um!")
             obj_detection_response = self._objectdetection_record_request(detect_obj = True)
-            rospy.logwarn("{%s} - Response from Object Detection node: %s",
+            rospy.logdebug("{%s} - Response from Object Detection node: %s",
                 self.__class__.__name__, str(obj_detection_response.obj))
 
             if obj_detection_response.obj:
-                rospy.logwarn("{%s} - An object is detected!", self.__class__.__name__)
+                rospy.logdebug("{%s} - An object is detected!", self.__class__.__name__)
                 if obj_detection_response.obj == "person":
                     self._publish_speech_message("custom", "Ich habe eine Person gefunden!")
                     retVal = True
