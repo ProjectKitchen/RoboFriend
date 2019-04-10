@@ -3,6 +3,9 @@ from time import *
 import rospy
 import Queue
 
+#from urllib.request import urlopen     # python3
+from urllib2 import urlopen             # python2
+
 # import ros services
 from robofriend.srv import SrvVoiceHotwordActivationData
 
