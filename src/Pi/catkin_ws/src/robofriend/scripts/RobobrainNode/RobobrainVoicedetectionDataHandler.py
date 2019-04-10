@@ -27,41 +27,48 @@ class RobobrainVoicedetectionDataHandler():
         self._msg_speech = SpeechData()
 
     def process_data(self, data):
-        rospy.logwarn("{%s} -  process_data : Message received from Voice Detection Node: %s",
+        rospy.logdebug("{%s} -  process_data : Message received from Voice Detection Node: %s",
             self.__class__.__name__, data)
         self._intent = data.intent
         self._slot = data.slot
 
         self._input_handler(data)
 
-    def _start_voiceinteraction(self, prev_mode, face_familiarity, person_detect):
-        self._smart_home_interaction()
-        # if prev_mode == "facedetection" or prev_mode == "objectdetection":
-        #     if face_familiarity == "no_person" or person_detect is False:
-        #         rospy.logwarn("{%s} - Previous Mode: %s, Face Familiarity: %s, Person detected: %s", self.__class__.__name__, prev_mode. face_familiarity, person_detect)
-        #         rospy.logwarn("{%s} - Start DOA", self.__class__.__name__)
-        #         #TODO: add Speech
-        #     elif face_familiarity != "unknown":
-        #         rospy.logwarn("{%s} - Start smart home interaction", self.__class__.__name__)
-        #     elif person_detect is True:
-        #         rospy.logwarn("{%s} - Start smart home interaction", self.__class__.__name__)
-        #     elif face_familiarity == "unknown":
-        #         if _choose_random_interaction_mode() == "doa":
-        #             rospy.logwarn("{%s} - Familiarity: unknown, Start DOA", self.__class__.__name__)
-        #         else:
-        #             rospy.logwarn("{%s} - Start smart home interaction", self.__class__.__name__)
-        # elif prev_mode is None:
-        #     rospy.logwarn("{%s} - Previous Mode: %s, Face Familiarity: %s, Person detected: %s", self.__class__.__name__, prev_mode. face_familiarity, person_detect)
-        #     rospy.logwarn("{%s} - Start DOA", self.__class__.__name__)
-        # else:
-        #     rospy.logwarn("{%s} - Last Else", self.__class__.__name__)
-        #     pass
+    def _start_voiceinteraction(self, prev_mode, face_familiarity, person_detected):
+        rospy.logdebug("1) Previous Mode: %s, Face familiarity: %s , Person detected: %s",
+            prev_mode, face_familiarity, person_detected)
+        if prev_mode == "facedetection" or prev_mode == "objectdetection":
+            if face_familiarity == "no_person" and person_detected is False:
+                rospy.logdebug("{%s} - Start DOA", self.__class__.__name__)
+                self._publish_speech_message("custom", "Ist hier keiner?")
+                self._publish_speech_message("custom", "Kann jemand nach meinem Namen rufen?")
+            elif face_familiarity != "unknown" and face_familiarity != None and face_familiarity != "no_person":
+                rospy.logdebug("{%s} - Start smart home interaction", self.__class__.__name__)
+                self._publish_speech_message("custom", "Da wir uns kennen hast du die volle kontrolle uber mein zu Hause")
+                self._smart_home_interaction()
+            elif person_detected is True:
+                self._publish_speech_message("custom", "Ich uberlasse dir die Kontrolle meiner Wohnung! ")
+                rospy.logdebug("{%s} - Start smart home interaction", self.__class__.__name__)
+                self._smart_home_interaction()
+            elif face_familiarity == "unknown":
+                if _choose_random_interaction_mode() == "doa":
+                    rospy.logdebug("{%s} - Familiarity: unknown, Start DOA", self.__class__.__name__)
+                else:
+                    rospy.logdebug("{%s} - Start smart home interaction", self.__class__.__name__)
+                    self._publish_speech_message("custom", "Ich kenne dich nicht aber du darfst meine Wohnung steuern")
+                    self._smart_home_interaction()
+        elif prev_mode is None:
+            rospy.logdebug("3) {%s} - Previous Mode: %s, Face Familiarity: %s, Person detected: %s", self.__class__.__name__, prev_mode, face_familiarity, str(person_detected))
+            rospy.logdebug("{%s} - Start DOA", self.__class__.__name__)
+            self._publish_speech_message("custom", "Bin ich hier alleine? Ist hier keiner?")
+            self._publish_speech_message("custom", "Bitte kurz nach mir rufen!")
+        else:
+            rospy.logdebug("{%s} - Last Else", self.__class__.__name__)
+            pass
 
     def _smart_home_interaction(self):
         yes_no = None
 
-        self._publish_speech_message("custom", "Da wir uns kennen hast du die volle kontrolle uber mein zu Hause")
-        sleep(5)
         while yes_no is not False:
             self._publish_speech_message("custom", "Was mochtest du in meiner Wohnunng steuern")
             sleep(5)
@@ -77,7 +84,7 @@ class RobobrainVoicedetectionDataHandler():
 
     def _evaluate_voice_inputs(self):
         try:
-            vc_input =rospy.wait_for_message('/robofriend/voice_data', VoiceData, timeout = self._elapse_time)
+            vc_input = rospy.wait_for_message('/robofriend/voice_data', VoiceData, timeout = self._elapse_time)
             rospy.logdebug("{%s} - evaluate_voice_inputs : Received message: %s", self.__class__.__name__, vc_input)
             start_time = self._time_request()
             sep_mes = vc_input.slots.split("/")
