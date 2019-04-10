@@ -29,7 +29,7 @@ class RobobrainFacedetectionDataHandler():
 
         # amount of recorded pictures
         self.__pic_record = 10
-        self._elapse_time = 15
+        self._elapse_time = 5
 
         self.__record_pic_speech = {1  : "Erstes", \
                                     2  : "Zweites", \
