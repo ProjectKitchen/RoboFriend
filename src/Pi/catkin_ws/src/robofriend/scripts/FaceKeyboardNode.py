@@ -5,6 +5,7 @@ import pygame
 import pygame.gfxdraw
 import constants
 import os
+import sys
 
 # import ros messages and services
 from robofriend.msg import KeyboardData
@@ -230,36 +231,35 @@ class KeyboardDataHandler():
     def _keyboard(self):
         publish_message = {}
         try:
-            event = pygame.event.wait()
-            if 'mod' in event.__dict__ and 'unicode' in event.__dict__:
-                if event.type == pygame.QUIT:
-                    rospy.logdebug("{%s} - Quit pressed\n")
-                    publish_message = self._message_dict_merge(quit = True)
-                if event.__dict__["mod"] == 12288:
-                    if event.key in self._special_button_key:
-                        publish_message = self._message_dict_merge(up_down = "up", pressed_key = self._special_button_key[event.key])
-                    else:
-                        if event.__dict__['unicode']:
-                            publish_message = self._message_dict_merge(up_down = "up", pressed_key = event.__dict__['unicode'])
+            for event in pygame.event.get():
+                if 'mod' in event.__dict__ and 'unicode' in event.__dict__:
+                    if event.type == pygame.QUIT:
+                        rospy.logdebug("{%s} - Quit pressed\n")
+                        pygame.quit()
+                        sys.exit()
+                    if event.__dict__["mod"] == 12288:
+                        if event.key in self._special_button_key:
+                            publish_message = self._message_dict_merge(up_down = "up", pressed_key = self._special_button_key[event.key])
                         else:
-                            pass
-                elif event.type == pygame.KEYDOWN:
-                    if event.key in self._special_button_key:
-                        publish_message = self._message_dict_merge(pressed_key = self._special_button_key[event.key])
-                    else:
-                        if event.__dict__['unicode']:
-                            publish_message = self._message_dict_merge(pressed_key = event.__dict__['unicode'])
+                            if event.__dict__['unicode']:
+                                publish_message = self._message_dict_merge(up_down = "up", pressed_key = event.__dict__['unicode'])
+                            else:
+                                pass
+                    elif event.type == pygame.KEYDOWN:
+                        if event.key in self._special_button_key:
+                            publish_message = self._message_dict_merge(pressed_key = self._special_button_key[event.key])
                         else:
-                            pass
-                else:
-                    pass
-                if bool(publish_message) == True:
-                    self._message_publish(publish_message)
-                else:
-                    pass
+                            if event.__dict__['unicode']:
+                                publish_message = self._message_dict_merge(pressed_key = event.__dict__['unicode'])
+                            else:
+                                pass
+                    else:
+                        pass
+                    if bool(publish_message) == True:
+                        self._message_publish(publish_message)
+                    else:
+                        pass
         except Exception as inst:
-            rospy.logdebug("{%s} - Keyboard exception arised: %s\n",
-                self.__class__.__name__, inst)
             rospy.logwarn('{%s} - this is a controlled catch.', rospy.get_caller_id())
             rospy.logwarn('{%s} - Keyboard error arised.', rospy.get_caller_id())
             rospy.logwarn('{%s} - exception type: %s', rospy.get_caller_id(), type(inst))
@@ -280,8 +280,6 @@ class KeyboardDataHandler():
 def shutdown():
     rospy.loginfo("{%s} - stopping face/keyboard node!",
         rospy.get_caller_id())
-    pygame.display.quit()
-    pygame.quit()
     rospy.signal_shutdown("Stopping face/keyboard node")
 
 def Face_Keyboard():
@@ -309,6 +307,10 @@ def Face_Keyboard():
     while not rospy.is_shutdown():
         kb._keyboard()
         rate.sleep()
+
+    pygame.display.quit()
+    pygame.quit()
+    sys.exit()
 
 if __name__ == '__main__':
     try:
