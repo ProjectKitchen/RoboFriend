@@ -56,6 +56,12 @@ class SpeechDataHandler():
         'german' : ['Ich bin mude uns muss schlafen gehen.... Tschuss.', 'Meine Energie ist zu niedrig.... Tschuss.']
     }
 
+    idle_text = {
+        'german' : ['Mir ist langweilig', 'Ich habe nichts zum tun', 'ich fadisiere mich gerade zu Tode',
+                    'Kann mir bitte jemand sagen, was ich machen soll auser herumstehen!',
+                    'Wenn es so weiter geht schlafe ich vor langeweile ein!']
+    }
+
     def __init__(self, speech_engine, language):
         self._speech_engine = speech_engine
         self._language = language
@@ -68,13 +74,14 @@ class SpeechDataHandler():
         self.speech_meth = {'random' :   self.random_speech,
                             'bullshit':  self.bullshit_speech,
                             'custom':    self.custom_speech,
-                            'battery':   self.battery_speech
+                            'battery':   self.battery_speech,
+                            'idle':      self.idle_speech
         }
 
         self.get_text = {'random':   self.get_random_text,
                          'bullshit': self.get_bullshit_text
         }
-	
+
         self.speak("      Ich bin Robofrend")
 
     def service_handler(self, request):
@@ -159,6 +166,12 @@ class SpeechDataHandler():
             text.remove(self._last_speak_word)
         self.speak(random.choice(text))
 
+    def idle_speech(self):
+        text = self.idle_text[self._language].copy()
+        if self._last_speak_word in text:
+            text.remove(self._last_speak_word)
+        self.speak(random.choice(text))
+
     def speak(self, text):
         rospy.logdebug("{%s} - Speaking Text: %s",
             self.__class__.__name__, text)
@@ -176,7 +189,7 @@ def shutdown():
     rospy.signal_shutdown("Stopping Speech node!")
 
 def Speech():
-    rospy.init_node("robofriend_speech_node", log_level = rospy.INFO)
+    rospy.init_node("robofriend_speech_node", log_level = rospy.DEBUG)
     rospy.loginfo("{%s} - starting speech node!",
         rospy.get_caller_id())
 
