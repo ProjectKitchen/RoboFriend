@@ -17,6 +17,7 @@ from RobobrainFacedetectionDataHandler import *
 from RobobrainKeyboardDataHandler import *
 from RobobrainPCBSensorDataHandler import *
 from RobobrainVoicedetectionDataHandler import *
+from RobobrainObjectdetectionHandler import *
 from RobobrainStateHandler import *
 
 def shutdown():
@@ -45,10 +46,10 @@ def main():
 
     fd = RobobrainFacedetectionDataHandler(kb_queue)
     vd = RobobrainVoicedetectionDataHandler(kb_queue)
-    #TODO: ObjectdetetcionDataHandler
+    obj = RobobrainObjectdetectionHandler()
 
     # sets actual state to IDLE and starts thread
-    statehandler = RobobrainStateHandler(event, fd, vd, kb_queue)
+    statehandler = RobobrainStateHandler(event, fd, vd, obj, kb_queue)
 
     sensors = RobobrainPCBSensorDataHandler(statehandler)
     # odo = RobobrainOdometryDataHandler()
