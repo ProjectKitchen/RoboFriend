@@ -1,16 +1,10 @@
-#from RobobrainStateHandler import *
-
 from RobobrainStateHandler import *
-
-from threading import *
 from time import *
+from threading import *
 #from queue import *
 from Queue import *
 import rospy
 import traceback
-
-#from urllib.request import urlopen     # python3
-from urllib2 import urlopen             # python2
 
 # import ros service
 from robofriend.srv import SrvFaceRecordData
@@ -29,15 +23,13 @@ class RobobrainFacedetectionDataHandler():
         self._bottom = 0
         self._left = 0
         self._name = None
-        self._face_node_started = False
+        self._facedetection_node_started = False
         self._keyboard_queue = queue
-
         self._face_familiarity = None
 
         # amount of recorded pictures
         self.__pic_record = 10
-
-        self._elapse_time = 10
+        self._elapse_time = 15
 
         self.__record_pic_speech = {1  : "Erstes", \
                                     2  : "Zweites", \
@@ -60,19 +52,19 @@ class RobobrainFacedetectionDataHandler():
         self._msg_servo_cam = ServoCamData()
         self._search_new_face = Event()
 
+        # init services
         try:
             rospy.wait_for_service('/robofriend/facerecord', timeout = self._elapse_time)
             rospy.wait_for_service('/robofriend/facedatabase', timeout = self._elapse_time)
         except rospy.ROSException:
-            rospy.logwarn("{%s} - Facedetection-Node was not able to start therefore no facerecognition possible",
-                self.__class__.__name__)
-            self._face_node_started = False
+            rospy.logwarn("{%s} - Facedetection node was not able to start within %s seconds therefore no facerecognition possible",
+                self.__class__.__name__, str(self._elapse_time))
+            self._facedetection_node_started = False
         else:
-            rospy.logdebug("{%s} - Facedection Node started!", self.__class__.__name__)
+            rospy.logdebug("{%s} - Facedection node started!", self.__class__.__name__)
             self.__facerecord_request = rospy.ServiceProxy('/robofriend/facerecord', SrvFaceRecordData)
             self.__facedatabase_request = rospy.ServiceProxy('/robofriend/facedatabase', SrvFaceDatabaseData)
-
-            self._face_node_started = True
+            self._facedetection_node_started = True
 
     def process_data(self, data):
         rospy.logdebug("{%s} - Received message: {%s}",
@@ -89,11 +81,11 @@ class RobobrainFacedetectionDataHandler():
     def _start_facedetection(self):
         self._face_familiarity = None
 
-        if self._face_node_started is False:
-            rospy.logwarn("{%s} - Facedection Node not started therefore leave face interaction state", self.__class__.__name__)
+        if self._facedetection_node_started is False:
+            rospy.logwarn("{%s} - Facedection node not started therefore leave face interaction state", self.__class__.__name__)
             face_node = False
             self._face_familiarity = None
-        elif self._face_node_started is True:
+        elif self._facedetection_node_started is True:
             face_node = True
             face_detectded, face_grade = self.__face_search()
             self.__stop_searching_new_face()
@@ -125,10 +117,11 @@ class RobobrainFacedetectionDataHandler():
                 rospy.logdebug("{%s} -  No Face detected within {%s} seconds! Change State to IDLE State\n", self.__class__.__name__, str(self._elapse_time))
                 self._face_familiarity = "no_person"
 
-            rospy.logwarn("Facenode: %s, Face Familiarity: %s", face_node, self._face_familiarity)
+            rospy.logdebug("Facenode: %s, Face Familiarity: %s", face_node, self._face_familiarity)
+            return self._face_familiarity
 
     def __face_search(self):
-        self.__publish_speech_message("custom", "Ich schaue mich dann mal nach Menschen um!")
+        self.__publish_speech_message("custom", "Schauen wir mal ob ich bekannte Gesichter finde!")
         self.__start_searchig_new_face()
         self.__publish_servo_cam_message("min")
         start_time = self.__time_request()
@@ -383,7 +376,7 @@ class RobobrainFacedetectionDataHandler():
     def _face_familiarity(self):
         return self._face_familiarity
 
-    def __publish_speech_message(self, mode, text = None):
+    def __publish_speech_message(self, mode, text = ""):
         self._msg_speech.mode = mode
         self._msg_speech.text = text
         self._pub_speech.publish(self._msg_speech)
