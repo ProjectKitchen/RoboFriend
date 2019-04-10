@@ -189,7 +189,7 @@ def shutdown():
     rospy.signal_shutdown("Stopping Speech node!")
 
 def Speech():
-    rospy.init_node("robofriend_speech_node", log_level = rospy.DEBUG)
+    rospy.init_node("robofriend_speech_node", log_level = rospy.INFO)
     rospy.loginfo("{%s} - starting speech node!",
         rospy.get_caller_id())
 
