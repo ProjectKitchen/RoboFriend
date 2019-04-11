@@ -82,6 +82,8 @@ class SpeechDataHandler():
                          'bullshit': self.get_bullshit_text
         }
 
+        self._old_time = 0
+        self._valid_time = 3
         self.speak("      Ich bin Robofrend")
 
     def service_handler(self, request):
@@ -173,23 +175,33 @@ class SpeechDataHandler():
         self.speak(random.choice(text))
 
     def speak(self, text):
-        rospy.logdebug("{%s} - Speaking Text: %s",
+        rospy.logwarn("{%s} - Speaking Text: %s",
             self.__class__.__name__, text)
         self._last_speak_word = text
-        #try:
-        self._speech_engine.say(text)
-        self._speech_engine.runAndWait()
-        #except Exception as e:
-            #rospy.logwarn("Speech Engine error: %s", e)
-            #rospy.logwarn("{%s} - Speech Engine Error!",
-              #  self.__class__.__name__)
+
+        if self._time_request() - self._old_time > self._valid_time:
+            try:
+                self._speech_engine.say(text)
+                self._speech_engine.runAndWait()
+                self._old_time = self._time_request()
+            except Exception as e:
+                rospy.logwarn("Speech Engine error: %s", e)
+                rospy.logwarn("{%s} - Speech Engine Error!",
+                    self.__class__.__name__)
+        else:
+            rospy.logwarn("{%s} - Speech command less then defined Value!",
+                rospy.get_caller_id())
+
+
+    def _time_request(self):
+        return time.time()
 
 def shutdown():
     rospy.loginfo("{%s} - stopping speech data handler", rospy.get_caller_id())
     rospy.signal_shutdown("Stopping Speech node!")
 
 def Speech():
-    rospy.init_node("robofriend_speech_node", log_level = rospy.INFO)
+    rospy.init_node("robofriend_speech_node", log_level = rospy.DEBUG)
     rospy.loginfo("{%s} - starting speech node!",
         rospy.get_caller_id())
 
