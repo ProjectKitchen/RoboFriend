@@ -62,8 +62,10 @@ class SpeechDataHandler():
                     'Wenn es so weiter geht schlafe ich vor langeweile ein!']
     }
 
-    def __init__(self, speech_engine, language):
+    #def __init__(self, speech_engine, language):
+    def __init__(self, language):
         self._speech_engine = speech_engine
+        self._speech_engine = None
         self._language = language
         self._time_stamp = time.time()
 
@@ -175,6 +177,17 @@ class SpeechDataHandler():
         self.speak(random.choice(text))
 
     def speak(self, text):
+
+        wordRate = 140                  # words per minute
+        volumeRate = 1.0
+        language = 'german'
+
+        self._speechEngine = pyttsx3.init(debug = True)
+        self._speechEngine.setProperty('rate', wordRate)
+        self._speechEngine.setProperty('volume', volumeRate)
+        self._speechEngine.setProperty('voice', language)
+
+
         rospy.logwarn("{%s} - Speaking Text: %s",
             self.__class__.__name__, text)
         self._last_speak_word = text
@@ -205,8 +218,9 @@ def Speech():
     rospy.loginfo("{%s} - starting speech node!",
         rospy.get_caller_id())
 
-    speech_engine = InitSpeechEngine()
-    speech = SpeechDataHandler(speech_engine, 'german')
+    # speech_engine = InitSpeechEngine()
+    #speech = SpeechDataHandler(speech_engine, 'german')
+    speech = SpeechDataHandler('german')
     rospy.Subscriber("/robofriend/speech_data", SpeechData, speech.process_data)
 
     # Webserver service
