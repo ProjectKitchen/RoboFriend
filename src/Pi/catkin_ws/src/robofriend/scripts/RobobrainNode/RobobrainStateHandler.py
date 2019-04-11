@@ -1,7 +1,7 @@
-import os, rospy, subprocess, Queue, random, time
+import os, rospy, subprocess, Queue, random
 
 from threading import Lock, Thread
-from time import sleep
+from time import time, sleep
 
 # import ros messages
 from robofriend.msg import SpeechData
@@ -134,12 +134,12 @@ class RobobrainStateHandler():
                     kb_choose_mode = None
 
                 if self._audiovisual_cnt == 2:
-                    self.state = RobobrainStateHandler.robostate["IDLE"]
                     self._audiovisual_cnt = 0
+                    self.state = RobobrainStateHandler.robostate["IDLE"]
                     face_familiarity = None
                     previous_interaction_mode = None
                     person_detected = False
-                    update_speak_timer_flag = True
+                    update_timer_flag = True
                 else:
                     self._audiovisual_cnt += 1
             # ************************** CHARGE ************************** '''
