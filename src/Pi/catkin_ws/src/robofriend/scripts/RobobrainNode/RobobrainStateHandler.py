@@ -1,7 +1,7 @@
 import os, rospy, subprocess, Queue, random
 
 from threading import Lock, Thread
-from time import time, sleep
+from time import sleep
 
 # import ros messages
 from robofriend.msg import SpeechData
