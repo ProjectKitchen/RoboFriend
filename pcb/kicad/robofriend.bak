@@ -1258,7 +1258,7 @@ Text GLabel 2150 8350 0    60   Input ~ 0
 D0
 Text GLabel 2150 8450 0    60   Input ~ 0
 D1
-Text GLabel 8000 5100 2    60   Input ~ 0
+Text GLabel 7150 5000 2    60   Input ~ 0
 F0
 $Comp
 L C C1
@@ -2033,28 +2033,6 @@ F 3 "" H 6750 4550 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L +5V #PWR060
-U 1 1 5B47136A
-P 7350 4750
-F 0 "#PWR060" H 7350 4600 50  0001 C CNN
-F 1 "+5V" H 7350 4890 50  0000 C CNN
-F 2 "" H 7350 4750 50  0001 C CNN
-F 3 "" H 7350 4750 50  0001 C CNN
-	1    7350 4750
-	1    0    0    -1  
-$EndComp
-$Comp
-L GND #PWR061
-U 1 1 5B471501
-P 7350 5450
-F 0 "#PWR061" H 7350 5200 50  0001 C CNN
-F 1 "GND" H 7350 5300 50  0000 C CNN
-F 2 "" H 7350 5450 50  0001 C CNN
-F 3 "" H 7350 5450 50  0001 C CNN
-	1    7350 5450
-	1    0    0    -1  
-$EndComp
-$Comp
 L Jumper_NO_Small JP4
 U 1 1 5B47AB1D
 P 12600 5050
@@ -2372,17 +2350,6 @@ F 2 "TO_SOT_Packages_SMD:SOT-23-5" H 14500 2300 50  0001 L CNN
 F 3 "" H 14500 2300 50  0001 C CNN
 	1    14500 2300
 	1    0    0    1   
-$EndComp
-$Comp
-L MCP6001 U6
-U 1 1 5B69B4FC
-P 7450 5100
-F 0 "U6" H 7450 5300 50  0000 L CNN
-F 1 "MCP6001" H 7450 4900 50  0000 L CNN
-F 2 "TO_SOT_Packages_SMD:SOT-23-5" H 7450 5100 50  0001 C CNN
-F 3 "" H 7450 5300 50  0001 C CNN
-	1    7450 5100
-	1    0    0    -1  
 $EndComp
 Text Notes 15200 2350 0    60   ~ 0
 ~OC_INT
@@ -3816,21 +3783,6 @@ Wire Wire Line
 	6750 5000 7150 5000
 Connection ~ 6750 5000
 Connection ~ 6150 5000
-Wire Wire Line
-	7150 5200 7050 5200
-Wire Wire Line
-	7050 5200 7050 5700
-Wire Wire Line
-	7050 5700 7850 5700
-Wire Wire Line
-	7850 5700 7850 5100
-Wire Wire Line
-	7750 5100 7850 5100
-Wire Wire Line
-	7850 5100 8000 5100
-Wire Wire Line
-	7350 5400 7350 5450
-Connection ~ 7850 5100
 Connection ~ 6750 5500
 Wire Wire Line
 	6150 5500 6450 5500
@@ -3964,8 +3916,6 @@ Wire Wire Line
 Wire Wire Line
 	14150 2200 14150 2150
 Connection ~ 14150 2200
-Wire Wire Line
-	7350 4750 7350 4800
 Wire Wire Line
 	4500 2000 4500 2200
 Wire Wire Line
