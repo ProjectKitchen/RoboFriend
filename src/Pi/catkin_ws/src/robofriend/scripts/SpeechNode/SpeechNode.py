@@ -63,9 +63,9 @@ class SpeechDataHandler():
                     'Wenn es so weiter geht schlafe ich vor langeweile ein!']
     }
 
-    def __init__(self, speech_engine, language):
-    #def __init__(self, language):
-        self._speech_engine = speech_engine
+    #def __init__(self, speech_engine, language):
+    def __init__(self, language):
+        # self._speech_engine = speech_engine
         self._language = language
         self._time_stamp = time.time()
 
@@ -85,7 +85,6 @@ class SpeechDataHandler():
         }
 
         self._old_time = 0
-        self._valid_time = 3
         self.speak("      Ich bin Robofrend")
 
     def service_handler(self, request):
@@ -177,41 +176,17 @@ class SpeechDataHandler():
         self.speak(random.choice(text))
 
     def speak(self, text):
+        ret = -1
 
-        wordRate = 140                  # words per minute
-        volumeRate = 1.0
-        language = 'german'
-        language = 'german'
-        cmd = "sudo espeak -vde \"" + text +"\""
-        print (cmd)
-        os.system(cmd)
-
-
-        '''
-        self._speechEngine = pyttsx3.init(debug = True)
-        self._speechEngine.setProperty('rate', wordRate)
-        self._speechEngine.setProperty('volume', volumeRate)
-        self._speechEngine.setProperty('voice', language)
-
-
-        rospy.logwarn("{%s} - Speaking Text: %s",
-            self.__class__.__name__, text)
         self._last_speak_word = text
+        rospy.logdebug("{%s} - Spoken text: %s", rospy.get_caller_id(), text)
 
-        if self._time_request() - self._old_time > self._valid_time:
-            try:
-                self._speech_engine.say(text)
-                self._speech_engine.runAndWait()
-                self._old_time = self._time_request()
-            except Exception as e:
-                rospy.logwarn("Speech Engine error: %s", e)
-                rospy.logwarn("{%s} - Speech Engine Error!",
-                    self.__class__.__name__)
-                self._speechEngine.stop()
-        else:
-            rospy.logwarn("{%s} - Speech command less then defined Value!",
-                rospy.get_caller_id())
-        '''
+        #cmd = "sudo espeak -vde \"" + text +"\""
+        cmd = "espeak -vde \"" + text +"\""
+        ret = os.system(cmd)
+
+        if ret != 0:
+            rospy.logwarn("{%s} - Speech error!", rospy.get_caller_id())
 
     def _time_request(self):
         return time.time()
@@ -221,12 +196,13 @@ def shutdown():
     rospy.signal_shutdown("Stopping Speech node!")
 
 def Speech():
-    rospy.init_node("robofriend_speech_node", log_level = rospy.DEBUG)
+    rospy.init_node("robofriend_speech_node", log_level = rospy.INFO)
     rospy.loginfo("{%s} - starting speech node!",
         rospy.get_caller_id())
 
-    speech_engine = InitSpeechEngine()
-    speech = SpeechDataHandler(speech_engine, 'german')
+    #speech_engine = InitSpeechEngine()
+    #speech = SpeechDataHandler(speech_engine, 'german')
+    speech = SpeechDataHandler('german')
     rospy.Subscriber("/robofriend/speech_data", SpeechData, speech.process_data)
 
     # Webserver service
