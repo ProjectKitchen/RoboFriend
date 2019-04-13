@@ -9,11 +9,13 @@ import traceback
 # import ros service
 from robofriend.srv import SrvFaceRecordData
 from robofriend.srv import SrvFaceDatabaseData
+from robofriend.srv import SrvFaceHeartbeatData
 
 # import ros messages
 from robofriend.msg import SpeechData
 from robofriend.msg import LedEarsData
 from robofriend.msg import ServoCamData
+from robofriend.msg import CamData
 
 class RobobrainFacedetectionDataHandler():
 
@@ -23,7 +25,6 @@ class RobobrainFacedetectionDataHandler():
         self._bottom = 0
         self._left = 0
         self._name = None
-        self._facedetection_node_started = False
         self._keyboard_queue = queue
         self._face_familiarity = None
 
@@ -31,7 +32,11 @@ class RobobrainFacedetectionDataHandler():
         self.__pic_record = 10
         self._elapse_time = 5
 
-        self.__record_pic_speech = {1  : "Erstes", \
+        self._facedetection_node_started = False
+        self._face_detection_node_status_lock = Lock()
+
+        self.__record_pic_speech = {
+                                    1  : "Erstes", \
                                     2  : "Zweites", \
                                     3  : "Drittes", \
                                     4  : "Viertes", \
@@ -40,7 +45,8 @@ class RobobrainFacedetectionDataHandler():
                                     7  : "Siebentes", \
                                     8  : "Achtes", \
                                     9  : "Neuntes", \
-                                    10 : "Zehntes"}
+                                    10 : "Zehntes"
+                                    }
 
         # init publishers
         self._pub_speech = rospy.Publisher('/robofriend/speech_data', SpeechData, queue_size = 10)
@@ -52,21 +58,55 @@ class RobobrainFacedetectionDataHandler():
         self._msg_servo_cam = ServoCamData()
         self._search_new_face = Event()
 
+        # init subscribers
+        rospy.Subscriber("/robofriend/cam_data",  CamData, self._process_data)
+
         # init services
         try:
             rospy.wait_for_service('/robofriend/facerecord', timeout = self._elapse_time)
             rospy.wait_for_service('/robofriend/facedatabase', timeout = self._elapse_time)
+            rospy.wait_for_service('/robofriend/fd_heartbeat', timeout = self._elapse_time)
         except rospy.ROSException:
             rospy.logwarn("{%s} - Facedetection node was not able to start within %s seconds therefore no facerecognition possible",
                 self.__class__.__name__, str(self._elapse_time))
-            self._facedetection_node_started = False
+            self._face_detection_node_status(False)
         else:
             rospy.logdebug("{%s} - Facedection node started!", self.__class__.__name__)
+            self._face_detection_node_status(True)
+
+
+        thread = Thread(target = self._hb)
+        thread.daemon = True
+        thread.start()
+
+    def _face_detection_node_status(self, alive = False):
+        if alive is True:
             self.__facerecord_request = rospy.ServiceProxy('/robofriend/facerecord', SrvFaceRecordData)
             self.__facedatabase_request = rospy.ServiceProxy('/robofriend/facedatabase', SrvFaceDatabaseData)
-            self._facedetection_node_started = True
+            self.__face_hb_request = rospy.ServiceProxy('/robofriend/fd_heartbeat', SrvFaceHeartbeatData)
+            self._set_facedetection_status_flag(True)
+        elif alive is False:
+            self.__facerecord_request = None
+            self.__facedatabase_request = None
+            self.__face_hb_request = None
+            self._set_facedetection_status_flag(False)
 
-    def process_data(self, data):
+    def _hb(self):
+        rospy.logdebug("Heartbeat thread started!")
+        while True:
+            self.__face_hb_request = rospy.ServiceProxy('/robofriend/fd_heartbeat', SrvFaceHeartbeatData)
+            try:
+                ret = self.__face_hb_request(True)
+            except rospy.ServiceException:
+                rospy.logdebug("{%s} - Facedetection node not started yet!", rospy.get_caller_id())
+                self._face_detection_node_status(False)
+            else:
+                rospy.logdebug("{%s} - Facedetection node started!")
+                self._face_detection_node_status(True)
+            sleep(1)
+
+
+    def _process_data(self, data):
         rospy.logdebug("{%s} - Received message: {%s}",
             self.__class__.__name__, str(data))
         if self.__is_facesearching_activated():
@@ -81,16 +121,16 @@ class RobobrainFacedetectionDataHandler():
     def _start_facedetection(self):
         self._face_familiarity = None
 
-        if self._facedetection_node_started is False:
+        if self._get_facedetection_status_flag() is False:
             rospy.logwarn("{%s} - Facedection node not started therefore leave face interaction state", self.__class__.__name__)
             face_node = False
             self._face_familiarity = None
-        elif self._facedetection_node_started is True:
+        elif self._get_facedetection_status_flag() is True:
             face_node = True
             face_detectded, face_grade = self.__face_search()
             self.__stop_searching_new_face()
             if  face_detectded is True:
-                rospy.logwarn("{%s} - Face detected! Further steps are activated!\n", self.__class__.__name__)
+                rospy.logdebug("{%s} - Face detected! Further steps are activated!\n", self.__class__.__name__)
                 self.__publish_speech_message("custom", "Ich habe jemanden gefunden")
                 face_grade.lower()
                 if face_grade != "unknown":
@@ -397,3 +437,21 @@ class RobobrainFacedetectionDataHandler():
         self._pub_servo_cam.publish(self._msg_servo_cam)
         rospy.logdebug("{%s} -  Servo Camera published data: {%s}",
             self.__class__.__name__, str(self._msg_servo_cam))
+
+    def _set_facedetection_status_flag(self, alive = False):
+        self._face_detection_node_status_lock_aquire()
+        self._facedetection_node_started = alive
+        self._face_detection_node_status_lock_release()
+
+    def _get_facedetection_status_flag(self):
+        self._face_detection_node_status_lock_aquire()
+        retVal = None
+        retVal = self._facedetection_node_started
+        self._face_detection_node_status_lock_release()
+        return retVal
+
+    def _face_detection_node_status_lock_aquire(self):
+        self._face_detection_node_status_lock.acquire()
+
+    def _face_detection_node_status_lock_release(self):
+        self._face_detection_node_status_lock.release()
