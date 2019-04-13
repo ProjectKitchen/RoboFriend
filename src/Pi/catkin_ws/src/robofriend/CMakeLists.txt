@@ -79,6 +79,7 @@ add_service_files(
    SrvFaceStatusData.srv
    SrvSoundData.srv
    SrvObjectDetection.srv
+   SrvFaceHeartbeatData.srv
 )
 
 ## Generate actions in the 'action' folder
