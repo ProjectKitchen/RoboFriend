@@ -10,6 +10,7 @@ from robofriend.srv import SrvSoundData
 
 # import ros messages
 from robofriend.msg import SpeechData
+from robofriend.msg import KeyboardData
 
 class RobobrainKeyboardDataHandler():
 
@@ -56,11 +57,14 @@ class RobobrainKeyboardDataHandler():
         self._pub_speech = rospy.Publisher('/robofriend/speech_data', SpeechData, queue_size = 0)
         self._msg_speech = SpeechData()
 
+        # init sbscriber
+        rospy.Subscriber("/robofriend/keyb_data", KeyboardData, self._process_data)
+
         # init service to communicate with sound node
         rospy.wait_for_service('/robofriend/sound')
         self._sound_request = rospy.ServiceProxy('/robofriend/sound', SrvSoundData)
 
-    def process_data(self, data):
+    def _process_data(self, data):
         self._input_handler(data)
 
     def _input_handler(self, data):

@@ -14,6 +14,9 @@ class VoiceDetectionDataHandler():
 
     def __init__(self):
 
+        # init Subscriber
+        # rospy.Subscriber('/robofriend/voice_data', VoiceData, self._process_data)
+
         # declare voice hotword detection service
         serv = rospy.Service('/robofriend/voicehotword', SrvVoiceHotwordActivationData, self._voice_hotword_activation_service_handler)
 

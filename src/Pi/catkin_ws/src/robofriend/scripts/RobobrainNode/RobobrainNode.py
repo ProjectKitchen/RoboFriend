@@ -7,9 +7,7 @@ import threading
 import Queue
 
 # import ROS messages
-from robofriend.msg import CamData
 from robofriend.msg import PCBSensorData
-from robofriend.msg import KeyboardData
 from robofriend.msg import VoiceData
 
 # import ROS modules
@@ -56,32 +54,15 @@ def main():
     # ir  = RobobrainInfraredDataHandler()
     kb = RobobrainKeyboardDataHandler(statehandler, event, kb_queue)
 
-
     rospy.Subscriber("/robofriend/pcb_sensor_data", PCBSensorData, sensors.process_data)
     # rospy.Subscriber("/robofriend/odom_data", Pose, odo.process_data)
-    rospy.Subscriber("/robofriend/cam_data",  CamData, fd.process_data)
-    rospy.Subscriber("/robofriend/keyb_data", KeyboardData, kb.process_data)
-    # rospy.Subscriber('/robofriend/voice_data', VoiceData, vd.process_data)
 
     rate = rospy.Rate(0.2) # 200mhz
 
     while not rospy.is_shutdown():
-        # rospy.loginfo("{%s} Robostate: %d",
-        #     os.path.splitext(os.path.basename(os.path.abspath(__file__)))[0],
-        #     statehandler.state)
-
         rospy.loginfo("{%s} Robostate: %s",
             os.path.splitext(os.path.basename(os.path.abspath(__file__)))[0],
             RobobrainStateHandler.robostate.keys()[RobobrainStateHandler.robostate.values().index(statehandler.state)])
-
-        # if robostate.state = robostate["IDLE"]
-        #
-        # if keyboard.command == "move":
-        #     publish_handler.teensy_motor_message_publish(keyboard.action, keyboard.action_opt)
-        #     keyboard.command = None
-        # elif keyboard.command == "speech":
-        #     publish_handler.speech_message_publish(keyboard.action, keyboard.action_opt)
-        #     keyboard.command = None
 
         rate.sleep() # make sure the publish rate maintains at the needed frequency
 
