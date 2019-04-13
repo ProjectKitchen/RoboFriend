@@ -11,6 +11,8 @@ class RobobrainObjectdetectionHandler():
     def __init__(self):
 
         self._elapse_time = 1
+        self._objectdetection_record_request = None
+        self._objectdetection_node_started = False
 
         # init publishers
         self._pub_speech = rospy.Publisher('/robofriend/speech_data', SpeechData, queue_size = 10)
