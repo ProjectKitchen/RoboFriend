@@ -20,6 +20,7 @@ import argparse
 from robofriend.msg import CamData
 from robofriend.srv import SrvFaceRecordData, SrvFaceRecordDataResponse
 from robofriend.srv import SrvFaceDatabaseData, SrvFaceDatabaseDataResponse
+from robofriend.srv import SrvFaceHeartbeatData, SrvFaceHeartbeatDataResponse
 
 
 class FaceDetectionDataHandler():
@@ -36,6 +37,9 @@ class FaceDetectionDataHandler():
 
         # create database service
         rospy.Service('/robofriend/facedatabase', SrvFaceDatabaseData, self.__face_create_database_service_handler)
+
+        # create Heartbeat service
+        rospy.Service('/robofriend/fd_heartbeat', SrvFaceHeartbeatData, self.__facedetection_hb_handler)
 
         self.__face_recognition_event = threading.Event()
 
@@ -78,7 +82,7 @@ class FaceDetectionDataHandler():
         time.sleep(2.0)
 
     def _face_recognition(self):
-        if self.____is_face_recognition_blocked() is False:
+        if self.__is_face_recognition_blocked() is False:
             # grab the frame from the threaded video stream and resize it
             # to 500px (to speedup processing)
             if self.__mjpg_stream == True:			# pictures are captured via the stream
@@ -166,6 +170,8 @@ class FaceDetectionDataHandler():
                     rospy.logdebug("{%s} - Pictures are taken!",
                         self.__class__.__name__)
 
+    def __facedetection_hb_handler(self, request):
+        return SrvFaceHeartbeatDataResponse(True)
 
     def __face_record_service_handler(self, request):
         retVal = False
@@ -282,7 +288,7 @@ class FaceDetectionDataHandler():
     def __clear_event_block_face_recognition(self):
         self.__face_recognition_event.clear()
 
-    def ____is_face_recognition_blocked(self):
+    def __is_face_recognition_blocked(self):
         return self.__face_recognition_event.is_set()
 
 def shutdown():
