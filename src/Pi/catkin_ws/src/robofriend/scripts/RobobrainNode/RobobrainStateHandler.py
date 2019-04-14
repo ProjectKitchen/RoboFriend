@@ -1,10 +1,10 @@
 import os, rospy, subprocess, Queue, random, time
-
 from threading import Lock, Thread
 from time import sleep
 
 # import ros messages
 from robofriend.msg import SpeechData
+from robofriend.msg import WebserverAviStateData
 
 class RobobrainStateHandler():
 
@@ -21,7 +21,7 @@ class RobobrainStateHandler():
     interaction = {
         'FACEDETECTION'     : 0, \
         'OBJECTDETECTION'   : 1, \
-        'VOICEDETECTION'    : 2
+        'VOICEINTERACTION'    : 2
     }
 
     def __init__(self, event, fd, vd, obj, queue):
@@ -34,9 +34,16 @@ class RobobrainStateHandler():
         self.__keyboard_queue = queue
         self._audiovisual_cnt = 0
 
+        self._kb_choose_mode = None
+        self._wb_choose_mode = None
+
         # init publishers
         self._pub_speech = rospy.Publisher('/robofriend/speech_data', SpeechData, queue_size = 10)
         self._msg_speech = SpeechData()
+
+        # init webserver subscriber
+        rospy.Subscriber('/robofriend/web_state_data', WebserverAviStateData, self._webserver_process_data)
+
 
         self._fd = fd
         self._vd = vd
@@ -51,7 +58,6 @@ class RobobrainStateHandler():
     def __state_handler_thread(self):
 
         previous_interaction_mode = None
-        kb_choose_mode = None
         face_familiarity = "no_person"
         person_detected = False
         update_timer_flag = True
@@ -85,7 +91,7 @@ class RobobrainStateHandler():
                     self.__idle_keyb_event.clear()
                     kb_input = self._get_keyboard_input()
                     if kb_input is not None:
-                        kb_choose_mode = kb_input
+                        self._kb_choose_mode = kb_input
                         self.state = RobobrainStateHandler.robostate["AUDIOVISUAL_INTERACTION"]
                         update_timer_flag = True
                     else:
@@ -106,7 +112,7 @@ class RobobrainStateHandler():
             elif self.state == RobobrainStateHandler.robostate["AUDIOVISUAL_INTERACTION"]:
 
                 rospy.loginfo("{%s} - within audiovisual interaction state", rospy.get_caller_id())
-                if kb_choose_mode is None:
+                if self._kb_choose_mode is None and self._wb_choose_mode is None:
                     mode = self._choose_random_interaction_mode(previous_interaction_mode)
                     if mode == "facedetection":
                         previous_interaction_mode = "facedetection"
@@ -115,25 +121,28 @@ class RobobrainStateHandler():
                         rospy.logdebug("Start Objectdetetcion")
                         previous_interaction_mode = "objectdetection"
                         person_detected = self._start_object_interaction()
-                    elif mode == "voicedetection":
-                        rospy.logdebug("Start Voicedetection")
+                    elif mode == "voiceinteraction":
+                        rospy.logdebug("Start Voiceinteraction")
                         self._start_voice_interaction(previous_interaction_mode, face_familiarity, person_detected)
-                        previous_interaction_mode = "voicedetection"
+                        previous_interaction_mode = "voiceinteraction"
                 else:
-                    if kb_choose_mode == self.interaction["FACEDETECTION"]:
+                    if self._kb_choose_mode == self.interaction["FACEDETECTION"] or self._wb_choose_mode == self.interaction["FACEDETECTION"]:
                         face_familiarity = self._start_face_interaction()
                         previous_interaction_mode = "facedetection"
-                    elif kb_choose_mode == self.interaction["OBJECTDETECTION"]:
+                    elif self._kb_choose_mode == self.interaction["OBJECTDETECTION"] or self._wb_choose_mode == self.interaction["OBJECTDETECTION"]:
                         person_detected = self._start_object_interaction()
                         previous_interaction_mode = "objectdetection"
-                    elif kb_choose_mode == self.interaction["VOICEDETECTION"]:
+                    elif self._kb_choose_mode == self.interaction["VOICEINTERACTION"] or self._wb_choose_mode == self.interaction["VOICEINTERACTION"]:
                         self._start_voice_interaction(previous_interaction_mode, face_familiarity, person_detected)
-                        previous_interaction_mode = "voicedetection"
+                        previous_interaction_mode = "voiceinteraction"
                     else:
                         rospy.logwarn("Wrong keyboard input for audio audiovisual interaction!")
-                    kb_choose_mode = None
 
-                if self._audiovisual_cnt == 2:
+                if self._kb_choose_mode is not None or self._wb_choose_mode is not None:
+                    self._kb_choose_mode = None
+                    self._wb_choose_mode = None
+                    self.state = RobobrainStateHandler.robostate["IDLE"]
+                elif self._audiovisual_cnt == 2:
                     self._audiovisual_cnt = 0
                     self.state = RobobrainStateHandler.robostate["IDLE"]
                     face_familiarity = None
@@ -146,6 +155,7 @@ class RobobrainStateHandler():
             elif self.state == RobobrainStateHandler.robostate["CHARGE"]:
                 rospy.loginfo("{%s} - within charge state", rospy.get_caller_id())
                 self.__batWasLow = True
+                self._publish_speech_message("battery", "low")
                 # TODO: speakBatteryLow()
                 # TODO: publish message to speach Node: mode: battery / text = low / recharge
             # ************************** ADMIN *************************** '''
@@ -156,6 +166,21 @@ class RobobrainStateHandler():
                 rospy.logerr("{%s} - robot state unknown", rospy.get_caller_id())
 
             time.sleep(0.5)
+
+    def _webserver_process_data(self, data):
+        rospy.logdebug("{%s} - Message from Webserver received: %s",
+            rospy.get_caller_id(), data.state)
+
+        if data.state in ["facedetection", "objectdetection", "voiceinteraction"]:
+            if self.state != RobobrainStateHandler.robostate["CHARGE"]:
+                self.state = RobobrainStateHandler.robostate["AUDIOVISUAL_INTERACTION"]
+                self._wb_choose_mode = self.interaction[data.state.upper()]
+                rospy.logdebug("State from Webserver: %s", self._wb_choose_mode)
+            else:
+                rospy.logwarn("{%s} - No state change possible since Robofriend is in recharge state!",
+                    rospy.get_caller_id())
+        else:
+            rospy.logwarn("{%s} - Invalid State from Webserver received!")
 
     @property
     def state(self):
@@ -185,15 +210,15 @@ class RobobrainStateHandler():
                 retVal = self.interaction["FACEDETECTION"]
             elif keyboard_input == "objectdetection":
                 retVal = self.interaction["OBJECTDETECTION"]
-            elif keyboard_input == "voicedetection":
-                retVal = self.interaction["VOICEDETECTION"]
+            elif keyboard_input == "voiceinteraction":
+                retVal = self.interaction["VOICEINTERACTION"]
         except Queue.Empty:
             rospy.logwarn("No keyboard input")
             retVal = None
         return retVal
 
     def _choose_random_interaction_mode(self, prev_mode):
-        mode = ["facedetection", "objectdetection", "voicedetection"]
+        mode = ["facedetection", "objectdetection", "voiceinteraction"]
         if prev_mode in mode:
             mode.remove(prev_mode)
         retVal = random.choice(mode)
