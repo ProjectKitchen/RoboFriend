@@ -14,6 +14,7 @@ from utils import visualization_utils as vis_util
 
 # import ros services
 from robofriend.srv import SrvObjectDetection, SrvObjectDetectionResponse
+from robofriend.srv import SrvObjectHeartbeatData, SrvObjectHeartbeatDataResponse
 
 # global variables
 MJPG_URL = ""
@@ -109,6 +110,10 @@ def service_handler(request):
         retVal = None
     return SrvObjectDetectionResponse(retVal)
 
+def objectdetection_hb_handler(request):
+    rospy.logwarn("Objectdetecion HB request received!")
+    return SrvObjectHeartbeatDataResponse(True)
+
 def start_object_detecion():
     global TF, STREAM, MJPG_URL, WIDTH, HEIGHT
 
@@ -147,7 +152,6 @@ def start_object_detecion():
     return obj
 
 def shutdown():
-    rospy.loginfo("{%s} - stopping object detection node", rospy.get_caller_id())
     rospy.signal_shutdown("controlled shutdown")
 
 def ObjectDetection():
@@ -163,8 +167,9 @@ def ObjectDetection():
     # initializes the stream
     stream_init()
 
-    # declare servie
+    # declare services
     rospy.Service('robofriend/detect_objects', SrvObjectDetection, service_handler)
+    rospy.Service('/robofriend/obj_heartbeat', SrvObjectHeartbeatData, objectdetection_hb_handler)
 
     rospy.spin()
 
