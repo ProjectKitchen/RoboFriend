@@ -21,6 +21,7 @@ class RobobrainKeyboardDataHandler():
                       'MOVE_LOOP_LFT' : 'D -128 128 0'
                       }
 
+
     ENTER =                 'enter'
     QUIT =                  'quit'
     ESCAPE =                'escape'
@@ -34,7 +35,7 @@ class RobobrainKeyboardDataHandler():
     PLAY_RANDOM =           '-'
     START_FACEDETECT =      '<'
     START_OBJECTDETECT =    '+'
-    START_VOICEDETECT =     '#'
+    START_VOICEINTERACT =     '#'
 
     def __init__(self, sh, event, queue):
         self._idle_event = event
@@ -44,6 +45,10 @@ class RobobrainKeyboardDataHandler():
         self._speech_buffer = ""
         self._last_say = ""
 
+        self.avi_state = {'face' :   self.start_fd_state,
+                          'object' : self.start_od_state,
+                          'voice' :  self.start_vi_state
+        }
 
         # init service to communicate with teensy node
         rospy.wait_for_service('/robofriend/teensy_serial_data')
@@ -84,13 +89,15 @@ class RobobrainKeyboardDataHandler():
         if up_down == "up" and pressed_key in ["down", "up", "left", "right"]:
             self._teensy_srv_request(self.teensy_methods["STOP_MOVING"])
         elif up_down == "down":
-
             if pressed_key == self.ENTER:
                 if self._speech_buffer == self.QUIT:
                     sys.exit()
                 elif self._speech_buffer:
-                    self._publish_speech_message("custom", self._speech_buffer)
-                    self._last_say = self._speech_buffer
+                    if self._speech_buffer in self.avi_state:
+                        self.avi_state[self._speech_buffer]()
+                    else:
+                        self._publish_speech_message("custom", self._speech_buffer)
+                        self._last_say = self._speech_buffer
                 self._speech_buffer = ""
             elif pressed_key == self.ESCAPE:
                 rospy.logdebug("Clear speech buffer")
@@ -143,19 +150,28 @@ class RobobrainKeyboardDataHandler():
 
             ########### Behavioral commands ##########
             elif pressed_key == self.START_FACEDETECT:
-                rospy.logdebug("Start Face detection!")
-                self._queue.put("facedetection")
+                self.avi_state["face"]()
             elif pressed_key == self.START_OBJECTDETECT:
-                rospy.logdebug("Start Object detection!")
-                self._queue.put("objectdetection")
-            elif pressed_key == self.START_VOICEDETECT:
-                rospy.logdebug("Start Voice detection!")
-                self._queue.put("voicedetection")
+                self.avi_state["object"]()
+            elif pressed_key == self.START_VOICEINTERACT:
+                self.avi_state["voice"]()
 
             ########### Any other Buttons ##########
             elif re.match('^[a-zA-Z ]$', pressed_key):
                 self._speech_buffer += pressed_key
                 rospy.logdebug("Actual Speech Buffer: %s", self._speech_buffer)
+
+    def start_fd_state(self):
+        rospy.logdebug("Start Face detection!")
+        self._queue.put("facedetection")
+
+    def start_od_state(self):
+        rospy.logdebug("Start Object detection!")
+        self._queue.put("objectdetection")
+
+    def start_vi_state(self):
+        rospy.logdebug("Start Voice detection!")
+        self._queue.put("voiceinteraction")
 
     def _teensy_srv_request(self, command):
         self._teensy_request(command, False)
