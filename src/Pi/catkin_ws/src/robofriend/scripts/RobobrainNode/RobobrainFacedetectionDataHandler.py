@@ -33,7 +33,7 @@ class RobobrainFacedetectionDataHandler():
         self._elapse_time = 5
 
         self._facedetection_node_started = False
-        self._face_detection_node_status_lock = Lock()
+        self._facedetection_node_status_lock = Lock()
 
         self.__record_pic_speech = {
                                     1  : "Erstes", \
@@ -75,7 +75,7 @@ class RobobrainFacedetectionDataHandler():
             self._face_detection_node_status(True)
 
 
-        thread = Thread(target = self._hb)
+        thread = Thread(target = self._hb_thread)
         thread.daemon = True
         thread.start()
 
@@ -91,7 +91,7 @@ class RobobrainFacedetectionDataHandler():
             self.__face_hb_request = None
             self._set_facedetection_status_flag(False)
 
-    def _hb(self):
+    def _hb_thread(self):
         rospy.logdebug("Heartbeat thread started!")
         while True:
             self.__face_hb_request = rospy.ServiceProxy('/robofriend/fd_heartbeat', SrvFaceHeartbeatData)
@@ -101,7 +101,7 @@ class RobobrainFacedetectionDataHandler():
                 rospy.logdebug("{%s} - Facedetection node not started yet!", rospy.get_caller_id())
                 self._face_detection_node_status(False)
             else:
-                rospy.logdebug("{%s} - Facedetection node started!")
+                rospy.logdebug("{%s} - Facedetection node started!", rospy.get_caller_id())
                 self._face_detection_node_status(True)
             sleep(1)
 
@@ -439,19 +439,19 @@ class RobobrainFacedetectionDataHandler():
             self.__class__.__name__, str(self._msg_servo_cam))
 
     def _set_facedetection_status_flag(self, alive = False):
-        self._face_detection_node_status_lock_aquire()
+        self._facedetection_node_status_lock_aquire()
         self._facedetection_node_started = alive
-        self._face_detection_node_status_lock_release()
+        self._facedetection_node_status_lock_release()
 
     def _get_facedetection_status_flag(self):
-        self._face_detection_node_status_lock_aquire()
+        self._facedetection_node_status_lock_aquire()
         retVal = None
         retVal = self._facedetection_node_started
-        self._face_detection_node_status_lock_release()
+        self._facedetection_node_status_lock_release()
         return retVal
 
-    def _face_detection_node_status_lock_aquire(self):
-        self._face_detection_node_status_lock.acquire()
+    def _facedetection_node_status_lock_aquire(self):
+        self._facedetection_node_status_lock.acquire()
 
-    def _face_detection_node_status_lock_release(self):
-        self._face_detection_node_status_lock.release()
+    def _facedetection_node_status_lock_release(self):
+        self._facedetection_node_status_lock.release()
