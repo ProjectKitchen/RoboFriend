@@ -63,6 +63,13 @@ def shutdown(userPassword):
     else:
         return getResponse("WRONG PASSWORD")
 
+# ***************************************************************** state handler
+@app.route('/avi/<state>', methods=['POST'])
+def webserver_state_handler(state):
+
+    rospy.logwarn("Webserver - Entered State: %s", str(state))
+    return getResponse("OK")
+
 # ***************************************************************** face module
 def record_face_timestamp(request):
     global currentStatus
