@@ -61,6 +61,7 @@ add_message_files(
    ServoCamData.msg
    SpeechData.msg
    VoiceData.msg
+   WebserverAviStateData.msg
 )
 
 ## Generate services in the 'srv' folder
