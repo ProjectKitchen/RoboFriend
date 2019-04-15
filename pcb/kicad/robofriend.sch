@@ -1551,7 +1551,7 @@ OC
 Text Notes 1050 8700 0    63   ~ 0
 MLeDec\nSCL\nSDA\nRX\nTX
 Text Notes 1050 10100 0    63   ~ 0
-MRiFwd\nMRiBck\nMLeFwd\nMLeBck\nMRiPwm\nMLePwm\nUS4Trig\nUS4Echo
+MRiFwd\nMRiBck\nMLeBck\nMLeFwd\nMRiPwm\nMLePwm\nUS4Trig\nUS4Echo
 $Comp
 L +5V #PWR038
 U 1 1 5B343A88
@@ -1600,9 +1600,9 @@ F 3 "" H 9350 10750 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 Text GLabel 10500 10650 0    60   Output ~ 0
-C1
-Text GLabel 10500 10550 0    60   Output ~ 0
 C0
+Text GLabel 10500 10550 0    60   Output ~ 0
+C1
 Text GLabel 11300 10650 2    60   Output ~ 0
 C4
 Text GLabel 10050 10650 2    60   Output ~ 0
