@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 import rospy
 import os
-import pygame
 import random
 
 from robofriend.srv import SrvSoundData, SrvSoundDataResponse
@@ -10,12 +9,6 @@ from robofriend.srv import SrvFaceStatusData
 class SoundDataHandler():
 
     def __init__(self, face_req):
-        pygame.init()
-        if pygame.mixer and not pygame.mixer.get_init():
-            rospy.logwarn("{%s} - No sound!",
-                rospy.get_caller_id())
-            pygame.mixer = None
-
         self._lastPlayFile = ""
         self._face_req = face_req
         self._path = os.path.dirname(os.path.abspath(__file__)) + "/"
@@ -61,20 +54,16 @@ class SoundDataHandler():
         self._lastPlayFile = playFile
         self._play_sound_file(playFile)
 
-    def _play_sound_file(self, path):
-        sound = None
-        try:
-            rospy.logdebug("{%s} - Playing sound: %s",
-                rospy.get_caller_id(), path)
-            sound = pygame.mixer.Sound(self._path + path)
-        except:
-            rospy.logwarn("{%s} - Could not open %s",
-                str(path))
-        else:
-            sound.play()
+    def _play_sound_file(self, file):
+        ret = -1
+
+        # cmd = "sudo aplay " + self._path + file
+        cmd = "aplay " + self._path + file
+        ret = os.system(cmd)
+        if ret != 0:
+            rospy.logwarn("{%s} - Sound play error!", rospy.get_caller_id())
 
     def _playsound(self, dataArray):
-        self._stop()
         soundname = dataArray[0]
         if len(dataArray) > 1:
             dataArray = dataArray[1:]
@@ -96,13 +85,9 @@ class SoundDataHandler():
             soundpath = soundname
         self._play_sound_file(soundpath)
 
-    def _stop(self):
-        pygame.mixer.stop()
-
 def shutdown():
     rospy.loginfo("{%s} - stopping sound node!",
         rospy.get_caller_id())
-    pygame.quit()
     rospy.signal_shutdown("Stopping sound node")
 
 def Sound():

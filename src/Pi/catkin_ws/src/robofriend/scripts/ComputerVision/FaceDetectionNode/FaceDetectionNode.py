@@ -14,16 +14,18 @@ import numpy as np
 import time
 import os
 import random
+import argparse
 
 # import ros message and services
 from robofriend.msg import CamData
 from robofriend.srv import SrvFaceRecordData, SrvFaceRecordDataResponse
 from robofriend.srv import SrvFaceDatabaseData, SrvFaceDatabaseDataResponse
+from robofriend.srv import SrvFaceHeartbeatData, SrvFaceHeartbeatDataResponse
 
 
 class FaceDetectionDataHandler():
 
-    def __init__(self):
+    def __init__(self, url_address):
 
         # publisher for detected faces
         self.__robobrain_pub = rospy.Publisher('/robofriend/cam_data', CamData, queue_size = 20)
@@ -36,12 +38,16 @@ class FaceDetectionDataHandler():
         # create database service
         rospy.Service('/robofriend/facedatabase', SrvFaceDatabaseData, self.__face_create_database_service_handler)
 
+        # create Heartbeat service
+        rospy.Service('/robofriend/fd_heartbeat', SrvFaceHeartbeatData, self.__facedetection_hb_handler)
+
         self.__face_recognition_event = threading.Event()
 
         # initialize the MJPG Stream Url to capture the frame
         self.__vs = None
+
         #self.__url = "http://127.0.0.1:8080/?action=stream"
-        self.__url = "http://192.168.1.108:8080/?action=stream"     # IP address of Pi
+        self.__url = url_address     # IP address of Pi
 
         # set mjpg stream flag to a default value
         self.__mjpg_stream = False
@@ -76,7 +82,7 @@ class FaceDetectionDataHandler():
         time.sleep(2.0)
 
     def _face_recognition(self):
-        if self.____is_face_recognition_blocked() is False:
+        if self.__is_face_recognition_blocked() is False:
             # grab the frame from the threaded video stream and resize it
             # to 500px (to speedup processing)
             if self.__mjpg_stream == True:			# pictures are captured via the stream
@@ -164,6 +170,8 @@ class FaceDetectionDataHandler():
                     rospy.logdebug("{%s} - Pictures are taken!",
                         self.__class__.__name__)
 
+    def __facedetection_hb_handler(self, request):
+        return SrvFaceHeartbeatDataResponse(True)
 
     def __face_record_service_handler(self, request):
         retVal = False
@@ -280,7 +288,7 @@ class FaceDetectionDataHandler():
     def __clear_event_block_face_recognition(self):
         self.__face_recognition_event.clear()
 
-    def ____is_face_recognition_blocked(self):
+    def __is_face_recognition_blocked(self):
         return self.__face_recognition_event.is_set()
 
 def shutdown():
@@ -292,14 +300,23 @@ def FaceDetecion():
     rospy.loginfo("{%s} - starting face detecion node!",
         rospy.get_caller_id())
 
-    fd = FaceDetectionDataHandler()
+    url_address = get_url_address()
+
+    fd = FaceDetectionDataHandler(url_address)
 
     rate = rospy.Rate(2) # 2 fps
 
     while not rospy.is_shutdown():
         fd._face_recognition()
-
         rate.sleep()
+
+def get_url_address():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("-ip")
+    args = vars(ap.parse_args())
+    mjpg_url = "http://" + args["ip"] + ":8080/?action=stream"
+
+    return mjpg_url
 
 if __name__ == '__main__':
     try:

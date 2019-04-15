@@ -7,85 +7,21 @@ import numpy as np
 import tensorflow as tf
 import sys
 import cv2
+import argparse
 
 from utils import label_map_util
 from utils import visualization_utils as vis_util
 
 # import ros services
 from robofriend.srv import SrvObjectDetection, SrvObjectDetectionResponse
+from robofriend.srv import SrvObjectHeartbeatData, SrvObjectHeartbeatDataResponse
 
 # global variables
-# MJPG_URL = 'http://127.0.0.1:8080/?action=stream'
-MJPG_URL = 'http://192.168.1.108:8080/?action=stream'   # IP address of Pi
+MJPG_URL = ""
 TF = {}
 STREAM = {}
 IM_WIDTH = 640
 IM_HEIGHT = 480
-
-def start_object_detecion():
-    global TF, STREAM, MJPG_URL, WIDTH, HEIGHT
-
-    vs = None
-    frame = None
-
-    if STREAM["mjpg_stream"] is True:
-        vs = cv2.VideoCapture(MJPG_URL)
-        stat, frame = vs.read()
-    else:
-        frame = STREAM["vs"].read()
-
-    if frame is None:
-        obj = None
-    elif frame.any():
-        frame = imutils.resize(frame, width = IM_WIDTH, height = IM_HEIGHT)
-        frame_expanded = np.expand_dims(frame, axis = 0)
-
-        # Perform the actual detection by running the model with the image as input
-        (boxes, scores, classes, num) = TF["sess"].run(
-            [TF["detection_boxes"], TF["detection_scores"], TF["detection_classes"], TF["num_detections"]],
-            feed_dict = {TF["image_tensor"]: frame_expanded}
-        )
-
-        # Draw the results of the detection (aka 'visulaize the results')
-        image, obj = vis_util.visualize_boxes_and_labels_on_image_array(
-            frame,
-            np.squeeze(boxes),
-            np.squeeze(classes).astype(np.int32),
-            np.squeeze(scores),
-            TF["category_index"],
-            use_normalized_coordinates=True,
-            line_thickness=8,
-            min_score_thresh=0.85)
-
-    return obj
-
-def service_handler(request):
-    retVal = None
-    rospy.logdebug("{%s} - Request received!", rospy.get_caller_id())
-
-    if request.detect_obj is True:
-        obj = start_object_detecion()
-        rospy.logdebug("{%s} - Detected Object: %s",
-            rospy.get_caller_id(), str(obj))
-        retVal = obj
-    else:
-        retVal = None
-    return SrvObjectDetectionResponse(retVal)
-
-def stream_init():
-    global MJPG_URL, STREAM
-    vs = None
-
-    vs = cv2.VideoCapture(MJPG_URL)
-    if vs.isOpened():
-        rospy.logdebug("Pictures are grabed from mjpg-streamer!")
-        mjpg_stream = True
-    else:
-        rospy.logdebug("Pcitures are taken from webcam!")
-        vs = VideoStream(src = 0).start()
-        mjpg_stream = False
-    STREAM["vs"] = vs
-    STREAM["mjpg_stream"] = mjpg_stream
 
 def object_detetcion_init():
     global TF
@@ -136,12 +72,91 @@ def object_detetcion_init():
     # Number of objects detected
     TF["num_detections"] = detection_graph.get_tensor_by_name('num_detections:0')
 
+def stream_init():
+    global MJPG_URL, STREAM
+    vs = None
+
+    MJPG_URL = get_url_address()
+
+    vs = cv2.VideoCapture(MJPG_URL)
+    if vs.isOpened():
+        rospy.logdebug("Pictures are grabed from mjpg-streamer!")
+        mjpg_stream = True
+    else:
+        rospy.logdebug("Pcitures are taken from webcam!")
+        vs = VideoStream(src = 0).start()
+        mjpg_stream = False
+    STREAM["vs"] = vs
+    STREAM["mjpg_stream"] = mjpg_stream
+
+def get_url_address():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("-ip")
+    args = vars(ap.parse_args())
+    mjpg_url = "http://" + args["ip"] + ":8080/?action=stream"
+
+    return mjpg_url
+
+def service_handler(request):
+    retVal = None
+    rospy.logdebug("{%s} - Request received!", rospy.get_caller_id())
+
+    if request.detect_obj is True:
+        obj = start_object_detecion()
+        rospy.logdebug("{%s} - Detected Object: %s",
+            rospy.get_caller_id(), str(obj))
+        retVal = obj
+    else:
+        retVal = None
+    return SrvObjectDetectionResponse(retVal)
+
+def objectdetection_hb_handler(request):
+    rospy.logwarn("Objectdetecion HB request received!")
+    return SrvObjectHeartbeatDataResponse(True)
+
+def start_object_detecion():
+    global TF, STREAM, MJPG_URL, WIDTH, HEIGHT
+
+    vs = None
+    frame = None
+
+    if STREAM["mjpg_stream"] is True:
+        vs = cv2.VideoCapture(MJPG_URL)
+        stat, frame = vs.read()
+    else:
+        frame = STREAM["vs"].read()
+
+    if frame is None:
+        obj = None
+    elif frame.any():
+        frame = imutils.resize(frame, width = IM_WIDTH, height = IM_HEIGHT)
+        frame_expanded = np.expand_dims(frame, axis = 0)
+
+        # Perform the actual detection by running the model with the image as input
+        (boxes, scores, classes, num) = TF["sess"].run(
+            [TF["detection_boxes"], TF["detection_scores"], TF["detection_classes"], TF["num_detections"]],
+            feed_dict = {TF["image_tensor"]: frame_expanded}
+        )
+
+        # Draw the results of the detection (aka 'visulaize the results')
+        image, obj = vis_util.visualize_boxes_and_labels_on_image_array(
+            frame,
+            np.squeeze(boxes),
+            np.squeeze(classes).astype(np.int32),
+            np.squeeze(scores),
+            TF["category_index"],
+            use_normalized_coordinates=True,
+            line_thickness=8,
+            min_score_thresh=0.85)
+
+    return obj
 
 def shutdown():
-    rospy.loginfo("{%s} - stopping object detection node", rospy.get_caller_id())
     rospy.signal_shutdown("controlled shutdown")
 
 def ObjectDetection():
+    global MJPG_URL
+
     rospy.init_node("robofriend_object_detection_node", log_level = rospy.INFO)
     rospy.loginfo("{%s} - starting object detetcion node!", rospy.get_caller_id())
     rospy.on_shutdown(shutdown)
@@ -152,8 +167,9 @@ def ObjectDetection():
     # initializes the stream
     stream_init()
 
-    # declare servie
+    # declare services
     rospy.Service('robofriend/detect_objects', SrvObjectDetection, service_handler)
+    rospy.Service('/robofriend/obj_heartbeat', SrvObjectHeartbeatData, objectdetection_hb_handler)
 
     rospy.spin()
 

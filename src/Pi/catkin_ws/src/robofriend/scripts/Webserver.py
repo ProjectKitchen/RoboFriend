@@ -7,6 +7,7 @@ import constants
 
 # import ros messages
 from robofriend.msg import PCBSensorData
+from robofriend.msg import WebserverAviStateData
 
 # import ros services
 from robofriend.srv import SrvTeensySerialData
@@ -31,6 +32,8 @@ speech_req = None
 face_req = None
 screenshot_filename = ""
 sound_req = None
+pub_avi_state = None
+pub_avi_msg = None
 
 # init webserver
 app = Flask(__name__, static_folder='../../../../static')
@@ -62,6 +65,18 @@ def shutdown(userPassword):
         return getResponse("OK")
     else:
         return getResponse("WRONG PASSWORD")
+
+# ***************************************************************** state handler
+@app.route('/avi/<state>', methods=['POST'])
+def webserver_state_handler(state):
+    global pub_avi_state, pub_avi_msg
+
+    pub_avi_msg.state = state
+    pub_avi_state.publish(pub_avi_msg.state)
+    rospy.logdebug("{%s} - Published message to Robobrain State Handler: %s",
+        rospy.get_caller_id(), pub_avi_msg.state)
+
+    return getResponse("OK")
 
 # ***************************************************************** face module
 def record_face_timestamp(request):
@@ -421,7 +436,7 @@ def run():
 def Webserver():
     global app, webserverDebug, webserverHost, webserverPort
     global TEENSY_SRV_REQ
-    global servo_cam_req, led_ears_req, speech_req, face_req, screenshot_filename, sound_req
+    global servo_cam_req, led_ears_req, speech_req, face_req, screenshot_filename, sound_req, pub_avi_state, pub_avi_msg
 
     param = []
 
@@ -456,9 +471,12 @@ def Webserver():
     resp = face_req(constants.GET_SCREEN_FN, param)
     screenshot_filename = resp.filename
 
-    # TODO: make threads
     rospy.wait_for_service('/robofriend/sound')
     sound_req = rospy.ServiceProxy('/robofriend/sound', SrvSoundData)
+
+    # create publisher to communicate with robobrain state handler
+    pub_avi_state = rospy.Publisher('/robofriend/web_state_data', WebserverAviStateData, queue_size = 10)
+    pub_avi_msg = WebserverAviStateData()
 
     rate = rospy.Rate(100) # 100hz
 
