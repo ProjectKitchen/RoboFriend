@@ -7,6 +7,7 @@ import constants
 
 # import ros messages
 from robofriend.msg import PCBSensorData
+from robofriend.msg import WebserverAviStateData
 
 # import ros services
 from robofriend.srv import SrvTeensySerialData
@@ -15,6 +16,8 @@ from robofriend.srv import SrvLedEarsData
 from robofriend.srv import SrvSpeechData
 from robofriend.srv import SrvFaceDrawData
 from robofriend.srv import SrvFaceScreenshotTimestamp, SrvFaceScreenshotTimestampResponse
+from robofriend.srv import SrvSoundData
+
 
 # globals
 currentStatus = {}
@@ -28,6 +31,9 @@ led_ears_req = None
 speech_req = None
 face_req = None
 screenshot_filename = ""
+sound_req = None
+pub_avi_state = None
+pub_avi_msg = None
 
 # init webserver
 app = Flask(__name__, static_folder='../../../../static')
@@ -60,6 +66,18 @@ def shutdown(userPassword):
     else:
         return getResponse("WRONG PASSWORD")
 
+# ***************************************************************** state handler
+@app.route('/avi/<state>', methods=['POST'])
+def webserver_state_handler(state):
+    global pub_avi_state, pub_avi_msg
+
+    pub_avi_msg.state = state
+    pub_avi_state.publish(pub_avi_msg.state)
+    rospy.logdebug("{%s} - Published message to Robobrain State Handler: %s",
+        rospy.get_caller_id(), pub_avi_msg.state)
+
+    return getResponse("OK")
+
 # ***************************************************************** face module
 def record_face_timestamp(request):
     global currentStatus
@@ -80,9 +98,9 @@ def changeSmile(action):
     param = []
 
     if action in constants.INCREASE_SMILE:
-        response = face_req(constants.INCREASE_SMILE, param)
+        response = face_req("increase", param)
     elif action in constants.DECREASE_SMILE:
-        response = face_req(constants.DECREASE_SMILE, param)
+        response = face_req("decrease", param)
     service_response_check(response.resp, "changeSmile")
     return getResponse("OK")
 
@@ -99,6 +117,7 @@ def getface():
 
 @app.route('/eyes/move/<direction>', methods=['POST'])
 def moveEyes(direction):
+    global face_req
     response = None
     param = []
 
@@ -111,10 +130,10 @@ def moveEyes(direction):
 
 @app.route('/eyes/set/<xPercent>/<yPercent>', methods=['POST'])
 def moveEyesXY(xPercent, yPercent):
+    global face_req
     param = []
     param.append(int(xPercent))
     param.append(int(yPercent))
-    print(param)
     response = face_req(constants.SET_EYES, param)
     service_response_check(response.resp, "movesEyesXY")
     return getResponse("OK")
@@ -148,25 +167,26 @@ def cameraup():
 @app.route('/ear/color/random/on', methods=['POST'])
 def earRandomOn():
     global led_ears_req
-    response = led_ears_req(constants.RANDOM_ON, None)
+    response = led_ears_req(constants.RANDOM_ON, [], None)
     service_response_check(response.resp, "earRandomOn")
     return getResponse("OK")
 
 @app.route('/ear/color/random/off', methods=['POST'])
 def earRandomOff():
     global led_ears_req
-    response = led_ears_req(constants.RANDOM_OFF, None)
+    response = led_ears_req(constants.RANDOM_OFF, [], None)
     service_response_check(response.resp, "earRandomOff")
     return getResponse("OK")
 
 @app.route('/ear/color/<earColorR>/<earColorG>/<earColorB>', methods=['POST'])
 def setEarRGB(earColorR, earColorG, earColorB):
+    global led_ears_req
     rgb = []
     rgb.append(translateIntRange(int(earColorR), 0, 255, 0, 15))
     rgb.append(translateIntRange(int(earColorG), 0, 255, 0, 15))
     rgb.append(translateIntRange(int(earColorB), 0, 255, 0, 15))
 
-    response = led_ears_req(constants.RGB, rgb)
+    response = led_ears_req(constants.RGB, [], rgb)
     service_response_check(response.resp, "setEarRGB")
     return getResponse("OK")
 
@@ -186,15 +206,73 @@ def translateIntRange(value, leftMin, leftMax, rightMin, rightMax):
 
 @app.route('/mood/set/<moodState>', methods=['POST'])
 def setMood(moodState):
-    methods = {'happy':     moodModule.setHappy,
-               'sad':       moodModule.setSad,
-               'angry':     moodModule.setAngry,
-               'neutral':   moodModule.setNeutral,
-               'tired':     moodModule.setTired
-               }
-    if moodState in methods:
-        methods[moodState]()
+    # methods = {'happy':     moodModule.setSad,
+    #            'sad':       moodModule.setSad,
+    #            'angry':     moodModule.setAngry,
+    #            'neutral':   moodModule.setNeutral,
+    #            'tired':     moodModule.setTired
+    #            }
+
+    if moodState in "happy":
+        set_happy()
+    elif moodState in "sad":
+        set_sad()
+    elif moodState in "neutral":
+        set_neutral()
+    elif moodState in "angry":
+        set_angry()
+    elif moodState in "tired":
+        set_tired()
+    else:
+        rospy.logwarn("{%s} - Wrong mood!",
+            rospy.get_caller_id())
+
+
     return getResponse("OK")
+
+def set_happy():
+    global face_req, sound_req, led_ears_req
+
+    face_req(constants.SET_EYES, [9, -47])
+    face_req(constants.SET_SMILE, [80])
+    led_ears_req("", [5, 200], [255, 69, 0, 255, 191, 0])
+    sound_req(False, "mood", "happy.wav", [])
+
+def set_sad():
+    global face_req, sound_req, led_ears_req
+
+    face_req(constants.SET_EYES, [-1, -44])
+    face_req(constants.SET_SMILE, [-70])
+    led_ears_req(constants.RGB, [], [0, 0, 255])
+    sound_req(False, "mood", "sad.wav", [])
+
+def set_neutral():
+    global face_req, sound_req, led_ears_req
+
+    face_req(constants.SET_EYES, [0, 0])
+    face_req(constants.SET_SMILE, [20])
+    led_ears_req(constants.RGB, [], [255, 255, 255])
+    sound_req(False, "mood", "neutral.wav", [])
+
+def set_angry():
+    global face_req, sound_req, led_ears_req
+
+    face_req(constants.SET_EYES, [-46, -40])
+    face_req(constants.SET_SMILE, [-10])
+    led_ears_req("", [4, 300], [0, 0, 0, 255, 0, 0])
+    sound_req(False, "mood", "angry.wav", [])
+
+def set_tired():
+    global face_req, sound_req, led_ears_req
+
+    face_req(constants.SET_EYES, [23, -21])
+    face_req(constants.SET_SMILE, [-10])
+    led_ears_req(constants.RGB, [], [0, 0, 0])
+    sound_req(False, "mood", "tired.wav", [])
+
+
+
+
 
 # *************************************************************** status module
 
@@ -257,22 +335,27 @@ def update(userPassword):
 
 @app.route('/sound/play/file/<filename>', methods=['POST'])
 def playSound(filename):
-    soundModule.playSoundFile('data/random/' + filename)
+    global sound_req
+    sound_req(False, "random", filename, [])
     return getResponse("OK")
 
 @app.route('/sound/play/random', methods=['POST'])
 def randomSound():
-    soundModule.playRandom()
+    global sound_req
+    resp = sound_req(False, "random", "", [])
     return getResponse("OK")
 
 @app.route('/sound/play/mood', methods=['POST'])
 def moodSound():
-    soundModule.playMood()
+    global sound_req
+    sound_req(False, "mood", "", [])
     return getResponse("OK")
 
 @app.route('/sound/get/random', methods=['GET'])
 def getRandomSounds():
-    return getResponse(json.dumps(soundModule.getRandomSounds()))
+    global sound_req
+    response = sound_req(True, "", "", [])
+    return getResponse(json.dumps(response.filedir))
 
 # *************************************************************** teensy module
 
@@ -353,7 +436,7 @@ def run():
 def Webserver():
     global app, webserverDebug, webserverHost, webserverPort
     global TEENSY_SRV_REQ
-    global servo_cam_req, led_ears_req, speech_req, face_req, screenshot_filename
+    global servo_cam_req, led_ears_req, speech_req, face_req, screenshot_filename, sound_req, pub_avi_state, pub_avi_msg
 
     param = []
 
@@ -387,6 +470,13 @@ def Webserver():
     face_req = rospy.ServiceProxy('/robofriend/face', SrvFaceDrawData)
     resp = face_req(constants.GET_SCREEN_FN, param)
     screenshot_filename = resp.filename
+
+    rospy.wait_for_service('/robofriend/sound')
+    sound_req = rospy.ServiceProxy('/robofriend/sound', SrvSoundData)
+
+    # create publisher to communicate with robobrain state handler
+    pub_avi_state = rospy.Publisher('/robofriend/web_state_data', WebserverAviStateData, queue_size = 10)
+    pub_avi_msg = WebserverAviStateData()
 
     rate = rospy.Rate(100) # 100hz
 

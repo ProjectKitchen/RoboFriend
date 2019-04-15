@@ -16,3 +16,6 @@ sudo pip3 install netifaces
 sudo pip3 install face_recognition
 sudo apt-get install espeak
 sudo apt-get install python3-yaml
+pip3 install paho-mqtt --user
+snips-nlu download de --user
+pip install hermes-python --user

@@ -27,6 +27,14 @@ int leLastDecState;
 int32_t counterRe;
 int32_t counterLe;
 
+int cnt1=0;
+int cnt2=0;
+int cnt3=0;
+int cnt4=0;
+uint8_t print_var = 0;
+uint8_t newPINB;
+uint8_t oldPINB = 0xf0;
+
 /*************************************************************** DEFINITIONS */
 
 Odometry::Odometry() {
@@ -34,27 +42,19 @@ Odometry::Odometry() {
 }
 
 Odometry::~Odometry() {
-	Timer1.detachInterrupt();
+
 }
 
+// TODO: get information when the motor is in idle state
+
 void Odometry::init() {
-	/* set pin mode for right motor's increment and decrement signals */
-	pinMode(PIN_MT_RI_INC, INPUT);
-	pinMode(PIN_MT_RI_DEC, INPUT);
-	/* set pin mode for left motor's increment and decrement signals */
-	pinMode(PIN_MT_LE_INC, INPUT);
-	pinMode(PIN_MT_LE_DEC, INPUT);
-	/* read the initial state of outputs */
-	riLastIncState = digitalRead(PIN_MT_RI_INC);
-	riLastDecState = digitalRead(PIN_MT_RI_DEC);
-	leLastIncState = digitalRead(PIN_MT_LE_INC);
-	leLastDecState = digitalRead(PIN_MT_LE_DEC);
+	PORTB |= 0xF0;
+	PCICR |= 0x01;
+	PCMSK0 |= 0xF0;
+	sei();
 
 	counterRe = 0;
 	counterLe = 0;
-
-	Timer1.initialize(1000);   // 1000us  =  every 1 ms
-	Timer1.attachInterrupt(readEncoderValues);
 }
 
 void Odometry::printEncoderValues() {
@@ -92,13 +92,36 @@ int32_t Odometry::getLeftEncoderValue() {
 	return (tmpLe);
 }
 
+ISR(PCINT0_vect) {
+	newPINB=PINB;
+	if ((newPINB & (1<<7)) != (oldPINB & (1<<7))) counterLe--; // LE DEC
+	if ((newPINB & (1<<6)) != (oldPINB & (1<<6))) counterLe++; // LE INC
+
+
+  if ((newPINB & (1<<6)) != (oldPINB & (1<<6))) {
+    if ((newPINB & (1<<6)) != ((newPINB >> 1) & (1<<6)))  
+      counterLe++; // RE INC
+    else
+      counterLe--;
+  }
+  
+	if ((newPINB & (1<<4)) != (oldPINB & (1<<4))) {
+	  if ((newPINB & (1<<4)) != ((newPINB >> 1) & (1<<4)))  
+	    counterRe--; // RE INC
+    else  
+      counterRe++;
+	}
+	oldPINB = newPINB;
+}
+
+
 /**
  * @brief	called from Timer 1 ISR (every millisecond)
  */
 void readEncoderValues() {
-	// Serial.print("*");
-	readEncoderValueRightMotor();
-	readEncoderValueLeftMotor();
+	Serial.print("*");
+//	readEncoderValueRightMotor();
+//	readEncoderValueLeftMotor();
 }
 
 void readEncoderValueRightMotor() {

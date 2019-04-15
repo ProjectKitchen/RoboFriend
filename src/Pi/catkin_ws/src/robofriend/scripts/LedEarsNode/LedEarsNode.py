@@ -32,16 +32,17 @@ class LedEarsDataHandler():
         rospy.logdebug("{%s} - Led Ears request received!",
             rospy.get_caller_id())
 
-        if request.mode == "on":
-            self.__random = "on"
-        elif request.mode == "off":
-            self.__random = "off"
-        elif request.mode == "rgb":
-            self.__random = "rgb"
-            if len(request.rgb_color) is 3:
-                self.__rgb = list(request.rgb_color)
-                print(self.__rgb)
-        self._flash_led()
+        # if request.mode == "on":
+        #     self.__random = "on"
+        # elif request.mode == "off":
+        #     self.__random = "off"
+        # elif request.mode == "rgb":
+        #     self.__random = "rgb"
+        #     if len(request.rgb_color) is 3:
+        #         self.__rgb = list(request.rgb_color)
+        #         print(self.__rgb)
+        # self._flash_led()
+        self.process_data(request)
         return SrvLedEarsDataResponse(True)
 
 
@@ -65,7 +66,6 @@ class LedEarsDataHandler():
         elif self.__random == "rgb":
             if self._is_random_flash_event_set() == True:
                 self._clear_event_random_flash()
-
             if self.__check_number_elements(self.__rgb):
                 self.__set_ear_color(self.__rgb[0], self.__rgb[1], self.__rgb[2])
             else:
@@ -76,6 +76,7 @@ class LedEarsDataHandler():
 
             if self.__repeat_num is not None:
                 if len(self.__repeat_num) is not 0 and len(self.__rgb) > 3:
+                    # rospy.logwarn("I ammmmm hereeeeeeeeee")
                     self.__set_ear_color_series()
                 else:
                     if self.__check_number_elements(self.__rgb):

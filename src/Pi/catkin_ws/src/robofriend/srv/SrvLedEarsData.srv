@@ -1,4 +1,5 @@
-string mode             # sets randon either on, off or rgb
+string random             # sets randon either on, off or rgb
+uint16[] repeat_num     # 1.: amount of repetions, 2.: duration between repetions
 float64[] rgb_color     # colors
 ---
 bool resp

@@ -4,6 +4,7 @@ import random
 import time
 import threading
 import rospy
+import os
 
 # import ros message
 from robofriend.msg import SpeechData
@@ -56,8 +57,15 @@ class SpeechDataHandler():
         'german' : ['Ich bin mude uns muss schlafen gehen.... Tschuss.', 'Meine Energie ist zu niedrig.... Tschuss.']
     }
 
-    def __init__(self, speech_engine, language):
-        self._speech_engine = speech_engine
+    idle_text = {
+        'german' : ['Mir ist langweilig', 'Ich habe nichts zum tun', 'ich fadisiere mich gerade zu Tode',
+                    'Kann mir bitte jemand sagen, was ich machen soll auser herumstehen!',
+                    'Wenn es so weiter geht schlafe ich vor langeweile ein!']
+    }
+
+    #def __init__(self, speech_engine, language):
+    def __init__(self, language):
+        # self._speech_engine = speech_engine
         self._language = language
         self._time_stamp = time.time()
 
@@ -68,12 +76,16 @@ class SpeechDataHandler():
         self.speech_meth = {'random' :   self.random_speech,
                             'bullshit':  self.bullshit_speech,
                             'custom':    self.custom_speech,
-                            'battery':   self.battery_speech
+                            'battery':   self.battery_speech,
+                            'idle':      self.idle_speech
         }
 
         self.get_text = {'random':   self.get_random_text,
                          'bullshit': self.get_bullshit_text
         }
+
+        self._old_time = 0
+        self.speak("      Ich bin Robofrend")
 
     def service_handler(self, request):
         rospy.logdebug("{%s} - Speech Request received!",
@@ -157,16 +169,27 @@ class SpeechDataHandler():
             text.remove(self._last_speak_word)
         self.speak(random.choice(text))
 
+    def idle_speech(self):
+        text = self.idle_text[self._language].copy()
+        if self._last_speak_word in text:
+            text.remove(self._last_speak_word)
+        self.speak(random.choice(text))
+
     def speak(self, text):
-        rospy.logdebug("{%s} - Speaking Text: %s",
-            self.__class__.__name__, text)
+        ret = -1
+
         self._last_speak_word = text
-        try:
-            self._speech_engine.say(text)
-            self._speech_engine.runAndWait()
-        except:
-            rospy.logwarn("{%s} - Speech Engine Error!",
-                self.__class__.__name__)
+        rospy.logdebug("{%s} - Spoken text: %s", rospy.get_caller_id(), text)
+
+        #cmd = "sudo espeak -vde \"" + text +"\""
+        cmd = "espeak -vde \"" + text +"\""
+        ret = os.system(cmd)
+
+        if ret != 0:
+            rospy.logwarn("{%s} - Speech error!", rospy.get_caller_id())
+
+    def _time_request(self):
+        return time.time()
 
 def shutdown():
     rospy.loginfo("{%s} - stopping speech data handler", rospy.get_caller_id())
@@ -177,8 +200,9 @@ def Speech():
     rospy.loginfo("{%s} - starting speech node!",
         rospy.get_caller_id())
 
-    speech_engine = InitSpeechEngine()
-    speech = SpeechDataHandler(speech_engine, 'german')
+    #speech_engine = InitSpeechEngine()
+    #speech = SpeechDataHandler(speech_engine, 'german')
+    speech = SpeechDataHandler('german')
     rospy.Subscriber("/robofriend/speech_data", SpeechData, speech.process_data)
 
     # Webserver service

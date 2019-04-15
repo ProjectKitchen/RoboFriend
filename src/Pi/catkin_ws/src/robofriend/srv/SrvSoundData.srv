@@ -1,0 +1,6 @@
+bool get_random         # get list of random playlist (needed for Webserver)
+string action           # e.g. random, mood
+string command          # e.g. filename
+string[] game_list
+---
+string[] filedir

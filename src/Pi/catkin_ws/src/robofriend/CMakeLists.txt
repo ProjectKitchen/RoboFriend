@@ -61,6 +61,7 @@ add_message_files(
    ServoCamData.msg
    SpeechData.msg
    VoiceData.msg
+   WebserverAviStateData.msg
 )
 
 ## Generate services in the 'srv' folder
@@ -76,6 +77,11 @@ add_service_files(
    SrvSpeechData.srv
    SrvFaceDrawData.srv
    SrvFaceScreenshotTimestamp.srv
+   SrvFaceStatusData.srv
+   SrvSoundData.srv
+   SrvObjectDetection.srv
+   SrvFaceHeartbeatData.srv
+   SrvObjectHeartbeatData.srv
 )
 
 ## Generate actions in the 'action' folder

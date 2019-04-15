@@ -40,12 +40,13 @@
 	<node pkg="robofriend" type="TeensyCommunicator.py" name="robofriend_teensy_communicator" output="screen" />
 	<node pkg="robofriend" type="Webserver.py" name="robofriend_web_server" output="screen" />
 	<group if="$(arg fdet)">
-		<node pkg="robofriend" type="FaceDetectionNode.py" name="robofriend_face_detection_node" output="screen" />
+		<!--node pkg="robofriend" type="FaceDetectionNode.py" name="robofriend_face_detection_node" output="screen" /-->
+		<node pkg="robofriend" type="FaceKeyboardNode.py" name="robofriend_face_keyboard" output="screen" />
 		<node pkg="robofriend" type="IOWarriorNode.py" name="robofriend_io_warrior_handler" output="screen" />
-		<node pkg="robofriend" type="KeyboardNode.py" name="robofriend_keyboard_node" output="screen" />
 		<node pkg="robofriend" type="SpeechNode.py" name="robofriend_speech_node" output="screen" />
 		<node pkg="robofriend" type="ServoCamNode.py" name="robofriend_servo_cam_node" output="screen" />
 		<node pkg="robofriend" type="LedEarsNode.py" name="robofriend_led_ears" output="screen" />
-		<node pkg="robofriend" type="FaceNode.py" name="robofriend_face" output="screen" />
+		<node pkg="robofriend" type="SoundNode.py" name="robofriend_sound" output="screen" />
+		<node pkg="robofriend" type="VoiceDetectionNode.py" name="robofriend_voice" output="screen" />
 	</group>
 </launch>
