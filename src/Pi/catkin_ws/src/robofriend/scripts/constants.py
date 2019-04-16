@@ -27,7 +27,7 @@ ADC_RESOLUTION = 1023
 
 # Battery Hysteresis
 BAT_UPPER_THRESHOLD = 14.7
-BAT_LOWWER_THREDSHOLD = 10.5
+BAT_LOWWER_THREDSHOLD = 10.7
 
 # Voltage Divider
 # http://www.peacesoftware.de/einigewerte/spannungsteiler.html

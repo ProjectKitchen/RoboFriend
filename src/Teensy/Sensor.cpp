@@ -19,6 +19,8 @@
 
 volatile bool overCurrentAnalog = false;
 volatile bool overCurrentDigital = false;
+bool analogFlag = false;
+bool digitalFlag = false;
 
 /******************************************************************* EXTERNS */
 
@@ -107,11 +109,17 @@ void Sensor::readSensorValues() {
 	if (shuntAmpVoltage >= shuntAmpMaxVoltage) {
 		overCurrentAnalog = true;
 		// TODO: handle overcurrent
-		// Serial.println("Setting overcurrent flag (analog)");
+    if (analogFlag) {
+  		Serial.println("Setting overcurrent flag (analog)");
+      analogFlag = false;
+    }
 	} else {
 		overCurrentAnalog = false;
 		// TODO: clear overcurrent
-		// Serial.println("Clearing overcurrent flag (analog)");
+    if (!analogFlag) {
+		  Serial.println("Clearing overcurrent flag (analog)");
+      analogFlag = true;
+    }
 	}
 #endif
 
@@ -178,9 +186,9 @@ void readComparatorValue() {
 	overCurrentDigital = !overCurrentDigital;
 	// TODO: handle overcurrent
 	if (overCurrentDigital) {
-		Serial.println("Setting overcurrent flag (digital)");
+		  // Serial.println("Setting overcurrent flag (digital)");
 	} else {
-		Serial.println("Clearing overcurrent flag (digital)");
+		  // Serial.println("Clearing overcurrent flag (digital)");
 	}
 }
 
