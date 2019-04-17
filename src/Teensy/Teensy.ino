@@ -50,11 +50,13 @@ void loop() {
   motors.performIntendedMovement();
 
   loopcounter++;   // used for limiting serial messages etc.
+  
+ // Serial.printf("%d %d\n", odo.getRightEncoderValue(), odo.getLeftEncoderValue());
 
 #if DUMP_ENCODER_VALUES
   if (!(loopcounter % 50)) { // this is for printing current speed ! ( should be replaced by speed control algorithm )
     odo.printEncoderValues();
-    odo.clearEncoderValues();
+    //odo.clearEncoderValues();
   }
 #endif
 

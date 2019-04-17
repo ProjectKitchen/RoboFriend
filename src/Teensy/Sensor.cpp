@@ -19,6 +19,8 @@
 
 volatile bool overCurrentAnalog = false;
 volatile bool overCurrentDigital = false;
+bool analogFlag = false;
+bool digitalFlag = false;
 
 /******************************************************************* EXTERNS */
 
@@ -52,7 +54,9 @@ Sensor::~Sensor(void) {
 #endif
 }
 
-void Sensor::init() {  
+void Sensor::init() {
+	analogReference(EXTERNAL);
+
 	ir_lft_thold = Sensor::IR_LFT_THOLD_DEF;
 	ir_mid_thold = Sensor::IR_MID_THOLD_DEF;
 	ir_ryt_thold = Sensor::IR_RYT_THOLD_DEF;
@@ -75,7 +79,6 @@ void Sensor::init() {
 }
 
 void Sensor::readSensorValues() {
-  // ADMUX &= 0x3F; // set external voltage reference
 	batteryBuffer->addValue(analogRead(PIN_ADC_VBAT));
 #if OVERCURRENT_LOGIC
 	shuntAmpBuffer->addValue(analogRead(PIN_OC_AN));
@@ -101,14 +104,22 @@ void Sensor::readSensorValues() {
 #endif
 
 #if OVERCURRENT_LOGIC
-	shuntAmpVoltage = Sensor::ADC_INTERNAL_VREF / (float)Sensor::ADC_RESOLUTION * shuntAmp;
+	shuntAmpVoltage = Sensor::ADC_EXTERNAL_VREG / (float)Sensor::ADC_RESOLUTION * shuntAmp;
 	shuntAmpMaxVoltage = Motor::MOTORS_MAX_CURRENT * Sensor::SHUNT_AMP_MAX_VOLTAGE / Sensor::SHUNT_AMP_MAX_CURRENT;
 	if (shuntAmpVoltage >= shuntAmpMaxVoltage) {
 		overCurrentAnalog = true;
 		// TODO: handle overcurrent
+    if (analogFlag) {
+  		Serial.println("Setting overcurrent flag (analog)");
+      analogFlag = false;
+    }
 	} else {
 		overCurrentAnalog = false;
 		// TODO: clear overcurrent
+    if (!analogFlag) {
+		  Serial.println("Clearing overcurrent flag (analog)");
+      analogFlag = true;
+    }
 	}
 #endif
 
@@ -133,7 +144,12 @@ void Sensor::readSensorValues() {
 
 void Sensor::provideSensorValues() {
 	Serial.printf("Sensors,%04d,%s,%s,%04d,%04d,%04d\n",
-			battery, String(shuntAmpVoltage).c_str(), String(shuntAmpMaxVoltage).c_str(), ir_lft, ir_mid, ir_ryt);
+			battery,
+			String(shuntAmpVoltage).c_str(),
+			String(shuntAmpMaxVoltage).c_str(),
+			ir_lft,
+			ir_mid,
+			ir_ryt);
 }
 
 void Sensor::setSensorThresholds(int left, int middle, int right) {
@@ -169,5 +185,10 @@ bool Sensor::isIRSensorRightTriggered() {
 void readComparatorValue() {
 	overCurrentDigital = !overCurrentDigital;
 	// TODO: handle overcurrent
+	if (overCurrentDigital) {
+		  // Serial.println("Setting overcurrent flag (digital)");
+	} else {
+		  // Serial.println("Clearing overcurrent flag (digital)");
+	}
 }
 

@@ -20,13 +20,13 @@
 #define PIN_UART_RX     2  // D2
 #define PIN_UART_TX     3  // D3
 
-/* SPI interface */					// TODO: pin assignment review
+/* SPI interface */
 #define PIN_SPI_SS      20  // B0
 #define PIN_SPI_SCK     21  // B1
 #define PIN_SPI_MOSI    22  // B2
 #define PIN_SPI_MISO    23  // B3
 
-/* ultrasonic sensors */			// TODO: pin assignment review
+/* ultrasonic sensors */
 #define PIN_US1_ECHO    4  // D4
 #define PIN_US1_TRIG    5  // D5
 #define PIN_US2_ECHO    6  // D6
@@ -36,24 +36,16 @@
 #define PIN_US4_ECHO    17 // C7
 #define PIN_US4_TRIG    16 // C6
 
-/* Motor right */					// TODO: pin assignment review
-/* // design 
-#define PIN_MT_RI_FWD   10 // C0
-#define PIN_MT_RI_BCK   11 // C1
-*/
+/* Motor right */
 #define PIN_MT_RI_FWD   10 // C0
 #define PIN_MT_RI_BCK   11 // C1
 #define PIN_MT_RI_PWM   14 // C4
 #define PIN_MT_RI_INC   24 // B4
 #define PIN_MT_RI_DEC   25 // B5
 
-/* Motor left */					// TODO: pin assignment review
-/* // deisng
-#define PIN_MT_LE_FWD   12 // C2
-#define PIN_MT_LE_BCK   13 // C3
-*/
-#define PIN_MT_LE_FWD   13 // C3
+/* Motor left */
 #define PIN_MT_LE_BCK   12 // C2
+#define PIN_MT_LE_FWD   13 // C3
 #define PIN_MT_LE_PWM   15 // C5
 #define PIN_MT_LE_INC   26 // B6
 #define PIN_MT_LE_DEC   27 // B7
