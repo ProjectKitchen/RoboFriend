@@ -2,6 +2,7 @@
 import rospy
 import os
 import random
+import threading
 
 from robofriend.srv import SrvSoundData, SrvSoundDataResponse
 from robofriend.srv import SrvFaceStatusData
@@ -12,6 +13,7 @@ class SoundDataHandler():
         self._lastPlayFile = ""
         self._face_req = face_req
         self._path = os.path.dirname(os.path.abspath(__file__)) + "/"
+        self._sound_lock = threading.Lock()
 
     def _service_game_handler(self, request):
         rospy.logdebug("{%s} - Request from game node received!",
@@ -57,11 +59,13 @@ class SoundDataHandler():
     def _play_sound_file(self, file):
         ret = -1
 
-        # cmd = "sudo aplay " + self._path + file
-        cmd = "aplay " + self._path + file
+        self._sound_lock.acquire()
+        cmd = "sudo aplay " + self._path + file
+        #cmd = "aplay " + self._path + file
         ret = os.system(cmd)
         if ret != 0:
             rospy.logwarn("{%s} - Sound play error!", rospy.get_caller_id())
+        self._sound_lock.release()
 
     def _playsound(self, dataArray):
         soundname = dataArray[0]

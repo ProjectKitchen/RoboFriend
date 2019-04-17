@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
+from threading import *
 import pyttsx3
 import random
 import time
-import threading
 import rospy
 import os
 
@@ -78,13 +78,13 @@ class SpeechDataHandler():
                             'custom':    self.custom_speech,
                             'battery':   self.battery_speech,
                             'idle':      self.idle_speech
-        }
+                           }
 
         self.get_text = {'random':   self.get_random_text,
                          'bullshit': self.get_bullshit_text
-        }
+                        }
 
-        self._old_time = 0
+        self._speech_lock = Lock()
         self.speak("      Ich bin Robofrend")
 
     def service_handler(self, request):
@@ -181,12 +181,15 @@ class SpeechDataHandler():
         self._last_speak_word = text
         rospy.logdebug("{%s} - Spoken text: %s", rospy.get_caller_id(), text)
 
-        #cmd = "sudo espeak -vde \"" + text +"\""
-        cmd = "espeak -vde \"" + text +"\""
+        self._speech_lock.acquire()
+        cmd = "sudo espeak -vde \"" + text +"\""
+        #cmd = "espeak -vde \"" + text +"\""
         ret = os.system(cmd)
+        time.sleep(1.5)
 
         if ret != 0:
             rospy.logwarn("{%s} - Speech error!", rospy.get_caller_id())
+        self._speech_lock.release()
 
     def _time_request(self):
         return time.time()
