@@ -80,7 +80,7 @@ class RobobrainStateHandler():
                     idle_timer = self._system_time_request()
                     speak_timer = self._system_time_request()
                     update_timer_flag = False
-                elif self._system_time_request() - speak_timer > 10:
+                elif self._system_time_request() - speak_timer > 45:
                     self._publish_speech_message("idle")
                     speak_timer = self._system_time_request()
 
