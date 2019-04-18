@@ -89,14 +89,13 @@ class RobobrainStateHandler():
                 event_is_set = self.__idle_keyb_event.wait(self.__event_wait_time)
                 if event_is_set is True:
                     self.__idle_keyb_event.clear()
-                    kb_input = self._get_keyboard_input()
+                    update_timer_flag = True
+                    kb_input = self._get_avi_keyboard_input()
                     if kb_input is not None:
                         self._kb_choose_mode = kb_input
                         self.state = RobobrainStateHandler.robostate["AUDIOVISUAL_INTERACTION"]
-                        update_timer_flag = True
                     else:
                         pass
-                    idle_timer = self._system_time_request()
                 else:
                     if self._system_time_request() - idle_timer > self.__idle_elapse_time:
                         rospy.loginfo("No input within %s seconds therefore change state to AUDIOVISUAL_INTERACTION state!", str(self.__idle_elapse_time))
@@ -202,7 +201,7 @@ class RobobrainStateHandler():
     def __lock_release(self):
         self.__lock.release()
 
-    def _get_keyboard_input(self):
+    def _get_avi_keyboard_input(self):
         retVal = None
         try:
             keyboard_input = self.__keyboard_queue.get(timeout = 1)     # waits for an input from keyboard node
@@ -213,7 +212,7 @@ class RobobrainStateHandler():
             elif keyboard_input == "voiceinteraction":
                 retVal = self.interaction["VOICEINTERACTION"]
         except Queue.Empty:
-            rospy.logwarn("No keyboard input")
+            rospy.loginfo("No avi input")
             retVal = None
         return retVal
 
