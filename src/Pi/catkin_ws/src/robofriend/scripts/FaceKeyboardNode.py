@@ -237,7 +237,7 @@ class KeyboardDataHandler():
                         rospy.logdebug("{%s} - Quit pressed\n")
                         pygame.quit()
                         sys.exit()
-                    if event.__dict__["mod"] == 12288:
+                    if event.__dict__["mod"] == 12288 or event.__dict__["mod"] == 8192:
                         if event.key in self._special_button_key:
                             publish_message = self._message_dict_merge(up_down = "up", pressed_key = self._special_button_key[event.key])
                         else:
