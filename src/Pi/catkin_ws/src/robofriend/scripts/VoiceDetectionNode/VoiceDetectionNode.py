@@ -63,7 +63,7 @@ class VoiceDetectionDataHandler():
 
     def _on_message(self, client, userdata, msg):
         rospy.logdebug("{%s} - Message received on topic %s: %s",
-            str(msg.topic), str(msg.payload))
+            rospy.get_caller_id(), str(msg.topic), str(msg.payload))
         payload = json.loads(msg.payload.decode())
 
         if msg.topic == 'hermes/intent/momokarl:Lights':
