@@ -81,6 +81,21 @@ class VoiceDetectionDataHandler():
                         self.__class__.__name__)
                     self._message_publish("lights", str(room) + "/" + str(action)) # z.B: "lihts", "living room/on"
 
+        elif msg.topic == 'hermes/intent/momokarl:TV':
+            if len(payload['slots']) < 2:
+                rospy.logwarn("{%s} - Not enough slots!\n",
+                    self.__class__.__name__)
+            else:
+                room = self._check_slot_value(len(payload["slots"]), payload, self._house_room)
+                action = self._check_slot_value(len(payload["slots"]), payload, self._on_off)
+                if room is False or action is False:
+                    rospy.logwarn("{%s} - Wrong phrase!\n",
+                        self.__class__.__name__)
+                else:
+                    rospy.logwarn("{%s} - Right slotvalues detected!\n",
+                        self.__class__.__name__)
+                    self._message_publish("tv", str(room) + "/" + str(action)) # z.B: "lihts", "living room/on"
+
     def _check_slot_value(self, slotamount, payload, list):
         for cnt in range(slotamount):
             for elem in list:
@@ -105,7 +120,7 @@ class VoiceDetectionDataHandler():
     def _message_publish(self, intent = "", slot = ""):
         self._msg.intent = intent
         self._msg.slots = slot
-        rospy.logdebug("{%s} - Message send: %s!", self.__class__.__name__, self._msg)
+        rospy.logwarn("{%s} - Message send: %s!", self.__class__.__name__, self._msg)
         self._pub.publish(self._msg)
 
 def shutdown():
