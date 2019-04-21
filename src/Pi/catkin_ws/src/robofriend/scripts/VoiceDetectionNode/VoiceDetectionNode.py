@@ -93,13 +93,13 @@ class VoiceDetectionDataHandler():
                     rospy.logwarn("{%s} - Wrong phrase!\n",
                         self.__class__.__name__)
                 else:
-                    rospy.logwarn("{%s} - Right slotvalues detected!\n",
+                    rospy.logdebug("{%s} - Right slotvalues detected!\n",
                         self.__class__.__name__)
                     self._message_publish("lights", str(room) + "/" + str(on_off)) # z.B: "lights", "living room/on"
 
         ################################ TV ################################
         elif msg.topic == 'hermes/intent/momokarl:TV':
-            rospy.logwarn("Within TV intent!")
+            rospy.logdebug("Within TV intent!")
             if len(payload['slots']) < 2:
                 rospy.logwarn("{%s} - Not enough slots!\n",
                     self.__class__.__name__)
@@ -113,7 +113,7 @@ class VoiceDetectionDataHandler():
                     on_off = self._check_slot_value(len(payload["slots"]), payload, self._on_off)
                     for cnt in channel, volume, on_off:
                         if cnt is not False:
-                            rospy.logwarn("Right slotvalues detected: %s", cnt)
+                            rospy.logdebug("Right slotvalues detected: %s", cnt)
                             self._message_publish("tv", str(room) + "/" + str(cnt))
                             break
                     else:
@@ -122,7 +122,7 @@ class VoiceDetectionDataHandler():
 
         ################################ DVD-Player ################################
         elif msg.topic == 'hermes/intent/momokarl:DVD_Player':
-            rospy.logwarn("Within DVD Player intent!")
+            rospy.logdebug("Within DVD Player intent!")
             if len(payload['slots']) < 1:
                 rospy.logwarn("{%s} - Not enough slots!\n",
                     self.__class__.__name__)
@@ -131,7 +131,7 @@ class VoiceDetectionDataHandler():
                 on_off = self._check_slot_value(len(payload["slots"]), payload, self._on_off)
                 for cnt in dvd_action, on_off:
                     if cnt is not False:
-                        rospy.logwarn("Right slotvalues detected: %s", cnt)
+                        rospy.logdebug("Right slotvalues detected: %s", cnt)
                         self._message_publish("dvd_player", str(cnt))
                         break
                 else:
@@ -140,7 +140,7 @@ class VoiceDetectionDataHandler():
 
         ################################ HiFi ################################
         elif msg.topic == 'hermes/intent/momokarl:HiFi':
-            rospy.logwarn("Within HiFi intent!")
+            rospy.logdebug("Within HiFi intent!")
             if len(payload['slots']) < 1:
                 rospy.logwarn("{%s} - Not enough slots!\n",
                     self.__class__.__name__)
@@ -150,7 +150,7 @@ class VoiceDetectionDataHandler():
                 on_of = self._check_slot_value(len(payload["slots"]), payload, self._on_off)
                 for cnt in channel, volume, on_off:
                     if cnt is not False:
-                        rospy.logwarn("Right slotvalues detected: %s", cnt)
+                        rospy.logdebug("Right slotvalues detected: %s", cnt)
                         self._message_publish("hifi", str(cnt))
                         break
                 else:
@@ -161,7 +161,7 @@ class VoiceDetectionDataHandler():
         for cnt in range(slotamount):
             for elem in list:
                 if elem in payload["slots"][cnt]["value"]["value"]:
-                    rospy.logwarn("{%s} - Found item: {%s}", self.__class__.__name__, elem)
+                    rospy.logdebug("{%s} - Found item: {%s}", self.__class__.__name__, elem)
                     return elem
         else:
             return False
@@ -180,7 +180,7 @@ class VoiceDetectionDataHandler():
     def _message_publish(self, intent = "", slot = ""):
         self._msg.intent = intent
         self._msg.slots = slot
-        rospy.logwarn("{%s} - Message send: %s!", self.__class__.__name__, self._msg)
+        rospy.logdebug("{%s} - Message send: %s!", self.__class__.__name__, self._msg)
         self._pub.publish(self._msg)
 
 def shutdown():
