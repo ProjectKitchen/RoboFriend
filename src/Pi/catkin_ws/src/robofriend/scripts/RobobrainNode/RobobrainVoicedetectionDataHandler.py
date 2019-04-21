@@ -87,8 +87,8 @@ class RobobrainVoicedetectionDataHandler():
             vc_input = rospy.wait_for_message('/robofriend/voice_data', VoiceData, timeout = self._elapse_time)
             rospy.logdebug("{%s} - evaluate_voice_inputs : Received message: %s", self.__class__.__name__, vc_input)
             start_time = self._time_request()
-            sep_mes = vc_input.slots.split("/")
             if vc_input.intent == "lights":
+                sep_mes = vc_input.slots.split("/")
                 if sep_mes[1] == "on":
                     if sep_mes[0] == "living room":
                         rospy.logdebug("Living room lights on!\n")
