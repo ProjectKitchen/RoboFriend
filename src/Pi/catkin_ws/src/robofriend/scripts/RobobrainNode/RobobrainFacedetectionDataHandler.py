@@ -30,7 +30,8 @@ class RobobrainFacedetectionDataHandler():
 
         # amount of recorded pictures
         self.__pic_record = 10
-        self._elapse_time = 5
+        self._elapse_time = 30
+        self._service_elapse_time = 5
 
         self._facedetection_node_started = False
         self._facedetection_node_status_lock = Lock()
@@ -63,9 +64,9 @@ class RobobrainFacedetectionDataHandler():
 
         # init services
         try:
-            rospy.wait_for_service('/robofriend/facerecord', timeout = self._elapse_time)
-            rospy.wait_for_service('/robofriend/facedatabase', timeout = self._elapse_time)
-            rospy.wait_for_service('/robofriend/fd_heartbeat', timeout = self._elapse_time)
+            rospy.wait_for_service('/robofriend/facerecord', timeout = self._service_elapse_time)
+            rospy.wait_for_service('/robofriend/facedatabase', timeout = self._service_elapse_time)
+            rospy.wait_for_service('/robofriend/fd_heartbeat', timeout = self._service_elapse_time)
         except rospy.ROSException:
             rospy.logwarn("{%s} - Facedetection node was not able to start within %s seconds therefore no facerecognition possible",
                 self.__class__.__name__, str(self._elapse_time))
@@ -137,6 +138,8 @@ class RobobrainFacedetectionDataHandler():
                     self.__known_face_speech(face_grade)
                     if self.__take_picture_known_face(face_grade) is True:
                         self.__create_database()
+                    else:
+                        self.__publish_speech_message("custom", "Okey dann nehme ich keine weiteren Bilder von dir auf")
                     self._face_familiarity = face_grade       # in case of a known face
                 elif face_grade == "unknown":
                     self.__unknown_face_speech()
@@ -392,7 +395,7 @@ class RobobrainFacedetectionDataHandler():
         retVal = False
 
         self.__publish_speech_message("custom", "Ich versuche dein Gesicht und dein Namen zu merken")
-        self.__publish_speech_message("custom", "Verzeich mir aber das kann lange dauern")
+        self.__publish_speech_message("custom", "Das kann etwas dauern")
         try:
             self.__publish_led_ears_message(random = "on")
             response = self.__facedatabase_request(True)
