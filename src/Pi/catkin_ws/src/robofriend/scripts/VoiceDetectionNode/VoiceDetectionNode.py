@@ -29,7 +29,7 @@ class VoiceDetectionDataHandler():
         self._volume = ['volume_down', 'volume_up', 'mute']
 
         ########## DVD-Player ##########
-        self._dvd_action = ['pause', 'stop', 'action']
+        self._dvd_action = ['pause', 'stop', 'play']
 
 
         self._host = 'localhost'
@@ -110,7 +110,7 @@ class VoiceDetectionDataHandler():
                 else:
                     channel = self._check_slot_value(len(payload["slots"]), payload, self._channel)
                     volume = self._check_slot_value(len(payload["slots"]), payload, self._volume)
-                    on_of = self._check_slot_value(len(payload["slots"]), payload, self._on_off)
+                    on_off = self._check_slot_value(len(payload["slots"]), payload, self._on_off)
                     for cnt in channel, volume, on_off:
                         if cnt is not False:
                             rospy.logwarn("Right slotvalues detected: %s", cnt)
@@ -151,7 +151,7 @@ class VoiceDetectionDataHandler():
                 for cnt in channel, volume, on_off:
                     if cnt is not False:
                         rospy.logwarn("Right slotvalues detected: %s", cnt)
-                        self._message_publish("tv", str(room) + "/" + str(cnt))
+                        self._message_publish("hifi", str(cnt))
                         break
                 else:
                     rospy.logwarn("{%s} - Wrong phrase!\n",
