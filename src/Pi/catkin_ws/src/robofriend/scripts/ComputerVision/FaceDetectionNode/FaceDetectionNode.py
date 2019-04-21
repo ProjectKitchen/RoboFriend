@@ -58,12 +58,11 @@ class FaceDetectionDataHandler():
     def __face_recog_init(self):
         self.__path = os.path.dirname(os.path.realpath(__file__))
 
-        # location of haarcascade and encodings
-        encodings_path = self.__path + '/encodings.pickle'
+        self._load_encodings_pickle()
+        # location of haarcascade filter
         haarcascade_path = self.__path + '/haarcascade_frontalface_default.xml'
 
         self.__detector = cv2.CascadeClassifier(haarcascade_path)
-        self.__data = pickle.loads(open(encodings_path, "rb").read())
 
         # selecting the source of  the stream (either PiCamera or stream)
         self.__vs = cv2.VideoCapture(self.__url)
@@ -80,6 +79,11 @@ class FaceDetectionDataHandler():
                 self.__vs = VideoStream(src = 0).start()
 
         time.sleep(2.0)
+
+    def _load_encodings_pickle(self):
+        encodings_path = self.__path + '/encodings.pickle'
+        self.__data = pickle.loads(open(encodings_path, "rb").read())
+
 
     def _face_recognition(self):
         if self.__is_face_recognition_blocked() is False:
@@ -177,7 +181,7 @@ class FaceDetectionDataHandler():
         retVal = False
         num = 0
 
-        rospy.loginfo("{%s} - Face record request received: {%s} {%s}\n",
+        rospy.logdebug("{%s} - Face record request received: {%s} {%s}\n",
             self.__class__.__name__, str(request.check_name), str(request.name))
 
         if request.check_name is True:
@@ -187,7 +191,7 @@ class FaceDetectionDataHandler():
             elif check_name is False:
                 return SrvFaceRecordDataResponse(check_name_resp = False, picture_taken = False)
         elif request.check_name is False:
-            rospy.loginfo("{%s} - Starting with recording of new faces\n",
+            rospy.logdebug("{%s} - Starting with recording of new faces\n",
                 self.__class__.__name__)
             check_name = self.__check_name_database(request.name)
             if check_name is True:
@@ -226,14 +230,14 @@ class FaceDetectionDataHandler():
         retVal = False
         path = self.__path + "/dataset" + "/" + name
 
-        frame = self.__vs.read()
+        _, frame = self.__vs.read()
         p = os.path.sep.join([path, "{}.png".format(
             str(num).zfill(5))])
 
         write_status = cv2.imwrite(p, frame)
         if write_status is True:
             rospy.loginfo("{%s} - Picture %s is recorded\n",
-                self.__class__.__name__, num)
+                self.__class__.__name__, num + 1)
             retVal = True
         elif write_status is False:
             rospy.logwerr("{%s} - Picture could not be recorded!\n",
@@ -245,11 +249,8 @@ class FaceDetectionDataHandler():
         rospy.logdebug("{%s} - Creating database Request received: %s\n",
                 self.__class__.__name__, request.create_database)
         self.__set_event_block_face_recognition()
-
-
         self.__create_database()
-        #time.sleep(10)
-
+        self._load_encodings_pickle()
         self.__clear_event_block_face_recognition()
 
         rospy.logdebug("{%s} - Creating Database finished!\n",
@@ -265,22 +266,28 @@ class FaceDetectionDataHandler():
         for (i, image_path) in enumerate (image_paths):
             rospy.logdebug("{%s} - processing image %s / %s",
                 self.__class__.__name__, str(i + 1), str(len(image_paths)))
-        name = image_path.split(os.path.sep)[-2]
+            name = image_path.split(os.path.sep)[-2]
 
-        image = cv2.imread(image_path)
-        rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-        boxes = face_recognition.face_locations(rgb, model = "hog")
+            image = cv2.imread(image_path)
+            rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+            boxes = face_recognition.face_locations(rgb, model = "hog")
 
-        encodings = face_recognition.face_encodings(rgb, boxes)
+            encodings = face_recognition.face_encodings(rgb, boxes)
 
-        for encoding in encodings:
-            knownEncodings.append(encoding)
-            knownNames.append(name)
+            for encoding in encodings:
+                knownEncodings.append(encoding)
+                knownNames.append(name)
 
         data = {"encodings": knownEncodings, "names": knownNames}
-        with open(os.path.join(self.__path, "encodings.pickle"), "wb+") as file:
-            file.write(pickle.dumps(data))
-            #f.close()
+        if os.path.exists(self.__path + '/encodings.pickle'):
+            os.remove(self.__path + '/encodings.pickle')
+            time.sleep(5)
+        else:
+            rospy.logwarn("{%s} - Trained model does not exist!", rospy.get_caller_id())
+
+        f = open(self.__path + '/encodings.pickle', "wb")
+        f.write(pickle.dumps(data))
+        f.close()
 
     def __set_event_block_face_recognition(self):
         self.__face_recognition_event.set()
