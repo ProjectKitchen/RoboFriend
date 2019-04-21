@@ -20,8 +20,17 @@ class VoiceDetectionDataHandler():
         # declare voice hotword detection service
         serv = rospy.Service('/robofriend/voicehotword', SrvVoiceHotwordActivationData, self._voice_hotword_activation_service_handler)
 
+        ########## Lights / TV / HIFI / DVD-Player ##########
         self._house_room = ['living room', 'bedroom', 'kitchen']
         self._on_off = ['on', 'off']
+
+        ########## TV / HIFI ##########
+        self._channel = ['channel_down', 'channel_up']
+        self._volume = ['volume_down', 'volume_up', 'mute']
+
+        ########## DVD-Player ##########
+        self._dvd_action = ['pause', 'stop', 'action']
+
 
         self._host = 'localhost'
         self._port = 1883
@@ -62,39 +71,91 @@ class VoiceDetectionDataHandler():
 
 
     def _on_message(self, client, userdata, msg):
+        room = False
+        on_off = False
+        dvd_action = False
+        channel = False
+        volume = False
+
         rospy.logdebug("{%s} - Message received on topic %s: %s",
             rospy.get_caller_id(), str(msg.topic), str(msg.payload))
         payload = json.loads(msg.payload.decode())
 
+        ################################ Lights ################################
         if msg.topic == 'hermes/intent/momokarl:Lights':
             if len(payload['slots']) < 2:
                 rospy.logwarn("{%s} - Not enough slots!\n",
                     self.__class__.__name__)
             else:
                 room = self._check_slot_value(len(payload["slots"]), payload, self._house_room)
-                action = self._check_slot_value(len(payload["slots"]), payload, self._on_off)
-                if room is False or action is False:
+                on_off = self._check_slot_value(len(payload["slots"]), payload, self._on_off)
+                if room is False or on_off is False:
                     rospy.logwarn("{%s} - Wrong phrase!\n",
                         self.__class__.__name__)
                 else:
                     rospy.logwarn("{%s} - Right slotvalues detected!\n",
                         self.__class__.__name__)
-                    self._message_publish("lights", str(room) + "/" + str(action)) # z.B: "lihts", "living room/on"
+                    self._message_publish("lights", str(room) + "/" + str(on_off)) # z.B: "lights", "living room/on"
 
+        ################################ TV ################################
         elif msg.topic == 'hermes/intent/momokarl:TV':
+            rospy.logwarn("Within TV intent!")
             if len(payload['slots']) < 2:
                 rospy.logwarn("{%s} - Not enough slots!\n",
                     self.__class__.__name__)
             else:
                 room = self._check_slot_value(len(payload["slots"]), payload, self._house_room)
-                action = self._check_slot_value(len(payload["slots"]), payload, self._on_off)
-                if room is False or action is False:
-                    rospy.logwarn("{%s} - Wrong phrase!\n",
-                        self.__class__.__name__)
+                if room is False:
+                    rospy.logwarn("{%s} / [TV] - No room given")
                 else:
-                    rospy.logwarn("{%s} - Right slotvalues detected!\n",
+                    channel = self._check_slot_value(len(payload["slots"]), payload, self._channel)
+                    volume = self._check_slot_value(len(payload["slots"]), payload, self._volume)
+                    on_of = self._check_slot_value(len(payload["slots"]), payload, self._on_off)
+                    for cnt in channel, volume, on_off:
+                        if cnt is not False:
+                            rospy.logwarn("Right slotvalues detected: %s", cnt)
+                            self._message_publish("tv", str(room) + "/" + str(cnt))
+                            break
+                    else:
+                        rospy.logwarn("{%s} - Wrong phrase!\n",
                         self.__class__.__name__)
-                    self._message_publish("tv", str(room) + "/" + str(action)) # z.B: "lihts", "living room/on"
+
+        ################################ DVD-Player ################################
+        elif msg.topic == 'hermes/intent/momokarl:DVD_Player':
+            rospy.logwarn("Within DVD Player intent!")
+            if len(payload['slots']) < 1:
+                rospy.logwarn("{%s} - Not enough slots!\n",
+                    self.__class__.__name__)
+            else:
+                dvd_action = self._check_slot_value(len(payload["slots"]), payload, self._dvd_action)
+                on_off = self._check_slot_value(len(payload["slots"]), payload, self._on_off)
+                for cnt in dvd_action, on_off:
+                    if cnt is not False:
+                        rospy.logwarn("Right slotvalues detected: %s", cnt)
+                        self._message_publish("dvd_player", str(cnt))
+                        break
+                else:
+                    rospy.logwarn("{%s} - Wrong phrase!\n",
+                    self.__class__.__name__)
+
+        ################################ HiFi ################################
+        elif msg.topic == 'hermes/intent/momokarl:HiFi':
+            rospy.logwarn("Within HiFi intent!")
+            if len(payload['slots']) < 1:
+                rospy.logwarn("{%s} - Not enough slots!\n",
+                    self.__class__.__name__)
+            else:
+                channel = self._check_slot_value(len(payload["slots"]), payload, self._channel)
+                volume = self._check_slot_value(len(payload["slots"]), payload, self._volume)
+                on_of = self._check_slot_value(len(payload["slots"]), payload, self._on_off)
+                for cnt in channel, volume, on_off:
+                    if cnt is not False:
+                        rospy.logwarn("Right slotvalues detected: %s", cnt)
+                        self._message_publish("tv", str(room) + "/" + str(cnt))
+                        break
+                else:
+                    rospy.logwarn("{%s} - Wrong phrase!\n",
+                    self.__class__.__name__)
 
     def _check_slot_value(self, slotamount, payload, list):
         for cnt in range(slotamount):
@@ -110,7 +171,6 @@ class VoiceDetectionDataHandler():
             self.__class__.__name__)
         self._activate_hotword()
         return SrvVoiceHotwordActivationDataResponse(True)
-
 
     def _activate_hotword(self):
         publish.single('hermes/hotword/default/detected', payload=json.dumps(
