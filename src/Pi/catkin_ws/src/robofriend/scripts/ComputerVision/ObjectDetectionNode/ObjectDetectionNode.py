@@ -111,7 +111,7 @@ def service_handler(request):
     return SrvObjectDetectionResponse(retVal)
 
 def objectdetection_hb_handler(request):
-    rospy.logwarn("Objectdetecion HB request received!")
+    rospy.logdebug("Objectdetecion HB request received!")
     return SrvObjectHeartbeatDataResponse(True)
 
 def start_object_detecion():
