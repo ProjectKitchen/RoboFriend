@@ -78,10 +78,9 @@ class RobobrainObjectdetectionHandler():
                 if obj_detection_response.obj == "person":
                     self._publish_speech_message("custom", "Ich habe eine Person gefunden!")
                     retVal = True
-                else:
-                    self._publish_speech_message("custom", "Ich habe keine Person gefunden!")
-                    retVal = False
             else:
+                self._publish_speech_message("custom", "Ich habe keine Person gefunden!")
+                retVal = False
                 rospy.logwarn("{%s} - No object ist detected!", self.__class__.__name__)
         return retVal
 
