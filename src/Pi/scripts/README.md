@@ -45,6 +45,12 @@ It is strongly recommended to use [ROS Kinetic](http://wiki.ros.org/kinetic/Inst
 **install_ros_pkg.sh**
 * installs required ROS packages
 
+**install_sam_on_remote_pc.sh**
+* installs sam on remote PC
+
+**install_snips_manually.sh**
+* installs snips regarding the platform without sam
+
 **install_user_modules.sh**
 * installs software packages for further development
 
@@ -53,7 +59,7 @@ It is strongly recommended to use [ROS Kinetic](http://wiki.ros.org/kinetic/Inst
 
 ## Debugging and other notes
 
-To see the command line output during the operation of the main python script: 
+To see the command line output during the operation of the main python script:
 * log into the rasperry pi from another computer (using e.g. putty or ssh)
 * sudo pkill python (to stop the currently running python scripts)
 * run ./startrobo.sh placed in your home folder
