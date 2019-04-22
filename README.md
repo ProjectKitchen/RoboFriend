@@ -40,7 +40,7 @@ These game applications are also written in python and are usually launched on a
 [OpenCV 3 on Raspberry Pi 3](https://www.pyimagesearch.com/2017/09/04/raspbian-stretch-install-opencv-3-python-on-your-raspberry-pi/)
 
 **Roboter Operating System (ROS):**
-* To install ROS on your computing unite (Laptop or Rasberry Pi 3) follow the following [instructions](https://github.com/ProjectKitchen/RoboFriend/tree/ros-node-devel/src/Pi/scripts)
+* To install ROS on your computing unit (Laptop or Rasberry Pi 3) follow [these instructions](https://github.com/ProjectKitchen/RoboFriend/tree/ros-node-devel/src/Pi/scripts)
 
 **LIDAR - 360 laser distance sensor lds-01:**
 * Manufacturer's [site](http://www.robotis.us/360-laser-distance-sensor-lds-01-lidar/)
@@ -49,10 +49,10 @@ These game applications are also written in python and are usually launched on a
 
 ## Additional Information
 
-* we recommand you to clone the repository into a folder named *Git* placed in your home directory (~/Git/)
-* after pulling the repository, execute following commands (see the ROS install instructions):
+* We recommand you to clone the repository into a folder named *Git* placed in your home directory (~/Git/)
+* After pulling the repository, execute following commands (see the ROS install instructions):
    * cd ~/Git/RoboFriend/src/Pi/catkin_ws/ && rm -r build/ && rm -r devel/ && catkin_make clean && catkin_make && catkin_make install
-        
+
 ## Setup
 
 Setup scripts are provided in folder /src/Pi/scripts
