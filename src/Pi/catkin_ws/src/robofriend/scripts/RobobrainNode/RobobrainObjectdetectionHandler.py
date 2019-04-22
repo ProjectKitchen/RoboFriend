@@ -9,6 +9,8 @@ from robofriend.srv import SrvObjectHeartbeatData
 
 # import ros messages
 from robofriend.msg import SpeechData
+from robofriend.msg import LedEarsData
+from robofriend.msg import ServoCamData
 
 class RobobrainObjectdetectionHandler():
 
@@ -23,6 +25,12 @@ class RobobrainObjectdetectionHandler():
         # init publishers
         self._pub_speech = rospy.Publisher('/robofriend/speech_data', SpeechData, queue_size = 10)
         self._msg_speech = SpeechData()
+
+        self._pub_led_ears = rospy.Publisher('/robofriend/led_ears_data', LedEarsData, queue_size = 10)
+        self._msg_led_ears = LedEarsData()
+
+        self._pub_servo_cam = rospy.Publisher('/robofriend/servo_cam_data', ServoCamData, queue_size = 10)
+        self._msg_servo_cam = ServoCamData()
 
         # init service
         try:
@@ -67,7 +75,14 @@ class RobobrainObjectdetectionHandler():
         retVal  = False
         if self._get_objectdetection_status_flag() is False:
             rospy.logwarn("{%s} - Objectdetection node not started therefore leave object interaction state", self.__class__.__name__)
+            self._publish_speech_message("custom", "Kann derzeit keine Personen detektieren!")
         else:
+            cnt = 0
+            while cnt < 2:
+                self._publish_led_ears_message(rgb_color = [0, 15, 15])
+                self._publish_servo_cam_message("max")
+                cnt += 1
+                sleep(1.1)
             self._publish_speech_message("custom", "Ich schaue mich dann mal nach Personen um!")
             obj_detection_response = self._objectdetection_record_request(detect_obj = True)
             rospy.logdebug("{%s} - Response from Object Detection node: %s",
@@ -90,6 +105,21 @@ class RobobrainObjectdetectionHandler():
         self._pub_speech.publish(self._msg_speech)
         rospy.logdebug("{%s} - Speech published data: {%s}",
             self.__class__.__name__, str(self._msg_speech))
+
+    def _publish_led_ears_message(self, random = "", repeat_num = [0, 0], rgb_color = []):
+        self._msg_led_ears.random = random
+        self._msg_led_ears.repeat_num = repeat_num
+        self._msg_led_ears.rgb_color = rgb_color
+        self._pub_led_ears.publish(self._msg_led_ears)
+        rospy.logdebug("{%s} - Led Ears published data: {%s}",
+            self.__class__.__name__, str(self._msg_led_ears))
+
+    def _publish_servo_cam_message(self, max_min = "", diff = 0):
+        self._msg_servo_cam.max_min = max_min
+        self._msg_servo_cam.diff = diff
+        self._pub_servo_cam.publish(self._msg_servo_cam)
+        rospy.logdebug("{%s} -  Servo Camera published data: {%s}",
+            self.__class__.__name__, str(self._msg_servo_cam))
 
     def _set_objectdetection_status_flag(self, alive = False):
         self._objectdetection_node_status_lock_aquire()
