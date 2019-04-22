@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+from Tkinter import Tk
+from tkinter.filedialog import askopenfilename
 from flask import Flask, make_response, send_file
 import json, os, rospy, threading, time, subprocess, urllib
 
@@ -52,9 +54,32 @@ def index():
 @app.route('/map/save/<filename>', methods=['POST'])
 def saveMap(filename):
     filename = "../../../../maps/" + filename
-    print(filename)
-    subprocess.call(["rosrun", "map_server", "map_saver", "-f", "filename"])
+    subprocess.call(["rosrun", "map_server", "map_saver", "-f", filename])
     return getResponse("OK")
+
+@app.route('/map/load', methods=['POST'])
+def loadMap():
+    path = os.path.expanduser('~') + "/Git/RoboFriend/src/Pi/maps/"
+    Tk().withdraw()
+    filename = askopenfilename(initialdir = path,title = "Select file",filetypes = (("map files","*.yaml"),("all files","*.*")))
+    filename = "map_file:=" + filename
+    subprocess.call(["roslaunch", "turtlebot3_navigation", "turtlebot3_navigation.launch", filename])
+    return getResponse("OK")
+
+@app.route('/map/goal/<x>/<y>', methods=['POST'])
+def SetNavGoal(x, y):
+    cmd = "rostopic pub /move_base_simple/goal geometry_msgs/PoseStamped \'{ header: {stamp: now, frame_id: \"map\"}, pose: { position: {x: " + x + ", y: " + y + ", z: 0.0}, orientation: {w: 1.0}}}\'"
+    os.system(cmd)
+    return getResponse("OK")
+
+@app.route('/control/admin/<userPassword>', methods=['POST'])
+def admin(userPassword):
+    global password
+    if userPassword == password:
+        print("Set admin")
+        return getResponse("OK")
+    else:
+        return getResponse("WRONG PASSWORD")
 
 @app.route('/control/shutdown/<userPassword>', methods=['POST'])
 def shutdown(userPassword):
@@ -270,10 +295,6 @@ def set_tired():
     led_ears_req(constants.RGB, [], [0, 0, 0])
     sound_req(False, "mood", "tired.wav", [])
 
-
-
-
-
 # *************************************************************** status module
 
 @app.route('/get/status', methods=['GET'])
@@ -432,6 +453,24 @@ def run():
         rospy.logwarn('{%s} - webserver could not be started.', rospy.get_caller_id())
         rospy.logwarn('{%s} - exception type: %s', rospy.get_caller_id(), type(inst))
         rospy.logwarn('{%s} - exception argument: %s', rospy.get_caller_id(), inst.args[1])
+        
+def teensyModuleThreadHandler():
+    global TEENSY_SRV_REQ
+    while True:
+        # send data to teensy per service request param
+        if TEENSY_SRV_REQ is not None:
+            rospy.wait_for_service('/robofriend/teensy_serial_data')
+            try:
+                request = rospy.ServiceProxy('/robofriend/teensy_serial_data', SrvTeensySerialData)
+                # the service response is irrelevant since we dont need to read the response from the teensy dk
+                request(TEENSY_SRV_REQ, False)
+                # make sure to clear the service request parameter
+                TEENSY_SRV_REQ = None
+            except rospy.ServiceException:
+                rospy.logwarn("{%s} - service call failed. check the teensy serial data.", rospy.get_caller_id())
+
+        # maintain the thread at the needed frequency
+        time.sleep(1)
 
 def Webserver():
     global app, webserverDebug, webserverHost, webserverPort
@@ -444,12 +483,23 @@ def Webserver():
     rospy.loginfo("{%s} - starting webserver node.", rospy.get_caller_id())
     rospy.on_shutdown(stop)
 
-
     rospy.Subscriber("/robofriend/pcb_sensor_data", PCBSensorData, providePCBSensorData)
 
-    ws = threading.Thread(target = run)
-    ws.daemon = True
-    ws.start()
+    # create threads
+    try:
+        t1 = threading.Thread(target = run, name='main-thread')
+        t1.daemon = True
+        t1.start()
+        t2 = threading.Thread(target=teensyModuleThreadHandler, name='teensy-reader-thread')
+        t2.daemon = True
+        t2.start()
+    except Exception as inst:
+        rospy.logerr('{%s} - this is a controlled catch.', rospy.get_caller_id())
+        rospy.logerr('{%s} - unable to start threads.', rospy.get_caller_id())
+        rospy.logerr('{%s} - exception type: %s', rospy.get_caller_id(), type(inst))
+        rospy.logerr('{%s} - exception argument: %s', rospy.get_caller_id(), inst.args[0])
+
+    rospy.Service("/robofriend/face_screen_timestamp", SrvFaceScreenshotTimestamp, record_face_timestamp)
 
     # create service to communicate with servo cam node
     rospy.wait_for_service('/robofriend/camera_position')
@@ -463,8 +513,6 @@ def Webserver():
     rospy.wait_for_service('/robofriend/speech')
     speech_req = rospy.ServiceProxy('/robofriend/speech', SrvSpeechData)
 
-    rospy.Service("/robofriend/face_screen_timestamp", SrvFaceScreenshotTimestamp, record_face_timestamp)
-
     # create service to communicate with face node
     rospy.wait_for_service('/robofriend/face')
     face_req = rospy.ServiceProxy('/robofriend/face', SrvFaceDrawData)
@@ -477,21 +525,10 @@ def Webserver():
     # create publisher to communicate with robobrain state handler
     pub_avi_state = rospy.Publisher('/robofriend/web_state_data', WebserverAviStateData, queue_size = 10)
     pub_avi_msg = WebserverAviStateData()
-
+    
     rate = rospy.Rate(100) # 100hz
 
     while not rospy.is_shutdown():
-        # send data to teensy per service request param
-        if TEENSY_SRV_REQ is not None:
-            rospy.wait_for_service('/robofriend/teensy_serial_data')
-
-            try:
-                request = rospy.ServiceProxy('/robofriend/teensy_serial_data', SrvTeensySerialData)
-                request(TEENSY_SRV_REQ, False)
-                TEENSY_SRV_REQ = None
-            except rospy.ServiceException:
-                rospy.logwarn("{%s} - service call failed. check the teensy serial data.", rospy.get_caller_id())
-
         rate.sleep() # make sure the publish rate maintains at the needed frequency
 
 if __name__ == '__main__':
