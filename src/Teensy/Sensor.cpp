@@ -108,18 +108,18 @@ void Sensor::readSensorValues() {
 	shuntAmpMaxVoltage = Motor::MOTORS_MAX_CURRENT * Sensor::SHUNT_AMP_MAX_VOLTAGE / Sensor::SHUNT_AMP_MAX_CURRENT;
 	if (shuntAmpVoltage >= shuntAmpMaxVoltage) {
 		overCurrentAnalog = true;
-		// TODO: handle overcurrent
-    if (analogFlag) {
-  		Serial.println("Setting overcurrent flag (analog)");
-      analogFlag = false;
-    }
+		if (analogFlag) {
+			// TODO: handle overcurrent
+			Serial.println("Setting overcurrent flag (analog)");
+			analogFlag = false;
+		}
 	} else {
 		overCurrentAnalog = false;
-		// TODO: clear overcurrent
-    if (!analogFlag) {
-		  Serial.println("Clearing overcurrent flag (analog)");
-      analogFlag = true;
-    }
+		if (!analogFlag) {
+			// TODO: clear overcurrent
+			Serial.println("Clearing overcurrent flag (analog)");
+			analogFlag = true;
+		}
 	}
 #endif
 
@@ -185,10 +185,10 @@ bool Sensor::isIRSensorRightTriggered() {
 void readComparatorValue() {
 	overCurrentDigital = !overCurrentDigital;
 	// TODO: handle overcurrent
-	if (overCurrentDigital) {
-		  // Serial.println("Setting overcurrent flag (digital)");
-	} else {
-		  // Serial.println("Clearing overcurrent flag (digital)");
-	}
+//	if (overCurrentDigital) {
+//		  Serial.println("Setting overcurrent flag (digital)");
+//	} else {
+//		  Serial.println("Clearing overcurrent flag (digital)");
+//	}
 }
 

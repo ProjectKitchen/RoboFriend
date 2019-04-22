@@ -27,11 +27,6 @@ int leLastDecState;
 int32_t counterRe;
 int32_t counterLe;
 
-int cnt1=0;
-int cnt2=0;
-int cnt3=0;
-int cnt4=0;
-uint8_t print_var = 0;
 uint8_t newPINB;
 uint8_t oldPINB = 0xf0;
 
@@ -93,23 +88,23 @@ int32_t Odometry::getLeftEncoderValue() {
 }
 
 ISR(PCINT0_vect) {
-	newPINB=PINB;
+	newPINB = PINB;
 	if ((newPINB & (1<<7)) != (oldPINB & (1<<7))) counterLe--; // LE DEC
 	if ((newPINB & (1<<6)) != (oldPINB & (1<<6))) counterLe++; // LE INC
 
 
-  if ((newPINB & (1<<6)) != (oldPINB & (1<<6))) {
-    if ((newPINB & (1<<6)) != ((newPINB >> 1) & (1<<6)))  
-      counterLe++; // RE INC
-    else
-      counterLe--;
-  }
-  
+	if ((newPINB & (1<<6)) != (oldPINB & (1<<6))) {
+		if ((newPINB & (1<<6)) != ((newPINB >> 1) & (1<<6)))
+			counterLe++; // RE INC
+		else
+			counterLe--;
+	}
+
 	if ((newPINB & (1<<4)) != (oldPINB & (1<<4))) {
-	  if ((newPINB & (1<<4)) != ((newPINB >> 1) & (1<<4)))  
-	    counterRe--; // RE INC
-    else  
-      counterRe++;
+		if ((newPINB & (1<<4)) != ((newPINB >> 1) & (1<<4)))
+			counterRe--; // RE INC
+		else
+			counterRe++;
 	}
 	oldPINB = newPINB;
 }
