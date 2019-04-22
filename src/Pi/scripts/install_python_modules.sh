@@ -19,3 +19,9 @@ sudo apt-get install python3-yaml
 pip3 install paho-mqtt --user
 snips-nlu download de --user
 pip install hermes-python --user
+
+# setup and install respeaker
+sudo pip install pyusb click
+git clone https://github.com/respeaker/usb_4_mic_array.git
+cd usb_4_mic_array
+sudo python dfu.py --download 6_channels_firmware.bin
