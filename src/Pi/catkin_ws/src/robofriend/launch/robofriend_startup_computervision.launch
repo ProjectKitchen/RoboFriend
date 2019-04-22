@@ -1,5 +1,0 @@
-<?xml version="1.0"?>
-<launch>
-	<node pkg="robofriend" type="ObjectDetectionNode.py" name="robofriend_object_detection_node" output="screen" />
-	<node pkg="robofriend" type="FaceDetectionNode.py" name="robofriend_face_detection_node" output="screen" />
-</launch>
