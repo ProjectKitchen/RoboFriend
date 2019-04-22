@@ -4,7 +4,7 @@
 * [Download](http://releases.ubuntu.com/16.04/ubuntu-16.04.5-desktop-amd64.iso) and install the desktop image for 64-bit PC (AMD64) computers
 * [Download](http://releases.ubuntu.com/16.04/ubuntu-16.04.5-desktop-i386.iso) and install the desktop image for 32-bit PC (i386) computers
 
-**Ubuntu Xenial (16.04 LTS) and ROS Kinetic installed for Raspberry Pi 3:**
+**Ubuntu Xenial (16.04 LTS) and ROS Kinetic pre-installed for Raspberry Pi 3:**
 * Download the latest image from this [Website](https://downloads.ubiquityrobotics.com/pi.html) and read the notes.
 
 ## Installing ROS
@@ -34,6 +34,7 @@ It is strongly recommended to use [ROS Kinetic](http://wiki.ros.org/kinetic/Inst
 **autostart.sh**
 * puts startrobo.desktop into the folder ~/.config/autostart
 * puts startrobo.sh into folder ~/
+* copies rc.local into the folder /etc/
 
 **install_python_modules.sh**
 * installs all necessary python packages
@@ -43,6 +44,9 @@ It is strongly recommended to use [ROS Kinetic](http://wiki.ros.org/kinetic/Inst
 
 **install_ros_pkg.sh**
 * installs required ROS packages
+
+**install_user_modules.sh**
+* installs software packages for further development
 
 **startrobo.sh**
 * starts the videostream and the main python script after system boot.
