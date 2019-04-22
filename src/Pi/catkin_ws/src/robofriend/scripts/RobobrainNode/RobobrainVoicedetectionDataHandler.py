@@ -12,19 +12,23 @@ from robofriend.srv import SrvVoiceHotwordActivationData
 # import ros messages
 from robofriend.msg import SpeechData
 from robofriend.msg import VoiceData
+from robofriend.msg import LedEarsData
 
 class RobobrainVoicedetectionDataHandler():
 
     def __init__(self, queue):
         self._keyboard_queue = queue
         self._voice_hotword_request = rospy.ServiceProxy('/robofriend/voicehotword', SrvVoiceHotwordActivationData)
-        self._elapse_time = 30
+        self._elapse_time = 45
         self._intent = ""
         self._slot = ""
 
         # init publishers
         self._pub_speech = rospy.Publisher('/robofriend/speech_data', SpeechData, queue_size = 10)
         self._msg_speech = SpeechData()
+
+        self._pub_led_ears = rospy.Publisher('/robofriend/led_ears_data', LedEarsData, queue_size = 10)
+        self._msg_led_ears = LedEarsData()
 
     def process_data(self, data):
         rospy.logwarn("{%s} -  process_data : Message received from Voice Detection Node: %s",
@@ -35,6 +39,11 @@ class RobobrainVoicedetectionDataHandler():
         self._input_handler(data)
 
     def _start_voiceinteraction(self, prev_mode, face_familiarity, person_detected):
+        cnt = 0
+        while cnt < 2:
+            self._publish_led_ears_message(rgb_color = [0, 15, 0])
+            cnt += 1
+            sleep(1.1)
         if face_familiarity != "unknown" and face_familiarity != None and face_familiarity != 'no_person':
             self._publish_speech_message("custom", "Da wir uns kennen hast du die volle kontrolle uber mein zu Hause")
         else:
@@ -215,3 +224,11 @@ class RobobrainVoicedetectionDataHandler():
         self._pub_speech.publish(self._msg_speech)
         rospy.logdebug("{%s} - Speech published data: {%s}",
             self.__class__.__name__, str(self._msg_speech))
+
+    def _publish_led_ears_message(self, random = "", repeat_num = [0, 0], rgb_color = []):
+        self._msg_led_ears.random = random
+        self._msg_led_ears.repeat_num = repeat_num
+        self._msg_led_ears.rgb_color = rgb_color
+        self._pub_led_ears.publish(self._msg_led_ears)
+        rospy.logdebug("{%s} - Led Ears published data: {%s}",
+            self.__class__.__name__, str(self._msg_led_ears))
