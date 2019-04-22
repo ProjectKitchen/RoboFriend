@@ -10,6 +10,7 @@ import traceback
 from robofriend.srv import SrvFaceRecordData
 from robofriend.srv import SrvFaceDatabaseData
 from robofriend.srv import SrvFaceHeartbeatData
+from robofriend.srv import SrvFaceDrawData
 
 # import ros messages
 from robofriend.msg import SpeechData
@@ -62,6 +63,10 @@ class RobobrainFacedetectionDataHandler():
         # init subscribers
         rospy.Subscriber("/robofriend/cam_data",  CamData, self._process_data)
 
+        #init face service
+        rospy.wait_for_service('/robofriend/face')
+        self._face_request = rospy.ServiceProxy('/robofriend/face', SrvFaceDrawData)
+
         # init services
         try:
             rospy.wait_for_service('/robofriend/facerecord', timeout = self._service_elapse_time)
@@ -111,10 +116,10 @@ class RobobrainFacedetectionDataHandler():
         rospy.logdebug("{%s} - Received message: {%s}",
             self.__class__.__name__, str(data))
         if self.__is_facesearching_activated():
-            self._top = data.top
-            self._right = data.right
-            self._bottom = data.bottom
-            self._left = data.left
+            self._top = data.top            # y top
+            self._right = data.right        # x_w
+            self._bottom = data.bottom      # y_h
+            self._left = data.left          # x ------
             self._name = data.name
         else:
             pass
@@ -135,10 +140,11 @@ class RobobrainFacedetectionDataHandler():
                 sleep(1.1)
             face_node = True
             face_detectded, face_grade = self.__face_search()
-            self.__stop_searching_new_face()
             if  face_detectded is True:
                 rospy.logdebug("{%s} - Face detected! Further steps are activated!\n", self.__class__.__name__)
                 self.__publish_speech_message("custom", "Ich habe jemanden gefunden")
+                self._center_face()
+                self.__stop_searching_new_face()
                 face_grade.lower()
                 if face_grade != "unknown":
                     self.__known_face_speech(face_grade)
@@ -167,6 +173,7 @@ class RobobrainFacedetectionDataHandler():
                 self._face_familiarity = "no_person"
 
             rospy.logdebug("Facenode: %s, Face Familiarity: %s", face_node, self._face_familiarity)
+            self._set_eyes_to_default()
             return self._face_familiarity
 
     def __face_search(self):
@@ -183,8 +190,42 @@ class RobobrainFacedetectionDataHandler():
             rospy.logdebug("{%s} - Time for detecting a face expired! Leave Facedetection interaction state!", self.__class__.__name__)
             return False, None
 
+    def _center_face(self):
+        cnt = 0
+        while cnt < 5:
+            rospy.logwarn("Coordinates - y_top: %s, x_w: %s, y_h: %s, x: %s", self._top, self._right, self._bottom, self._left)
+            if self._left < 90:
+                # move left
+                rospy.logwarn("{%s} - left: %s, therefore move left!",
+                    rospy.get_caller_id(), str(self._left))
+                if 0 <= self._left <= 45:
+                    self._face_request('set_eyes', [95, -7])
+                elif 46 <=  self._left <= 75:
+                    self._face_request('set_eyes', [50, -7])
+                else:
+                    self._face_request('set_eyes', [20, -7])
+            elif self._left > 150:
+                # move right
+                rospy.logwarn("{%s} - left: %s, therefore move right!",
+                    rospy.get_caller_id(), str(self._left))
+                if 150 <= self._left <= 180:
+                    self._face_request('set_eyes', [-20, -7])
+                elif 181 <= self._left <= 200:
+                    self._face_request('set_eyes', [-50, -7])
+                else:
+                    self._face_request('set_eyes', [-95, -7])
+            else:
+                rospy.logwarn("{%s} - Face in the center!",
+                    rospy.get_caller_id())
+                self._set_eyes_to_default()
+            sleep(2)
+            cnt += 1
+
     def __time_request(self):
         return time()
+
+    def _set_eyes_to_default(self):
+        self._face_request('set_eyes', [-7, -7])
 
     def __start_searchig_new_face(self):
         rospy.logdebug("{%s} - Set event to start searching new faces!", self.__class__.__name__)
