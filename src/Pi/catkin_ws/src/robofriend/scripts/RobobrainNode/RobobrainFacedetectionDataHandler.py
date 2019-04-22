@@ -205,7 +205,7 @@ class RobobrainFacedetectionDataHandler():
                     self._face_request('set_eyes', [20, -7])
             elif self._left > 150:
                 # move right
-                rospy.logwdebug("{%s} - left: %s, therefore move right!",
+                rospy.logdebug("{%s} - left: %s, therefore move right!",
                     rospy.get_caller_id(), str(self._left))
                 if 150 <= self._left <= 180:
                     self._face_request('set_eyes', [-20, -7])
@@ -214,7 +214,7 @@ class RobobrainFacedetectionDataHandler():
                 else:
                     self._face_request('set_eyes', [-95, -7])
             else:
-                rospy.logwdebug("{%s} - Face in the center!",
+                rospy.logdebug("{%s} - Face in the center!",
                     rospy.get_caller_id())
                 self._set_eyes_to_default()
             sleep(2)
