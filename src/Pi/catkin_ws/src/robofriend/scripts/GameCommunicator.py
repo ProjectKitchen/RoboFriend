@@ -82,7 +82,6 @@ def chooseAction(data):
         dataArray = dataArray[1:]
         if info == "play":
             SOUND_SRV_REQ = dataArray
-            # soundModule.playsound(dataArray)
     elif action == "face":
         # echo -n ":RUN:face;smile;increase:EOL:" >/dev/udp/localhost/9000
         # echo -n ":RUN:face;eyes;up:EOL:" >/dev/udp/localhost/9000
@@ -322,7 +321,7 @@ def GameCommunicator():
         rospy.logerr('{%s} - exception type: %s', rospy.get_caller_id(), type(inst))
         rospy.logerr('{%s} - exception argument: %s', rospy.get_caller_id(), inst.args[0])
 
-    rate = rospy.Rate(1) # 1hz
+    rate = rospy.Rate(100) # 100hz
 
     while not rospy.is_shutdown():
         # listen to udp port

@@ -77,13 +77,13 @@ def serviceHandler(req):
                     sensor, bat_voltage, shunt_amp, shunt_amp_max, inf_left, inf_middle, inf_right = serial_resp.split(',')
                     rospy.logdebug("{%s} - response service: sensor: %s, battery: %s, shunt amp: %s (%s), infrared left: %s, infrared middle: %s, infrared right: %s",
                      	rospy.get_caller_id(), 
-                        	sensor, 
-                        	bat_voltage,
-                            shunt_amp,
-                            shunt_amp_max,
-                        	inf_left, 
-                        	inf_middle, 
-                        	inf_right)
+                    	sensor, 
+                    	bat_voltage,
+                        shunt_amp,
+                        shunt_amp_max,
+                    	inf_left, 
+                    	inf_middle, 
+                    	inf_right)
             except Exception as inst:
                 rospy.logwarn('{%s} - this is a controlled catch.', rospy.get_caller_id())
                 rospy.logwarn('{%s} - parsing teensy serial data failed.', rospy.get_caller_id())
