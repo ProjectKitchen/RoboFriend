@@ -12,12 +12,12 @@ class OdometryDataHandler():
         self._angular_velocity = 0
 
     def processData(self, data):
-    	self._x = data.x
+        self._x = data.x
         self._y = data.y
         self._theta = data.theta
         self._linear_velocity = data.linear_velocity
         self._angular_velocity = data.angular_velocity
-        rospy.loginfo('{%s} DATA: %f %f %f %s %s', 
+        rospy.logdebug('{%s} DATA: %f %f %f %s %s', 
         				self.__class__.__name__, 
         				self._x, 
         				self._y, 

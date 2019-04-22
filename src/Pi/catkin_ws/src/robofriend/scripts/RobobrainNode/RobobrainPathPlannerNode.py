@@ -66,9 +66,6 @@ def PathPlanner():
     navodom = NavigationOdometryDataHandler.NavigationOdometryDataHandler()
     rospy.Subscriber("/odom", Odometry, navodom.processData) 
 
-    # spin() simply keeps python from exiting until this node is stopped
-    # rospy.spin()
-
     move = Twist()
     move.linear.x = 0.5
     move.angular.z = 0.3
@@ -81,20 +78,20 @@ def PathPlanner():
         pub_c.publish(move)
 
         if fwd is 1:
-        	# move.linear.x += 0.1
-        	# move.angular.z += 0.1
-        	if move.angular.z >= 1:
-        		fwd = 0
+            # move.linear.x += 0.1
+            # move.angular.z += 0.1
+            if move.angular.z >= 1:
+                fwd = 0
         else:
-        	# move.linear.x -= 0.1
-        	# move.angular.z -= 0.1
-        	if move.angular.z <= 0:
-        		fwd = 1
+            # move.linear.x -= 0.1
+            # move.angular.z -= 0.1
+            if move.angular.z <= 0:
+                fwd = 1
 
         rate.sleep() # make sure the publish rate maintains at the needed frequency
 
 if __name__ == '__main__':
     try:
-    	PathPlanner()
+        PathPlanner()
     except rospy.ROSInterruptException:
-    	pass
+        pass

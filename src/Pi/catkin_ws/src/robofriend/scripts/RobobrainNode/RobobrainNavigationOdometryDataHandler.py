@@ -25,7 +25,7 @@ class NavigationOdometryDataHandler():
         self._ang_z = data.twist.twist.angular.z
         self._twist_cov = data.twist.covariance
         
-        rospy.loginfo("{%s} DATA: %d %f %f %f %f",  
+        rospy.logdebug("{%s} DATA: %d %f %f %f %f",  
             self.__class__.__name__,
             self._seq,
             self._pos_x,
