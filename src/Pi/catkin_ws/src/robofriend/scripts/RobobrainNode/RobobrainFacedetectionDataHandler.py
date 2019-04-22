@@ -30,7 +30,7 @@ class RobobrainFacedetectionDataHandler():
 
         # amount of recorded pictures
         self.__pic_record = 10
-        self._elapse_time = 30
+        self._elapse_time = 45
         self._service_elapse_time = 5
 
         self._facedetection_node_started = False
@@ -126,7 +126,13 @@ class RobobrainFacedetectionDataHandler():
             rospy.logwarn("{%s} - Facedection node not started therefore leave face interaction state", self.__class__.__name__)
             face_node = False
             self._face_familiarity = None
+            self.__publish_speech_message("custom", "Kann derzeit keine Gesichter detektieren!")
         elif self._get_facedetection_status_flag() is True:
+            cnt = 0
+            while cnt < 2:
+                self.__publish_led_ears_message(rgb_color = [0, 0, 15])
+                cnt += 1
+                sleep(1.1)
             face_node = True
             face_detectded, face_grade = self.__face_search()
             self.__stop_searching_new_face()
