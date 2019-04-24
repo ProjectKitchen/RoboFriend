@@ -27,6 +27,8 @@ It is strongly recommended to use [ROS Kinetic](http://wiki.ros.org/kinetic/Inst
 	$ ./autostart.sh (only on Raspberry Pi)
 	$ ./install_ros_kinetic.sh
 	$ ./install_python.modules.sh
+    $ ./install_sam_on_remote_pc.sh
+    $ ./install_snips_manually.sh
 	$ ./install_ros_pkg.sh
 
 ## Robofriend startup scripts
