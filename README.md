@@ -51,7 +51,8 @@ These game applications are also written in python and are usually launched on a
 
 * We recommand you to clone the repository into a folder named *Git* placed in your home directory (~/Git/)
 * After pulling the repository, execute following commands (see the ROS install instructions):
-   * cd ~/Git/RoboFriend/src/Pi/catkin_ws/ && rm -r build/ && rm -r devel/ && catkin_make clean && catkin_make && catkin_make install
+   * cd ~/Git/RoboFriend/src/Pi/catkin_ws/ && rm -r build/ && rm -r devel/ && catkin_make clean && catkin_make && catkin_make
+* To start face and object detection on extrenal laptop enter *./start_computervision.sh <IP ADDRESS OF RASPBERRY PI>*
 
 ## Setup
 

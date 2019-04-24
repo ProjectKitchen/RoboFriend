@@ -19,7 +19,7 @@ class RobobrainVoicedetectionDataHandler():
     def __init__(self, queue):
         self._keyboard_queue = queue
         self._voice_hotword_request = rospy.ServiceProxy('/robofriend/voicehotword', SrvVoiceHotwordActivationData)
-        self._elapse_time = 45
+        self._elapse_time = 15
         self._intent = ""
         self._slot = ""
 

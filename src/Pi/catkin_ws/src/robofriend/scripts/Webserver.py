@@ -1,6 +1,6 @@
 #!/usr/bin/env python
-from Tkinter import Tk
-from tkinter.filedialog import askopenfilename
+#from Tkinter import Tk
+#from tkinter.filedialog import askopenfilename
 from flask import Flask, make_response, send_file
 import json, os, rospy, threading, time, subprocess, urllib
 
@@ -453,7 +453,7 @@ def run():
         rospy.logwarn('{%s} - webserver could not be started.', rospy.get_caller_id())
         rospy.logwarn('{%s} - exception type: %s', rospy.get_caller_id(), type(inst))
         rospy.logwarn('{%s} - exception argument: %s', rospy.get_caller_id(), inst.args[1])
-        
+
 def teensyModuleThreadHandler():
     global TEENSY_SRV_REQ
     while True:
@@ -525,7 +525,7 @@ def Webserver():
     # create publisher to communicate with robobrain state handler
     pub_avi_state = rospy.Publisher('/robofriend/web_state_data', WebserverAviStateData, queue_size = 10)
     pub_avi_msg = WebserverAviStateData()
-    
+
     rate = rospy.Rate(100) # 100hz
 
     while not rospy.is_shutdown():
