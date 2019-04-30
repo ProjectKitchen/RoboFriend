@@ -79,7 +79,7 @@ def handleKeyboard():
                 # ------------ sounds ---------------
                 elif event.unicode == '/':
                     soundModule.playRandom()
-                elif event.unicode == '\':
+                elif event.unicode == '\\'':
                     soundModule.playLastRandom()
 
                 # ------------ moods ---------------
@@ -87,7 +87,7 @@ def handleKeyboard():
                     moodModule.setHappy()
                 elif event.unicode == ']':
                     moodModule.setNeutral()
-                elif event.unicode == "'":
+                elif event.unicode == '\'':
                     moodModule.setAngry()
 
                 # ------------ speech ---------------
