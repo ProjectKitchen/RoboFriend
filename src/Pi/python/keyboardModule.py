@@ -11,6 +11,7 @@ import faceModule
 import soundModule
 import speechModule
 import systemModule
+import moodModule
 
 # globals
 KeyboardThread = None
@@ -76,10 +77,18 @@ def handleKeyboard():
                     faceModule.decreaseSmile()
 
                 # ------------ sounds ---------------
-                elif event.unicode == '-':
+                elif event.unicode == '/':
                     soundModule.playRandom()
-                elif event.unicode == '#':
+                elif event.unicode == '\':
                     soundModule.playLastRandom()
+
+                # ------------ moods ---------------
+                elif event.unicode == '[':
+                    moodModule.setHappy()
+                elif event.unicode == ']':
+                    moodModule.setNeutral()
+                elif event.unicode == "'":
+                    moodModule.setAngry()
 
                 # ------------ speech ---------------
                 elif event.unicode == '1':
