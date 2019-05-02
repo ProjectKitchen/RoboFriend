@@ -90,9 +90,8 @@ class VoiceDetectionDataHandler():
             else:
                 room = self._check_slot_value(len(payload["slots"]), payload, self._house_room)
                 on_off = self._check_slot_value(len(payload["slots"]), payload, self._on_off)
-                if room is False or on_off is False:_message_publish_message_publish
-                    rospy.logwarn("{%s} - Wrong phrase!\n",
-                        self.__class__.__name__)
+                if room is False or on_off is False:
+                    rospy.logwarn("{%s} - Wrong phrase!\n", self.__class__.__name__)
                     self._message_publish(enough_slots = False)
                 else:
                     rospy.logdebug("{%s} - Right slotvalues detected!\n",
@@ -165,6 +164,9 @@ class VoiceDetectionDataHandler():
                     rospy.logwarn("{%s} - Wrong phrase!\n",
                         self.__class__.__name__)
                     self._message_publish(enough_slots = False)
+        else:
+            self._message_publish(enough_slots = False)
+
 
     def _check_slot_value(self, slotamount, payload, list):
         for cnt in range(slotamount):
