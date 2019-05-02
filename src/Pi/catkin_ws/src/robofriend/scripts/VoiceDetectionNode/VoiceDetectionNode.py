@@ -86,6 +86,7 @@ class VoiceDetectionDataHandler():
             if len(payload['slots']) < 2:
                 rospy.logwarn("{%s} - Not enough slots!\n",
                     self.__class__.__name__)
+                self._message_publish(enough_slots = False)
             else:
                 room = self._check_slot_value(len(payload["slots"]), payload, self._house_room)
                 on_off = self._check_slot_value(len(payload["slots"]), payload, self._on_off)
@@ -103,6 +104,7 @@ class VoiceDetectionDataHandler():
             if len(payload['slots']) < 2:
                 rospy.logwarn("{%s} - Not enough slots!\n",
                     self.__class__.__name__)
+                self._message_publish(enough_slots = False)
             else:
                 room = self._check_slot_value(len(payload["slots"]), payload, self._house_room)
                 if room is False:
@@ -126,6 +128,7 @@ class VoiceDetectionDataHandler():
             if len(payload['slots']) < 1:
                 rospy.logwarn("{%s} - Not enough slots!\n",
                     self.__class__.__name__)
+                self._message_publish(enough_slots = False)
             else:
                 dvd_action = self._check_slot_value(len(payload["slots"]), payload, self._dvd_action)
                 on_off = self._check_slot_value(len(payload["slots"]), payload, self._on_off)
@@ -144,6 +147,7 @@ class VoiceDetectionDataHandler():
             if len(payload['slots']) < 1:
                 rospy.logwarn("{%s} - Not enough slots!\n",
                     self.__class__.__name__)
+                self._message_publish(enough_slots = False)
             else:
                 channel = self._check_slot_value(len(payload["slots"]), payload, self._channel)
                 volume = self._check_slot_value(len(payload["slots"]), payload, self._volume)
@@ -177,7 +181,8 @@ class VoiceDetectionDataHandler():
         {'siteId': 'default', 'modelId': 'robofriend-ts'}), hostname='localhost',
         port=1883)
 
-    def _message_publish(self, intent = "", slot = ""):
+    def _message_publish(self, enough_slots = True, intent = "", slot = ""):
+        self._msg.enough_slots = enough_slots
         self._msg.intent = intent
         self._msg.slots = slot
         rospy.logdebug("{%s} - Message send: %s!", self.__class__.__name__, self._msg)
