@@ -12,9 +12,14 @@
 #include "Sensor.h"
 #include "LegacyPower.h"
 #include "Parser.h"
+#include "Odometry.h"
+#include "GPIO.h"
+
+// #define PRINT_ENCODER_VALUES
 
 Sensor Sensors;
 Motor  Motors;
+Odometry odo;
 
 long loopcounter=0;
 long timestamp;
@@ -24,7 +29,8 @@ void setup()
     Serial.begin(9600);   // connects to RaspberryPi control interface (robofriend.py)
     Motors.init();
     Sensors.init();
-
+    odo.init();
+    
     parser_init();
     legacyPower_init();
     legacyPower_startup();
@@ -37,11 +43,21 @@ void loop()
     Sensors.updateSensorData();
     parser_processSerialCommands();
     Motors.updateMotors();
+    //odo.updateOdometry();
  
-    if (micros()-timestamp < 5000) 
-       delayMicroseconds(5000-(micros()-timestamp));        // main loop runs @ 200Hz 
-
     loopcounter++;   // used for limiting serial messages etc.
+
+    
+    if (!(loopcounter % 50)) { 
+       odo.updateOdometry(); //by higher speed no odom value
+      // this is for printing current speed ! ( should be replaced by speed control algorithm )
+      //odo.printEncoderValues();
+     // odo.clearEncoderValues();   
+    // odo.printOdom();
+   #ifdef PRINT_ENCODER_VALUES
+    odo.printOdom();
+      #endif
+    }
+  
+    while (micros()-timestamp < 1000);
 }
-
-

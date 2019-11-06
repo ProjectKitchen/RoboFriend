@@ -1,0 +1,51 @@
+[rosmaster.main][INFO] 2019-09-24 15:23:27,551: initialization complete, waiting for shutdown
+[rosmaster.main][INFO] 2019-09-24 15:23:27,551: Starting ROS Master Node
+[xmlrpc][INFO] 2019-09-24 15:23:27,553: XML-RPC server binding to 0.0.0.0:11311
+[xmlrpc][INFO] 2019-09-24 15:23:27,553: Started XML-RPC server [http://raspberrypi:11311/]
+[rosmaster.master][INFO] 2019-09-24 15:23:27,554: Master initialized: port[11311], uri[http://raspberrypi:11311/]
+[xmlrpc][INFO] 2019-09-24 15:23:27,554: xml rpc node: starting XML-RPC server
+[rosmaster.master][INFO] 2019-09-24 15:23:27,659: +PARAM [/run_id] by /roslaunch
+[rosmaster.master][INFO] 2019-09-24 15:23:27,661: +PARAM [/roslaunch/uris/host_raspberrypi__45917] by /roslaunch
+[rosmaster.master][INFO] 2019-09-24 15:23:27,797: +PARAM [/rosversion] by /roslaunch
+[rosmaster.master][INFO] 2019-09-24 15:23:27,797: +PARAM [/rosdistro] by /roslaunch
+[rosmaster.master][INFO] 2019-09-24 15:23:27,798: +PARAM [/hlds_laser_publisher/port] by /roslaunch
+[rosmaster.master][INFO] 2019-09-24 15:23:27,798: +PARAM [/hlds_laser_publisher/frame_id] by /roslaunch
+[rosmaster.master][INFO] 2019-09-24 15:23:27,865: +SERVICE [/rosout/get_loggers] /rosout http://raspberrypi:43523/
+[rosmaster.master][INFO] 2019-09-24 15:23:27,867: +SERVICE [/rosout/set_logger_level] /rosout http://raspberrypi:43523/
+[rosmaster.master][INFO] 2019-09-24 15:23:27,875: +PUB [/rosout_agg] /rosout http://raspberrypi:43523/
+[rosmaster.master][INFO] 2019-09-24 15:23:27,888: +SUB [/rosout] /rosout http://raspberrypi:43523/
+[rosmaster.master][INFO] 2019-09-24 15:23:27,905: +PUB [/rosout] /hlds_laser_publisher http://raspberrypi:40089/
+[rosmaster.master][INFO] 2019-09-24 15:23:27,906: +SERVICE [/hlds_laser_publisher/get_loggers] /hlds_laser_publisher http://raspberrypi:40089/
+[rosmaster.master][INFO] 2019-09-24 15:23:27,908: +SERVICE [/hlds_laser_publisher/set_logger_level] /hlds_laser_publisher http://raspberrypi:40089/
+[rosmaster.master][INFO] 2019-09-24 15:23:27,920: +PUB [/scan] /hlds_laser_publisher http://raspberrypi:40089/
+[rosmaster.master][INFO] 2019-09-24 15:23:27,921: +PUB [/rpms] /hlds_laser_publisher http://raspberrypi:40089/
+[rosmaster.master][INFO] 2019-09-24 15:23:27,953: publisherUpdate[/rosout] -> http://raspberrypi:43523/ ['http://raspberrypi:40089/']
+[rosmaster.master][INFO] 2019-09-24 15:23:27,959: publisherUpdate[/rosout] -> http://raspberrypi:43523/ ['http://raspberrypi:40089/']: sec=0.01, result=[1, '', 0]
+[rosmaster.master][INFO] 2019-09-24 15:23:30,957: +PUB [/chatter] /robofriend http://raspberrypi:43219/
+[rosmaster.master][INFO] 2019-09-24 15:23:31,054: +PUB [/rosout] /robofriend http://raspberrypi:43219/
+[rosmaster.master][INFO] 2019-09-24 15:23:31,059: publisherUpdate[/rosout] -> http://raspberrypi:43523/ ['http://raspberrypi:40089/', 'http://raspberrypi:43219/']
+[rosmaster.master][INFO] 2019-09-24 15:23:31,061: publisherUpdate[/rosout] -> http://raspberrypi:43523/ ['http://raspberrypi:40089/', 'http://raspberrypi:43219/']: sec=0.00, result=[1, '', 0]
+[rosmaster.master][INFO] 2019-09-24 15:23:31,064: +SERVICE [/robofriend/get_loggers] /robofriend http://raspberrypi:43219/
+[rosmaster.master][INFO] 2019-09-24 15:23:31,068: +SERVICE [/robofriend/set_logger_level] /robofriend http://raspberrypi:43219/
+[rosmaster.master][INFO] 2019-09-24 15:23:31,075: +SUB [/robospeak] /robofriend http://raspberrypi:43219/
+[rosmaster.master][INFO] 2019-09-24 15:23:40,452: -PUB [/rpms] /hlds_laser_publisher http://raspberrypi:40089/
+[rosmaster.master][INFO] 2019-09-24 15:23:40,454: -PUB [/scan] /hlds_laser_publisher http://raspberrypi:40089/
+[rosmaster.master][INFO] 2019-09-24 15:23:40,543: -SUB [/robospeak] /robofriend http://raspberrypi:43219/
+[rosmaster.master][INFO] 2019-09-24 15:23:40,544: -PUB [/chatter] /robofriend http://raspberrypi:43219/
+[rosmaster.master][INFO] 2019-09-24 15:23:40,545: -PUB [/rosout] /robofriend http://raspberrypi:43219/
+[rosmaster.master][INFO] 2019-09-24 15:23:40,545: -SERVICE [/robofriend/set_logger_level] /robofriend rosrpc://raspberrypi:38637
+[rosmaster.master][INFO] 2019-09-24 15:23:40,546: -SERVICE [/robofriend/get_loggers] /robofriend rosrpc://raspberrypi:38637
+[rosmaster.master][INFO] 2019-09-24 15:23:40,576: publisherUpdate[/rosout] -> http://raspberrypi:43523/ ['http://raspberrypi:40089/']
+[rosmaster.master][INFO] 2019-09-24 15:23:40,579: publisherUpdate[/rosout] -> http://raspberrypi:43523/ ['http://raspberrypi:40089/']: sec=0.00, result=[1, '', 0]
+[rosmaster.master][INFO] 2019-09-24 15:23:40,585: -PUB [/rosout] /hlds_laser_publisher http://raspberrypi:40089/
+[rosmaster.master][INFO] 2019-09-24 15:23:40,588: -SERVICE [/hlds_laser_publisher/get_loggers] /hlds_laser_publisher rosrpc://raspberrypi:37839
+[rosmaster.master][INFO] 2019-09-24 15:23:40,592: -SERVICE [/hlds_laser_publisher/set_logger_level] /hlds_laser_publisher rosrpc://raspberrypi:37839
+[rosmaster.master][INFO] 2019-09-24 15:23:40,677: publisherUpdate[/rosout] -> http://raspberrypi:43523/ []
+[rosmaster.master][INFO] 2019-09-24 15:23:40,678: publisherUpdate[/rosout] -> http://raspberrypi:43523/ []: sec=0.00, result=[1, '', 0]
+[rosmaster.master][INFO] 2019-09-24 15:23:41,079: -PUB [/rosout_agg] /rosout http://raspberrypi:43523/
+[rosmaster.master][INFO] 2019-09-24 15:23:41,080: -SUB [/rosout] /rosout http://raspberrypi:43523/
+[rosmaster.master][INFO] 2019-09-24 15:23:41,081: -SERVICE [/rosout/get_loggers] /rosout rosrpc://raspberrypi:47227
+[rosmaster.master][INFO] 2019-09-24 15:23:41,083: -SERVICE [/rosout/set_logger_level] /rosout rosrpc://raspberrypi:47227
+[rosmaster.main][INFO] 2019-09-24 15:23:41,258: keyboard interrupt, will exit
+[rosmaster.main][INFO] 2019-09-24 15:23:41,258: stopping master...
+[rospy.core][INFO] 2019-09-24 15:23:41,259: signal_shutdown [atexit]

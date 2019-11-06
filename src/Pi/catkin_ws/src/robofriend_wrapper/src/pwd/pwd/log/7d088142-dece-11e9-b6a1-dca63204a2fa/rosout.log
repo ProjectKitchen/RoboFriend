@@ -1,0 +1,4 @@
+
+
+1569331407.873842685  Node Startup
+1569331420.459625441 ERROR /hlds_laser_publisher [/home/pi/robofriend_SW/RoboFriend/src/Pi/catkin_ws/src/hls_lfcd_lds_driver/src/hlds_laser_publisher.cpp:182(main)] [topics: ] An exception was thrown: read: Interrupted system call

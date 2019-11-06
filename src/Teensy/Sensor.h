@@ -1,16 +1,14 @@
+#ifndef SENSOR_H_
+#define SENSOR_H_
 
 #include "RunningAverage.h"   // Library used for averaging sensor data
+#include "IrSensor.h"
 
 #define IR_SENSOR_AVERAGER_SIZE  10
 #define BATTERY_SENSOR_AVERAGER_SIZE  80
 #define DEFAULT_IR_MIDDLE_THRESHOLD 450
 #define DEFAULT_IR_LEFT_THRESHOLD   220
 #define DEFAULT_IR_RIGHT_THRESHOLD  220
-
-#define IR_SENSOR_LEFT_PIN    38
-#define IR_SENSOR_MIDDLE_PIN  39
-#define IR_SENSOR_RIGHT_PIN   40
-#define BATTERY_SENSOR_PIN    41
 
 extern class Sensor Sensors;
 
@@ -34,6 +32,8 @@ public:
   bool isIRSensorMiddleTriggered();
   bool isIRSensorRightTriggered();
 
+  void readIrToken();
+
 protected:
   int Battery = 0; 
 
@@ -53,9 +53,9 @@ protected:
   RunningAverage * IRSensorLeftBuffer;
   RunningAverage * IRSensorMiddleBuffer;
   RunningAverage * IRSensorRightBuffer;
+
+  IrCam ircam;
+  byte  result=false;
 };
 
-
-
-
-
+#endif /* SENSOR_H_ */
