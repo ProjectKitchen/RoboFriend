@@ -8,11 +8,44 @@ from roboFriendMsgs.msg import irCamData
 '''
 Camera Matrix
 '''
-FX = 1087
-FY = 1006
+
+'''
+focalLength = 1350.0;
+	
+	cuboidWidth = 80.0f;
+	cuboidHeight = 104.0f;
+	cuboidDepth = 88.0f;
+	resWidth = RESWIDTH;
+	resHeight = RESHEIGHT;
+	halfResWidth = resWidth/2;
+	halfResHeight = resHeight/2;
+
+
+
+modelPoints.push_back(cvPoint3D32f(
+		(float) 0.0, 
+		(float) 0.0, 
+		(float) 0.0));
+	modelPoints.push_back(cvPoint3D32f(
+		(float) 0.0, 
+		(float) -cuboidHeight, 
+		(float) cuboidDepth));
+	modelPoints.push_back(cvPoint3D32f(
+		(float) cuboidWidth, 
+		(float) -cuboidHeight, 
+		(float) 0.0));
+	modelPoints.push_back(cvPoint3D32f(
+		(float) cuboidWidth, 
+		(float) 0.0, 
+		(float) cuboidDepth));
+	positObject = cvCreatePOSITObject(&modelPoints[0],4);
+'''
+
+FX = 1350 #1087 #1350
+FY = 1350 #1006 # 1350
 #principle point, maybe middle of image
-CX = 511
-CY = 511
+CX = 1024 / 2#  width
+CY = 768 / 2#   hight
 
 mtx = np.float32([[FX, 0, CX],
         [0,FY,CY],
@@ -23,27 +56,70 @@ dist_coef = np.zeros(4)
 
 #charging station
 #object coordinates in cm
+cuboidWidth = 80.0
+cuboidHeight = 104.0
+cuboidDepth = 88.0
 #oben links
 x0=0.0
 y0=0.0
 z0=0.0
 
 #oben rechts
-x1=10.3
-y1=8.3
-z1=0.0
+x1=0.0
+y1=-cuboidHeight
+z1=cuboidDepth
 
 #unten rechts
-x2=10.3
-y2=0.0
-z2=8.8
+x2=cuboidWidth
+y2=-cuboidHeight
+z2=0.0
 
 #unten links
-x3=0.0
-y3=8.3
-z3=8.8
+x3=cuboidWidth
+y3=0.0
+z3=cuboidDepth
 
 token = [[0,0],[0,0],[0,0],[0,0]]
+
+def sortPoints():
+  global token
+  localTok=token
+  sortTok=token  
+
+  highestX=0
+  highestY=0
+  secHighX=0
+  secHighY=0
+  
+  for i in range(0,4):
+    #X Values
+    if localTok[i][0] > secHighX:
+      if localTok[i][0] > highestX:
+        secHighX=highestX        
+        highestX=localTok[i][0]
+      else:
+        secHighX=localTok[i][0]
+    # y Values
+    if localTok[i][1] > secHighY:
+      if localTok[i][1] > highestY:
+        secHighY=highestX        
+        highestY=localTok[i][1]
+      else:
+        secHighY=localTok[i][1]
+
+  for i in range(0,4):
+    if localTok[i][0] >= secHighX:
+      if localTok[i][1] >= secHighY:
+        sortTok[0]=localTok[i]
+      else:
+        sortTok[1]=localTok[i]
+    else:
+      if localTok[i][1] >= secHighY:
+        sortTok[3]=localTok[i]
+      else:
+        sortTok[2]=localTok[i]
+
+  token=sortTok
 
 def callback(data):
     global token
@@ -52,6 +128,7 @@ def callback(data):
         x= 1023-data.tokens[i].x
         y=1023-data.tokens[i].y
         token[i]=[x,y]
+    sortPoints()
         
 
 def listener():
@@ -71,8 +148,11 @@ def listener():
     while not rospy.is_shutdown():
         objectPoint = np.float32([[x0, y0, z0],[x1,y1,z1],[x2,y2,z2],[x3,y3,z3]])
         imgPoint = np.float32([[token[0][0], token[0][1]],[token[1][0], token[1][1]],[token[2][0], token[2][1]],[token[3][0], token[3][1]]])
-        retval, rvec, tvec = cv2.solvePnP(objectPoint, imgPoint, mtx, dist_coef)
+        rvec=np.float32([-1.5,-0.5,2.0])
+        tvec=np.float32([5.0,-2.0,30.0])
+        retval, rvec, tvec = cv2.solvePnP(objectPoint, imgPoint, mtx, dist_coef,rvec,tvec,True)
         print("X:",tvec[0]," Y:" ,tvec[1], " Z:",tvec[2])
+        print(rvec)
         rate.sleep()
 
 

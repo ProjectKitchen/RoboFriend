@@ -1,16 +1,16 @@
 #!/bin/bash
 
-sudo /home/pi/robofriend_SW/RoboFriend/src/Pi/iowarrior/iow 7 0 0 100
-source ~/ros_catkin_ws/devel/setup.bash
-cd /home/pi/robofriend_SW/RoboFriend/src/Pi/catkin_ws/
-source devel/setup.bash
-cd src/robofriend_wrapper/src
+#sudo /home/pi/robofriend_SW/RoboFriend/src/Pi/iowarrior/iow 7 0 0 100
+#source ~/ros_catkin_ws/devel/setup.bash
+#cd /home/pi/robofriend_SW/RoboFriend/src/Pi/catkin_ws/
+source ../catkin_ws/devel/setup.bash
+cd ../catkin_ws/src/robofriend_wrapper/src
 ROS_ROOT='pwd'
 
 tmux new-session -d -s robofriend
 
 ### Video Stream
-tmux new-window -n 'mjpeg Streamer' -t robofriend /home/pi/Desktop/start_mjpegStream.sh
+#tmux new-window -n 'mjpeg Streamer' -t robofriend /home/pi/Desktop/start_mjpegStream.sh
 
 ### roscore + lidar
 tmux new-window -n 'lidar' -t robofriend roslaunch robofriend_wrapper robofriend.launch

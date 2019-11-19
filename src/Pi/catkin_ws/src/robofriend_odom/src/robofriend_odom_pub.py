@@ -4,7 +4,7 @@
 '''robofriend_odom ROS Node'''
 # license removed for brevity
 import rospy
-from std_msgs.msg import String
+#from std_msgs.msg import String
 from roboFriendMsgs.msg import robofriendOdom
 from nav_msgs.msg import Odometry
 
@@ -32,11 +32,11 @@ def robofriend_odom():
 
     '''robofriend_odom Publisher'''
     sub = rospy.Subscriber('roboOdom', robofriendOdom, callback)
-    pub = rospy.Publisher('odom',Odometry,queue_size=10)
-    rospy.init_node('robofriend_odom', anonymous=True)
+    pub = rospy.Publisher('odom',Odometry,queue_size=5)
+    rospy.init_node('robofriend_odom', anonymous=False)
     odom_broadcaster = tf.TransformBroadcaster()
 
-    rate = rospy.Rate(10) # 10hz
+    rate = rospy.Rate(30) # 10hz
 
     # initial position  
     x = 0.0
@@ -93,8 +93,8 @@ def robofriend_odom():
         pub.publish(odom)
 
         last_time = current_time
-        rate.sleep()
-
+        #rospy.sleep(0.3)
+	rate.sleep()
        
 
 if __name__ == '__main__':

@@ -4,10 +4,7 @@ source /opt/ros/melodic/setup.bash
 #MAP SERVER
 xterm -e "rosrun map_server map_server /home/adrian/Robofriend/new_map.yaml " &
 
-#AMCL
-#xterm -e "roslaunch amcl amcl_omni.launch " &
-
-source ROBOFRIEND_SW1/RoboFriend/src/Pi/catkin_ws/devel/setup.bash
+source ../catkin_ws/devel/setup.bash
 #move_base
 xterm -e "roslaunch robofriend_navstack amcl.launch" &
 

@@ -26,32 +26,45 @@ import python.speechModule as speechModule
 
 # globals
 runFlag = True
-pubIrCam = False
+pubIrCamFlag = False
 
 def irTokenParser(string):
   data=string.split(",")
-  
+  #print(data)
+  irData = irCamData()
+  for i in range (0,4):
+    #print(int(data[i*4+2]))
+    #print(int(data[i*4+3]))
+    #print(int(data[i*4+4]))
+
+    irData.tokens[i].x=int(data[i*4+2])
+    irData.tokens[i].y=int(data[i*4+3])
+    irData.tokens[i].size=int(data[i*4+4])
+  return irData
+
 def parser(string):
   try:
     msg=string[5:]
     left, right = msg.split("r")
     c,msg=right.split("=")
     right,c=msg.split("\n")
+    return float(left), float(right)
   except:
     left="0"
     right="0"
     print("ERROR Odom")
+    return 0.0, 0.0
 
-  return float(left), float(right)
+#  return float(left), float(right)
 
 def callbackDrive(data):
   rospy.loginfo("Drive:%d,%d,%d", data.left, data.right, data.duration)
   teensyCommunicator.moveOdom(data.left, data.right, data.duration)
 
 def callbackIrCam(data):
-  global pubIrCam
-  pubIrCam = data.data
-  if pubIrCam:
+  global pubIrCamFlag
+  pubIrCamFlag = data.data
+  if pubIrCamFlag:
     rospy.loginfo("IrCam Data: ON")
   else:
     rospy.loginfo("IrCam Data: OFF")
@@ -82,12 +95,12 @@ def handler_stop_signals(signum, frame):
 
 def main():
   global runFlag
-  global 
+  global pubIrCamFlag
 
   pub = rospy.Publisher('roboOdom', robofriendOdom, queue_size=10)
   pubIrCam = rospy.Publisher('roboIrToken', irCamData, queue_size=10)
   rospy.init_node('robofriend_wrapper', anonymous=True)
-  rate = rospy.Rate(10) # 10hz
+  rate = rospy.Rate(5) # 10hz
   rospy.Subscriber("robospeak", String, callbackSpeak)
   rospy.Subscriber("robodrive", robofriendDrive, callbackDrive)
   rospy.Subscriber("roboIrCam", Bool, callbackIrCam)
@@ -117,8 +130,14 @@ def main():
     odom.left=int(left)
     odom.right=int(right)
     pub.publish(odom)
-    if pubIrCam:
+    if pubIrCamFlag:
       irString=teensyCommunicator.sendSerial("IR",True)
+      # print(irString)
+      irCamMsg = irCamData()
+      #pubIrCam(
+      irCamMsg=irTokenParser(irString)
+      pubIrCam.publish(irCamMsg) 
+      #)
     rate.sleep()
 
 if __name__ == '__main__':

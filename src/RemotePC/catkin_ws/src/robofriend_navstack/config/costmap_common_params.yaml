@@ -1,0 +1,20 @@
+obstacle_range: 3.0
+raytrace_range: 3.5
+footprint: [[0.1, 0.2], [0.1, -0.2],[-0.3,-0.2],[-0.3,-0.2]]
+#robot_radius: ir_of_robot
+inflation_radius: 1.0
+cost_scaling_factor: 3.0
+
+#observation_sources: base_scan
+
+#laser_scan_sensor: {sensor_frame: laser, data_type: LaserScan, topic: scan, marking: true, clearing: true}
+
+
+
+plugins: 
+    - {name: static_map,       type: "costmap_2d::StaticLayer"}
+    - {name: obstacles,        type: "costmap_2d::VoxelLayer"}
+publish_frequency: 1.0
+obstacles:
+    observation_sources: base_scan
+    base_scan: {data_type: LaserScan, sensor_frame: /base_laser_link, clearing: true, marking: true, topic: /base_scan}
