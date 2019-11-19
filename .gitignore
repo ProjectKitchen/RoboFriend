@@ -1,3 +1,8 @@
 src/Pi/screenshot.jpg
 *.pyc
 *.iml
+#ignore devel and build dir
+src/RemotePC/catkin_ws/devel/
+src/RemotePC/catkin_ws/build/
+src/Pi/catkin_ws/devel/
+src/Pi/catkin_ws/build/
