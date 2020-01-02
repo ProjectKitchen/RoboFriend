@@ -3,7 +3,7 @@
 
 #define STEPLENGTH      50
 #define STEPLENGTH_TURN 20
-#define ACCEL_STEP      2
+#define ACCEL_STEP      4
 #define MOVE_THRESHOLD  ACCEL_STEP*2
 
 extern class Motor Motors;
@@ -24,6 +24,7 @@ protected:
 
   void performPIDControl();
   void performLinearControl();
+  void performOdomControl();
   void setMotorSpeedGoals(int left, int right);
   
   int intendedRightSpeed;

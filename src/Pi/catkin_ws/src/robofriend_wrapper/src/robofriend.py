@@ -4,7 +4,7 @@
 '''robofriend_wrapper ROS Node'''
 # license removed for brevity
 import rospy
-from std_msgs.msg import String, Bool
+from std_msgs.msg import String, Bool, Float32
 from roboFriendMsgs.msg import robofriendDrive
 from roboFriendMsgs.msg import robofriendOdom
 from roboFriendMsgs.msg import irCamData, irToken
@@ -104,7 +104,7 @@ def main():
   rospy.Subscriber("robospeak", String, callbackSpeak)
   rospy.Subscriber("robodrive", robofriendDrive, callbackDrive)
   rospy.Subscriber("roboIrCam", Bool, callbackIrCam)
-
+  pubBat = rospy.Publisher("roboBattery", Float32, queue_size=2)
   # starting modules
   #rfidModule.start()
   webserverModule.start()
@@ -130,6 +130,12 @@ def main():
     odom.left=int(left)
     odom.right=int(right)
     pub.publish(odom)
+    try:
+      batVolt=Float32()
+      batVolt.data=float(statusModule.getBatteryVoltage())
+      pubBat.publish(batVolt)
+    except:
+      print("ERROR batVolt")
     if pubIrCamFlag:
       irString=teensyCommunicator.sendSerial("IR",True)
       # print(irString)

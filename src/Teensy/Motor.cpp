@@ -39,7 +39,10 @@ PID rightMotorPID(&InputRight, &OutputRight, &SetpointRight, KpRight, KiRight, K
 
 // for getting the odometry data
 extern Odometry odo;
+int set_left_odom;
+int set_right_odom;
 
+ bool leftSpeedReached=false,rightSpeedReached=false;
 
 #ifdef ROBOFRIEND_VERSION2
   int LEFT_MOTOR_MINPWM = 1;
@@ -169,7 +172,89 @@ void Motor::performLinearControl()
     }
   }
 }
+void Motor::performOdomControl()
+{
+ 
+  static int loopcounter=0;
+/******************** GET START MOTOR PWM */
+  if (intendedLeftSpeed > 0 && leftSpeed < leftStartDrive)
+  {
+    leftSpeed=leftStartDrive;
+  }
+  if (intendedLeftSpeed < 0 && leftSpeed > leftStartDrive)
+  {
+    leftSpeed=-leftStartDrive;
+  }
 
+  if (intendedRightSpeed > 0 && rightSpeed < rightStartDrive)
+  {
+    rightSpeed=rightStartDrive;
+  }
+  if (intendedRightSpeed < 0 && rightSpeed > rightStartDrive)
+  {
+    rightSpeed=-rightStartDrive;
+  }
+
+/************************* anfahren der Motoren */
+if(leftSpeedReached==false)
+{
+  if (intendedLeftSpeed >= leftSpeed+ACCEL_STEP) leftSpeed += ACCEL_STEP;
+  else if (intendedLeftSpeed <= leftSpeed-ACCEL_STEP) leftSpeed -= ACCEL_STEP;
+  else leftSpeedReached=true;
+}
+
+if(rightSpeedReached==false)
+{
+  if (intendedRightSpeed >= rightSpeed+ACCEL_STEP) rightSpeed += ACCEL_STEP;
+  else if (intendedRightSpeed <= rightSpeed-ACCEL_STEP) rightSpeed -= ACCEL_STEP;
+  else rightSpeedReached=true;
+}
+/*************************** Motor reached final speed */
+  if (leftSpeedReached && rightSpeedReached && (intendedDuration>0)) {
+      intendedDuration--;
+      if (!intendedDuration) {
+        intendedLeftSpeed=0;
+        intendedRightSpeed=0;
+    }
+  }
+//char str[60];
+  if (leftSpeedReached){
+      
+ // sprintf(str,"odo=%d set_left_odom=%d lPWM=%d\n",(int)odo.get_odom_left(), (int)set_left_odom, (int)leftSpeed);
+   //   Serial.print(str);
+      if (!(loopcounter % 50)) { 
+      if(((int)odo.get_odom_left()) > set_left_odom)
+      {
+        leftSpeed--;
+      }
+      else if(((int)odo.get_odom_left()) < set_left_odom)
+      {
+        leftSpeed++;  
+      }
+      }
+  }
+
+  if (rightSpeedReached){
+      
+  //sprintf(str,"odo=%d set_left_odom=%d lPWM=%d\n",(int)odo.get_odom_right(), (int)set_right_odom, (int)rightSpeed);
+    //  Serial.print(str);
+      if (!(loopcounter % 50)) { 
+      if(((int)odo.get_odom_right()) > set_right_odom)
+      {
+        rightSpeed--;
+      }
+      else if(((int)odo.get_odom_right()) < set_right_odom)
+      {
+        rightSpeed++;  
+      }
+      }
+  }
+
+  
+  loopcounter++;
+  if (loopcounter > 10000)
+    loopcounter = 0;
+}
 
 
 
@@ -192,8 +277,9 @@ void Motor::updateMotors()
   else InputRight = 0;
 
   
-  if (USE_PID_CONTROL) performPIDControl();
-  else performLinearControl();
+  //if (USE_PID_CONTROL) performPIDControl();
+  //else performLinearControl();
+  performOdomControl();
   
   if (HANDLE_OBSTACLES) handleObstacles();
   
@@ -311,12 +397,17 @@ void Motor::drive_odom(int left, int right, int duration) {
     right = -MAX_ODOM;
   if(left < -MAX_ODOM)
     left = -MAX_ODOM;
-    
+
+  set_left_odom=left;
+  set_right_odom=right;
    //Serial.printf("Drive Odom right=%04d, left=%04d, duration=%04d\n",left,right,duration);
    // Serial.printf("Drive Odom Mapping right=%04d, left=%04d, duration=%04d\n",(int)leftMapping(left),(int)rightMapping(right),duration);
   /////////////////////////////// Mapping
    intendedRightSpeed=(int)rightMapping(right);
    intendedLeftSpeed=(int)leftMapping(left);
+
+leftSpeedReached=false;
+rightSpeedReached=false;
   
    if (USE_PID_CONTROL==0)
       intendedDuration=duration;

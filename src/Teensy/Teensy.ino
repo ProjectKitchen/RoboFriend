@@ -26,7 +26,7 @@ long timestamp;
 
 void setup()
 {
-    Serial.begin(9600);   // connects to RaspberryPi control interface (robofriend.py)
+    Serial.begin(19200);   // connects to RaspberryPi control interface (robofriend.py)
     Motors.init();
     Sensors.init();
     odo.init();

@@ -299,6 +299,13 @@ void printDouble( double val, byte precision){
  }
 }
 
+double Odometry::get_odom_left() {
+  return odom_left;
+}
+
+double Odometry::get_odom_right() {
+  return odom_right;
+}
 
 void Odometry::printOdom() {
   char str[100];

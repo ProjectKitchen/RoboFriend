@@ -9,6 +9,13 @@ add_message_files(
   robofriendOdom.msg
   irCamData.msg
   irToken.msg
+  chargingStationValues.msg
+)
+
+add_service_files(
+  FILES
+  driveInChargingStation.srv
+  setGoal.srv
 )
 
 generate_messages(DEPENDENCIES)

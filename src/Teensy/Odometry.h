@@ -41,6 +41,8 @@ public:
   void updateOdometry();
   void printOdom();
 
+  double get_odom_right();
+  double get_odom_left();
 };
 
 #endif // ODOMETRY_H

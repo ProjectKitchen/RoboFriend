@@ -7,6 +7,9 @@ from std_msgs.msg import String
 from roboFriendMsgs.msg import irCamData
 '''
 Camera Matrix
+
+#define RESWIDTH 1024
+#define RESHEIGHT 768
 '''
 
 '''
@@ -41,8 +44,8 @@ modelPoints.push_back(cvPoint3D32f(
 	positObject = cvCreatePOSITObject(&modelPoints[0],4);
 '''
 
-FX = 1350 #1087 #1350
-FY = 1350 #1006 # 1350
+FX = 1280#1350 #1087 #1350
+FY = 1280#1350 #1006 # 1350
 #principle point, maybe middle of image
 CX = 1024 / 2#  width
 CY = 768 / 2#   hight
@@ -53,9 +56,9 @@ mtx = np.float32([[FX, 0, CX],
 
 dist_coef = np.zeros(4)
 
-
+'''
 #charging station
-#object coordinates in cm
+#object coordinates in cm rectangel eyetracker
 cuboidWidth = 80.0
 cuboidHeight = 104.0
 cuboidDepth = 88.0
@@ -78,6 +81,28 @@ z2=0.0
 x3=cuboidWidth
 y3=0.0
 z3=cuboidDepth
+'''
+#self made, test
+#oben links
+x0=0.0
+y0=0.0
+z0=0.0
+
+#oben rechts
+x1=210.0
+y1=0.0
+z1=0.0#cuboidDepth
+
+#unten rechts
+x2=180.0
+y2=-30.0
+z2=0.0
+
+#unten links
+x3=30.0
+y3=-30.0
+z3=0.0#cuboidDepth
+
 
 token = [[0,0],[0,0],[0,0],[0,0]]
 
@@ -125,8 +150,8 @@ def callback(data):
     global token
     
     for i in range(0,4):
-        x= 1023-data.tokens[i].x
-        y=1023-data.tokens[i].y
+        x= 1024-data.tokens[i].x
+        y=data.tokens[i].y
         token[i]=[x,y]
     sortPoints()
         
@@ -150,7 +175,8 @@ def listener():
         imgPoint = np.float32([[token[0][0], token[0][1]],[token[1][0], token[1][1]],[token[2][0], token[2][1]],[token[3][0], token[3][1]]])
         rvec=np.float32([-1.5,-0.5,2.0])
         tvec=np.float32([5.0,-2.0,30.0])
-        retval, rvec, tvec = cv2.solvePnP(objectPoint, imgPoint, mtx, dist_coef,rvec,tvec,True)
+        for i in range (1,5):
+            retval, rvec, tvec = cv2.solvePnP(objectPoint, imgPoint, mtx, dist_coef,rvec,tvec,True)
         print("X:",tvec[0]," Y:" ,tvec[1], " Z:",tvec[2])
         print(rvec)
         rate.sleep()
