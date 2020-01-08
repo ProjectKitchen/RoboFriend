@@ -1,26 +1,41 @@
 #!/usr/bin/env python
-'''calcCahrignStationPos ROS Node'''
-import rospy
-from std_msgs.msg import String, Bool
-from roboFriendMsgs.srv import driveInChargingStation, driveInChargingStationResponse
-from roboFriendMsgs.srv import setGoal, setGoalResponse
+'''calcCahrignStationPos ROS Node
 
-'''
+
 publisher uer /roboIrCam , bool, true (IR CAM aktivieren)
 publisher robo_set_goal, String, "CS" (zu Ladestationfahren)
 serviceCaller driveInStation, driveInChargingStation, True, RESPONSE should True, otherwise not in station
 
 subscriber /driveInCS, bool
 '''
+########################################################################################## IMPORT
+import rospy
+from std_msgs.msg import String, Bool
+from roboFriendMsgs.srv import driveInChargingStation, driveInChargingStationResponse
+from roboFriendMsgs.srv import setGoal, setGoalResponse
+
+#########################################################################################globals
 new_com = False
 
+########################################################################################## functions
+
+"""callback for new data
+
+set new command when robofriend should drive to charging station
+"""
 def callback(data):
     global new_com
     if new_com == False:
         new_com=data.data
         print("Recive Com to drive in Charging STation\n")
 
+""" commander node
 
+if new command to drive in Station is recived, node start the sequenz
+1 drive over ros navstack near to the station
+2 start IR cam
+3 send command to drive in station node
+"""
 def commander():
     global new_com
     rospy.init_node('cs_commander', anonymous=True)

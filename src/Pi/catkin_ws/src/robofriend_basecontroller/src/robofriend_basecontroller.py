@@ -1,14 +1,26 @@
 #!/usr/bin/env python
-'''robofriend_basecontroller ROS Node'''
-# license removed for brevity
+'''robofriend_basecontroller ROS Node
+
+convert incoming speed commands (/cmd_vel Topic) to drive comands for each motor
+'''
+
+################################################## Imports 
 import rospy
 from geometry_msgs.msg import Twist
 from roboFriendMsgs.msg import robofriendDrive
 
-vl=0.0
-vr=0.0
-width_robot=0.33
+################################################## Globals
+vl=0.0 # speed for left motor
+vr=0.0 # speed for right motor
+width_robot=0.33 # wheelbase of the robofriend
 
+
+######################################################################## Functions
+
+""" Callback for cmd_vel
+
+calculate motor speed for left and right motor for incoming /cmd_vel msg
+"""
 def callback(data):
     global vl
     global vr
@@ -36,7 +48,10 @@ def callback(data):
     vl = left_vel*1000;
     vr = right_vel*1000;
     
+""" base_controller node function
 
+start ros Node and subscribe to /cmd_vel speed topic and published speed value for left and right motor on /robodrive Topic
+"""
 def base_controller():
     global vl
     global vr
@@ -57,7 +72,10 @@ def base_controller():
         pub.publish(msg)
         rate.sleep()
 
+""" main function
 
+start base_controller Node
+"""
 if __name__ == '__main__':
     try:
         base_controller()

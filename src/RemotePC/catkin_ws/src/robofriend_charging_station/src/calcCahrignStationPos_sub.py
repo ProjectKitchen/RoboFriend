@@ -1,5 +1,9 @@
 #!/usr/bin/env python
-'''calcCahrignStationPos ROS Node'''
+'''calcCahrignStationPos ROS Node
+
+calculate position to charging station with opencv function (solvepnp)
+get no satable and correct values
+'''
 import rospy
 import cv2
 import numpy as np

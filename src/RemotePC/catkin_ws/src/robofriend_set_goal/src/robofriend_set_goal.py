@@ -1,22 +1,29 @@
 #!/usr/bin/env python
-# license removed for brevity
+""" robofriend_set_goal node
 
+managed commands to drive to a given pre saved position (list is given in a text file)
+"""
+
+############################################################### IMPORTS
 import rospy
 from std_msgs.msg import String
 
-# Brings in the SimpleActionClient
 import actionlib
-# Brings in the .action file and messages used by the move base action
 from move_base_msgs.msg import MoveBaseAction, MoveBaseGoal
 from roboFriendMsgs.srv import setGoal, setGoalResponse
 
+################################################################ GLOBALS
 x = 0.0
 y = 0.0
 new_goal = False
-
-####################################### Position Stuff ##
 dict_pos={}
 
+################################################################# Functions
+
+""" file parser function
+
+parse the given text file and create a dictonary with the given position and position name
+"""
 def file_parser(file_path):
   global dict_pos
   print(file_path)
@@ -31,14 +38,15 @@ def file_parser(file_path):
         break
     if line[0]=='#':
         continue
-    #print(line)
     
     args=line.split(",")
-    #print(args)
-    #print(args[0])
     dict_pos[args[0]]= args[1:]
   f.close()
 
+""" get value function
+
+get the position values of the given position name
+"""
 def get_value(key,typ):
   value=dict_pos.get(key)
   print(value)
@@ -47,42 +55,43 @@ def get_value(key,typ):
   if typ == "rot":
     return float(value[2]),float(value[3]),float(value[4]),float(value[5])
 
-################################################################
+""" get value function
+
+get the position values of the given position name
+"""
 def parser(string):
     x,y,z,w = get_value(string,"point")  
     return x,y,True
 
+"""set_goal
 
+set a new goal for the nav stack
+"""
 def set_goal(x,y):
-
-   # Create an action client called "move_base" with action definition file "MoveBaseAction"
     client = actionlib.SimpleActionClient('move_base',MoveBaseAction)
  
-   # Waits until the action server has started up and started listening for goals.
     client.wait_for_server()
 
-   # Creates a new goal with the MoveBaseGoal constructor
     goal = MoveBaseGoal()
     goal.target_pose.header.frame_id = "map"
     goal.target_pose.header.stamp = rospy.Time.now()
-   # Move 0.5 meters forward along the x axis of the "map" coordinate frame 
     goal.target_pose.pose.position.x = x
     goal.target_pose.pose.position.y = y
-   # No rotation of the mobile base frame w.r.t. map frame
     goal.target_pose.pose.orientation.w = 1.0
 
-   # Sends the goal to the action server.
     client.send_goal(goal)
-   # Waits for the server to finish performing the action.
     wait = client.wait_for_result()
-   # If the result doesn't arrive, assume the Server is not available
     if not wait:
         rospy.logerr("Action server not available!")
         rospy.signal_shutdown("Action server not available!")
     else:
-    # Result of executing the action
         return client.get_result()   
 
+""" handler for set goal
+
+set a new goal for the given position
+return true if position is reached otherwise false
+"""
 def handle_set_goal(req):
     global x,y,new_goal
     if new_goal == False:
@@ -91,10 +100,8 @@ def handle_set_goal(req):
             new_goal = True
             rospy.loginfo("new goal is set")
             if new_goal==True:
-            #set new goal and send it to navStack
                 result = set_goal(x,y)          
             if result:
-                #goal is reached
                 rospy.loginfo("Goal execution done!")
                 new_goal = False
                 return setGoalResponse(True)
@@ -103,9 +110,12 @@ def handle_set_goal(req):
         else:
             return setGoalResponse(False)
 
+""" robofirned set goal node
+
+read positions text file and start the actionserver
+"""
 def robofriend_set_goal():
     global x,y,new_goal
-    #sub = rospy.Subscriber('robo_set_goal', String, callback)
     rospy.init_node('robofriend_set_goal', anonymous=False)
     rate = rospy.Rate(10)
     s = rospy.Service("setGoal",setGoal,handle_set_goal)    
@@ -115,7 +125,10 @@ def robofriend_set_goal():
         
         rate.sleep()
 
-# If the python node is executed as main process (sourced directly)
+""" main function
+
+start the ros node
+"""
 if __name__ == '__main__':
     try:
         robofriend_set_goal()

@@ -1,7 +1,10 @@
 #!/usr/bin/env python
-'''calcCahrignStationPos ROS Node'''
+'''calcCahrignStationPos ROS Node
+
+'''
+
+################################################################################## Imports
 import rospy
-#import cv2
 import numpy as np
 from std_msgs.msg import String
 from roboFriendMsgs.msg import irCamData, chargingStationValues
@@ -10,7 +13,7 @@ import math
 from geometry_msgs.msg import Twist
 from nav_msgs.msg import Odometry
 
-
+################################################################################ globals
 #values in SI-Einheit
 TURN_SPEED = 0.4
 FORWARD_SPEED=-0.09
@@ -27,7 +30,18 @@ new_callback = False
 global_charging_data= chargingStationValues()
 pub=rospy.Publisher("cmd_vel",Twist,queue_size=1)   
 
+timestamp_old=0.0
+delta_dis=0.0
+timestamped_old=0.0
+delta_turn=0.0
 
+################################################################################## functions
+
+""" search ir Token function
+
+function turn robofriend clock and counter clockwise to search for the IR token of the charging station
+robofriend stops if the tokens are found
+"""
 def search_ir_Tokens():
     global global_charging_data
     print("search Token")
@@ -83,10 +97,11 @@ def search_ir_Tokens():
         turn_msg.angular.z=0.0
         pub.publish(turn_msg)
 
-timestamp_old=0.0
-delta_dis=0.0
-timestamped_old=0.0
-delta_turn=0.0
+"""callback for odom msgs
+
+record the driven distance and turn
+excess to data over the global variables
+"""
 def callback_odom(data):
     global covered_distance,covered_twist,old_timestamp, global_charging_data, delta_dis,timestamped_old,delta_turn
     timestamp_new = rospy.get_time()
@@ -95,18 +110,22 @@ def callback_odom(data):
     timestamped_old=timestamp_new
     delta_dis+=covered_distance
     delta_turn+=covered_twist
-    #print(delta_dis)
-    #print(timestamp_new-timestamped_old)
 
+""" callback for incoming msg about chrangingstation position
+
+save incoming data to global variable
+"""
 def callback(data):
     global global_charging_data, new_callback
-    #if new_callback != True:
     global_charging_data.distance=data.distance
     global_charging_data.twist=data.twist
     global_charging_data.translation=data.translation
     global_charging_data.valid=data.valid
-    #new_callback = True
 
+""" calc values function
+
+calculate the driving comands between robofriend actual position and the 1st position in front of the charging station
+"""
 def calc_values():
     global beta, global_charging_data
     trans_y = global_charging_data.translation
@@ -123,11 +142,12 @@ def calc_values():
 
     return forward_path,beta
 
+""" turn function
+
+turn the robofriend at given value
+"""
 def turn(twist):
     global global_charging_data,delta_turn
-    turn_time=math.fabs(twist/TURN_SPEED)
-    #print(twist, TURN_SPEED)
-    #print(turn_time)
     turn_msg=Twist()
     turn_msg.linear.x=0.0
     turn_msg.linear.y=0.0
@@ -157,12 +177,13 @@ def turn(twist):
     pub.publish(turn_msg)
     
 
+""" drive forward function
 
+drive the robofriend at given value
+if forward is set to false, the robofriend drive in the other dircetion
+"""
 def drive_forward(path, forward=True):
     global covered_distance,covered_twist,twist_to_correct, global_charging_data, delta_dis 
-    #covered_twist=0.0
-    #drive_time = math.fabs((path/1000)/FORWARD_SPEED)
-    #print(drive_time)
     turn_msg=Twist()
     if forward:
         turn_msg.linear.x=FORWARD_SPEED
@@ -175,7 +196,6 @@ def drive_forward(path, forward=True):
     turn_msg.angular.y=0.0
     turn_msg.angular.z=0.0
     pub.publish(turn_msg)
-    #rospy.sleep(drive_time)
     
     delta_dis=0.0
     if forward:
@@ -194,6 +214,11 @@ def drive_forward(path, forward=True):
     pub.publish(turn_msg)
     twist_to_correct=covered_twist
 
+""" drive in charging Station function
+
+drive robofriend in station as long as no charging voltage is detect
+!!! TODO !!!
+"""
 def drive_in_charging_station(dis):
     global global_charging_data
     drive_time = math.fabs((dis/1000)/FORWARD_SPEED)
@@ -218,6 +243,14 @@ def drive_in_charging_station(dis):
     pub.publish(turn_msg)
     twist_to_correct=covered_twist
 
+""" Handler for the drive in station service
+
+start the sequenz to drive in chargingstation
+1 Search IR Token
+2 calculate driving commands and to drive to first position in front of chargign station
+3 search IR Token
+4 drive backwards in station 
+"""
 def handle_drive_in_Station(req):
     print("\nDrive in Station start")
     global twist_to_correct, global_charging_data, irTokenFound
@@ -264,11 +297,9 @@ def handle_drive_in_Station(req):
         search_ir_Tokens()
         if irTokenFound == True:
             rospy.sleep(0.5)
-            #path,twist=calc_values()
             print("Twist: "+str(global_charging_data.translation))
-            #turn(-global_charging_data.twist)
             if twist > 1.0 or global_charging_data.translation < -1.0:
-                print("NO Last Turn")#return driveInChargingStationResponse(False)
+                print("NO Last Turn")
             else:
                 turn(global_charging_data.translation)
                 rospy.sleep(0.5)   
@@ -281,6 +312,10 @@ def handle_drive_in_Station(req):
         
         return driveInChargingStationResponse(True)        
 
+""" listener main Node
+
+create ros node 
+"""
 def listener():
     global new_callback,covered_distance,covered_twist,timestamp_old
     global twist_to_correct
@@ -292,6 +327,10 @@ def listener():
     timestamp_old=rospy.get_time()
     rate = rospy.Rate(1)
     rospy.spin()
-    
+
+"""main function
+
+start listener Node
+"""   
 if __name__ == '__main__':
     listener()

@@ -3,7 +3,7 @@
 
 #define STEPLENGTH      50
 #define STEPLENGTH_TURN 20
-#define ACCEL_STEP      4
+#define ACCEL_STEP      2
 #define MOVE_THRESHOLD  ACCEL_STEP*2
 
 extern class Motor Motors;

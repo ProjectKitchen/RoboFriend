@@ -1,26 +1,24 @@
 #!/usr/bin/env python
-'''calcCahrignStationPos ROS Node'''
+'''calcCahrignStationPos ROS Node
+
+calc the position of the charging station from the positions of the IR tokens in camera image without opencv functions
+'''
+
+##################################################################### IMPORTS
 import rospy
-#import cv2
 import numpy as np
 from std_msgs.msg import String
 from roboFriendMsgs.msg import irCamData, chargingStationValues
 import math
 import sys
-'''
-Camera Matrix
 
-#define RESWIDTH 1024
-#define RESHEIGHT 768
-'''
-
+##################################################################### globals
 MAX_DELTA_X = 5
 
-FX = 1280#1350 #1087 #1350
-FY = 1280#1350 #1006 # 1350
-#principle point, maybe middle of image
-CX = 1024 / 2#  width
-CY = 768 / 2#   hight
+FX = 1280
+FY = 1280
+CX = 1024 / 2
+CY = 768 / 2
 
 FIX_LENGTH_X = 210.0
 FIX_LENGTH_Y = 35.0
@@ -28,6 +26,12 @@ FIX_LENGTH_Y = 35.0
 token = [[0,0],[0,0],[0,0],[0,0]]
 valid_msg=False
 
+######################################################################### functions
+
+""" sort Points function
+
+the points need to sort to get a stable and correct calculation of the chargingstation position
+"""
 def sortPoints():
   global token
   localTok=token[:][:]
@@ -59,6 +63,11 @@ def sortPoints():
     return True
   except:
     return False
+
+""" callback for the ir Token msg
+
+save msg data to global variables
+"""
 def callback(data):
     global token, valid_msg
     
@@ -69,7 +78,10 @@ def callback(data):
     if sortPoints() == False:
       valid_msg=False
 
+""" calc alpha 
 
+calc the angle between image plane and chragingstation
+"""
 def calc_alpha(dis1, dis2):
   global valid_msg
   try:
@@ -80,20 +92,17 @@ def calc_alpha(dis1, dis2):
     valid_msg=False
   return alpha        
 
+""" listener node main function
+
+node subscribe to ir Token data and published position to chargingstion
+"""
 def listener():
     global token
-    '''calcCahrignStationPos Subscriber'''
-    # In ROS, nodes are uniquely named. If two nodes with the same
-    # node are launched, the previous one is kicked off. The
-    # anonymous=True flag means that rospy will choose a unique
-    # name for our 'listener' node so that multiple listeners can
-    # run simultaneously.
     rospy.init_node('calcCahrignStationPos', anonymous=True)
 
     rospy.Subscriber("roboIrToken", irCamData, callback)
     pub=rospy.Publisher("roboChragingStationValues",chargingStationValues,queue_size=1)
 
-    # spin() simply keeps python from exiting until this node is stopped
     rate = rospy.Rate(10) # 10hz
     while not rospy.is_shutdown():
         valid_msg=True
@@ -107,9 +116,6 @@ def listener():
           if math.fabs(token[2][0]-token[3][0]) != 0:
             dis2=(FIX_LENGTH_Y*FY)/(math.fabs(token[2][1]-token[3][1]))
 
-
-
-       
           delta_dis=dis1-dis2
           yreal_m=math.sqrt(FIX_LENGTH_X*FIX_LENGTH_X - delta_dis*delta_dis)
           y_pixel = math.fabs(token[0][0]-token[2][0])

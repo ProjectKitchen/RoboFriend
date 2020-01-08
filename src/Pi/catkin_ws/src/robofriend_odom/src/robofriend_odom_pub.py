@@ -1,23 +1,30 @@
 #!/usr/bin/env python
 
+'''robofriend_odom ROS Node
 
-'''robofriend_odom ROS Node'''
-# license removed for brevity
+subcribe to Odomdata of left and right motor and create odometry nav msg out of it
+'''
+
+######################################################################## IMPORTS
 import rospy
-#from std_msgs.msg import String
 from roboFriendMsgs.msg import robofriendOdom
 from nav_msgs.msg import Odometry
-
 import math
 from math import sin, cos, pi
-
 import tf
 from geometry_msgs.msg import Point, Pose, Quaternion, Twist, Vector3
 
-left_odom=0.0
-right_odom=0.0
-width_robot=0.33
+######################################################################### Globals
+left_odom=0.0   # leftmotor odom data
+right_odom=0.0 # rightmotor odom data
+width_robot=0.33 # wheelbase of robofriend
 
+######################################################################## Functions
+
+""" callback for incoming roboOdom msg
+
+save incoming data to global values
+"""
 def callback(odom_data):
     global left_odom
     global right_odom
@@ -25,7 +32,11 @@ def callback(odom_data):
     left_odom = odom_data.left/1000.0
     right_odom = odom_data.right/1000.0
 
+""" robofriend_odom function
 
+create ros node
+subcribe to odomdata of the motors (coming from microcontroller) and published nav_msgs odometry on /odom topic
+"""
 def robofriend_odom():
     global left_odom
     global right_odom
@@ -36,7 +47,7 @@ def robofriend_odom():
     rospy.init_node('robofriend_odom', anonymous=False)
     odom_broadcaster = tf.TransformBroadcaster()
 
-    rate = rospy.Rate(30) # 10hz
+    rate = rospy.Rate(30) # 30 hz
 
     # initial position  
     x = 0.0
@@ -96,7 +107,10 @@ def robofriend_odom():
         #rospy.sleep(0.3)
 	rate.sleep()
        
+""" main function
 
+start robofriend_odom Node
+"""
 if __name__ == '__main__':
     try:
         robofriend_odom()
