@@ -20,8 +20,8 @@ FY = 1280
 CX = 1024 / 2
 CY = 768 / 2
 
-FIX_LENGTH_X = 210.0
-FIX_LENGTH_Y = 35.0
+FIX_LENGTH_X = 100.0 #real distance between teokens of the left and right side
+FIX_LENGTH_Y = 35.0 #real distance in mm between upper and lower token
 
 token = [[0,0],[0,0],[0,0],[0,0]]
 valid_msg=False
@@ -127,11 +127,14 @@ def listener():
             rospy.logwarn("ERROR Translation")
             valid_msg=False
             
+          """AENDERUNG wegen Versetzen der IR Token Punkte
           pair_1_x=math.fabs(CX-token[0][0])
           pair_2_x=math.fabs(CX-token[2][0])
           delta_x_pixel=pair_1_x-pair_2_x
           delta_x_robot=(delta_x_pixel*meterPerPixel)/2000.0 #TODO:warum halbe (/1000 wegen umrechnung zu meter, rest rechnet anscheinend in mm)
-
+          """
+          delta_x_pixel=CX-token[2][0] #pixel left
+          delta_x_robot=delta_x_pixel*meterPerPixel/1000.0
         except:
           rospy.logwarn("Distance calculation fail")
           valid_msg=False

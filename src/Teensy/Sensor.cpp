@@ -28,20 +28,20 @@ void Sensor::updateSensorData()
 {
     BatterySensorBuffer->addValue(analogRead(PIN_ADC_VBAT));
     
-    IRSensorMiddleBuffer->addValue(analogRead(PIN_ADC_IR2));
-    IRSensorLeftBuffer->addValue(analogRead(PIN_ADC_IR1));
-    IRSensorRightBuffer->addValue(analogRead(PIN_ADC_IR3));
+    //IRSensorMiddleBuffer->addValue(analogRead(PIN_ADC_IR2));
+    //IRSensorLeftBuffer->addValue(analogRead(PIN_ADC_IR1));
+    //IRSensorRightBuffer->addValue(analogRead(PIN_ADC_IR3));
 
     Battery        = BatterySensorBuffer->getFastAverage();
-    IRSensorMiddle = IRSensorMiddleBuffer->getFastAverage();
-    IRSensorLeft   = IRSensorLeftBuffer->getFastAverage();
-    IRSensorRight  = IRSensorRightBuffer->getFastAverage();
+    //IRSensorMiddle = IRSensorMiddleBuffer->getFastAverage();
+    //IRSensorLeft   = IRSensorLeftBuffer->getFastAverage();
+    //IRSensorRight  = IRSensorRightBuffer->getFastAverage();
 
-    IRSensorMiddleTriggered = (IRSensorMiddle >= IRSensorMiddleThreshold);
-    IRSensorLeftTriggered   = (IRSensorLeft >= IRSensorLeftThreshold);
-    IRSensorRightTriggered  = (IRSensorRight >= IRSensorRightThreshold);
+    //IRSensorMiddleTriggered = (IRSensorMiddle >= IRSensorMiddleThreshold);
+    //IRSensorLeftTriggered   = (IRSensorLeft >= IRSensorLeftThreshold);
+    //IRSensorRightTriggered  = (IRSensorRight >= IRSensorRightThreshold);
 
-    result = ircam.read_ir();
+    //result = ircam.read_ir();
     //if ((loopcounter % 200) == 0) reportSensorValues();
 }
 
@@ -84,6 +84,7 @@ bool Sensor::isIRSensorRightTriggered() {
 
 void Sensor::readIrToken(){
 
+result = ircam.read_ir();
 if(ircam.token1.valid)
 {
   Serial.printf("IRToken,1,%04d,%04d,%04d",ircam.token1.x,ircam.token1.y,ircam.token1.tokenSize);

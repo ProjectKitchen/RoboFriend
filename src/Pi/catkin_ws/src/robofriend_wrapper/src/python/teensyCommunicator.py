@@ -10,7 +10,7 @@ driveDuration = 50
 #init
 print "initializing teensyCommunicator..."
 try:
-    ser = serial.Serial("/dev/ttyACM0", 19200, timeout=1)
+    ser = serial.Serial("/dev/ttyACM0", 115200, timeout=1)
     print('***Serial for Teensy opened***')
 except:
     print('***Serial for Teensy could not be opened***')
@@ -20,7 +20,7 @@ def close():
     ser.close()
 
 def moveOdom(left, right, duration = driveDuration):
-    stopMovement()
+    stopMovement() ##### maybe this here also create failure
     c=sendSerial("DO " + str(left) + " " + str(right) + " " + str(duration))
 
 def move(left, right, duration):

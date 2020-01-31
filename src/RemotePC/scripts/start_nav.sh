@@ -5,8 +5,9 @@ source /opt/ros/melodic/setup.bash
 tmux new-session -d -s robofriend
 
 #MAP SERVER
-xterm -e "rosrun map_server map_server /home/adrian/GIT/RoboFriend/src/RemotePC/maps/new_map_cor.yaml" &
+xterm -e "rosrun map_server map_server /home/adrian/GIT/RoboFriend/src/RemotePC/maps/laborGesamt.yaml" &
 
+xterm -e "rosrun tf static_transform_publisher -0.30 0.0 0.0 0.0 0.0 0.0 base_link ir_cam 100 "&
 source ../catkin_ws/devel/setup.bash
 #move_base
 xterm -e "roslaunch robofriend_navstack amcl.launch" &

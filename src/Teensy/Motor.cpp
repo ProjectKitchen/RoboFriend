@@ -344,8 +344,9 @@ void Motor::drive(int left, int right, int duration) {
 int leftMapping(float odom)
 {
     int i =0;
-    if(odom >=0 )
+    if(odom >=startLeftSpeedPos )
     {
+      
         for(i=0;i<150;i++)
         {
             if(motorMapForward[i][1] >= odom)
@@ -353,7 +354,7 @@ int leftMapping(float odom)
         }
         return motorMapForward[i][0];
     }
-    else
+    else if(odom<=startLeftSpeedNeg)
     {
          for(i=0;i<150;i++)
         {
@@ -362,13 +363,17 @@ int leftMapping(float odom)
         }
         return motorMapBackward[i][0];
     }
+    else 
+    {
+      return 0;
+    }
     
 }
 
 int rightMapping(float odom)
 {
     int i =0;
-    if(odom >=0 )
+    if(odom >=startRightSpeedPos )
     {
         for(i=0;i<150;i++)
         {
@@ -377,7 +382,7 @@ int rightMapping(float odom)
         }
         return motorMapForward[i][0];
     }
-    else
+    else if(odom<=startRightSpeedNeg)
     {
          for(i=0;i<150;i++)
         {
@@ -385,6 +390,10 @@ int rightMapping(float odom)
                 break;
         }
         return motorMapBackward[i][0];
+    }
+        else 
+    {
+      return 0;
     }
 }
 

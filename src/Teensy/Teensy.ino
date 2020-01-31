@@ -17,6 +17,8 @@
 
 // #define PRINT_ENCODER_VALUES
 
+int LED_PIN =  9;
+
 Sensor Sensors;
 Motor  Motors;
 Odometry odo;
@@ -24,29 +26,63 @@ Odometry odo;
 long loopcounter=0;
 long timestamp;
 
+bool led_blink=false;
+bool first_loop;
+
 void setup()
 {
-    Serial.begin(19200);   // connects to RaspberryPi control interface (robofriend.py)
+   pinMode(LED_PIN, OUTPUT) ; 
+    digitalWrite(LED_PIN, HIGH);
+    
+    Serial.begin(115200);   // connects to RaspberryPi control interface (robofriend.py)
     Motors.init();
     Sensors.init();
     odo.init();
+
     
     parser_init();
     legacyPower_init();
     legacyPower_startup();
+
+   
+    first_loop=true;
+    
 }
 
-
+/****
+ * LED vor update der einzelenen phasen aufdrehen um nach und nach fehler einzugrenzen
+ */
 void loop()
-{   
+{   if(first_loop)
+    {
+      delay(2000);
+      first_loop=false;
+    }
     timestamp = micros();
-    Sensors.updateSensorData();
+    
+    /* FEHLER IN DEM BEREICH**********************************/
+    Sensors.updateSensorData();//Fehler in dieser Funktion
+
+    
     parser_processSerialCommands();
+     
     Motors.updateMotors();
     //odo.updateOdometry();
- 
+     
     loopcounter++;   // used for limiting serial messages etc.
 
+ if (!(loopcounter % 100)) { 
+        if(led_blink)
+      {
+        digitalWrite(LED_PIN, HIGH);
+        led_blink=false;
+      }
+      else
+      {
+        digitalWrite(LED_PIN, LOW);
+        led_blink=true;
+      }
+ }
     
     if (!(loopcounter % 50)) { 
        odo.updateOdometry(); //by higher speed no odom value
@@ -56,7 +92,12 @@ void loop()
     // odo.printOdom();
    #ifdef PRINT_ENCODER_VALUES
     odo.printOdom();
-      #endif
+    #endif
+    
+
+        
+   
+      
     }
   
     while (micros()-timestamp < 1000);

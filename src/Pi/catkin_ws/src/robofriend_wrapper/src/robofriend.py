@@ -30,7 +30,23 @@ import python.speechModule as speechModule
 runFlag = True
 pubIrCamFlag = False
 
+driveLeft = 0
+driveRight = 0
+odomLeft=0.0
+odomRight=0.0
+driveDuration=0
 ##################################################################### Functions
+"""Teensy Communicator Manager
+
+read pipe and send one msg and wait for response, ###############test if the teensy hangout come from the commincation
+"""
+def teensyManger(cmd):
+  global driveLeft, driveRight, driveDuration, odomLeft, odomRight
+  if cmd == "drive":
+    teensyCommunicator.moveOdom(driveLeft, driveRight, driveDuration)
+    # wait for response
+  if cmd == "odom":
+    odomLeft, odomRight = parser(teensyCommunicator.getOdom())
 
 """IR Token Parser
 
@@ -67,8 +83,11 @@ def parser(string):
 send drive command to microcontroller
 """
 def callbackDrive(data):
+  global driveLeft, driveRight, driveDuration
   rospy.loginfo("Drive:%d,%d,%d", data.left, data.right, data.duration)
-  teensyCommunicator.moveOdom(data.left, data.right, data.duration)
+  driveLeft=data.left
+  driveRight=data.right
+  driveDuration=data.duration
 
 """ callback for IR Camera Flag
 
@@ -122,6 +141,7 @@ start robofriend software modules and robofriend rosnode
 def main():
   global runFlag
   global pubIrCamFlag
+  global driveLeft, driveRight, driveDuration, odomLeft, odomRight
 
   pub = rospy.Publisher('roboOdom', robofriendOdom, queue_size=10)
   pubIrCam = rospy.Publisher('roboIrToken', irCamData, queue_size=10)
@@ -146,11 +166,12 @@ def main():
   print "*** startup completed! ***"
 
   while not rospy.is_shutdown() and runFlag:
+    teensyManger("odom")
     odom = robofriendOdom()
-    left, right = parser(teensyCommunicator.getOdom())
-    odom.left=int(left)
-    odom.right=int(right)
+    odom.left=int(odomLeft)
+    odom.right=int(odomRight)
     pub.publish(odom)
+    teensyManger("drive")
 
     try:
       batVolt=Float32()

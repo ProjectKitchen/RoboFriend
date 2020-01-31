@@ -35,7 +35,62 @@ delta_dis=0.0
 timestamped_old=0.0
 delta_turn=0.0
 
+x_drift=0.0
+CX = 1024 / 2
 ################################################################################## functions
+
+""" drive forward function
+
+drive the robofriend at given value
+if forward is set to false, the robofriend drive in the other dircetion
+"""
+def drive_forward(path, forward=True):
+    global covered_distance,covered_twist,twist_to_correct, global_charging_data, delta_dis 
+    turn_msg=Twist()
+    if forward:
+        turn_msg.linear.x=FORWARD_SPEED
+        turn_msg.angular.z= -0.040
+        path=-path
+    else:
+        turn_msg.linear.x=-FORWARD_SPEED
+        turn_msg.angular.z=0.0
+    turn_msg.linear.y=0.0
+    turn_msg.linear.z=0.0
+    turn_msg.angular.x=0.0
+    turn_msg.angular.y=0.0
+    #turn_msg.angular.z=0.0
+    pub.publish(turn_msg)
+    
+    delta_dis=0.0
+    if forward:
+        while delta_dis>(path/1000):
+          pass;
+    else:
+        while delta_dis<(path/1000):
+          pass;
+
+    turn_msg.linear.x=0.0
+    turn_msg.linear.y=0.0
+    turn_msg.linear.z=0.0
+    turn_msg.angular.x=0.0
+    turn_msg.angular.y=0.0
+    turn_msg.angular.z=0.0
+    pub.publish(turn_msg)
+    twist_to_correct=covered_twist
+
+"""
+
+"""
+def callback_ir_token(data):
+    global x_drift, CX
+    x_max=0
+    for i in range(0,4):        
+        x= 1024-data.tokens[i].x
+        if x > x_max:
+            x_max=x
+    x_drift=x_max-CX
+    #print(x_drift)
+
 
 """ search ir Token function
 
@@ -57,6 +112,8 @@ def search_ir_Tokens():
         start=rospy.get_time()
         pub.publish(turn_msg)
         print("positiv Turn")
+
+        
         while True:
             if global_charging_data.valid:
                 irTokenFound=True
@@ -148,6 +205,8 @@ turn the robofriend at given value
 """
 def turn(twist):
     global global_charging_data,delta_turn
+    drive_forward(30.0,False)
+    rospy.sleep(0.5)
     turn_msg=Twist()
     turn_msg.linear.x=0.0
     turn_msg.linear.y=0.0
@@ -175,64 +234,34 @@ def turn(twist):
     turn_msg.angular.y=0.0
     turn_msg.angular.z=0.0
     pub.publish(turn_msg)
+    rospy.sleep(0.5)
+    drive_forward(30.0)
     
 
-""" drive forward function
 
-drive the robofriend at given value
-if forward is set to false, the robofriend drive in the other dircetion
-"""
-def drive_forward(path, forward=True):
-    global covered_distance,covered_twist,twist_to_correct, global_charging_data, delta_dis 
-    turn_msg=Twist()
-    if forward:
-        turn_msg.linear.x=FORWARD_SPEED
-        path=-path
-    else:
-        turn_msg.linear.x=-FORWARD_SPEED
-    turn_msg.linear.y=0.0
-    turn_msg.linear.z=0.0
-    turn_msg.angular.x=0.0
-    turn_msg.angular.y=0.0
-    turn_msg.angular.z=0.0
-    pub.publish(turn_msg)
-    
-    delta_dis=0.0
-    if forward:
-        while delta_dis>(path/1000):
-          pass;
-    else:
-        while delta_dis<(path/1000):
-          pass;
-
-    turn_msg.linear.x=0.0
-    turn_msg.linear.y=0.0
-    turn_msg.linear.z=0.0
-    turn_msg.angular.x=0.0
-    turn_msg.angular.y=0.0
-    turn_msg.angular.z=0.0
-    pub.publish(turn_msg)
-    twist_to_correct=covered_twist
 
 """ drive in charging Station function
 
 drive robofriend in station as long as no charging voltage is detect
 !!! TODO !!!
 """
-def drive_in_charging_station(dis):
-    global global_charging_data
-    drive_time = math.fabs((dis/1000)/FORWARD_SPEED)
-    print(dis,FORWARD_SPEED)
-    print(drive_time)
+def drive_in_charging_station(path):
+    global covered_distance,covered_twist,twist_to_correct, global_charging_data, delta_dis, x_drift
     turn_msg=Twist()
     turn_msg.linear.x=FORWARD_SPEED
+    path=-path
     turn_msg.linear.y=0.0
     turn_msg.linear.z=0.0
     turn_msg.angular.x=0.0
     turn_msg.angular.y=0.0
-    turn_msg.angular.z=0.0
+    turn_msg.angular.z= -0.040
     pub.publish(turn_msg)
-    rospy.sleep(drive_time)
+    
+    delta_dis=0.0
+    while delta_dis>(path/1000):
+        pass;
+
+        
 
     turn_msg.linear.x=0.0
     turn_msg.linear.y=0.0
@@ -249,7 +278,7 @@ start the sequenz to drive in chargingstation
 1 Search IR Token
 2 calculate driving commands and to drive to first position in front of chargign station
 3 search IR Token
-4 drive backwards in station 
+4 drive backwards in station loop for IR token in the middle and have charging voltage.
 """
 def handle_drive_in_Station(req):
     print("\nDrive in Station start")
@@ -304,10 +333,12 @@ def handle_drive_in_Station(req):
                 turn(global_charging_data.translation)
                 rospy.sleep(0.5)   
         print("drive in Satation:"+str(global_charging_data.distance-100))
-        if global_charging_data.distance-100.0 > 0.0:          
+        if global_charging_data.distance-100.0 > 0.0:      
+          pass    
           drive_forward(global_charging_data.distance-100.0)
+          #drive_in_charging_station(global_charging_data.distance-100.0)
         else:
-          drive_forward(300.0)
+          drive_forward(300.0,False)
         print("In Station\n")
         
         return driveInChargingStationResponse(True)        
@@ -322,6 +353,7 @@ def listener():
     rospy.init_node('driveInStation', anonymous=False)
     rospy.Subscriber("roboChragingStationValues", chargingStationValues, callback)
     rospy.Subscriber("odom", Odometry, callback_odom)
+    rospy.Subscriber("roboIrToken", irCamData, callback_ir_token)
     s = rospy.Service("driveInStation",driveInChargingStation,handle_drive_in_Station)
 
     timestamp_old=rospy.get_time()

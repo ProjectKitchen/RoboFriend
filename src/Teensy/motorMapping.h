@@ -306,3 +306,9 @@ static float motorMapBackward[150][3] = {
 
 int leftStartDrive=18;
 int rightStartDrive=6;
+
+float startLeftSpeedPos=20.0;
+float startLeftSpeedNeg=-20.0;
+
+float startRightSpeedPos=20.0;
+float startRightSpeedNeg=-20.0; 

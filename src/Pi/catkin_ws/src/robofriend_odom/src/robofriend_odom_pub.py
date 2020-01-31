@@ -7,10 +7,13 @@ subcribe to Odomdata of left and right motor and create odometry nav msg out of 
 
 ######################################################################## IMPORTS
 import rospy
+#from std_msgs.msg import String
 from roboFriendMsgs.msg import robofriendOdom
 from nav_msgs.msg import Odometry
+
 import math
 from math import sin, cos, pi
+
 import tf
 from geometry_msgs.msg import Point, Pose, Quaternion, Twist, Vector3
 
@@ -47,7 +50,7 @@ def robofriend_odom():
     rospy.init_node('robofriend_odom', anonymous=False)
     odom_broadcaster = tf.TransformBroadcaster()
 
-    rate = rospy.Rate(30) # 30 hz
+    rate = rospy.Rate(30) # 10hz
 
     # initial position  
     x = 0.0
