@@ -1,8 +1,12 @@
 import pygame
 import pygame.gfxdraw
+import threading
 
 import teensyCommunicator
 import utils
+
+
+draw_lock = threading.Lock()
 
 #init
 print "initializing faceModule..."
@@ -86,6 +90,7 @@ def isSad():
 def drawFace():
     import statusModule
     global screen, eyex, eyey, screenshotFilename
+    draw_lock.acquire()
     screen.fill((0, 0, 0))
     pygame.draw.circle(screen, (100,250,250), (163,100), 60) #lefteye
     pygame.draw.circle(screen, (100,250,250), (491,100), 60) #righteye
@@ -95,6 +100,7 @@ def drawFace():
     pygame.display.flip()
     pygame.image.save(screen, screenshotFilename)
     statusModule.setScreenshotTimestamp()
+    draw_lock.release()
 
 def drawMouth():
     global smilePercent

@@ -92,7 +92,7 @@ void Motor::updateMotors()
     }
   }
 
-  handleObstacles();
+//  handleObstacles();
   
   if (leftSpeed == 0) { 
     digitalWrite(PIN_MT_LE_FWD, LOW); 
@@ -106,7 +106,7 @@ void Motor::updateMotors()
   else if (rightSpeed < -MOVE_THRESHOLD) { digitalWrite(PIN_MT_RI_FWD, LOW); digitalWrite(PIN_MT_RI_BCK, HIGH); }
 
   if (rightSpeed) {
-    Timer3.pwm(PIN_MT_RI_PWM, map((rightSpeed<0) ? -rightSpeed : rightSpeed,0,255,20,600));   // right motor slighty slower: compensate PWMs!
+    Timer3.pwm(PIN_MT_RI_PWM, map((rightSpeed<0) ? -rightSpeed : rightSpeed,0,255,20,1200));   // right motor slighty slower: compensate PWMs!
   }
   else Timer3.pwm(PIN_MT_RI_PWM,0);
   

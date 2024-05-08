@@ -23,7 +23,7 @@ void Sensor::init () {
 
 void Sensor::updateSensorData()
 {
-    BatterySensorBuffer->addValue(analogRead(PIN_ADC_VBAT));
+    BatterySensorBuffer->addValue(800); //analogRead(PIN_ADC_VBAT));
     
     IRSensorMiddleBuffer->addValue(analogRead(PIN_ADC_IR2));
     IRSensorLeftBuffer->addValue(analogRead(PIN_ADC_IR1));
@@ -77,4 +77,3 @@ bool Sensor::isIRSensorMiddleTriggered() {
 bool Sensor::isIRSensorRightTriggered() {
   return IRSensorRightTriggered;
 }
-

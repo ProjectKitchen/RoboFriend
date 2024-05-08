@@ -3,6 +3,8 @@
 # external modules
 import signal
 import time
+import ctypes
+
 
 # own modules
 import python.faceModule as faceModule
@@ -17,6 +19,9 @@ import python.speechModule as speechModule
 
 # globals
 runFlag = True
+
+ctypes.CDLL('libX11.so.6').XInitThreads()
+
 
 def stop():
 	global runFlag
