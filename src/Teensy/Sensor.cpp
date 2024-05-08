@@ -23,11 +23,11 @@ void Sensor::init () {
 
 void Sensor::updateSensorData()
 {
-    BatterySensorBuffer->addValue(800); //analogRead(PIN_ADC_VBAT));
+    BatterySensorBuffer->addValue(analogRead(PIN_ADC_VBAT));
     
-    IRSensorMiddleBuffer->addValue(analogRead(PIN_ADC_IR2));
-    IRSensorLeftBuffer->addValue(analogRead(PIN_ADC_IR1));
-    IRSensorRightBuffer->addValue(analogRead(PIN_ADC_IR3));
+    IRSensorMiddleBuffer->addValue(analogRead(PIN_ADC_IR2)*4/5);
+    IRSensorLeftBuffer->addValue(analogRead(PIN_ADC_IR1)*0);    // not connected
+    IRSensorRightBuffer->addValue(analogRead(PIN_ADC_IR3)*0);   // not connected
 
     Battery        = BatterySensorBuffer->getFastAverage();
     IRSensorMiddle = IRSensorMiddleBuffer->getFastAverage();

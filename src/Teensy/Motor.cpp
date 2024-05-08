@@ -92,7 +92,7 @@ void Motor::updateMotors()
     }
   }
 
-//  handleObstacles();
+  handleObstacles();
   
   if (leftSpeed == 0) { 
     digitalWrite(PIN_MT_LE_FWD, LOW); 
